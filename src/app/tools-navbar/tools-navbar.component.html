@@ -1,0 +1,10 @@
+<mat-sidenav-container class="tool-sidenav-container"  (backdropClick)="close()">
+  <mat-sidenav  #toolsnav (keydown.escape)="close()">
+    <p class="tool-sidenav-p"><button mat-button (click)="close()">Curve</button></p>
+    <p class="tool-sidenav-p"><button mat-button (click)="close()">Moon</button></p>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <app-menubar [navbar]="this"></app-menubar>
+  </mat-sidenav-content>
+</mat-sidenav-container>

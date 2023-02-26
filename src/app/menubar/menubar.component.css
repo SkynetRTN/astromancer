@@ -1,3 +1,11 @@
 .cursive {
   font-family: "Brush Script MT", serif;
 }
+
+.mat-flat-button{
+  font-size: large;
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}

@@ -2,5 +2,10 @@
   <button mat-icon-button aria-label="tools dropdown" (click)="openToolNavbar()">
     <mat-icon>menu</mat-icon>
   </button>
-  <span>Skynet Graphing Tool <span class="cursive">neo</span> </span>
+  <button mat-flat-button color="primary" aria-label="Home" [routerLink]="['/home']">
+    Skynet Graphing Tool <span class="cursive">neo</span></button>
+  <span class="toolbar-spacer"></span>
+  <button mat-icon-button aria-label="about this site" [routerLink]="['/about']">
+    <mat-icon>info</mat-icon>
+  </button>
 </mat-toolbar>

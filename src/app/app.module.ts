@@ -13,6 +13,11 @@ import { CurveComponent } from './tools/curve/curve.component';
 import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { StandardLayoutComponent } from './tools/common/standard-layout/standard-layout.component';
+import { StandardGraphInfoComponent } from './tools/common/standard-graph-info/standard-graph-info.component';
+import {MatInputModule} from "@angular/material/input";
+import {FormsModule} from "@angular/forms";
+import {GraphInfoDirective} from "./tools/common/directives/graph-info.directive";
 
 @NgModule({
   declarations: [
@@ -23,6 +28,9 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     HomeComponent,
     AboutComponent,
     PageNotFoundComponent,
+    StandardLayoutComponent,
+    StandardGraphInfoComponent,
+    GraphInfoDirective,
   ],
   imports: [
     BrowserModule,
@@ -31,7 +39,9 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     MatSidenavModule,
     MatButtonModule,
     MatToolbarModule,
-    MatIconModule
+    MatIconModule,
+    MatInputModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

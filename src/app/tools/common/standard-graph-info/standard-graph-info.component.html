@@ -1,0 +1,44 @@
+<form (input)="onChange()" #standardGraphInfoForm="ngForm">
+  <div class="form-group">
+    <div class="row">
+      <div class="col-6">
+        <mat-form-field class="full-width">
+          <mat-label>Title</mat-label>
+          <input matInput type="text" name="title" [(ngModel)]="info.title" >
+          <button *ngIf="info.title" matSuffix mat-icon-button aria-label="Clear" (click)="info.title=''">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+      <div class="col-6">
+        <mat-form-field class="full-width">
+          <mat-label>Data</mat-label>
+          <input matInput type="text" name="data" [(ngModel)]="info.data" >
+          <button *ngIf="info.data" matSuffix mat-icon-button aria-label="Clear" (click)="info.data=''">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <mat-form-field class="full-width">
+          <mat-label>x Axis</mat-label>
+          <input matInput type="text" name="xAxis" [(ngModel)]="info.xAxis" >
+          <button *ngIf="info.xAxis" matSuffix mat-icon-button aria-label="Clear" (click)="info.xAxis=''">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+      <div class="col-6">
+        <mat-form-field class="full-width">
+          <mat-label>y Axis</mat-label>
+          <input matInput type="text" name="yAxis" [(ngModel)]="info.yAxis" >
+          <button *ngIf="info.yAxis" matSuffix mat-icon-button aria-label="Clear" (click)="info.yAxis=''">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+</form>

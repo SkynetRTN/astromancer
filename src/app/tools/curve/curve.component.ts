@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {StandardGraphInfoComponent} from "../common/standard-graph-info/standard-graph-info.component";
 
 @Component({
   selector: 'app-curve',
   templateUrl: './curve.component.html',
   styleUrls: ['./curve.component.css']
 })
-export class CurveComponent implements OnInit {
+export class CurveComponent implements OnInit{
+  graphInfoType: any;
 
-  constructor() { }
-
+  constructor() {
+    this.graphInfoType = StandardGraphInfoComponent;
+  }
   ngOnInit(): void {
   }
-
 }

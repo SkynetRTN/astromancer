@@ -18,6 +18,10 @@ import { StandardGraphInfoComponent } from './tools/common/standard-graph-info/s
 import {MatInputModule} from "@angular/material/input";
 import {FormsModule} from "@angular/forms";
 import {GraphInfoDirective} from "./tools/common/directives/graph-info.directive";
+import {DataControlDirective} from "./tools/common/directives/data-control.directive";
+import { LineFormComponent } from './tools/curve/line-form/line-form.component';
+import {MatSelectModule} from "@angular/material/select";
+import {MatButtonToggleModule} from "@angular/material/button-toggle";
 
 @NgModule({
   declarations: [
@@ -31,6 +35,8 @@ import {GraphInfoDirective} from "./tools/common/directives/graph-info.directive
     StandardLayoutComponent,
     StandardGraphInfoComponent,
     GraphInfoDirective,
+    DataControlDirective,
+    LineFormComponent,
   ],
   imports: [
     BrowserModule,
@@ -41,7 +47,9 @@ import {GraphInfoDirective} from "./tools/common/directives/graph-info.directive
     MatToolbarModule,
     MatIconModule,
     MatInputModule,
-    FormsModule
+    FormsModule,
+    MatSelectModule,
+    MatButtonToggleModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

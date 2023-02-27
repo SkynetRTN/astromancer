@@ -10,9 +10,10 @@ import {MatSidenav} from '@angular/material/sidenav';
 export class ToolsNavbarComponent {
   @ViewChild('toolsnav') toolsnav!: MatSidenav;
 
-  open(){
+  open() {
     this.toolsnav.open();
   }
+
   close() {
     this.toolsnav.close();
   }

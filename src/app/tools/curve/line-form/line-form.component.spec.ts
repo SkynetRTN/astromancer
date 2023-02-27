@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { LineFormComponent } from './line-form.component';
+import {LineFormComponent} from './line-form.component';
 
 describe('LineFormComponent', () => {
   let component: LineFormComponent;
@@ -8,9 +8,9 @@ describe('LineFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LineFormComponent ]
+      declarations: [LineFormComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

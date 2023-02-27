@@ -9,7 +9,7 @@ import {ToolsNavbarComponent} from "../tools-navbar/tools-navbar.component";
 export class MenubarComponent {
   @Input() navbar!: ToolsNavbarComponent
 
-  openToolNavbar(){
+  openToolNavbar() {
     this.navbar.open();
   }
 

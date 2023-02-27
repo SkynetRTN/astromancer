@@ -1,20 +1,20 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {StandardLayoutComponent} from './standard-layout.component';
+import {SimpleTableImplComponent} from './simple-table-impl.component';
 
-describe('StandardLayoutComponent', () => {
-  let component: StandardLayoutComponent;
-  let fixture: ComponentFixture<StandardLayoutComponent>;
+describe('SimpleTableImplComponent', () => {
+  let component: SimpleTableImplComponent;
+  let fixture: ComponentFixture<SimpleTableImplComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [StandardLayoutComponent]
+      declarations: [SimpleTableImplComponent]
     })
       .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(StandardLayoutComponent);
+    fixture = TestBed.createComponent(SimpleTableImplComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

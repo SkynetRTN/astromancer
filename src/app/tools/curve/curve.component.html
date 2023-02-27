@@ -1,2 +1,6 @@
-<app-standard-layout [graphInfoType]="graphInfoType"
-                     [dataControlType]="dataControlType"></app-standard-layout>
+<app-standard-layout #stdLayout
+                     [dataControlType]="dataControlType"
+                     [defaultTableArgs]="defaultArgs()"
+                     [graphInfoType]="graphInfoType"
+                     [tableType]="tableType"
+></app-standard-layout>

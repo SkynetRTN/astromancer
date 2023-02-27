@@ -1,9 +1,11 @@
 import {Directive, ViewContainerRef} from '@angular/core';
 
 @Directive({
-  selector: '[graph-info]',
+  selector: '[DataTable]'
 })
-export class GraphInfoDirective {
+export class DataTableDirective {
+
   constructor(public viewContainerRef: ViewContainerRef) {
   }
+
 }

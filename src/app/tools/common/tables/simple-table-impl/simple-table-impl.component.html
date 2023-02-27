@@ -1,0 +1,24 @@
+<div class="container">
+  <hot-table #table
+             [allowInsertColumn]="false"
+             [allowInsertRow]="true"
+             [colHeaders]="true"
+             [contextMenu]="[
+      'undo',
+      'redo',
+      '---------',
+      'row_above',
+      'row_below',
+      '---------',
+      'remove_row']"
+             [data]="dataSet"
+             [height]="height"
+             [hiddenColumns]="true"
+             [hotId]="id"
+             [renderAllRows]="false"
+             [rowHeaders]="true"
+             [stretchH]="'all'"
+             licenseKey="non-commercial-and-evaluation">
+  </hot-table>
+</div>
+

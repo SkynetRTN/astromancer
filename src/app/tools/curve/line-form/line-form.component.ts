@@ -1,17 +1,18 @@
 import {AfterViewInit, Component, ViewChild} from '@angular/core';
 import {MatFormFieldControl} from "@angular/material/form-field";
 
-interface CurveCounts{
+interface CurveCounts {
   value: number;
   viewValue: string
 }
+
 @Component({
   selector: 'app-line-form',
   templateUrl: './line-form.component.html',
   styleUrls: ['./line-form.component.css']
 })
 export class LineFormComponent implements AfterViewInit {
-  curveCounts: CurveCounts[]=[
+  curveCounts: CurveCounts[] = [
     {value: 1, viewValue: '1'},
     {value: 2, viewValue: '2'},
     {value: 3, viewValue: '3'},

@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ToolsNavbarComponent } from './tools-navbar.component';
+import {ToolsNavbarComponent} from './tools-navbar.component';
 
 describe('ToolsNavbarComponent', () => {
   let component: ToolsNavbarComponent;
@@ -8,9 +8,9 @@ describe('ToolsNavbarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ToolsNavbarComponent ]
+      declarations: [ToolsNavbarComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

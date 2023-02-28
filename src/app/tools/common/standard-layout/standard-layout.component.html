@@ -13,7 +13,9 @@
       </div>
     </div>
     <div class="col-8 h-100">
-      <div class="row h-65" title="Graph">1</div>
+      <div class="row h-65" title="Graph">
+        <ng-template Graph [chartType]="chartType"></ng-template>
+      </div>
       <div class="row h-15" title="Graph Info">
         <ng-template graph-info></ng-template>
       </div>

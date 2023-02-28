@@ -4,6 +4,7 @@ import {LineFormComponent} from "./line-form/line-form.component";
 import {SimpleTableImplComponent} from "../common/tables/simple-table-impl/simple-table-impl.component";
 import {SimpleTableInitArgs} from "../common/tables/simpleTable";
 import {SimpleDataButtonComponent} from "../common/simple-data-button/simple-data-button.component";
+import {SimpleChartImplComponent} from "../common/charts/simple-chart-impl/simple-chart-impl.component";
 
 @Component({
   selector: 'app-curve',
@@ -16,6 +17,7 @@ export class CurveComponent implements OnInit {
   dataButtonType: any;
   tableType: any;
   tableUpdateObserver$: EventEmitter<any>;
+  chartType: any;
   dataSet: any[];
 
   constructor() {
@@ -25,6 +27,7 @@ export class CurveComponent implements OnInit {
     this.tableType = SimpleTableImplComponent;
     this.dataSet = [];
     this.tableUpdateObserver$ = new EventEmitter<number>();
+    this.chartType = SimpleChartImplComponent;
   }
 
   ngOnInit(): void {

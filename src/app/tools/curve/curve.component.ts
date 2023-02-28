@@ -3,6 +3,7 @@ import {StandardGraphInfoComponent} from "../common/standard-graph-info/standard
 import {LineFormComponent} from "./line-form/line-form.component";
 import {SimpleTableImplComponent} from "../common/tables/simple-table-impl/simple-table-impl.component";
 import {SimpleTableInitArgs} from "../common/tables/simpleTable";
+import {SimpleDataButtonComponent} from "../common/simple-data-button/simple-data-button.component";
 
 @Component({
   selector: 'app-curve',
@@ -12,16 +13,18 @@ import {SimpleTableInitArgs} from "../common/tables/simpleTable";
 export class CurveComponent implements OnInit {
   graphInfoType: any;
   dataControlType: any;
+  dataButtonType: any;
   tableType: any;
-  tableColObserver$: EventEmitter<any>;
+  tableUpdateObserver$: EventEmitter<any>;
   dataSet: any[];
 
   constructor() {
     this.graphInfoType = StandardGraphInfoComponent;
     this.dataControlType = LineFormComponent;
+    this.dataButtonType = SimpleDataButtonComponent;
     this.tableType = SimpleTableImplComponent;
     this.dataSet = [];
-    this.tableColObserver$ = new EventEmitter<number>();
+    this.tableUpdateObserver$ = new EventEmitter<number>();
   }
 
   ngOnInit(): void {
@@ -49,8 +52,12 @@ export class CurveComponent implements OnInit {
     return {data: data, height: 640, hiddenCols: hiddenCols};
   }
 
-  tableObs(event: Event) {
-    this.tableColObserver$.emit({'hiddenCols': this.getHiddenCols(event as unknown as number)});
+  tableObs(event: string|number) {
+    if (typeof event == 'string'){
+      this.tableUpdateObserver$.emit({'action': event});
+    } else {
+      this.tableUpdateObserver$.emit({'hiddenCols': this.getHiddenCols(event as unknown as number)});
+    }
   }
 
   private getHiddenCols(numOfVariables: number){

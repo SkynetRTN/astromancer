@@ -19,6 +19,7 @@ import {MatInputModule} from "@angular/material/input";
 import {FormsModule} from "@angular/forms";
 import {GraphInfoDirective} from "./tools/common/directives/graph-info.directive";
 import {DataControlDirective} from "./tools/common/directives/data-control.directive";
+import {DataButtonDirective} from "./tools/common/directives/data-button.directive";
 import {LineFormComponent} from './tools/curve/line-form/line-form.component';
 import {MatSelectModule} from "@angular/material/select";
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
@@ -26,6 +27,7 @@ import {SimpleTableImplComponent} from './tools/common/tables/simple-table-impl/
 import {DataTableDirective} from './tools/common/directives/data-table.directive';
 import {HotTableModule} from "@handsontable/angular";
 import {registerAllModules} from 'handsontable/registry';
+import { SimpleDataButtonComponent } from './tools/common/simple-data-button/simple-data-button.component';
 
 registerAllModules();
 
@@ -45,6 +47,8 @@ registerAllModules();
     LineFormComponent,
     SimpleTableImplComponent,
     DataTableDirective,
+    SimpleDataButtonComponent,
+    DataButtonDirective,
   ],
   imports: [
     BrowserModule,

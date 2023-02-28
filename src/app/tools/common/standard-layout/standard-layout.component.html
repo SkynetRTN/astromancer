@@ -4,11 +4,13 @@
       <div class="row h-80" title="Data Ctrl/Table">
         <div class="container h-80">
           <ng-template DataControl [controlType]="dataControlType" (tableObs$)="tableObs($event)"></ng-template>
-          <ng-template DataTable [tableArgs]="defaultTableArgs" [tableColObserver$]="tableColObserver$"
+          <ng-template DataTable [tableArgs]="defaultTableArgs" [tableColObserver$]="tableUpdateObserver$"
                        [tableType]="tableType"></ng-template>
         </div>
       </div>
-      <div class="row" title="Data Buttons">1</div>
+      <div class="row" title="Data Buttons">
+        <ng-template DataButton [buttonType]="dataButtonType" (tableObs$)="tableObs($event)"></ng-template>
+      </div>
     </div>
     <div class="col-8 h-100">
       <div class="row h-65" title="Graph">1</div>

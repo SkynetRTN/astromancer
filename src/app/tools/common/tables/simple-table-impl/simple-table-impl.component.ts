@@ -27,8 +27,15 @@ export class SimpleTableImplComponent implements OnInit, AfterViewInit, SimpleTa
     this.defaultArgs = args.get('tableArgs');
     this.tableColObserver$ = args.get('tableColObserver$');
     this.tableColObserver$.subscribe((value) => {
-      this.showCol([1,2,3,4]);
-      this.hideCol(value['hiddenCols']);
+      if (value['hiddenCols']){
+        this.showCol([1,2,3,4]);
+        this.hideCol(value['hiddenCols']);
+      }
+      if (value['action']){
+        if (value['action'] == "addRow"){
+          this.addRow();
+        }
+      }
     });
   }
 
@@ -48,7 +55,7 @@ export class SimpleTableImplComponent implements OnInit, AfterViewInit, SimpleTa
   }
 
   addRow(): void {
-    this.getTable().alter('insert_row');
+    this.getTable().alter('insert_row_below');
   }
 
   getColNames(): (string | number)[] {

@@ -1,5 +1,4 @@
 import {Component, Directive, EventEmitter, Input, OnInit, Output, Type, ViewContainerRef} from '@angular/core';
-import {LineFormComponent} from "../../curve/line-form/line-form.component";
 
 @Directive({
   selector: '[DataControl]',
@@ -14,7 +13,7 @@ export class DataControlDirective implements OnInit {
 
   ngOnInit(): void {
     const component = this.container.createComponent(this.controlType);
-    (component.instance as LineFormComponent).tableObs$.subscribe(this.tableObs$);
+    (component.instance as any).tableObs$.subscribe(this.tableObs$);
   }
 
 }

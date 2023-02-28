@@ -13,7 +13,7 @@ export class CurveComponent implements OnInit {
   graphInfoType: any;
   dataControlType: any;
   tableType: any;
-  tableColObserver$: EventEmitter<number>;
+  tableColObserver$: EventEmitter<any>;
   dataSet: any[];
 
   constructor() {
@@ -50,7 +50,16 @@ export class CurveComponent implements OnInit {
   }
 
   tableObs(event: Event) {
-    this.tableColObserver$.emit(event as unknown as number);
+    this.tableColObserver$.emit({'hiddenCols': this.getHiddenCols(event as unknown as number)});
+  }
+
+  private getHiddenCols(numOfVariables: number){
+    let hiddenCols: number[] = [];
+    const totalVariables: number = 4;
+    for (let variable = numOfVariables; variable <= totalVariables-1; variable++){
+      hiddenCols.push(variable+1);
+    }
+    return hiddenCols;
   }
 }
 

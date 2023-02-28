@@ -5,7 +5,7 @@ export interface SimpleTable {
 
   removeCol(colIndex: number): void
 
-  showCol(colIndex: number): void
+  showCol(colIndex: number | number[]): void
 
   hideCol(colIndex: number): void
 

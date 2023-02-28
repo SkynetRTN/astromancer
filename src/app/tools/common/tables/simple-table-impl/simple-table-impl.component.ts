@@ -1,4 +1,11 @@
-import {AfterViewChecked, ChangeDetectorRef, Component, EventEmitter, Injector, OnInit} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Injector,
+  OnInit
+} from '@angular/core';
 import {SimpleTable, SimpleTableInitArgs} from "../simpleTable";
 import Handsontable from "handsontable";
 import {HotTableRegisterer} from "@handsontable/angular";
@@ -8,27 +15,27 @@ import {HotTableRegisterer} from "@handsontable/angular";
   templateUrl: './simple-table-impl.component.html',
   styleUrls: ['./simple-table-impl.component.css'],
 })
-export class SimpleTableImplComponent implements OnInit, AfterViewChecked, SimpleTable {
+export class SimpleTableImplComponent implements OnInit, AfterViewInit, SimpleTable {
   id = "dataTable";
   dataSet!: any[];
   height!: number;
   colNames!: string []
   defaultArgs: SimpleTableInitArgs;
-  tableColObserver$: EventEmitter<number>;
+  tableColObserver$: EventEmitter<any>;
   private hotRegisterer = new HotTableRegisterer();
-
   constructor(args: Injector, private cdref: ChangeDetectorRef) {
     this.defaultArgs = args.get('tableArgs');
     this.tableColObserver$ = args.get('tableColObserver$');
     this.tableColObserver$.subscribe((value) => {
-      console.log(value)
+      this.showCol([1,2,3,4]);
+      this.hideCol(value['hiddenCols']);
     });
   }
 
   ngOnInit() {
   }
 
-  ngAfterViewChecked() {
+  ngAfterViewInit() {
     this.loadDefault(this.defaultArgs);
     this.cdref.detectChanges();
   }
@@ -49,15 +56,11 @@ export class SimpleTableImplComponent implements OnInit, AfterViewChecked, Simpl
   }
 
   hideCol(colIndex: number | number[]): void {
-    let cols: number[] = [];
+    const plugin = this.getTable().getPlugin('hiddenColumns');
     if (typeof colIndex == 'number') {
-      cols.push(colIndex);
+      plugin.hideColumn(colIndex);
     } else {
-      cols = colIndex;
-    }
-    for (let col of cols) {
-      const plugin = this.getTable().getPlugin('hiddenColumns');
-      plugin.hideColumn(col);
+      plugin.hideColumns(colIndex);
     }
     this.getTable().render();
   }
@@ -67,9 +70,13 @@ export class SimpleTableImplComponent implements OnInit, AfterViewChecked, Simpl
     this.getTable().render();
   }
 
-  showCol(colIndex: number): void {
+  showCol(colIndex: number | number[]): void {
     const plugin = this.getTable().getPlugin('hiddenColumns');
-    plugin.showColumn(colIndex);
+    if (typeof colIndex == 'number') {
+      plugin.showColumn(colIndex);
+    } else {
+      plugin.showColumns(colIndex);
+    }
     this.getTable().render();
   }
 

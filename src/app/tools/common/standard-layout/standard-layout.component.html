@@ -3,8 +3,9 @@
     <div class="col-4">
       <div class="row h-80" title="Data Ctrl/Table">
         <div class="container h-80">
-          <ng-template data-control></ng-template>
-          <ng-template DataTable></ng-template>
+          <ng-template DataControl [controlType]="dataControlType" (tableObs$)="tableObs($event)"></ng-template>
+          <ng-template DataTable [tableArgs]="defaultTableArgs" [tableColObserver$]="tableColObserver$"
+                       [tableType]="tableType"></ng-template>
         </div>
       </div>
       <div class="row" title="Data Buttons">1</div>

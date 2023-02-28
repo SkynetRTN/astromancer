@@ -1,6 +1,8 @@
 <app-standard-layout #stdLayout
+                     (tableObs$)="tableObs($event)"
                      [dataControlType]="dataControlType"
                      [defaultTableArgs]="defaultArgs()"
                      [graphInfoType]="graphInfoType"
+                     [tableColObserver$]="tableColObserver$"
                      [tableType]="tableType"
 ></app-standard-layout>

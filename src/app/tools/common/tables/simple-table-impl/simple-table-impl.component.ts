@@ -1,49 +1,64 @@
-import {Component, Injector, Input, OnInit} from '@angular/core';
-import {SimpleTable} from "../simpleTable";
+import {AfterViewChecked, ChangeDetectorRef, Component, EventEmitter, Injector, OnInit} from '@angular/core';
+import {SimpleTable, SimpleTableInitArgs} from "../simpleTable";
 import Handsontable from "handsontable";
 import {HotTableRegisterer} from "@handsontable/angular";
-
-export interface SimpleTableImplArgs {
-  data: any[];
-  height: number;
-}
 
 @Component({
   selector: 'app-simple-table-impl',
   templateUrl: './simple-table-impl.component.html',
   styleUrls: ['./simple-table-impl.component.css'],
 })
-export class SimpleTableImplComponent implements OnInit, SimpleTable {
+export class SimpleTableImplComponent implements OnInit, AfterViewChecked, SimpleTable {
   id = "dataTable";
   dataSet!: any[];
   height!: number;
-  dataTable: any;
-  @Input() sussy!: string;
+  colNames!: string []
+  defaultArgs: SimpleTableInitArgs;
+  tableColObserver$: EventEmitter<number>;
   private hotRegisterer = new HotTableRegisterer();
 
-  constructor(args: Injector) {
-    this.loadDefault(args.get('tableArgs'))
+  constructor(args: Injector, private cdref: ChangeDetectorRef) {
+    this.defaultArgs = args.get('tableArgs');
+    this.tableColObserver$ = args.get('tableColObserver$');
+    this.tableColObserver$.subscribe((value) => {
+      console.log(value)
+    });
   }
 
   ngOnInit() {
   }
 
-  loadDefault(args: SimpleTableImplArgs) {
+  ngAfterViewChecked() {
+    this.loadDefault(this.defaultArgs);
+    this.cdref.detectChanges();
+  }
+
+  loadDefault(args: SimpleTableInitArgs) {
     this.dataSet = args.data;
     this.height = args.height;
+    this.hideCol(args.hiddenCols);
+    this.colNames = this.initGetColNames();
   }
 
   addRow(): void {
     this.getTable().alter('insert_row');
   }
 
-  getCols(): (string | number)[] {
+  getColNames(): (string | number)[] {
     return this.getTable().getColHeader();
   }
 
-  hideCol(colIndex: number): void {
-    const plugin = this.getTable().getPlugin('hiddenColumns');
-    plugin.hideColumn(colIndex);
+  hideCol(colIndex: number | number[]): void {
+    let cols: number[] = [];
+    if (typeof colIndex == 'number') {
+      cols.push(colIndex);
+    } else {
+      cols = colIndex;
+    }
+    for (let col of cols) {
+      const plugin = this.getTable().getPlugin('hiddenColumns');
+      plugin.hideColumn(col);
+    }
     this.getTable().render();
   }
 
@@ -58,7 +73,11 @@ export class SimpleTableImplComponent implements OnInit, SimpleTable {
     this.getTable().render();
   }
 
-  getTable(): Handsontable {
+  private initGetColNames(): string[] {
+    return Object.keys(this.dataSet[0]);
+  }
+
+  private getTable(): Handsontable {
     return this.hotRegisterer.getInstance(this.id);
   }
 

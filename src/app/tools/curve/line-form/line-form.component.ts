@@ -1,5 +1,4 @@
-import {AfterViewInit, Component, ViewChild} from '@angular/core';
-import {MatFormFieldControl} from "@angular/material/form-field";
+import {AfterViewInit, Component, EventEmitter, OnInit, Output} from '@angular/core';
 
 interface CurveCounts {
   value: number;
@@ -9,9 +8,9 @@ interface CurveCounts {
 @Component({
   selector: 'app-line-form',
   templateUrl: './line-form.component.html',
-  styleUrls: ['./line-form.component.css']
+  styleUrls: ['./line-form.component.css'],
 })
-export class LineFormComponent implements AfterViewInit {
+export class LineFormComponent implements OnInit, AfterViewInit {
   curveCounts: CurveCounts[] = [
     {value: 1, viewValue: '1'},
     {value: 2, viewValue: '2'},
@@ -19,12 +18,20 @@ export class LineFormComponent implements AfterViewInit {
     {value: 4, viewValue: '4'},
   ]
   selectedValue: number = this.curveCounts[0].value;
-  @ViewChild('curveCountForm') curveCountForm!: MatFormFieldControl<CurveCounts>;
+  @Output() public tableObs$ = new EventEmitter<number>();
 
   constructor() {
   }
 
+  ngOnInit() {
+
+  }
+
   ngAfterViewInit(): void {
   }
+
+  onCurveNumChange(value: number) {
+    this.tableObs$.emit(value);
+  };
 
 }

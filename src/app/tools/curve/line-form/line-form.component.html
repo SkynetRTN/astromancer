@@ -1,10 +1,11 @@
 <div class="container">
   <div class="row">
     <div class="col-8">
-      <form #curveCountForm class="h-fit">
+      <form class="h-fit">
         <mat-form-field appearance="fill">
           <mat-label>Number of Curves</mat-label>
-          <mat-select [(ngModel)]="selectedValue" name="food">
+          <mat-select #selector (ngModelChange)="onCurveNumChange(selector.value)" [(ngModel)]="selectedValue"
+                      name="curves">
             <mat-option *ngFor="let count of curveCounts; index as i" [value]="count.value">
               {{count.viewValue}}
             </mat-option>

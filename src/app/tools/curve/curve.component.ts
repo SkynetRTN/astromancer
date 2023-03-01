@@ -17,18 +17,19 @@ export class CurveComponent implements OnInit {
   dataControlType: any;
   dataButtonType: any;
   tableType: any;
-  tableUpdateObserver$: EventEmitter<any>;
   chartType: any;
-  dataSet: any[];
+  tableUpdateObserver$: EventEmitter<TableAction[]>;
+  chartUpdateObserver$: EventEmitter<ChartAction[]>;
 
   constructor() {
     this.graphInfoType = StandardGraphInfoComponent;
     this.dataControlType = LineFormComponent;
     this.dataButtonType = SimpleDataButtonComponent;
     this.tableType = SimpleTableImplComponent;
-    this.dataSet = [];
-    this.tableUpdateObserver$ = new EventEmitter<TableAction[]>();
     this.chartType = CurveChartComponent;
+    this.tableUpdateObserver$ = new EventEmitter<TableAction[]>();
+    this.chartUpdateObserver$ = new EventEmitter<ChartAction[]>();
+
   }
 
   ngOnInit(): void {
@@ -69,10 +70,13 @@ export class CurveComponent implements OnInit {
   }
 
   chartObs(actions: ChartAction[]) {
-    // let cmds: ChartAction[] = [];
+    let cmds: ChartAction[] = [];
     for (let action of actions) {
-      console.log(action);
+      if (action.action == "flipY"){
+        cmds.push(action)
+      }
     }
+    this.chartUpdateObserver$.emit(cmds);
   }
 
   private getHiddenCols(numOfVariables: number): TableAction[] {

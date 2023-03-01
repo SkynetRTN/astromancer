@@ -1,19 +1,25 @@
-import {Component, Directive, Input, OnInit, Type, ViewContainerRef} from '@angular/core';
+import {Component, Directive, EventEmitter, Injector, Input, OnInit, Type, ViewContainerRef} from '@angular/core';
+import {ChartAction} from "../types/actions";
+
+export interface ChartComponent{
+  chartUpdateObs$: EventEmitter<ChartAction[]>;
+}
 
 @Directive({
   selector: '[Graph]',
 })
 export class ChartDirective implements OnInit {
   @Input() chartType!: Type<Component>;
-  // @Output() tableObs$: EventEmitter<any>;
+  @Input() chartUpdateObs$: EventEmitter<ChartAction[]>;
 
   constructor(private container: ViewContainerRef) {
-    // this.tableObs$ = new EventEmitter<any>();
+    this.chartUpdateObs$ = new EventEmitter<ChartAction[]>();
   }
 
   ngOnInit(): void {
-    this.container.createComponent(this.chartType);
-    // (component.instance as any).tableObs$.subscribe(this.tableObs$);
+    const chartInjector: Injector = Injector.create(
+      {providers: [{provide: 'chartUpdateObs$', useValue: this.chartUpdateObs$}]});
+    this.container.createComponent(this.chartType, {injector: chartInjector});
   }
 
 }

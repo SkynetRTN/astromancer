@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output, Type, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, Output, Type, ViewChild} from '@angular/core';
 import {GraphInfoDirective} from "../directives/graph-info.directive";
 import {DataControlDirective} from "../directives/data-control.directive";
 import {DataTableDirective} from "../directives/data-table.directive";
@@ -11,11 +11,12 @@ import {ChartAction, TableAction} from "../types/actions";
   templateUrl: './standard-layout.component.html',
   styleUrls: ['./standard-layout.component.css']
 })
-export class StandardLayoutComponent implements OnInit {
+export class StandardLayoutComponent {
   @Input() graphInfoType!: Type<Component>;
   @Input() dataControlType!: Type<Component>;
   @Input() dataButtonType!: Type<Component>;
   @Input() tableType!: Type<Component>;
+  @Input() chartUpdateObs$: EventEmitter<ChartAction[]>;
   @Input() tableUpdateObs$: EventEmitter<TableAction[]>;
   @Input() defaultTableArgs!: SimpleTableInitArgs;
   @Input() chartType!: Type<Component>;
@@ -31,14 +32,7 @@ export class StandardLayoutComponent implements OnInit {
     this.tableUserActionObs$ = new EventEmitter<TableAction[]>();
     this.chartUserActionObs$ = new EventEmitter<ChartAction[]>();
     this.tableUpdateObs$ = new EventEmitter<TableAction[]>();
-  }
-
-  ngOnInit(): void {
-    this.loadComponent();
-  }
-
-  loadComponent() {
-    this.graphInfo.viewContainerRef.createComponent(this.graphInfoType);
+    this.chartUpdateObs$ = new EventEmitter<ChartAction[]>();
   }
 
   onTableUserAction(actions: TableAction[]) {

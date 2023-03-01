@@ -12,9 +12,9 @@
       </div>
       <div class="col-6">
         <mat-form-field class="full-width">
-          <mat-label>Data</mat-label>
-          <input [(ngModel)]="info.data" matInput name="data" type="text">
-          <button (click)="info.data=''" *ngIf="info.data" aria-label="Clear" mat-icon-button matSuffix>
+          <mat-label>x Axis</mat-label>
+          <input [(ngModel)]="info.xAxis" matInput name="xAxis" type="text">
+          <button (click)="info.xAxis=''" *ngIf="info.xAxis" aria-label="Clear" mat-icon-button matSuffix>
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
@@ -23,9 +23,9 @@
     <div class="row">
       <div class="col-6">
         <mat-form-field class="full-width">
-          <mat-label>x Axis</mat-label>
-          <input [(ngModel)]="info.xAxis" matInput name="xAxis" type="text">
-          <button (click)="info.xAxis=''" *ngIf="info.xAxis" aria-label="Clear" mat-icon-button matSuffix>
+          <mat-label>Data</mat-label>
+          <input [(ngModel)]="info.data" matInput name="data" type="text">
+          <button (click)="info.data=''" *ngIf="info.data" aria-label="Clear" mat-icon-button matSuffix>
             <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>

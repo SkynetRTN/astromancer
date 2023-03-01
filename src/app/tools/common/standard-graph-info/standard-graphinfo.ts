@@ -9,9 +9,3 @@ export class StandardGraphInfo {
   }
 
 }
-
-// <label for="name">Name</label>
-//   <input type="text" class="form-control" id="name"
-// required
-//   [(ngModel)]="model.name" name="name"
-// #name="ngModel">

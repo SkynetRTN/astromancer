@@ -9,6 +9,7 @@ import {
 import {SimpleTable, SimpleTableInitArgs} from "../simpleTable";
 import Handsontable from "handsontable";
 import {HotTableRegisterer} from "@handsontable/angular";
+import {TableAction} from "../../types/actions";
 
 @Component({
   selector: 'app-simple-table-impl',
@@ -18,21 +19,20 @@ import {HotTableRegisterer} from "@handsontable/angular";
 export class SimpleTableImplComponent implements OnInit, AfterViewInit, SimpleTable {
   id = "dataTable";
   dataSet!: any[];
-  height!: number;
   colNames!: string []
   defaultArgs: SimpleTableInitArgs;
-  tableColObserver$: EventEmitter<any>;
+  tableUpdateObs$: EventEmitter<any>;
   private hotRegisterer = new HotTableRegisterer();
   constructor(args: Injector, private cdref: ChangeDetectorRef) {
     this.defaultArgs = args.get('tableArgs');
-    this.tableColObserver$ = args.get('tableColObserver$');
-    this.tableColObserver$.subscribe((value) => {
-      if (value['hiddenCols']){
-        this.showCol([1,2,3,4]);
-        this.hideCol(value['hiddenCols']);
-      }
-      if (value['action']){
-        if (value['action'] == "addRow"){
+    this.tableUpdateObs$ = args.get('tableUpdateObs$');
+    this.tableUpdateObs$.subscribe((actions: TableAction[]) => {
+      for (let action of actions){
+        if (action.action == "showCols"){
+          this.showCol(action.payload);
+        } else if (action.action == "hideCols"){
+          this.hideCol(action.payload);
+        } else if (action.action == "addRow"){
           this.addRow();
         }
       }
@@ -49,9 +49,9 @@ export class SimpleTableImplComponent implements OnInit, AfterViewInit, SimpleTa
 
   loadDefault(args: SimpleTableInitArgs) {
     this.dataSet = args.data;
-    this.height = args.height;
     this.hideCol(args.hiddenCols);
     this.colNames = this.initGetColNames();
+    this.getTable().render();
   }
 
   addRow(): void {

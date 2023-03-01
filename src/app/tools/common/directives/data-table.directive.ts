@@ -1,5 +1,6 @@
 import {Component, Directive, EventEmitter, Injector, Input, OnInit, Type, ViewContainerRef} from '@angular/core';
 import {SimpleTableInitArgs} from "../tables/simpleTable";
+import {TableAction} from "../types/actions";
 
 @Directive({
   selector: '[DataTable]'
@@ -7,16 +8,16 @@ import {SimpleTableInitArgs} from "../tables/simpleTable";
 export class DataTableDirective implements OnInit {
   @Input() tableType!: Type<Component>;
   @Input() tableArgs!: SimpleTableInitArgs;
-  @Input() tableColObserver$: EventEmitter<any>;
+  @Input() tableUpdateObs$: EventEmitter<TableAction[]>;
 
   constructor(public container: ViewContainerRef) {
-    this.tableColObserver$ = new EventEmitter<any>();
+    this.tableUpdateObs$ = new EventEmitter<TableAction[]>();
   }
 
   ngOnInit(): void {
     const tableInjector: Injector = Injector.create({
       providers: [{provide: 'tableArgs', useValue: this.tableArgs,},
-        {provide: 'tableColObserver$', useValue: this.tableColObserver$}]
+        {provide: 'tableUpdateObs$', useValue: this.tableUpdateObs$}]
     });
     this.container.createComponent(this.tableType, {injector: tableInjector});
   }

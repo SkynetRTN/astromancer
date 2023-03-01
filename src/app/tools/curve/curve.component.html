@@ -1,10 +1,11 @@
 <app-standard-layout #stdLayout
                      (tableUserActionObs$)="tableObs($event)"
+                     (chartUserActionObs$)="chartObs($event)"
                      [dataControlType]="dataControlType"
                      [dataButtonType]="dataButtonType"
                      [defaultTableArgs]="defaultArgs()"
                      [graphInfoType]="graphInfoType"
-                     [tableUpdateObserver$]="tableUpdateObserver$"
+                     [tableUpdateObs$]="tableUpdateObserver$"
                      [tableType]="tableType"
                      [chartType]="chartType"
 ></app-standard-layout>

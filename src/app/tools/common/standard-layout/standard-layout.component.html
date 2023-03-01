@@ -3,13 +3,15 @@
     <div class="col-4">
       <div class="row h-80" title="Data Ctrl/Table">
         <div class="container h-80">
-          <ng-template DataControl [controlType]="dataControlType" (tableObs$)="tableObs($event)"></ng-template>
-          <ng-template DataTable [tableArgs]="defaultTableArgs" [tableColObserver$]="tableUpdateObserver$"
+          <ng-template DataControl [controlType]="dataControlType"
+                       (tableUserActionObs$)="onTableUserAction($event)"
+                       (chartUserActionObs$)="onChartUserAction($event)"></ng-template>
+          <ng-template DataTable [tableArgs]="defaultTableArgs" [tableUpdateObs$]="tableUpdateObs$"
                        [tableType]="tableType"></ng-template>
         </div>
       </div>
       <div class="row" title="Data Buttons">
-        <ng-template DataButton [buttonType]="dataButtonType" (tableObs$)="tableObs($event)"></ng-template>
+        <ng-template DataButton [buttonType]="dataButtonType" (tableUserActionObs$)="onTableUserAction($event)"></ng-template>
       </div>
     </div>
     <div class="col-8 h-100">

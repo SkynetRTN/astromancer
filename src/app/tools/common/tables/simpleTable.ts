@@ -13,7 +13,5 @@ export interface SimpleTable {
 
 export interface SimpleTableInitArgs {
   data: any[];
-  height: number;
-
   hiddenCols: number[];
 }

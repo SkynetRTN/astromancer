@@ -1,4 +1,6 @@
-import {AfterViewInit, Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
+import {ChartAction, TableAction} from "../../common/types/actions";
+import {DataControlComponent} from "../../common/directives/data-control.directive";
 
 interface CurveCounts {
   value: number;
@@ -10,7 +12,10 @@ interface CurveCounts {
   templateUrl: './line-form.component.html',
   styleUrls: ['./line-form.component.css'],
 })
-export class LineFormComponent implements OnInit, AfterViewInit {
+export class LineFormComponent implements DataControlComponent {
+
+  @Output() public tableUserActionObs$ = new EventEmitter<TableAction[]>();
+  @Output() public chartUserActionObs$ = new EventEmitter<ChartAction[]>();
   curveCounts: CurveCounts[] = [
     {value: 1, viewValue: '1'},
     {value: 2, viewValue: '2'},
@@ -18,20 +23,19 @@ export class LineFormComponent implements OnInit, AfterViewInit {
     {value: 4, viewValue: '4'},
   ]
   selectedValue: number = this.curveCounts[0].value;
-  @Output() public tableObs$ = new EventEmitter<number>();
+
 
   constructor() {
   }
 
-  ngOnInit() {
-
-  }
-
-  ngAfterViewInit(): void {
-  }
-
   onCurveNumChange(value: number) {
-    this.tableObs$.emit(value);
+    const tableAction: TableAction = {action: 'curveNumChange', payload: value};
+    this.tableUserActionObs$.emit([tableAction]);
   };
+
+  onMagnitude(value: any){
+    const tableAction: TableAction = {action: 'flipY', payload: value};
+    this.chartUserActionObs$.emit([tableAction]);
+  }
 
 }

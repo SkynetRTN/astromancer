@@ -4,7 +4,8 @@ import {LineFormComponent} from "./line-form/line-form.component";
 import {SimpleTableImplComponent} from "../common/tables/simple-table-impl/simple-table-impl.component";
 import {SimpleTableInitArgs} from "../common/tables/simpleTable";
 import {SimpleDataButtonComponent} from "../common/simple-data-button/simple-data-button.component";
-import {SimpleChartImplComponent} from "../common/charts/simple-chart-impl/simple-chart-impl.component";
+import {CurveChartComponent} from "./curve-chart/curve-chart.component";
+import {ChartAction, TableAction} from "../common/types/actions";
 
 @Component({
   selector: 'app-curve',
@@ -26,8 +27,8 @@ export class CurveComponent implements OnInit {
     this.dataButtonType = SimpleDataButtonComponent;
     this.tableType = SimpleTableImplComponent;
     this.dataSet = [];
-    this.tableUpdateObserver$ = new EventEmitter<number>();
-    this.chartType = SimpleChartImplComponent;
+    this.tableUpdateObserver$ = new EventEmitter<TableAction[]>();
+    this.chartType = CurveChartComponent;
   }
 
   ngOnInit(): void {
@@ -52,24 +53,38 @@ export class CurveComponent implements OnInit {
       {"x": '', "y1": '', 'y2': '', "y3": '', "y4": ''},
     ];
     const hiddenCols: number[] = [2, 3, 4];
-    return {data: data, height: 640, hiddenCols: hiddenCols};
+    return {data: data, hiddenCols: hiddenCols};
   }
 
-  tableObs(event: string|number) {
-    if (typeof event == 'string'){
-      this.tableUpdateObserver$.emit({'action': event});
-    } else {
-      this.tableUpdateObserver$.emit({'hiddenCols': this.getHiddenCols(event as unknown as number)});
+  tableObs(actions: TableAction[]) {
+    let cmds: TableAction[] = [];
+    for (let action of actions){
+      if (action.action == "addRow"){
+        cmds.push({action: 'addRow'});
+      } else if (action.action == "curveNumChange"){
+        cmds = cmds.concat(this.getHiddenCols(action.payload));
+      }
+    }
+    this.tableUpdateObserver$.emit(cmds);
+  }
+
+  chartObs(actions: ChartAction[]) {
+    // let cmds: ChartAction[] = [];
+    for (let action of actions) {
+      console.log(action);
     }
   }
 
-  private getHiddenCols(numOfVariables: number){
+  private getHiddenCols(numOfVariables: number): TableAction[] {
+    let cmds: TableAction[] = [];
     let hiddenCols: number[] = [];
     const totalVariables: number = 4;
-    for (let variable = numOfVariables; variable <= totalVariables-1; variable++){
-      hiddenCols.push(variable+1);
+    for (let variable = numOfVariables; variable <= totalVariables - 1; variable++) {
+      hiddenCols.push(variable + 1);
     }
-    return hiddenCols;
+    cmds.push({action: 'showCols', payload: [0,1,2,3,4].filter(c => !hiddenCols.includes(c))});
+    cmds.push({action: 'hideCols', payload: hiddenCols});
+    return cmds;
   }
 }
 

@@ -28,9 +28,9 @@ import {DataTableDirective} from './tools/common/directives/data-table.directive
 import {HotTableModule} from "@handsontable/angular";
 import {registerAllModules} from 'handsontable/registry';
 import { SimpleDataButtonComponent } from './tools/common/simple-data-button/simple-data-button.component';
-import { SimpleChartImplComponent } from './tools/common/charts/simple-chart-impl/simple-chart-impl.component';
 import { ChartDirective } from "./tools/common/directives/chart.directive";
 import { NgChartsModule } from 'ng2-charts';
+import { CurveChartComponent } from './tools/curve/curve-chart/curve-chart.component';
 
 
 registerAllModules();
@@ -53,8 +53,8 @@ registerAllModules();
     DataTableDirective,
     SimpleDataButtonComponent,
     DataButtonDirective,
-    SimpleChartImplComponent,
     ChartDirective,
+    CurveChartComponent,
   ],
   imports: [
     BrowserModule,

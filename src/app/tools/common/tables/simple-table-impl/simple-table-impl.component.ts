@@ -9,19 +9,21 @@ import {
 import {SimpleTable, SimpleTableInitArgs} from "../simpleTable";
 import Handsontable from "handsontable";
 import {HotTableRegisterer} from "@handsontable/angular";
-import {TableAction} from "../../types/actions";
+import {ChartAction, TableAction} from "../../types/actions";
+import {DataTableComponent} from "../../directives/data-table.directive";
 
 @Component({
   selector: 'app-simple-table-impl',
   templateUrl: './simple-table-impl.component.html',
   styleUrls: ['./simple-table-impl.component.css'],
 })
-export class SimpleTableImplComponent implements OnInit, AfterViewInit, SimpleTable {
+export class SimpleTableImplComponent implements OnInit, AfterViewInit, SimpleTable, DataTableComponent {
   id = "dataTable";
   dataSet!: any[];
   colNames!: string []
   defaultArgs: SimpleTableInitArgs;
-  tableUpdateObs$: EventEmitter<any>;
+  tableUserActionObs$: EventEmitter<TableAction[]>;
+  tableUpdateObs$: EventEmitter<TableAction[]>;
   private hotRegisterer = new HotTableRegisterer();
   constructor(args: Injector, private cdref: ChangeDetectorRef) {
     this.defaultArgs = args.get('tableArgs');
@@ -34,9 +36,14 @@ export class SimpleTableImplComponent implements OnInit, AfterViewInit, SimpleTa
           this.hideCol(action.payload);
         } else if (action.action == "addRow"){
           this.addRow();
+        } else if (action.action == "plotData"){
+          this.onChange();
+        } else if (action.action == "observeTable"){
+          this.getTable().addHook("afterChange", this.onChange);
         }
       }
     });
+    this.tableUserActionObs$ = new EventEmitter<TableAction[]>();
   }
 
   ngOnInit() {
@@ -52,6 +59,10 @@ export class SimpleTableImplComponent implements OnInit, AfterViewInit, SimpleTa
     this.hideCol(args.hiddenCols);
     this.colNames = this.initGetColNames();
     this.getTable().render();
+  }
+
+  onChange = ()=>{
+    this.tableUserActionObs$.emit([{action: "plotData", payload: this.getTable().getSourceData()}] as ChartAction[]);
   }
 
   addRow(): void {

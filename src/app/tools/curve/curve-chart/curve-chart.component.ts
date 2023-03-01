@@ -31,6 +31,10 @@ export class CurveChartComponent implements OnInit, AfterViewInit, ChartComponen
           this.showDataSet(action.payload);
         } else if (action.action == 'hideDataSet') {
           this.hideDataSet(action.payload);
+        } else if (action.action == 'plotData' && this.lineChart) {
+          for (let i=0; i<4;i++){
+            updateLine(action.payload, this.lineChart, i, 'x', 'y'+(i+1));
+          }
         }
       }
       this.lineChart.update('none');
@@ -101,7 +105,6 @@ export class CurveChartComponent implements OnInit, AfterViewInit, ChartComponen
 
   ngAfterViewInit(): void {
     this.lineChart = Chart.getChart("chart") as Chart;
-    updateLine([{x:1, y1:2}, {x:2, y1:3}, {x:3, y1:4}], this.lineChart, 0, 'x', 'y1');
   }
 
   setYAxisReverse(isReversed: boolean): void{

@@ -1,5 +1,5 @@
 import {
-  AfterViewChecked,
+  AfterViewInit,
   Component,
   EventEmitter,
 } from '@angular/core';
@@ -17,7 +17,7 @@ import {StandardGraphInfo} from "../common/standard-graph-info/standard-graphinf
   templateUrl: './curve.component.html',
   styleUrls: ['./curve.component.css'],
 })
-export class CurveComponent implements AfterViewChecked {
+export class CurveComponent implements AfterViewInit {
   graphInfoType: any;
   defaultChartInfo: StandardGraphInfo;
   dataControlType: any;
@@ -39,7 +39,9 @@ export class CurveComponent implements AfterViewChecked {
 
   }
 
-  ngAfterViewChecked(): void {
+  ngAfterViewInit(): void {
+    this.tableUpdateObserver$.emit([{action: 'observeTable'}]);
+    this.tableUpdateObserver$.emit([{action: 'plotData'}]);
   }
 
   defaultArgs(): SimpleTableInitArgs {
@@ -64,7 +66,7 @@ export class CurveComponent implements AfterViewChecked {
     return {data: data, hiddenCols: hiddenCols};
   }
 
-  tableObs(actions: TableAction[]) {
+  onTableUserObs(actions: TableAction[]) {
     let tableCommands: TableAction[] = [];
     let chartCommands: ChartAction[] = [];
     for (let action of actions){
@@ -73,13 +75,19 @@ export class CurveComponent implements AfterViewChecked {
       } else if (action.action == "curveNumChange"){
         tableCommands = tableCommands.concat(this.getHiddenColsCmd(action.payload));
         chartCommands = chartCommands.concat(this.getHiddenDataCmd(action.payload));
+      } else if (action.action == "plotData"){
+        chartCommands.push(action);
       }
     }
-    this.tableUpdateObserver$.emit(tableCommands);
-    this.chartUpdateObserver$.emit(chartCommands);
+    if (tableCommands.length>0){
+      this.tableUpdateObserver$.emit(tableCommands);
+    }
+    if (chartCommands.length>0){
+      this.chartUpdateObserver$.emit(chartCommands);
+    }
   }
 
-  chartObs(actions: ChartAction[]) {
+  onChartUserObs(actions: ChartAction[]) {
     let cmds: ChartAction[] = [];
     for (let action of actions) {
       if (action.action == "flipY"){

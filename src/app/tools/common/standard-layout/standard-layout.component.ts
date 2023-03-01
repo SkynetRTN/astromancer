@@ -24,6 +24,7 @@ export class StandardLayoutComponent {
   @Input() chartType!: Type<Component>;
   @Output() tableUserActionObs$: EventEmitter<TableAction[]>;
   @Output() chartUserActionObs$: EventEmitter<ChartAction[]>;
+
   @ViewChild(GraphInfoDirective, {static: true}) graphInfo!: GraphInfoDirective;
   @ViewChild(DataControlDirective, {static: true}) dataControl!: DataControlDirective;
   @ViewChild(DataTableDirective, {static: true}) dataTableDir!: DataTableDirective;

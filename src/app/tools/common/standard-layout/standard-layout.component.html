@@ -7,7 +7,7 @@
                        (tableUserActionObs$)="onTableUserAction($event)"
                        (chartUserActionObs$)="onChartUserAction($event)"></ng-template>
           <ng-template DataTable [tableArgs]="defaultTableArgs" [tableUpdateObs$]="tableUpdateObs$"
-                       [tableType]="tableType"></ng-template>
+                       [tableType]="tableType" (tableUserActionObs$)="onTableUserAction($event)"></ng-template>
         </div>
       </div>
       <div class="row" title="Data Buttons">

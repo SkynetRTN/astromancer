@@ -1,4 +1,4 @@
-import {Component, EventEmitter} from '@angular/core';
+import {Component, EventEmitter, Injector} from '@angular/core';
 import {StandardGraphInfo} from "./standard-graphinfo";
 import {ChartAction} from "../types/actions";
 import {GraphInfoComponent} from "../directives/graph-info.directive";
@@ -12,8 +12,8 @@ export class StandardGraphInfoComponent implements GraphInfoComponent{
   info: StandardGraphInfo;
   chartUserActionObs$: EventEmitter<ChartAction[]>;
 
-  constructor() {
-    this.info = new StandardGraphInfo("Title", "Data", "x", "y");
+  constructor(args: Injector) {
+    this.info = args.get('defaultChartInfo');
     this.chartUserActionObs$ = new EventEmitter<ChartAction[]>();
   }
 

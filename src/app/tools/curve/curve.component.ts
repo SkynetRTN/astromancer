@@ -1,4 +1,8 @@
-import {Component, EventEmitter, OnInit} from '@angular/core';
+import {
+  AfterViewChecked,
+  Component,
+  EventEmitter,
+} from '@angular/core';
 import {StandardGraphInfoComponent} from "../common/standard-graph-info/standard-graph-info.component";
 import {LineFormComponent} from "./line-form/line-form.component";
 import {SimpleTableImplComponent} from "../common/tables/simple-table-impl/simple-table-impl.component";
@@ -6,14 +10,16 @@ import {SimpleTableInitArgs} from "../common/tables/simpleTable";
 import {SimpleDataButtonComponent} from "../common/simple-data-button/simple-data-button.component";
 import {CurveChartComponent} from "./curve-chart/curve-chart.component";
 import {ChartAction, TableAction} from "../common/types/actions";
+import {StandardGraphInfo} from "../common/standard-graph-info/standard-graphinfo";
 
 @Component({
   selector: 'app-curve',
   templateUrl: './curve.component.html',
   styleUrls: ['./curve.component.css'],
 })
-export class CurveComponent implements OnInit {
+export class CurveComponent implements AfterViewChecked {
   graphInfoType: any;
+  defaultChartInfo: StandardGraphInfo;
   dataControlType: any;
   dataButtonType: any;
   tableType: any;
@@ -23,6 +29,7 @@ export class CurveComponent implements OnInit {
 
   constructor() {
     this.graphInfoType = StandardGraphInfoComponent;
+    this.defaultChartInfo = new StandardGraphInfo('Title',  'y1, y2, y3, y4', 'x', 'y');
     this.dataControlType = LineFormComponent;
     this.dataButtonType = SimpleDataButtonComponent;
     this.tableType = SimpleTableImplComponent;
@@ -32,7 +39,7 @@ export class CurveComponent implements OnInit {
 
   }
 
-  ngOnInit(): void {
+  ngAfterViewChecked(): void {
   }
 
   defaultArgs(): SimpleTableInitArgs {
@@ -58,37 +65,56 @@ export class CurveComponent implements OnInit {
   }
 
   tableObs(actions: TableAction[]) {
-    let cmds: TableAction[] = [];
+    let tableCommands: TableAction[] = [];
+    let chartCommands: ChartAction[] = [];
     for (let action of actions){
       if (action.action == "addRow"){
-        cmds.push({action: 'addRow'});
+        tableCommands.push({action: 'addRow'});
       } else if (action.action == "curveNumChange"){
-        cmds = cmds.concat(this.getHiddenCols(action.payload));
+        tableCommands = tableCommands.concat(this.getHiddenColsCmd(action.payload));
+        chartCommands = chartCommands.concat(this.getHiddenDataCmd(action.payload));
       }
     }
-    this.tableUpdateObserver$.emit(cmds);
+    this.tableUpdateObserver$.emit(tableCommands);
+    this.chartUpdateObserver$.emit(chartCommands);
   }
 
   chartObs(actions: ChartAction[]) {
     let cmds: ChartAction[] = [];
     for (let action of actions) {
       if (action.action == "flipY"){
-        cmds.push(action)
+        cmds.push(action);
+      } else if (action.action == "updateLabels"){
+        cmds = cmds.concat(action.payload.getChartLabelCmd(4));
       }
     }
     this.chartUpdateObserver$.emit(cmds);
   }
 
-  private getHiddenCols(numOfVariables: number): TableAction[] {
+  private getHiddenColsCmd(numOfVariables: number): TableAction[] {
     let cmds: TableAction[] = [];
+    const hiddenCols = this.getHiddenCols(numOfVariables);
+    cmds.push({action: 'showCols', payload: [0,1,2,3,4].filter(c => !hiddenCols.includes(c))});
+    cmds.push({action: 'hideCols', payload: hiddenCols});
+    return cmds;
+  }
+
+  private getHiddenDataCmd(numOfVariables: number): ChartAction[] {
+    let cmds: ChartAction[] = [];
+    const hiddenCols = this.getHiddenCols(numOfVariables).map(
+      (e)=> {return e-1});
+    cmds.push({action: 'showDataSet', payload: [0,1,2,3].filter(c => !hiddenCols.includes(c))});
+    cmds.push({action: 'hideDataSet', payload: hiddenCols});
+    return cmds;
+  }
+
+  private getHiddenCols(numOfVariables: number): number[]{
     let hiddenCols: number[] = [];
     const totalVariables: number = 4;
     for (let variable = numOfVariables; variable <= totalVariables - 1; variable++) {
       hiddenCols.push(variable + 1);
     }
-    cmds.push({action: 'showCols', payload: [0,1,2,3,4].filter(c => !hiddenCols.includes(c))});
-    cmds.push({action: 'hideCols', payload: hiddenCols});
-    return cmds;
+    return hiddenCols;
   }
 }
 

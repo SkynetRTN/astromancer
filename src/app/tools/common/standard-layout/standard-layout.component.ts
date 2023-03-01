@@ -5,6 +5,7 @@ import {DataTableDirective} from "../directives/data-table.directive";
 import {SimpleTableInitArgs} from "../tables/simpleTable";
 import {DataButtonDirective} from "../directives/data-button.directive";
 import {ChartAction, TableAction} from "../types/actions";
+import {StandardGraphInfo} from "../standard-graph-info/standard-graphinfo";
 
 @Component({
   selector: 'app-standard-layout',
@@ -13,6 +14,7 @@ import {ChartAction, TableAction} from "../types/actions";
 })
 export class StandardLayoutComponent {
   @Input() graphInfoType!: Type<Component>;
+  @Input() defaultChartInfo!: StandardGraphInfo;
   @Input() dataControlType!: Type<Component>;
   @Input() dataButtonType!: Type<Component>;
   @Input() tableType!: Type<Component>;

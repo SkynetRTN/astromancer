@@ -19,7 +19,7 @@
         <ng-template Graph [chartType]="chartType" [chartUpdateObs$]="chartUpdateObs$"></ng-template>
       </div>
       <div class="row h-15" title="Graph Info">
-        <ng-template GraphInfo [graphInfoType]="graphInfoType" (chartUserActionObs$)="onChartUserAction($event)"></ng-template>
+        <ng-template GraphInfo [graphInfoType]="graphInfoType" [defaultChartInfo]="defaultChartInfo" (chartUserActionObs$)="onChartUserAction($event)"></ng-template>
       </div>
       <div class="row" title="Graph Buttons">1</div>
     </div>

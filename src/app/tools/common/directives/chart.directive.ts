@@ -1,7 +1,7 @@
 import {Component, Directive, EventEmitter, Injector, Input, OnInit, Type, ViewContainerRef} from '@angular/core';
 import {ChartAction} from "../types/actions";
 
-export interface ChartComponent{
+export interface ChartComponent {
   chartUpdateObs$: EventEmitter<ChartAction[]>;
 }
 

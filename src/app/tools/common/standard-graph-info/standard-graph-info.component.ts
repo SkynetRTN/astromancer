@@ -8,7 +8,7 @@ import {GraphInfoComponent} from "../directives/graph-info.directive";
   templateUrl: './standard-graph-info.component.html',
   styleUrls: ['./standard-graph-info.component.css']
 })
-export class StandardGraphInfoComponent implements GraphInfoComponent{
+export class StandardGraphInfoComponent implements GraphInfoComponent {
   info: StandardGraphInfo;
   chartUserActionObs$: EventEmitter<ChartAction[]>;
 

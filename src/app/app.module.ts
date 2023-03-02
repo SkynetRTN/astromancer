@@ -16,7 +16,7 @@ import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 import {StandardLayoutComponent} from './tools/common/standard-layout/standard-layout.component';
 import {StandardGraphInfoComponent} from './tools/common/standard-graph-info/standard-graph-info.component';
 import {MatInputModule} from "@angular/material/input";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {GraphInfoDirective} from "./tools/common/directives/graph-info.directive";
 import {DataControlDirective} from "./tools/common/directives/data-control.directive";
 import {DataButtonDirective} from "./tools/common/directives/data-button.directive";
@@ -27,10 +27,14 @@ import {SimpleTableImplComponent} from './tools/common/tables/simple-table-impl/
 import {DataTableDirective} from './tools/common/directives/data-table.directive';
 import {HotTableModule} from "@handsontable/angular";
 import {registerAllModules} from 'handsontable/registry';
-import { SimpleDataButtonComponent } from './tools/common/simple-data-button/simple-data-button.component';
-import { ChartDirective } from "./tools/common/directives/chart.directive";
-import { NgChartsModule } from 'ng2-charts';
-import { CurveChartComponent } from './tools/curve/curve-chart/curve-chart.component';
+import {SimpleDataButtonComponent} from './tools/common/simple-data-button/simple-data-button.component';
+import {ChartDirective} from "./tools/common/directives/chart.directive";
+import {NgChartsModule} from 'ng2-charts';
+import {CurveChartComponent} from './tools/curve/curve-chart/curve-chart.component';
+import {SimpleGraphButtonComponent} from "./tools/common/simple-graph-button/simple-graph-button.component";
+import {GraphButtonDirective} from "./tools/common/directives/graph-button.directive";
+import {HonorCodePopupComponent} from "./tools/common/charts/honor-code-popup/honor-code-popup.component";
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 
 registerAllModules();
@@ -55,6 +59,9 @@ registerAllModules();
     DataButtonDirective,
     ChartDirective,
     CurveChartComponent,
+    GraphButtonDirective,
+    SimpleGraphButtonComponent,
+    HonorCodePopupComponent,
   ],
   imports: [
     BrowserModule,
@@ -70,6 +77,8 @@ registerAllModules();
     MatButtonToggleModule,
     HotTableModule,
     NgChartsModule,
+    NgbModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

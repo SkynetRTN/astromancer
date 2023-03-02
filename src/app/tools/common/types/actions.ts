@@ -1,4 +1,4 @@
-export type ChartAction= {
+export type ChartAction = {
   action: string;
   payload?: any;
 }

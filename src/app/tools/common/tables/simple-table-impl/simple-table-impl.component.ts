@@ -1,11 +1,4 @@
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  Injector,
-  OnInit
-} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Injector, OnInit} from '@angular/core';
 import {SimpleTable, SimpleTableInitArgs} from "../simpleTable";
 import Handsontable from "handsontable";
 import {HotTableRegisterer} from "@handsontable/angular";
@@ -25,20 +18,21 @@ export class SimpleTableImplComponent implements OnInit, AfterViewInit, SimpleTa
   tableUserActionObs$: EventEmitter<TableAction[]>;
   tableUpdateObs$: EventEmitter<TableAction[]>;
   private hotRegisterer = new HotTableRegisterer();
+
   constructor(args: Injector, private cdref: ChangeDetectorRef) {
     this.defaultArgs = args.get('tableArgs');
     this.tableUpdateObs$ = args.get('tableUpdateObs$');
     this.tableUpdateObs$.subscribe((actions: TableAction[]) => {
-      for (let action of actions){
-        if (action.action == "showCols"){
+      for (let action of actions) {
+        if (action.action == "showCols") {
           this.showCol(action.payload);
-        } else if (action.action == "hideCols"){
+        } else if (action.action == "hideCols") {
           this.hideCol(action.payload);
-        } else if (action.action == "addRow"){
+        } else if (action.action == "addRow") {
           this.addRow();
-        } else if (action.action == "plotData"){
+        } else if (action.action == "plotData") {
           this.onChange();
-        } else if (action.action == "observeTable"){
+        } else if (action.action == "observeTable") {
           this.getTable().addHook("afterChange", this.onChange);
         }
       }
@@ -61,7 +55,7 @@ export class SimpleTableImplComponent implements OnInit, AfterViewInit, SimpleTa
     this.getTable().render();
   }
 
-  onChange = ()=>{
+  onChange = () => {
     this.tableUserActionObs$.emit([{action: "plotData", payload: this.getTable().getSourceData()}] as ChartAction[]);
   }
 

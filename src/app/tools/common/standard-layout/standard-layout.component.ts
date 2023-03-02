@@ -22,6 +22,7 @@ export class StandardLayoutComponent {
   @Input() tableUpdateObs$: EventEmitter<TableAction[]>;
   @Input() defaultTableArgs!: SimpleTableInitArgs;
   @Input() chartType!: Type<Component>;
+  @Input() graphButtonType!: Type<Component>;
   @Output() tableUserActionObs$: EventEmitter<TableAction[]>;
   @Output() chartUserActionObs$: EventEmitter<ChartAction[]>;
 

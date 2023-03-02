@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { SimpleDataButtonComponent } from './simple-data-button.component';
+import {SimpleDataButtonComponent} from './simple-data-button.component';
 
 describe('SimpleDataButtonComponent', () => {
   let component: SimpleDataButtonComponent;
@@ -8,9 +8,9 @@ describe('SimpleDataButtonComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SimpleDataButtonComponent ]
+      declarations: [SimpleDataButtonComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

@@ -12,9 +12,10 @@ import {
 import {SimpleTableInitArgs} from "../tables/simpleTable";
 import {TableAction} from "../types/actions";
 
-export interface DataTableComponent{
+export interface DataTableComponent {
   tableUserActionObs$: EventEmitter<TableAction[]>;
 }
+
 @Directive({
   selector: '[DataTable]'
 })

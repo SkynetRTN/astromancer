@@ -33,7 +33,7 @@ export class LineFormComponent implements DataControlComponent {
     this.tableUserActionObs$.emit([tableAction]);
   };
 
-  onMagnitude(value: any){
+  onMagnitude(value: any) {
     const tableAction: TableAction = {action: 'flipY', payload: value};
     this.chartUserActionObs$.emit([tableAction]);
   }

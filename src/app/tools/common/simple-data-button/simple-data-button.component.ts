@@ -7,8 +7,9 @@ import {DataButtonComponent} from "../directives/data-button.directive";
   templateUrl: './simple-data-button.component.html',
   styleUrls: ['./simple-data-button.component.css']
 })
-export class SimpleDataButtonComponent implements OnInit, DataButtonComponent{
+export class SimpleDataButtonComponent implements OnInit, DataButtonComponent {
   @Output() tableUserActionObs$: EventEmitter<TableAction[]>;
+
   constructor() {
     this.tableUserActionObs$ = new EventEmitter<TableAction[]>();
   }
@@ -16,7 +17,7 @@ export class SimpleDataButtonComponent implements OnInit, DataButtonComponent{
   ngOnInit(): void {
   }
 
-  tableAddRow(){
+  tableAddRow() {
     this.tableUserActionObs$.emit([{action: "addRow"}]);
   }
 

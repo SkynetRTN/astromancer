@@ -1,8 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  EventEmitter,
-} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter,} from '@angular/core';
 import {StandardGraphInfoComponent} from "../common/standard-graph-info/standard-graph-info.component";
 import {LineFormComponent} from "./line-form/line-form.component";
 import {SimpleTableImplComponent} from "../common/tables/simple-table-impl/simple-table-impl.component";
@@ -11,6 +7,7 @@ import {SimpleDataButtonComponent} from "../common/simple-data-button/simple-dat
 import {CurveChartComponent} from "./curve-chart/curve-chart.component";
 import {ChartAction, TableAction} from "../common/types/actions";
 import {StandardGraphInfo} from "../common/standard-graph-info/standard-graphinfo";
+import {SimpleGraphButtonComponent} from "../common/simple-graph-button/simple-graph-button.component";
 
 @Component({
   selector: 'app-curve',
@@ -26,17 +23,18 @@ export class CurveComponent implements AfterViewInit {
   chartType: any;
   tableUpdateObserver$: EventEmitter<TableAction[]>;
   chartUpdateObserver$: EventEmitter<ChartAction[]>;
+  graphButtonType: any;
 
   constructor() {
     this.graphInfoType = StandardGraphInfoComponent;
-    this.defaultChartInfo = new StandardGraphInfo('Title',  'y1, y2, y3, y4', 'x', 'y');
+    this.defaultChartInfo = new StandardGraphInfo('Title', 'y1, y2, y3, y4', 'x', 'y');
     this.dataControlType = LineFormComponent;
     this.dataButtonType = SimpleDataButtonComponent;
     this.tableType = SimpleTableImplComponent;
     this.chartType = CurveChartComponent;
+    this.graphButtonType = SimpleGraphButtonComponent;
     this.tableUpdateObserver$ = new EventEmitter<TableAction[]>();
     this.chartUpdateObserver$ = new EventEmitter<ChartAction[]>();
-
   }
 
   ngAfterViewInit(): void {
@@ -69,20 +67,20 @@ export class CurveComponent implements AfterViewInit {
   onTableUserObs(actions: TableAction[]) {
     let tableCommands: TableAction[] = [];
     let chartCommands: ChartAction[] = [];
-    for (let action of actions){
-      if (action.action == "addRow"){
+    for (let action of actions) {
+      if (action.action == "addRow") {
         tableCommands.push({action: 'addRow'});
-      } else if (action.action == "curveNumChange"){
+      } else if (action.action == "curveNumChange") {
         tableCommands = tableCommands.concat(this.getHiddenColsCmd(action.payload));
         chartCommands = chartCommands.concat(this.getHiddenDataCmd(action.payload));
-      } else if (action.action == "plotData"){
+      } else if (action.action == "plotData") {
         chartCommands.push(action);
       }
     }
-    if (tableCommands.length>0){
+    if (tableCommands.length > 0) {
       this.tableUpdateObserver$.emit(tableCommands);
     }
-    if (chartCommands.length>0){
+    if (chartCommands.length > 0) {
       this.chartUpdateObserver$.emit(chartCommands);
     }
   }
@@ -90,10 +88,12 @@ export class CurveComponent implements AfterViewInit {
   onChartUserObs(actions: ChartAction[]) {
     let cmds: ChartAction[] = [];
     for (let action of actions) {
-      if (action.action == "flipY"){
+      if (action.action == "flipY") {
         cmds.push(action);
-      } else if (action.action == "updateLabels"){
+      } else if (action.action == "updateLabels") {
         cmds = cmds.concat(action.payload.getChartLabelCmd(4));
+      } else if (action.action == "saveGraph") {
+        cmds.push(action);
       }
     }
     this.chartUpdateObserver$.emit(cmds);
@@ -102,7 +102,7 @@ export class CurveComponent implements AfterViewInit {
   private getHiddenColsCmd(numOfVariables: number): TableAction[] {
     let cmds: TableAction[] = [];
     const hiddenCols = this.getHiddenCols(numOfVariables);
-    cmds.push({action: 'showCols', payload: [0,1,2,3,4].filter(c => !hiddenCols.includes(c))});
+    cmds.push({action: 'showCols', payload: [0, 1, 2, 3, 4].filter(c => !hiddenCols.includes(c))});
     cmds.push({action: 'hideCols', payload: hiddenCols});
     return cmds;
   }
@@ -110,13 +110,15 @@ export class CurveComponent implements AfterViewInit {
   private getHiddenDataCmd(numOfVariables: number): ChartAction[] {
     let cmds: ChartAction[] = [];
     const hiddenCols = this.getHiddenCols(numOfVariables).map(
-      (e)=> {return e-1});
-    cmds.push({action: 'showDataSet', payload: [0,1,2,3].filter(c => !hiddenCols.includes(c))});
+      (e) => {
+        return e - 1
+      });
+    cmds.push({action: 'showDataSet', payload: [0, 1, 2, 3].filter(c => !hiddenCols.includes(c))});
     cmds.push({action: 'hideDataSet', payload: hiddenCols});
     return cmds;
   }
 
-  private getHiddenCols(numOfVariables: number): number[]{
+  private getHiddenCols(numOfVariables: number): number[] {
     let hiddenCols: number[] = [];
     const totalVariables: number = 4;
     for (let variable = numOfVariables; variable <= totalVariables - 1; variable++) {

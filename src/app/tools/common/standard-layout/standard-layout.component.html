@@ -3,15 +3,16 @@
     <div class="col-4">
       <div class="row h-80" title="Data Ctrl/Table">
         <div class="container h-80">
-          <ng-template DataControl [controlType]="dataControlType"
-                       (tableUserActionObs$)="onTableUserAction($event)"
-                       (chartUserActionObs$)="onChartUserAction($event)"></ng-template>
-          <ng-template DataTable [tableArgs]="defaultTableArgs" [tableUpdateObs$]="tableUpdateObs$"
-                       [tableType]="tableType" (tableUserActionObs$)="onTableUserAction($event)"></ng-template>
+          <ng-template (chartUserActionObs$)="onChartUserAction($event)" (tableUserActionObs$)="onTableUserAction($event)"
+                       DataControl
+                       [controlType]="dataControlType"></ng-template>
+          <ng-template (tableUserActionObs$)="onTableUserAction($event)" DataTable [tableArgs]="defaultTableArgs"
+                       [tableType]="tableType" [tableUpdateObs$]="tableUpdateObs$"></ng-template>
         </div>
       </div>
       <div class="row" title="Data Buttons">
-        <ng-template DataButton [buttonType]="dataButtonType" (tableUserActionObs$)="onTableUserAction($event)"></ng-template>
+        <ng-template (tableUserActionObs$)="onTableUserAction($event)" DataButton
+                     [tableButtonType]="dataButtonType"></ng-template>
       </div>
     </div>
     <div class="col-8 h-100">
@@ -19,9 +20,13 @@
         <ng-template Graph [chartType]="chartType" [chartUpdateObs$]="chartUpdateObs$"></ng-template>
       </div>
       <div class="row h-15" title="Graph Info">
-        <ng-template GraphInfo [graphInfoType]="graphInfoType" [defaultChartInfo]="defaultChartInfo" (chartUserActionObs$)="onChartUserAction($event)"></ng-template>
+        <ng-template (chartUserActionObs$)="onChartUserAction($event)" GraphInfo [defaultChartInfo]="defaultChartInfo"
+                     [graphInfoType]="graphInfoType"></ng-template>
       </div>
-      <div class="row" title="Graph Buttons">1</div>
+      <div class="row" title="Graph Buttons">
+        <ng-template (chartUserActionObs$)="onChartUserAction($event)" GraphButton
+                     [graphButtonType]="graphButtonType"></ng-template>
+      </div>
     </div>
   </div>
 </div>

@@ -9,6 +9,7 @@ export class StandardGraphInfo {
     public yAxis: string,
   ) {
   }
+
   getChartLabelCmd(maxYs: number): ChartAction[] {
     let cmds: ChartAction[] = [];
     cmds.push({action: "setTitle", payload: this.title});

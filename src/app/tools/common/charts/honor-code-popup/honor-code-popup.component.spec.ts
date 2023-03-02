@@ -1,18 +1,18 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {CurveChartComponent} from './curve-chart.component';
+import {HonorCodePopupComponent} from './honor-code-popup.component';
 
-describe('CurveChartComponent', () => {
-  let component: CurveChartComponent;
-  let fixture: ComponentFixture<CurveChartComponent>;
+describe('HonorCodePopupComponent', () => {
+  let component: HonorCodePopupComponent;
+  let fixture: ComponentFixture<HonorCodePopupComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CurveChartComponent]
+      declarations: [HonorCodePopupComponent]
     })
       .compileComponents();
 
-    fixture = TestBed.createComponent(CurveChartComponent);
+    fixture = TestBed.createComponent(HonorCodePopupComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

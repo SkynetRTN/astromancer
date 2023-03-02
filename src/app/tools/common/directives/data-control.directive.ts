@@ -1,7 +1,7 @@
 import {Component, Directive, EventEmitter, Input, OnInit, Output, Type, ViewContainerRef} from '@angular/core';
 import {ChartAction, TableAction} from "../types/actions";
 
-export interface DataControlComponent{
+export interface DataControlComponent {
   tableUserActionObs$: EventEmitter<TableAction[]>;
   chartUserActionObs$: EventEmitter<ChartAction[]>;
 }

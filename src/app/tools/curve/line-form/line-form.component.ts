@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Output} from '@angular/core';
-import {ChartAction, TableAction} from "../../common/types/actions";
-import {DataControlComponent} from "../../common/directives/data-control.directive";
+import {ChartAction, TableAction} from "../../shared/types/actions";
+import {DataControlComponent} from "../../shared/directives/data-control.directive";
 
 interface CurveCounts {
   value: number;

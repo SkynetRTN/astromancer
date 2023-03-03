@@ -1,11 +1,11 @@
 import {AfterViewInit, Component, EventEmitter, Injector, OnInit} from '@angular/core';
 import {Chart, LinearScaleOptions} from "chart.js";
 import {ChartConfiguration, ChartOptions} from "chart.js/dist/types";
-import {updateLine} from "../../common/charts/utils";
-import {ChartComponent} from "../../common/directives/chart.directive";
-import {ChartAction} from "../../common/types/actions";
-import {ChartService} from "../../common/charts/chart.service";
-import {HonorCodePopupService} from "../../common/charts/honor-code-popup/honor-code-popup.service";
+import {updateLine} from "../../shared/charts/utils";
+import {ChartComponent} from "../../shared/directives/chart.directive";
+import {ChartAction} from "../../shared/types/actions";
+import {ChartService} from "../../shared/charts/chart.service";
+import {HonorCodePopupService} from "../../shared/charts/honor-code-popup/honor-code-popup.service";
 
 
 @Component({

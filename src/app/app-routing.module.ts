@@ -1,9 +1,9 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {CurveComponent} from "./tools/curve/curve.component";
-import {HomeComponent} from "./home/home.component";
-import {AboutComponent} from "./about/about.component";
-import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
+import {HomeComponent} from "./shared/home/home.component";
+import {AboutComponent} from "./shared/about/about.component";
+import {PageNotFoundComponent} from "./shared/page-not-found/page-not-found.component";
 
 
 const routes: Routes = [

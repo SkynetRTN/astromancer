@@ -1,13 +1,13 @@
 import {AfterViewInit, Component, EventEmitter,} from '@angular/core';
-import {StandardGraphInfoComponent} from "../common/standard-graph-info/standard-graph-info.component";
+import {StandardGraphInfoComponent} from "../shared/standard-graph-info/standard-graph-info.component";
 import {LineFormComponent} from "./line-form/line-form.component";
-import {SimpleTableImplComponent} from "../common/tables/simple-table-impl/simple-table-impl.component";
-import {SimpleTableInitArgs} from "../common/tables/simpleTable";
-import {SimpleDataButtonComponent} from "../common/simple-data-button/simple-data-button.component";
+import {SimpleTableImplComponent} from "../shared/tables/simple-table-impl/simple-table-impl.component";
+import {SimpleTableInitArgs} from "../shared/tables/simpleTable";
+import {SimpleDataButtonComponent} from "../shared/simple-data-button/simple-data-button.component";
 import {CurveChartComponent} from "./curve-chart/curve-chart.component";
-import {ChartAction, TableAction} from "../common/types/actions";
-import {StandardGraphInfo} from "../common/standard-graph-info/standard-graphinfo";
-import {SimpleGraphButtonComponent} from "../common/simple-graph-button/simple-graph-button.component";
+import {ChartAction, TableAction} from "../shared/types/actions";
+import {StandardGraphInfo} from "../shared/standard-graph-info/standard-graphinfo";
+import {SimpleGraphButtonComponent} from "../shared/simple-graph-button/simple-graph-button.component";
 
 @Component({
   selector: 'app-curve',

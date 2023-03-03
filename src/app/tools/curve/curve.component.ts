@@ -27,7 +27,7 @@ export class CurveComponent implements AfterViewInit {
 
   constructor() {
     this.graphInfoType = StandardGraphInfoComponent;
-    this.defaultChartInfo = new StandardGraphInfo('Title', 'y1, y2, y3, y4', 'x', 'y');
+    this.defaultChartInfo = new StandardGraphInfo($localize`:title:Title`, $localize`y1, y2, y3, y4`, 'x', 'y');
     this.dataControlType = LineFormComponent;
     this.dataButtonType = SimpleDataButtonComponent;
     this.tableType = SimpleTableImplComponent;

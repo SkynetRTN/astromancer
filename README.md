@@ -17,5 +17,10 @@ To build for production, run
 npm run build
 ```
 
+To extract the source language file, run
+```bash
+ng extract-i18n --output-path src/locale
+```
+
 ----
 Contact author: [Reed Fu](mailto:rfugithub@outlook.com)

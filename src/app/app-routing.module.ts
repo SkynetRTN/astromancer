@@ -7,15 +7,15 @@ import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
 
 
 const routes: Routes = [
-  {path: "home", component: HomeComponent, data: {title: getToolSiteName("Home")}},
-  {path: "about", component: AboutComponent, data: {title: getToolSiteName("About")}},
-  {path: "curve", component: CurveComponent, data: {title: getToolSiteName("Curve")}},
+  {path: "home", component: HomeComponent, data: {title: getToolSiteName( $localize`:home:Home`)}},
+  {path: "about", component: AboutComponent, data: {title: getToolSiteName($localize`:about:About`)}},
+  {path: "curve", component: CurveComponent, data: {title: getToolSiteName( $localize`:curve:Curve`)}},
   {path: '', redirectTo: '/home', pathMatch: 'full'},
-  {path: '**', component: PageNotFoundComponent}
+  {path: '**', component: PageNotFoundComponent, data: {title: $localize`:page-not-found:Page Not Found`}}
 ]
 
 function getToolSiteName(tool: string): string {
-  return "Skynet Plotting Neo " + tool;
+  return $localize `:site-name:Skynet Plotting Neo` + tool;
 }
 
 @NgModule({

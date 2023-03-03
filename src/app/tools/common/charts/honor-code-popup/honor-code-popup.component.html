@@ -1,20 +1,20 @@
 <div class="modal-header">
-  <h2>Honor Code Pledge</h2>
-  <button (click)="dismiss()" aria-label="Close" mat-icon-button>
+  <h2 i18n>Honor Code Pledge</h2>
+  <button i18n-aria-label="close" (click)="dismiss()" aria-label="Close" mat-icon-button>
     <mat-icon>close</mat-icon>
   </button>
 </div>
 <form (ngSubmit)="submit(signature.value)" [formGroup]="form">
   <div class="modal-body">
-    <p>REQUIRED FOR RECEIVING CREDIT</p>
+    <p i18n>REQUIRED FOR RECEIVING CREDIT</p>
     <mat-form-field>
-      <mat-label>Sign your name to attest to the fact that you made this graph yourself:</mat-label>
-      <input #signature formControlName="signature" matInput maxlength="256" placeholder="Your signature here..."
-             required>
-      <mat-hint align="end">Click to start typing</mat-hint>
+      <mat-label i18n>Sign your name to attest to the fact that you made this graph yourself:</mat-label>
+      <input #signature formControlName="signature" matInput maxlength="256"
+             i18n-placeholder placeholder="Your signature here..." required>
+      <mat-hint i18n align="end">Click to start typing</mat-hint>
     </mat-form-field>
   </div>
   <div class="modal-footer" style="flex-direction: row-reverse; justify-content: space-between">
-    <button color="accent" mat-flat-button type="submit">Submit</button>
+    <button i18n color="accent" mat-flat-button type="submit">Submit</button>
   </div>
 </form>

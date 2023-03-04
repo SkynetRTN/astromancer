@@ -1,21 +1,34 @@
-import {AfterViewInit, Component, EventEmitter, Injector, OnInit} from '@angular/core';
-import {Chart, LinearScaleOptions} from "chart.js";
-import {ChartConfiguration, ChartOptions} from "chart.js/dist/types";
-import {updateLine} from "../../shared/charts/utils";
-import {ChartComponent} from "../../shared/directives/chart.directive";
-import {ChartAction} from "../../shared/types/actions";
-import {ChartService} from "../../shared/charts/chart.service";
-import {HonorCodePopupService} from "../../shared/charts/honor-code-popup/honor-code-popup.service";
+import { AfterViewInit, Component, EventEmitter, Injector, OnInit } from '@angular/core';
+import { Chart, LinearScaleOptions } from "chart.js";
+import { ChartConfiguration, ChartOptions } from "chart.js/dist/types";
+import { updateLine } from "../../shared/charts/utils";
+import { ChartComponent } from "../../shared/directives/chart.directive";
+import { ChartAction } from "../../shared/types/actions";
+import { ChartService } from "../../shared/charts/chart.service";
+import { HonorCodePopupService } from "../../shared/charts/honor-code-popup/honor-code-popup.service";
 
-
+/**
+ * Chart for the curve graphing tools.
+ * 
+ * Implements the {@link ChartComponent} interface.
+ */
 @Component({
   selector: 'app-curve-chart',
   templateUrl: './curve-chart.component.html',
   styleUrls: ['./curve-chart.component.css'],
 })
-export class CurveChartComponent implements OnInit, AfterViewInit, ChartComponent {
+export class CurveChartComponent implements AfterViewInit, ChartComponent {
+  /**
+   * Observer that subsrcibes to interface command to execute actions on the chart.
+   */
   chartUpdateObs$: EventEmitter<ChartAction[]>;
+  /**
+   * The Chart.js Object
+   */
   lineChart!: Chart;
+  /**
+   * Chart.js object data configuration
+   */
   lineChartData: ChartConfiguration<'line'>['data'] = {
     datasets: [
       {
@@ -49,18 +62,21 @@ export class CurveChartComponent implements OnInit, AfterViewInit, ChartComponen
       }
     ]
   };
+  /**
+   * Chart.js object options configuration
+   */
   lineChartOptions: ChartOptions<'line'> = {
     responsive: true,
     maintainAspectRatio: false,
-    hover: {mode: 'nearest'},
+    hover: { mode: 'nearest' },
     scales: {
       x: {
-        title: {text: 'x', display: true},
+        title: { text: 'x', display: true },
         type: 'linear',
         position: 'bottom',
       },
       y: {
-        title: {text: 'y', display: true},
+        title: { text: 'y', display: true },
         reverse: false,
       }
     },
@@ -71,7 +87,12 @@ export class CurveChartComponent implements OnInit, AfterViewInit, ChartComponen
       }
     }
   };
-
+  /**
+   * 
+   * @param args Injector from parent component
+   * @param chartService chart service for saving graph etc.
+   * @param honorCodePopupService service that prompts user to sign their name.
+   */
   constructor(args: Injector, private chartService: ChartService, private honorCodePopupService: HonorCodePopupService) {
     this.chartUpdateObs$ = args.get('chartUpdateObs$');
     this.chartUpdateObs$.subscribe((actions: ChartAction[]) => {
@@ -108,13 +129,17 @@ export class CurveChartComponent implements OnInit, AfterViewInit, ChartComponen
     });
   }
 
-  ngOnInit(): void {
-  }
-
+  /**
+   * set up {@link lineChart} after it's initialized
+   */
   ngAfterViewInit(): void {
     this.lineChart = Chart.getChart("chart") as Chart;
   }
 
+  /**
+   * reverse the y-axis scale
+   * @param isReversed if the y-axis should be reversed
+   */
   setYAxisReverse(isReversed: boolean): void {
     if (this.lineChart.options.scales && this.lineChart.options.scales['y']) {
       this.lineChart.options.scales['y'].reverse = isReversed;

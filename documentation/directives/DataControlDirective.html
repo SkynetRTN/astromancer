@@ -61,6 +61,14 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Directive for control forms of data table</p>
+<p>Decalred in <a href="../modules/DataButtonDirectiveModule.html">DataButtonDirectiveModule</a></p>
+
+            </p>
 
 
             <p class="comment">
@@ -155,7 +163,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="25" class="link-to-prism">src/app/tools/shared/directives/data-control.directive.ts:25</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="39" class="link-to-prism">src/app/tools/shared/directives/data-control.directive.ts:39</a></div>
                             </td>
                         </tr>
 
@@ -211,7 +219,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-2" colspan="2">
-                                    <div class="io-line">Defined in <a href="" data-line="23" class="link-to-prism">src/app/tools/shared/directives/data-control.directive.ts:23</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="37" class="link-to-prism">src/app/tools/shared/directives/data-control.directive.ts:37</a></div>
                             </td>
                         </tr>
             </tbody>
@@ -235,7 +243,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-2" colspan="2">
-                                    <div class="io-line">Defined in <a href="" data-line="25" class="link-to-prism">src/app/tools/shared/directives/data-control.directive.ts:25</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="39" class="link-to-prism">src/app/tools/shared/directives/data-control.directive.ts:39</a></div>
                             </td>
                         </tr>
             </tbody>
@@ -256,7 +264,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-2" colspan="2">
-                                    <div class="io-line">Defined in <a href="" data-line="24" class="link-to-prism">src/app/tools/shared/directives/data-control.directive.ts:24</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="38" class="link-to-prism">src/app/tools/shared/directives/data-control.directive.ts:38</a></div>
                             </td>
                         </tr>
             </tbody>
@@ -289,8 +297,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="32"
-                            class="link-to-prism">src/app/tools/shared/directives/data-control.directive.ts:32</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="46"
+                            class="link-to-prism">src/app/tools/shared/directives/data-control.directive.ts:46</a></div>
                 </td>
             </tr>
 
@@ -324,13 +332,27 @@
   Type,
   ViewContainerRef
 } from &#x27;@angular/core&#x27;;
-import {ChartAction, TableAction} from &quot;../types/actions&quot;;
+import { ChartAction, TableAction } from &quot;../types/actions&quot;;
 
+/**
+ * Interface for components that can be created by {@link DataButtonDirective}.
+ */
 export interface DataControlComponent {
+  /**
+   * Observable that detects when user is inputing actions that is related to the data table
+   */
   tableUserActionObs$: EventEmitter&lt;TableAction[]&gt;;
+  /**
+   * Observable that detects when user is inputing actions that is related to the chart
+   */
   chartUserActionObs$: EventEmitter&lt;ChartAction[]&gt;;
 }
 
+/**
+ * Directive for control forms of data table
+ * 
+ * Decalred in {@link DataButtonDirectiveModule}
+ */
 @Directive({
   selector: &#x27;[data-control-directive]&#x27;,
 })
@@ -352,6 +374,9 @@ export class DataControlDirective implements OnInit {
 
 }
 
+/**
+ * Encapsulation for {@link DataControlDirective}
+ */
 @NgModule({
   declarations: [DataControlDirective],
   exports: [DataControlDirective]

@@ -169,6 +169,13 @@
 
 
 
+        <p class="comment">
+            <h3>Description</h3>
+        </p>
+        <p class="comment">
+            <p>Encapsulate <a href="../components/ToolsNavbarComponent.html">ToolsNavbarComponent</a></p>
+
+        </p>
 
 
         <div class="container-fluid module">
@@ -214,17 +221,15 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {Component, NgModule, ViewChild} from &#x27;@angular/core&#x27;;
-import {MatSidenav, MatSidenavModule} from &#x27;@angular/material/sidenav&#x27;;
-import {MenubarModule} from &quot;../menubar/menubar.component&quot;;
-import {AppRoutingModule} from &quot;../../app-routing.module&quot;;
-import {MatButtonModule} from &quot;@angular/material/button&quot;;
-import {MatIconModule} from &quot;@angular/material/icon&quot;;
-import {CurveModule} from &quot;../../tools/curve/curve.module&quot;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, NgModule, ViewChild } from &#x27;@angular/core&#x27;;
+import { MatSidenav, MatSidenavModule } from &#x27;@angular/material/sidenav&#x27;;
+import { MenubarModule } from &quot;../menubar/menubar.component&quot;;
+import { AppRoutingModule } from &quot;../../app-routing.module&quot;;
+import { MatButtonModule } from &quot;@angular/material/button&quot;;
+import { MatIconModule } from &quot;@angular/material/icon&quot;;
+import { CurveModule } from &quot;../../tools/curve/curve.module&quot;;
 
 /**
- * Side Nav Component
- *
  * Sidenav with custom escape and backdrop click behavior
  *
  * Contains menubar and router outlet to plotting tools
@@ -236,18 +241,30 @@ import {CurveModule} from &quot;../../tools/curve/curve.module&quot;;
   styleUrls: [&#x27;tools-navbar.component.css&#x27;],
 })
 export class ToolsNavbarComponent {
+  /**
+   * Navigation bar for selecting tools
+   */
   @ViewChild(&#x27;toolsnav&#x27;) toolsnav!: MatSidenav;
 
+  /**
+   * open the navigation bar {@link toolsnav}
+   */
   open() {
     this.toolsnav.open();
   }
 
+  /**
+   * open the navigation bar {@link toolsnav}
+   */
   close() {
     this.toolsnav.close();
   }
 
 }
 
+/**
+ * Encapsulate {@link ToolsNavbarComponent}
+ */
 @NgModule({
   imports: [
     MenubarModule,

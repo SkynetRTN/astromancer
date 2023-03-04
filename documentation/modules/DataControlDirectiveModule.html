@@ -129,6 +129,13 @@
 
 
 
+        <p class="comment">
+            <h3>Description</h3>
+        </p>
+        <p class="comment">
+            <p>Encapsulation for <a href="../directives/DataControlDirective.html">DataControlDirective</a></p>
+
+        </p>
 
 
         <div class="container-fluid module">
@@ -170,13 +177,27 @@
   Type,
   ViewContainerRef
 } from &#x27;@angular/core&#x27;;
-import {ChartAction, TableAction} from &quot;../types/actions&quot;;
+import { ChartAction, TableAction } from &quot;../types/actions&quot;;
 
+/**
+ * Interface for components that can be created by {@link DataButtonDirective}.
+ */
 export interface DataControlComponent {
+  /**
+   * Observable that detects when user is inputing actions that is related to the data table
+   */
   tableUserActionObs$: EventEmitter&lt;TableAction[]&gt;;
+  /**
+   * Observable that detects when user is inputing actions that is related to the chart
+   */
   chartUserActionObs$: EventEmitter&lt;ChartAction[]&gt;;
 }
 
+/**
+ * Directive for control forms of data table
+ * 
+ * Decalred in {@link DataButtonDirectiveModule}
+ */
 @Directive({
   selector: &#x27;[data-control-directive]&#x27;,
 })
@@ -198,6 +219,9 @@ export class DataControlDirective implements OnInit {
 
 }
 
+/**
+ * Encapsulation for {@link DataControlDirective}
+ */
 @NgModule({
   declarations: [DataControlDirective],
   exports: [DataControlDirective]

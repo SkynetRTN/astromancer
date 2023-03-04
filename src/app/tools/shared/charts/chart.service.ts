@@ -1,17 +1,22 @@
-import {Injectable} from '@angular/core';
-import {Chart} from "chart.js/dist/types";
-import {addEXIFToImage, dataURLtoBlob, formatTime, getDateString} from "./utils";
-import {saveAs} from 'file-saver';
+import { Injectable } from '@angular/core';
+import { Chart } from "chart.js/dist/types";
+import { addEXIFToImage, dataURLtoBlob, formatTime, getDateString } from "./utils";
+import { saveAs } from 'file-saver';
 
+/**
+ * Services for charts to perform
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class ChartService {
 
-  constructor() {
-  }
-
-  saveImage(chart: Chart, signature: string) {
+  /**
+   * Save image to user's device as jpg.
+   * @param chart The chart.js that needs to be saved
+   * @param signature User's signature
+   */
+  saveImage(chart: Chart, signature: string): void {
     const destCanvas = document.createElement('canvas');
     const canvas = chart.canvas;
     destCanvas.width = canvas.width;

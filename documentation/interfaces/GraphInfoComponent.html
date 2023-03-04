@@ -69,6 +69,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Interface for components that can be created by <a href="../directives/GraphInfoDirective.html">GraphInfoDirective</a></p>
+
+            </p>
 
 
         <section>
@@ -131,6 +138,12 @@
 
 
 
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-description"><p>Observable that detects when user is inputing actions that is related to the chart</p>
+</div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
             </section>
@@ -150,14 +163,25 @@
   Type,
   ViewContainerRef
 } from &#x27;@angular/core&#x27;;
-import {ChartAction} from &quot;../types/actions&quot;;
-import {DataControlComponent} from &quot;./data-control.directive&quot;;
-import {StandardGraphInfo} from &quot;../standard-graph-info/standard-graphinfo&quot;;
+import { ChartAction } from &quot;../types/actions&quot;;
+import { DataControlComponent } from &quot;./data-control.directive&quot;;
+import { StandardGraphInfo } from &quot;../standard-graph-info/standard-graphinfo&quot;;
 
+/**
+ * Interface for components that can be created by {@link GraphInfoDirective}
+ */
 export interface GraphInfoComponent {
+  /**
+   * Observable that detects when user is inputing actions that is related to the chart
+   */
   chartUserActionObs$: EventEmitter&lt;ChartAction[]&gt;;
 }
 
+/**
+ * Directive contains a form for graph information.
+ * 
+ * Declared in {@link GraphInfoDirectiveModule}
+ */
 @Directive({
   selector: &#x27;[graph-info-directive]&#x27;,
 })
@@ -172,13 +196,16 @@ export class GraphInfoDirective implements OnInit {
 
   ngOnInit(): void {
     const graphInfoInjector: Injector &#x3D; Injector.create({
-      providers: [{provide: &#x27;defaultChartInfo&#x27;, useValue: this.defaultChartInfo}]
+      providers: [{ provide: &#x27;defaultChartInfo&#x27;, useValue: this.defaultChartInfo }]
     });
-    const component &#x3D; this.container.createComponent(this.graphInfoType, {injector: graphInfoInjector});
+    const component &#x3D; this.container.createComponent(this.graphInfoType, { injector: graphInfoInjector });
     (component.instance as DataControlComponent).chartUserActionObs$.subscribe(this.chartUserActionObs$);
   }
 }
 
+/**
+ * Encapsulation for {@link GraphInfoDirective}
+ */
 @NgModule({
   declarations: [GraphInfoDirective],
   exports: [GraphInfoDirective],

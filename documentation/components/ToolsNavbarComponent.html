@@ -72,8 +72,7 @@
         <h3>Description</h3>
     </p>
     <p class="comment">
-        <p>Side Nav Component</p>
-<p>Sidenav with custom escape and backdrop click behavior</p>
+        <p>Sidenav with custom escape and backdrop click behavior</p>
 <p>Contains menubar and router outlet to plotting tools</p>
 
     </p>
@@ -199,14 +198,16 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="29"
-                            class="link-to-prism">src/app/shared/tools-navbar/tools-navbar.component.ts:29</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="36"
+                            class="link-to-prism">src/app/shared/tools-navbar/tools-navbar.component.ts:36</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>open the navigation bar <a href="toolsnav">toolsnav</a></p>
+</div>
 
                     <div class="io-description">
                         <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
@@ -236,14 +237,16 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="25"
-                            class="link-to-prism">src/app/shared/tools-navbar/tools-navbar.component.ts:25</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="29"
+                            class="link-to-prism">src/app/shared/tools-navbar/tools-navbar.component.ts:29</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>open the navigation bar <a href="toolsnav">toolsnav</a></p>
+</div>
 
                     <div class="io-description">
                         <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
@@ -287,10 +290,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="23" class="link-to-prism">src/app/shared/tools-navbar/tools-navbar.component.ts:23</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="24" class="link-to-prism">src/app/shared/tools-navbar/tools-navbar.component.ts:24</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Navigation bar for selecting tools</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -300,17 +309,15 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {Component, NgModule, ViewChild} from &#x27;@angular/core&#x27;;
-import {MatSidenav, MatSidenavModule} from &#x27;@angular/material/sidenav&#x27;;
-import {MenubarModule} from &quot;../menubar/menubar.component&quot;;
-import {AppRoutingModule} from &quot;../../app-routing.module&quot;;
-import {MatButtonModule} from &quot;@angular/material/button&quot;;
-import {MatIconModule} from &quot;@angular/material/icon&quot;;
-import {CurveModule} from &quot;../../tools/curve/curve.module&quot;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, NgModule, ViewChild } from &#x27;@angular/core&#x27;;
+import { MatSidenav, MatSidenavModule } from &#x27;@angular/material/sidenav&#x27;;
+import { MenubarModule } from &quot;../menubar/menubar.component&quot;;
+import { AppRoutingModule } from &quot;../../app-routing.module&quot;;
+import { MatButtonModule } from &quot;@angular/material/button&quot;;
+import { MatIconModule } from &quot;@angular/material/icon&quot;;
+import { CurveModule } from &quot;../../tools/curve/curve.module&quot;;
 
 /**
- * Side Nav Component
- *
  * Sidenav with custom escape and backdrop click behavior
  *
  * Contains menubar and router outlet to plotting tools
@@ -322,18 +329,30 @@ import {CurveModule} from &quot;../../tools/curve/curve.module&quot;;
   styleUrls: [&#x27;tools-navbar.component.css&#x27;],
 })
 export class ToolsNavbarComponent {
+  /**
+   * Navigation bar for selecting tools
+   */
   @ViewChild(&#x27;toolsnav&#x27;) toolsnav!: MatSidenav;
 
+  /**
+   * open the navigation bar {@link toolsnav}
+   */
   open() {
     this.toolsnav.open();
   }
 
+  /**
+   * open the navigation bar {@link toolsnav}
+   */
   close() {
     this.toolsnav.close();
   }
 
 }
 
+/**
+ * Encapsulate {@link ToolsNavbarComponent}
+ */
 @NgModule({
   imports: [
     MenubarModule,

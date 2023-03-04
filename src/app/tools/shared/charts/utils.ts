@@ -1,4 +1,4 @@
-import {Chart} from "chart.js/dist/types";
+import { Chart } from "chart.js/dist/types";
 import * as piexif from 'piexif-ts';
 
 /**
@@ -19,7 +19,7 @@ export function updateLine(tableData: any[], myChart: Chart, dataSetIndex = 0, x
       tableData[i][xKey] === null || tableData[i][yKey] === null) {
       continue;
     }
-    data[start++] = {x: tableData[i][xKey], y: tableData[i][yKey]};
+    data[start++] = { x: tableData[i][xKey], y: tableData[i][yKey] };
   }
   while (data.length !== start) {
     data.pop();
@@ -27,14 +27,21 @@ export function updateLine(tableData: any[], myChart: Chart, dataSetIndex = 0, x
   myChart.update('none');
 }
 
-export function addEXIFToImage(jpegData: string, signature: string, time: string) {
+/**
+ * Add EXIF information to image
+ * @param jpegData data of a jpeg file
+ * @param signature signature of the user
+ * @param time time of download initiation
+ * @returns 
+ */
+export function addEXIFToImage(jpegData: string, signature: string, time: string): string {
   const zeroth: piexif.IExifElement = {};
   const exif: piexif.IExifElement = {};
   zeroth[piexif.TagValues.ImageIFD.Artist] = signature;
   exif[piexif.TagValues.ExifIFD.DateTimeOriginal] = time;
   exif[piexif.TagValues.ExifIFD.FileSource] = window.location.href;
 
-  const exifObj = {'0th': zeroth, 'Exif': exif};
+  const exifObj = { '0th': zeroth, 'Exif': exif };
   const exifBytes = piexif.dump(exifObj);
   return piexif.insert(exifBytes, jpegData);
 }
@@ -76,13 +83,18 @@ function dateAppendZero(num: number): string {
   return num < 10 ? '0' + num : '' + num;
 }
 
-// Credits: https://stackoverflow.com/a/30407959/1154380
-export function dataURLtoBlob(dataurl: string) {
+/**
+ * Turn dataurl into a blob object
+ * @param dataurl 
+ * @returns Blob object
+ * Credits: https://stackoverflow.com/a/30407959/1154380
+ */
+export function dataURLtoBlob(dataurl: string): Blob {
   // @ts-ignore
   let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
     bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
   while (n--) {
     u8arr[n] = bstr.charCodeAt(n);
   }
-  return new Blob([u8arr], {type: mime});
+  return new Blob([u8arr], { type: mime });
 }

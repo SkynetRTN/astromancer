@@ -217,6 +217,13 @@
 
 
 
+        <p class="comment">
+            <h3>Description</h3>
+        </p>
+        <p class="comment">
+            <p>Module encapsulating <a href="../components/CurveComponent.html">CurveComponent</a></p>
+
+        </p>
 
 
         <div class="container-fluid module">
@@ -274,16 +281,19 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {NgModule} from &quot;@angular/core&quot;;
-import {CurveComponent} from &quot;./curve.component&quot;;
-import {StandardLayoutModule} from &quot;../shared/standard-layout/standard-layout.component&quot;;
-import {StandardGraphInfoModule} from &quot;../shared/standard-graph-info/standard-graph-info.component&quot;;
-import {SimpleDataButtonModule} from &quot;../shared/simple-data-button/simple-data-button.component&quot;;
-import {SimpleGraphButtonModule} from &quot;../shared/simple-graph-button/simple-graph-button.component&quot;;
-import {LineFormModule} from &quot;./line-form/line-form.module&quot;;
-import {CurveChartModule} from &quot;./curve-chart/curve-chart.module&quot;;
-import {SimpleTableImplModule} from &quot;../shared/tables/simple-table-impl/simple-table-impl.module&quot;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { NgModule } from &quot;@angular/core&quot;;
+import { CurveComponent } from &quot;./curve.component&quot;;
+import { StandardLayoutModule } from &quot;../shared/standard-layout/standard-layout.component&quot;;
+import { StandardGraphInfoModule } from &quot;../shared/standard-graph-info/standard-graph-info.component&quot;;
+import { SimpleDataButtonModule } from &quot;../shared/simple-data-button/simple-data-button.component&quot;;
+import { SimpleGraphButtonModule } from &quot;../shared/simple-graph-button/simple-graph-button.component&quot;;
+import { LineFormModule } from &quot;./line-form/line-form.module&quot;;
+import { CurveChartModule } from &quot;./curve-chart/curve-chart.module&quot;;
+import { SimpleTableImplModule } from &quot;../shared/tables/simple-table-impl/simple-table-impl.module&quot;;
 
+/**
+ * Module encapsulating {@link CurveComponent}
+ */
 @NgModule({
   imports: [
     StandardLayoutModule,

@@ -72,8 +72,7 @@
         <h3>Description</h3>
     </p>
     <p class="comment">
-        <p>Menu Bar Component</p>
-<p>Menu bar for the entire app</p>
+        <p>Menu bar for the entire app</p>
 
     </p>
 
@@ -184,9 +183,15 @@
                 </tr>
                         <tr>
                             <td class="col-md-2" colspan="2">
-                                    <div class="io-line">Defined in <a href="" data-line="19" class="link-to-prism">src/app/shared/menubar/menubar.component.ts:19</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="20" class="link-to-prism">src/app/shared/menubar/menubar.component.ts:20</a></div>
                             </td>
                         </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>Toolsbar component to select different interface</p>
+</div>
+                    </td>
+                </tr>
             </tbody>
         </table>
 </section>
@@ -218,14 +223,16 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="21"
-                            class="link-to-prism">src/app/shared/menubar/menubar.component.ts:21</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="25"
+                            class="link-to-prism">src/app/shared/menubar/menubar.component.ts:25</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>function for opening the tool navigation bar</p>
+</div>
 
                     <div class="io-description">
                         <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
@@ -241,16 +248,14 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {Component, Input, NgModule} from &#x27;@angular/core&#x27;;
-import {ToolsNavbarComponent} from &quot;../tools-navbar/tools-navbar.component&quot;;
-import {AppRoutingModule} from &quot;../../app-routing.module&quot;;
-import {MatButtonModule} from &quot;@angular/material/button&quot;;
-import {MatToolbarModule} from &quot;@angular/material/toolbar&quot;;
-import {MatIconModule} from &quot;@angular/material/icon&quot;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, Input, NgModule } from &#x27;@angular/core&#x27;;
+import { ToolsNavbarComponent } from &quot;../tools-navbar/tools-navbar.component&quot;;
+import { AppRoutingModule } from &quot;../../app-routing.module&quot;;
+import { MatButtonModule } from &quot;@angular/material/button&quot;;
+import { MatToolbarModule } from &quot;@angular/material/toolbar&quot;;
+import { MatIconModule } from &quot;@angular/material/icon&quot;;
 
 /**
- * Menu Bar Component
- *
  * Menu bar for the entire app
  */
 @Component({
@@ -259,14 +264,23 @@ import {MatIconModule} from &quot;@angular/material/icon&quot;;
   styleUrls: [&#x27;./menubar.component.css&#x27;]
 })
 export class MenubarComponent {
+  /**
+   * Toolsbar component to select different interface
+   */
   @Input() navbar!: ToolsNavbarComponent
 
+  /**
+   * function for opening the tool navigation bar
+   */
   openToolNavbar() {
     this.navbar.open();
   }
 
 }
 
+/**
+ * Encapsution for {@link MenubarComponent}
+ */
 @NgModule({
   imports: [
     AppRoutingModule,

@@ -68,13 +68,20 @@
 </p>
 
 
+    <p class="comment">
+        <h3>Description</h3>
+    </p>
+    <p class="comment">
+        <p>Chart for the curve graphing tools.</p>
+<p>Implements the <a href="../interfaces/ChartComponent.html">ChartComponent</a> interface.</p>
+
+    </p>
 
 
     <p class="comment">
         <h3>Implements</h3>
     </p>
     <p class="comment">
-                    <code><a href="https://angular.io/api/core/OnInit" target="_blank" >OnInit</a></code>
                     <code><a href="https://angular.io/api/core/AfterViewInit" target="_blank" >AfterViewInit</a></code>
                     <code><a href="../interfaces/ChartComponent.html" target="_self" >ChartComponent</a></code>
     </p>
@@ -166,9 +173,6 @@
                                 <a href="#ngAfterViewInit" >ngAfterViewInit</a>
                             </li>
                             <li>
-                                <a href="#ngOnInit" >ngOnInit</a>
-                            </li>
-                            <li>
                                 <a href="#setDataLabel" >setDataLabel</a>
                             </li>
                             <li>
@@ -209,7 +213,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="73" class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:73</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="89" class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:89</a></div>
                             </td>
                         </tr>
 
@@ -223,6 +227,7 @@
                                                 <td>Name</td>
                                                     <td>Type</td>
                                                 <td>Optional</td>
+                                                    <td>Description</td>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -237,6 +242,10 @@
                                                             No
                                                     </td>
                                                     
+                                                        <td>
+                                                                <p>Injector from parent component</p>
+
+                                                        </td>
                                                 </tr>
                                                 <tr>
                                                         <td>chartService</td>
@@ -249,6 +258,10 @@
                                                             No
                                                     </td>
                                                     
+                                                        <td>
+                                                                <p>chart service for saving graph etc.</p>
+
+                                                        </td>
                                                 </tr>
                                                 <tr>
                                                         <td>honorCodePopupService</td>
@@ -261,6 +274,10 @@
                                                             No
                                                     </td>
                                                     
+                                                        <td>
+                                                                <p>service that prompts user to sign their name.</p>
+
+                                                        </td>
                                                 </tr>
                                         </tbody>
                                     </table>
@@ -300,8 +317,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="149"
-                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:149</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="174"
+                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:174</a></div>
                 </td>
             </tr>
 
@@ -369,51 +386,16 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="114"
-                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:114</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="135"
+                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:135</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
-
-                    <div class="io-description">
-                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
-
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <table class="table table-sm table-bordered">
-        <tbody>
-            <tr>
-                <td class="col-md-4">
-                    <a name="ngOnInit"></a>
-                    <span class="name">
-                        <span ><b>ngOnInit</b></span>
-                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-md-4">
-<code>ngOnInit()</code>
-                </td>
-            </tr>
-
-
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="111"
-                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:111</a></div>
-                </td>
-            </tr>
-
-
-            <tr>
-                <td class="col-md-4">
+                    <div class="io-description"><p>set up <a href="lineChart">lineChart</a> after it&#39;s initialized</p>
+</div>
 
                     <div class="io-description">
                         <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
@@ -443,8 +425,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="142"
-                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:142</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="167"
+                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:167</a></div>
                 </td>
             </tr>
 
@@ -524,8 +506,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="124"
-                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:124</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="149"
+                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:149</a></div>
                 </td>
             </tr>
 
@@ -593,8 +575,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="130"
-                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:130</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="155"
+                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:155</a></div>
                 </td>
             </tr>
 
@@ -662,8 +644,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="136"
-                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:136</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="161"
+                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:161</a></div>
                 </td>
             </tr>
 
@@ -731,14 +713,16 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="118"
-                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:118</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="143"
+                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:143</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>reverse the y-axis scale</p>
+</div>
 
                     <div class="io-description">
                         <b>Parameters :</b>
@@ -749,6 +733,7 @@
                                     <td>Name</td>
                                     <td>Type</td>
                                     <td>Optional</td>
+                                    <td>Description</td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -763,6 +748,10 @@
                                     </td>
 
 
+                                    <td>
+                                        <p>if the y-axis should be reversed</p>
+
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -800,8 +789,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="156"
-                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:156</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="181"
+                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:181</a></div>
                 </td>
             </tr>
 
@@ -874,10 +863,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="17" class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:17</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="24" class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:24</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Observer that subsrcibes to interface command to execute actions on the chart.</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -900,10 +895,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="18" class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:18</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="28" class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:28</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>The Chart.js Object</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -957,10 +958,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="19" class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:19</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="32" class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:32</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Chart.js object data configuration</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -986,15 +993,15 @@
                         <i>Default value : </i><code>{
     responsive: true,
     maintainAspectRatio: false,
-    hover: {mode: &#x27;nearest&#x27;},
+    hover: { mode: &#x27;nearest&#x27; },
     scales: {
       x: {
-        title: {text: &#x27;x&#x27;, display: true},
+        title: { text: &#x27;x&#x27;, display: true },
         type: &#x27;linear&#x27;,
         position: &#x27;bottom&#x27;,
       },
       y: {
-        title: {text: &#x27;y&#x27;, display: true},
+        title: { text: &#x27;y&#x27;, display: true },
         reverse: false,
       }
     },
@@ -1009,10 +1016,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="52" class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:52</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="68" class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:68</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Chart.js object options configuration</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -1022,24 +1035,37 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {AfterViewInit, Component, EventEmitter, Injector, OnInit} from &#x27;@angular/core&#x27;;
-import {Chart, LinearScaleOptions} from &quot;chart.js&quot;;
-import {ChartConfiguration, ChartOptions} from &quot;chart.js/dist/types&quot;;
-import {updateLine} from &quot;../../shared/charts/utils&quot;;
-import {ChartComponent} from &quot;../../shared/directives/chart.directive&quot;;
-import {ChartAction} from &quot;../../shared/types/actions&quot;;
-import {ChartService} from &quot;../../shared/charts/chart.service&quot;;
-import {HonorCodePopupService} from &quot;../../shared/charts/honor-code-popup/honor-code-popup.service&quot;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { AfterViewInit, Component, EventEmitter, Injector, OnInit } from &#x27;@angular/core&#x27;;
+import { Chart, LinearScaleOptions } from &quot;chart.js&quot;;
+import { ChartConfiguration, ChartOptions } from &quot;chart.js/dist/types&quot;;
+import { updateLine } from &quot;../../shared/charts/utils&quot;;
+import { ChartComponent } from &quot;../../shared/directives/chart.directive&quot;;
+import { ChartAction } from &quot;../../shared/types/actions&quot;;
+import { ChartService } from &quot;../../shared/charts/chart.service&quot;;
+import { HonorCodePopupService } from &quot;../../shared/charts/honor-code-popup/honor-code-popup.service&quot;;
 
-
+/**
+ * Chart for the curve graphing tools.
+ * 
+ * Implements the {@link ChartComponent} interface.
+ */
 @Component({
   selector: &#x27;app-curve-chart&#x27;,
   templateUrl: &#x27;./curve-chart.component.html&#x27;,
   styleUrls: [&#x27;./curve-chart.component.css&#x27;],
 })
-export class CurveChartComponent implements OnInit, AfterViewInit, ChartComponent {
+export class CurveChartComponent implements AfterViewInit, ChartComponent {
+  /**
+   * Observer that subsrcibes to interface command to execute actions on the chart.
+   */
   chartUpdateObs$: EventEmitter&lt;ChartAction[]&gt;;
+  /**
+   * The Chart.js Object
+   */
   lineChart!: Chart;
+  /**
+   * Chart.js object data configuration
+   */
   lineChartData: ChartConfiguration&lt;&#x27;line&#x27;&gt;[&#x27;data&#x27;] &#x3D; {
     datasets: [
       {
@@ -1073,18 +1099,21 @@ export class CurveChartComponent implements OnInit, AfterViewInit, ChartComponen
       }
     ]
   };
+  /**
+   * Chart.js object options configuration
+   */
   lineChartOptions: ChartOptions&lt;&#x27;line&#x27;&gt; &#x3D; {
     responsive: true,
     maintainAspectRatio: false,
-    hover: {mode: &#x27;nearest&#x27;},
+    hover: { mode: &#x27;nearest&#x27; },
     scales: {
       x: {
-        title: {text: &#x27;x&#x27;, display: true},
+        title: { text: &#x27;x&#x27;, display: true },
         type: &#x27;linear&#x27;,
         position: &#x27;bottom&#x27;,
       },
       y: {
-        title: {text: &#x27;y&#x27;, display: true},
+        title: { text: &#x27;y&#x27;, display: true },
         reverse: false,
       }
     },
@@ -1095,7 +1124,12 @@ export class CurveChartComponent implements OnInit, AfterViewInit, ChartComponen
       }
     }
   };
-
+  /**
+   * 
+   * @param args Injector from parent component
+   * @param chartService chart service for saving graph etc.
+   * @param honorCodePopupService service that prompts user to sign their name.
+   */
   constructor(args: Injector, private chartService: ChartService, private honorCodePopupService: HonorCodePopupService) {
     this.chartUpdateObs$ &#x3D; args.get(&#x27;chartUpdateObs$&#x27;);
     this.chartUpdateObs$.subscribe((actions: ChartAction[]) &#x3D;&gt; {
@@ -1132,13 +1166,17 @@ export class CurveChartComponent implements OnInit, AfterViewInit, ChartComponen
     });
   }
 
-  ngOnInit(): void {
-  }
-
+  /**
+   * set up {@link lineChart} after it&#x27;s initialized
+   */
   ngAfterViewInit(): void {
     this.lineChart &#x3D; Chart.getChart(&quot;chart&quot;) as Chart;
   }
 
+  /**
+   * reverse the y-axis scale
+   * @param isReversed if the y-axis should be reversed
+   */
   setYAxisReverse(isReversed: boolean): void {
     if (this.lineChart.options.scales &amp;&amp; this.lineChart.options.scales[&#x27;y&#x27;]) {
       this.lineChart.options.scales[&#x27;y&#x27;].reverse &#x3D; isReversed;

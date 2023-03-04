@@ -69,6 +69,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Interface for components that can be created by <a href="../directives/DataTableDirective.html">DataTableDirective</a></p>
+
+            </p>
 
 
         <section>
@@ -131,6 +138,12 @@
 
 
 
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-description"><p>Observable that detects when user is inputing actions that is related to the data table</p>
+</div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
             </section>
@@ -150,13 +163,24 @@
   Type,
   ViewContainerRef
 } from &#x27;@angular/core&#x27;;
-import {SimpleTableInitArgs} from &quot;../tables/simpleTable&quot;;
-import {TableAction} from &quot;../types/actions&quot;;
+import { SimpleTableInitArgs } from &quot;../tables/simpleTable&quot;;
+import { TableAction } from &quot;../types/actions&quot;;
 
+/**
+ * Interface for components that can be created by {@link DataTableDirective}
+ */
 export interface DataTableComponent {
+  /**
+   * Observable that detects when user is inputing actions that is related to the data table
+   */
   tableUserActionObs$: EventEmitter&lt;TableAction[]&gt;;
 }
 
+/**
+ * Directive that contains a data table.
+ * 
+ * Declared in {@link DataTableDirectiveModule}
+ */
 @Directive({
   selector: &#x27;[data-table-directive]&#x27;
 })
@@ -173,15 +197,18 @@ export class DataTableDirective implements OnInit {
 
   ngOnInit(): void {
     const tableInjector: Injector &#x3D; Injector.create({
-      providers: [{provide: &#x27;tableArgs&#x27;, useValue: this.tableArgs,},
-        {provide: &#x27;tableUpdateObs$&#x27;, useValue: this.tableUpdateObs$}]
+      providers: [{ provide: &#x27;tableArgs&#x27;, useValue: this.tableArgs, },
+      { provide: &#x27;tableUpdateObs$&#x27;, useValue: this.tableUpdateObs$ }]
     });
-    const component &#x3D; this.container.createComponent(this.tableType, {injector: tableInjector});
+    const component &#x3D; this.container.createComponent(this.tableType, { injector: tableInjector });
     (component.instance as DataTableComponent).tableUserActionObs$.subscribe(this.tableUserActionObs$);
   }
 
 }
 
+/**
+ * Encapsulation for {@link DataTableDirective}
+ */
 @NgModule({
   declarations: [DataTableDirective],
   exports: [DataTableDirective]

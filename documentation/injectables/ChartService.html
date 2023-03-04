@@ -62,6 +62,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Services for charts to perform</p>
+
+            </p>
 
 
 
@@ -93,24 +100,6 @@
     </table>
 </section>
 
-            <section>
-    <h3 id="constructor">Constructor</h3>
-        <table class="table table-sm table-bordered">
-            <tbody>
-                <tr>
-                    <td class="col-md-4">
-<code>constructor()</code>
-                    </td>
-                </tr>
-                        <tr>
-                            <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="9" class="link-to-prism">src/app/tools/shared/charts/chart.service.ts:9</a></div>
-                            </td>
-                        </tr>
-
-            </tbody>
-        </table>
-</section>
 
             <section>
     
@@ -137,14 +126,16 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="14"
-                            class="link-to-prism">src/app/tools/shared/charts/chart.service.ts:14</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="19"
+                            class="link-to-prism">src/app/tools/shared/charts/chart.service.ts:19</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Save image to user&#39;s device as jpg.</p>
+</div>
 
                     <div class="io-description">
                         <b>Parameters :</b>
@@ -155,6 +146,7 @@
                                     <td>Name</td>
                                     <td>Type</td>
                                     <td>Optional</td>
+                                    <td>Description</td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -169,6 +161,10 @@
                                     </td>
 
 
+                                    <td>
+                                        <p>The chart.js that needs to be saved</p>
+
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>signature</td>
@@ -181,6 +177,10 @@
                                     </td>
 
 
+                                    <td>
+                                        <p>User&#39;s signature</p>
+
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -204,20 +204,25 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {Injectable} from &#x27;@angular/core&#x27;;
-import {Chart} from &quot;chart.js/dist/types&quot;;
-import {addEXIFToImage, dataURLtoBlob, formatTime, getDateString} from &quot;./utils&quot;;
-import {saveAs} from &#x27;file-saver&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable } from &#x27;@angular/core&#x27;;
+import { Chart } from &quot;chart.js/dist/types&quot;;
+import { addEXIFToImage, dataURLtoBlob, formatTime, getDateString } from &quot;./utils&quot;;
+import { saveAs } from &#x27;file-saver&#x27;;
 
+/**
+ * Services for charts to perform
+ */
 @Injectable({
   providedIn: &#x27;root&#x27;
 })
 export class ChartService {
 
-  constructor() {
-  }
-
-  saveImage(chart: Chart, signature: string) {
+  /**
+   * Save image to user&#x27;s device as jpg.
+   * @param chart The chart.js that needs to be saved
+   * @param signature User&#x27;s signature
+   */
+  saveImage(chart: Chart, signature: string): void {
     const destCanvas &#x3D; document.createElement(&#x27;canvas&#x27;);
     const canvas &#x3D; chart.canvas;
     destCanvas.width &#x3D; canvas.width;

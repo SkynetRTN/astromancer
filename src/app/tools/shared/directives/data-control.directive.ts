@@ -9,13 +9,27 @@ import {
   Type,
   ViewContainerRef
 } from '@angular/core';
-import {ChartAction, TableAction} from "../types/actions";
+import { ChartAction, TableAction } from "../types/actions";
 
+/**
+ * Interface for components that can be created by {@link DataButtonDirective}.
+ */
 export interface DataControlComponent {
+  /**
+   * Observable that detects when user is inputing actions that is related to the data table
+   */
   tableUserActionObs$: EventEmitter<TableAction[]>;
+  /**
+   * Observable that detects when user is inputing actions that is related to the chart
+   */
   chartUserActionObs$: EventEmitter<ChartAction[]>;
 }
 
+/**
+ * Directive for control forms of data table
+ * 
+ * Decalred in {@link DataButtonDirectiveModule}
+ */
 @Directive({
   selector: '[data-control-directive]',
 })
@@ -37,6 +51,9 @@ export class DataControlDirective implements OnInit {
 
 }
 
+/**
+ * Encapsulation for {@link DataControlDirective}
+ */
 @NgModule({
   declarations: [DataControlDirective],
   exports: [DataControlDirective]

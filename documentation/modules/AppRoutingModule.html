@@ -72,22 +72,29 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {NgModule} from &#x27;@angular/core&#x27;;
-import {RouterModule, Routes} from &#x27;@angular/router&#x27;;
-import {CurveComponent} from &quot;./tools/curve/curve.component&quot;;
-import {HomeComponent} from &quot;./shared/home/home.component&quot;;
-import {AboutComponent} from &quot;./shared/about/about.component&quot;;
-import {PageNotFoundComponent} from &quot;./shared/page-not-found/page-not-found.component&quot;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { NgModule } from &#x27;@angular/core&#x27;;
+import { RouterModule, Routes } from &#x27;@angular/router&#x27;;
+import { CurveComponent } from &quot;./tools/curve/curve.component&quot;;
+import { HomeComponent } from &quot;./shared/home/home.component&quot;;
+import { AboutComponent } from &quot;./shared/about/about.component&quot;;
+import { PageNotFoundComponent } from &quot;./shared/page-not-found/page-not-found.component&quot;;
 
-
+/**
+ * Routes for the site
+ */
 const TOOLS_ROUTES: Routes &#x3D; [
-  {path: &quot;home&quot;, component: HomeComponent, data: {title: &quot;getToolSiteName($localize&#x60;:home:Home&#x60;)&quot;}},
-  {path: &quot;about&quot;, component: AboutComponent, data: {title: &quot;getToolSiteName($localize&#x60;:about:About&#x60;)&quot;}},
-  {path: &quot;curve&quot;, component: CurveComponent, data: {title: &quot;getToolSiteName($localize&#x60;:curve:Curve&#x60;)&quot;}},
-  {path: &#x27;&#x27;, redirectTo: &#x27;/home&#x27;, pathMatch: &#x27;full&#x27;},
-  {path: &#x27;**&#x27;, component: PageNotFoundComponent, data: {title: $localize&#x60;:page-not-found:Page Not Found&#x60;}}
+  { path: &quot;home&quot;, component: HomeComponent, data: { title: &quot;getToolSiteName($localize&#x60;:home:Home&#x60;)&quot; } },
+  { path: &quot;about&quot;, component: AboutComponent, data: { title: &quot;getToolSiteName($localize&#x60;:about:About&#x60;)&quot; } },
+  { path: &quot;curve&quot;, component: CurveComponent, data: { title: &quot;getToolSiteName($localize&#x60;:curve:Curve&#x60;)&quot; } },
+  { path: &#x27;&#x27;, redirectTo: &#x27;/home&#x27;, pathMatch: &#x27;full&#x27; },
+  { path: &#x27;**&#x27;, component: PageNotFoundComponent, data: { title: $localize&#x60;:page-not-found:Page Not Found&#x60; } }
 ]
 
+/**
+ * Generate name of the site based on the graphing tool in use.
+ * @param tool the graphing tool in use
+ * @returns 
+ */
 function getToolSiteName(tool: string): string {
   return $localize&#x60;:site-name:Skynet Plotting Neo&#x60; + tool;
 }

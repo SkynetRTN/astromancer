@@ -1,4 +1,14 @@
-import {Component, Directive, EventEmitter, Input, OnInit, Output, Type, ViewContainerRef} from '@angular/core';
+import {
+  Component,
+  Directive,
+  EventEmitter,
+  Input,
+  NgModule,
+  OnInit,
+  Output,
+  Type,
+  ViewContainerRef
+} from '@angular/core';
 import {TableAction} from "../types/actions";
 
 export interface DataButtonComponent {
@@ -6,7 +16,7 @@ export interface DataButtonComponent {
 }
 
 @Directive({
-  selector: '[DataButton]',
+  selector: '[data-button-directive]',
 })
 export class DataButtonDirective implements OnInit {
   @Input() tableButtonType!: Type<Component>;
@@ -21,4 +31,11 @@ export class DataButtonDirective implements OnInit {
     (component.instance as DataButtonComponent).tableUserActionObs$.subscribe(this.tableUserActionObs$);
   }
 
+}
+
+@NgModule({
+  declarations: [DataButtonDirective],
+  exports: [DataButtonDirective]
+})
+export class DataButtonDirectiveModule {
 }

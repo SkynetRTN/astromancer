@@ -1,4 +1,14 @@
-import {Component, Directive, EventEmitter, Input, OnInit, Output, Type, ViewContainerRef} from '@angular/core';
+import {
+  Component,
+  Directive,
+  EventEmitter,
+  Input,
+  NgModule,
+  OnInit,
+  Output,
+  Type,
+  ViewContainerRef
+} from '@angular/core';
 import {ChartAction, TableAction} from "../types/actions";
 
 export interface DataControlComponent {
@@ -7,7 +17,7 @@ export interface DataControlComponent {
 }
 
 @Directive({
-  selector: '[DataControl]',
+  selector: '[data-control-directive]',
 })
 export class DataControlDirective implements OnInit {
   @Input() controlType!: Type<Component>;
@@ -25,4 +35,11 @@ export class DataControlDirective implements OnInit {
     (component.instance as DataControlComponent).chartUserActionObs$.subscribe(this.chartUserActionObs$);
   }
 
+}
+
+@NgModule({
+  declarations: [DataControlDirective],
+  exports: [DataControlDirective]
+})
+export class DataControlDirectiveModule {
 }

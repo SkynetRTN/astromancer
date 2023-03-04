@@ -1,4 +1,14 @@
-import {Component, Directive, EventEmitter, Input, OnInit, Output, Type, ViewContainerRef} from '@angular/core';
+import {
+  Component,
+  Directive,
+  EventEmitter,
+  Input,
+  NgModule,
+  OnInit,
+  Output,
+  Type,
+  ViewContainerRef
+} from '@angular/core';
 import {ChartAction} from "../types/actions";
 
 export interface GraphButtonComponent {
@@ -6,7 +16,7 @@ export interface GraphButtonComponent {
 }
 
 @Directive({
-  selector: '[GraphButton]',
+  selector: '[graph-button-directive]',
 })
 export class GraphButtonDirective implements OnInit {
   @Input() graphButtonType!: Type<Component>;
@@ -21,4 +31,11 @@ export class GraphButtonDirective implements OnInit {
     (component.instance as GraphButtonComponent).chartUserActionObs$.subscribe(this.chartUserActionObs$);
   }
 
+}
+
+@NgModule({
+  declarations: [GraphButtonDirective],
+  exports: [GraphButtonDirective]
+})
+export class GraphButtonDirectiveModule {
 }

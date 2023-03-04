@@ -1,6 +1,7 @@
-import {Component, EventEmitter, OnInit} from '@angular/core';
+import {Component, EventEmitter, NgModule, OnInit} from '@angular/core';
 import {GraphButtonComponent} from "../directives/graph-button.directive";
 import {ChartAction} from "../types/actions";
+import {MatButtonModule} from "@angular/material/button";
 
 @Component({
   selector: 'app-simple-graph-button',
@@ -24,4 +25,11 @@ export class SimpleGraphButtonComponent implements OnInit, GraphButtonComponent 
   }
 
 
+}
+
+@NgModule({
+  imports: [MatButtonModule],
+  declarations: [SimpleGraphButtonComponent]
+})
+export class SimpleGraphButtonModule {
 }

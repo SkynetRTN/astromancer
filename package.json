@@ -6,7 +6,10 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "compodoc": "compodoc",
+    "generate-docs": "compodoc -p tsconfig.doc.json",
+    "serve-docs": "compodoc -s tsconfig.doc.json"
   },
   "private": true,
   "dependencies": {
@@ -21,6 +24,7 @@
     "@angular/platform-browser": "^14.2.12",
     "@angular/platform-browser-dynamic": "^14.2.12",
     "@angular/router": "^14.2.12",
+    "@compodoc/compodoc": "^1.1.19",
     "@handsontable/angular": "^12.3.1",
     "@ng-bootstrap/ng-bootstrap": "^13.0.0",
     "@popperjs/core": "^2.10.2",

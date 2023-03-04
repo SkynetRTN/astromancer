@@ -4,6 +4,7 @@ import {
   EventEmitter,
   Injector,
   Input,
+  NgModule,
   OnInit,
   Output,
   Type,
@@ -17,7 +18,7 @@ export interface DataTableComponent {
 }
 
 @Directive({
-  selector: '[DataTable]'
+  selector: '[data-table-directive]'
 })
 export class DataTableDirective implements OnInit {
   @Input() tableType!: Type<Component>;
@@ -39,4 +40,11 @@ export class DataTableDirective implements OnInit {
     (component.instance as DataTableComponent).tableUserActionObs$.subscribe(this.tableUserActionObs$);
   }
 
+}
+
+@NgModule({
+  declarations: [DataTableDirective],
+  exports: [DataTableDirective]
+})
+export class DataTableDirectiveModule {
 }

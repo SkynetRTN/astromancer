@@ -1,7 +1,19 @@
-import {Component, ViewChild} from '@angular/core';
-import {MatSidenav} from '@angular/material/sidenav';
+import {Component, NgModule, ViewChild} from '@angular/core';
+import {MatSidenav, MatSidenavModule} from '@angular/material/sidenav';
+import {MenubarModule} from "../menubar/menubar.component";
+import {AppRoutingModule} from "../../app-routing.module";
+import {MatButtonModule} from "@angular/material/button";
+import {MatIconModule} from "@angular/material/icon";
+import {CurveModule} from "../../tools/curve/curve.module";
 
-/** @title Sidenav with custom escape and backdrop click behavior */
+/**
+ * Side Nav Component
+ *
+ * Sidenav with custom escape and backdrop click behavior
+ *
+ * Contains menubar and router outlet to plotting tools
+ *
+ * */
 @Component({
   selector: 'app-tools-navbar',
   templateUrl: 'tools-navbar.component.html',
@@ -20,7 +32,19 @@ export class ToolsNavbarComponent {
 
 }
 
-
-/**  Copyright 2019 Google Inc. All Rights Reserved.
- Use of this source code is governed by an MIT-style license that
- can be found in the LICENSE file at http://angular.io/license */
+@NgModule({
+  imports: [
+    MenubarModule,
+    CurveModule,
+    AppRoutingModule,
+    MatSidenavModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
+  declarations: [
+    ToolsNavbarComponent,
+  ],
+  exports: [ToolsNavbarComponent]
+})
+export class ToolsNavbarModule {
+}

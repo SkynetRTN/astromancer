@@ -1,6 +1,7 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, NgModule, OnInit, Output} from '@angular/core';
 import {TableAction} from "../types/actions";
 import {DataButtonComponent} from "../directives/data-button.directive";
+import {MatButtonModule} from "@angular/material/button";
 
 @Component({
   selector: 'app-simple-data-button',
@@ -21,4 +22,11 @@ export class SimpleDataButtonComponent implements OnInit, DataButtonComponent {
     this.tableUserActionObs$.emit([{action: "addRow"}]);
   }
 
+}
+
+@NgModule({
+  imports: [MatButtonModule],
+  declarations: [SimpleDataButtonComponent],
+})
+export class SimpleDataButtonModule {
 }

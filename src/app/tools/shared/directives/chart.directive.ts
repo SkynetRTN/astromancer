@@ -1,4 +1,14 @@
-import {Component, Directive, EventEmitter, Injector, Input, OnInit, Type, ViewContainerRef} from '@angular/core';
+import {
+  Component,
+  Directive,
+  EventEmitter,
+  Injector,
+  Input,
+  NgModule,
+  OnInit,
+  Type,
+  ViewContainerRef
+} from '@angular/core';
 import {ChartAction} from "../types/actions";
 
 export interface ChartComponent {
@@ -6,7 +16,7 @@ export interface ChartComponent {
 }
 
 @Directive({
-  selector: '[Graph]',
+  selector: '[chart-directive]',
 })
 export class ChartDirective implements OnInit {
   @Input() chartType!: Type<Component>;
@@ -22,4 +32,12 @@ export class ChartDirective implements OnInit {
     this.container.createComponent(this.chartType, {injector: chartInjector});
   }
 
+}
+
+@NgModule({
+    declarations: [ChartDirective],
+    exports: [ChartDirective],
+  }
+)
+export class ChartDirectiveModule {
 }

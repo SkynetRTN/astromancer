@@ -1,11 +1,14 @@
-import {Component, EventEmitter, Input, Output, Type, ViewChild} from '@angular/core';
-import {GraphInfoDirective} from "../directives/graph-info.directive";
-import {DataControlDirective} from "../directives/data-control.directive";
-import {DataTableDirective} from "../directives/data-table.directive";
+import {Component, EventEmitter, Input, NgModule, Output, Type, ViewChild} from '@angular/core';
+import {GraphInfoDirective, GraphInfoDirectiveModule} from "../directives/graph-info.directive";
+import {DataControlDirective, DataControlDirectiveModule} from "../directives/data-control.directive";
+import {DataTableDirective, DataTableDirectiveModule} from "../directives/data-table.directive";
 import {SimpleTableInitArgs} from "../tables/simpleTable";
-import {DataButtonDirective} from "../directives/data-button.directive";
+import {DataButtonDirective, DataButtonDirectiveModule} from "../directives/data-button.directive";
 import {ChartAction, TableAction} from "../types/actions";
 import {StandardGraphInfo} from "../standard-graph-info/standard-graphinfo";
+import {ChartDirectiveModule} from "../directives/chart.directive";
+import {GraphButtonDirectiveModule} from "../directives/graph-button.directive";
+import {HonorCodePopupModule} from "../charts/honor-code-popup/honor-code-popup.module";
 
 @Component({
   selector: 'app-standard-layout',
@@ -46,4 +49,22 @@ export class StandardLayoutComponent {
   onChartUserAction(actions: ChartAction[]) {
     this.chartUserActionObs$.emit(actions);
   }
+}
+
+@NgModule({
+  imports: [
+    ChartDirectiveModule,
+    DataButtonDirectiveModule,
+    DataControlDirectiveModule,
+    DataTableDirectiveModule,
+    GraphButtonDirectiveModule,
+    GraphInfoDirectiveModule,
+    HonorCodePopupModule,
+  ],
+  declarations: [
+    StandardLayoutComponent,
+  ],
+  exports: [StandardLayoutComponent],
+})
+export class StandardLayoutModule {
 }

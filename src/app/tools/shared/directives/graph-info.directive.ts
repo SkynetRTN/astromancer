@@ -4,6 +4,7 @@ import {
   EventEmitter,
   Injector,
   Input,
+  NgModule,
   OnInit,
   Output,
   Type,
@@ -18,7 +19,7 @@ export interface GraphInfoComponent {
 }
 
 @Directive({
-  selector: '[GraphInfo]',
+  selector: '[graph-info-directive]',
 })
 export class GraphInfoDirective implements OnInit {
   @Input() graphInfoType!: Type<Component>;
@@ -36,4 +37,11 @@ export class GraphInfoDirective implements OnInit {
     const component = this.container.createComponent(this.graphInfoType, {injector: graphInfoInjector});
     (component.instance as DataControlComponent).chartUserActionObs$.subscribe(this.chartUserActionObs$);
   }
+}
+
+@NgModule({
+  declarations: [GraphInfoDirective],
+  exports: [GraphInfoDirective],
+})
+export class GraphInfoDirectiveModule {
 }

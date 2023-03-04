@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h2 i18n>Honor Code Pledge</h2>
-  <button i18n-aria-label="close" (click)="dismiss()" aria-label="Close" mat-icon-button>
+  <button (click)="dismiss()" aria-label="Close" i18n-aria-label="close" mat-icon-button>
     <mat-icon>close</mat-icon>
   </button>
 </div>
@@ -9,12 +9,12 @@
     <p i18n>REQUIRED FOR RECEIVING CREDIT</p>
     <mat-form-field>
       <mat-label i18n>Sign your name to attest to the fact that you made this graph yourself:</mat-label>
-      <input #signature formControlName="signature" matInput maxlength="256"
-             i18n-placeholder placeholder="Your signature here..." required>
-      <mat-hint i18n align="end">Click to start typing</mat-hint>
+      <input #signature formControlName="signature" i18n-placeholder matInput
+             maxlength="256" placeholder="Your signature here..." required>
+      <mat-hint align="end" i18n>Click to start typing</mat-hint>
     </mat-form-field>
   </div>
   <div class="modal-footer" style="flex-direction: row-reverse; justify-content: space-between">
-    <button i18n color="accent" mat-flat-button type="submit">Submit</button>
+    <button color="accent" i18n mat-flat-button type="submit">Submit</button>
   </div>
 </form>

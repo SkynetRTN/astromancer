@@ -2,13 +2,14 @@
   <button (click)="openToolNavbar()" aria-label="tools dropdown" mat-icon-button>
     <mat-icon>menu</mat-icon>
   </button>
-  <button i18n [routerLink]="['/home']" i18n-aria-label aria-label="Home" color="primary" mat-flat-button>
+  <button [routerLink]="['/home']" aria-label="Home" color="primary" i18n i18n-aria-label mat-flat-button>
     Skynet Graphing Tool <span class="cursive">neo</span></button>
   <span class="toolbar-spacer"></span>
-  <button [routerLink]="['/about']" i18n-aria-label aria-label="about this site" mat-icon-button>
+  <button [routerLink]="['/about']" aria-label="about this site" i18n-aria-label mat-icon-button>
     <mat-icon>info</mat-icon>
   </button>
-  <a i18n-aria-label aria-label="link to Github" href="https://github.com/RuideFu/skynet-plotting-neo" mat-icon-button target="_blank">
+  <a aria-label="link to Github" href="https://github.com/RuideFu/skynet-plotting-neo" i18n-aria-label mat-icon-button
+     target="_blank">
     <svg class="bi bi-github" fill="currentColor" height="20" viewBox="0 0 16 16" width="20"
          xmlns="http://www.w3.org/2000/svg">
       <path

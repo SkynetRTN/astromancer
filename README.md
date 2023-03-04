@@ -6,6 +6,8 @@ This project is based on the [Angular 14 framework](https://angular.io). Some of
 
 The ultimate goal for this projector is to re-implement the functinoality of the existing graphing tools, but under a modern framework with good design pattern to make it maintainble in the long term, even not by its original authors.
 
+Documentations have been set up as a Github Page through Github Actions. Check it out [here](https://ruidefu.github.io/skynet-plotting-neo/).
+
 ----
 To build for development, run
 ```bash
@@ -15,6 +17,16 @@ npm run start
 To build for production, run
 ```bash
 npm run build
+```
+
+To generate documentations, run
+```bash
+npm run generate-docs
+```
+
+To view documentations in development environment, run
+```bash
+npm run serve-docs
 ```
 
 To extract the source language file, run

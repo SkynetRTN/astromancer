@@ -15,7 +15,7 @@ import { CurveModule } from "../../tools/curve/curve.module";
 @Component({
   selector: 'app-tools-navbar',
   templateUrl: 'tools-navbar.component.html',
-  styleUrls: ['tools-navbar.component.css'],
+  styleUrls: ['tools-navbar.component.scss'],
 })
 export class ToolsNavbarComponent {
   /**

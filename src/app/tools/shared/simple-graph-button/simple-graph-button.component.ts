@@ -6,7 +6,7 @@ import {MatButtonModule} from "@angular/material/button";
 @Component({
   selector: 'app-simple-graph-button',
   templateUrl: './simple-graph-button.component.html',
-  styleUrls: ['./simple-graph-button.component.css']
+  styleUrls: ['./simple-graph-button.component.scss']
 })
 export class SimpleGraphButtonComponent implements OnInit, GraphButtonComponent {
 

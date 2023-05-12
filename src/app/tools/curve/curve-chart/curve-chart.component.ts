@@ -15,7 +15,7 @@ import { HonorCodePopupService } from "../../shared/charts/honor-code-popup/hono
 @Component({
   selector: 'app-curve-chart',
   templateUrl: './curve-chart.component.html',
-  styleUrls: ['./curve-chart.component.css'],
+  styleUrls: ['./curve-chart.component.scss'],
 })
 export class CurveChartComponent implements AfterViewInit, ChartComponent {
   /**

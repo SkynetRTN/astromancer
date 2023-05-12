@@ -6,7 +6,7 @@ import {MatButtonModule} from "@angular/material/button";
 @Component({
   selector: 'app-simple-data-button',
   templateUrl: './simple-data-button.component.html',
-  styleUrls: ['./simple-data-button.component.css']
+  styleUrls: ['./simple-data-button.component.scss']
 })
 export class SimpleDataButtonComponent implements OnInit, DataButtonComponent {
   @Output() tableUserActionObs$: EventEmitter<TableAction[]>;

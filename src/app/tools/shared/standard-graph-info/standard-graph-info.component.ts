@@ -11,7 +11,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 @Component({
   selector: 'app-standard-graphinfo',
   templateUrl: './standard-graph-info.component.html',
-  styleUrls: ['./standard-graph-info.component.css']
+  styleUrls: ['./standard-graph-info.component.scss']
 })
 export class StandardGraphInfoComponent implements GraphInfoComponent {
   info: StandardGraphInfo;

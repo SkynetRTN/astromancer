@@ -13,7 +13,7 @@ import {HonorCodePopupModule} from "../charts/honor-code-popup/honor-code-popup.
 @Component({
   selector: 'app-standard-layout',
   templateUrl: './standard-layout.component.html',
-  styleUrls: ['./standard-layout.component.css']
+  styleUrls: ['./standard-layout.component.scss']
 })
 export class StandardLayoutComponent {
   @Input() graphInfoType!: Type<Component>;

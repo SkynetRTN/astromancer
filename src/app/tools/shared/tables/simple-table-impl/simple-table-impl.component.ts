@@ -8,7 +8,7 @@ import {DataTableComponent} from "../../directives/data-table.directive";
 @Component({
   selector: 'app-simple-table-impl',
   templateUrl: './simple-table-impl.component.html',
-  styleUrls: ['./simple-table-impl.component.css'],
+  styleUrls: ['./simple-table-impl.component.scss'],
 })
 export class SimpleTableImplComponent implements OnInit, AfterViewInit, SimpleTable, DataTableComponent {
   id = "dataTable";

@@ -17,7 +17,7 @@ type CurveCounts = {
 @Component({
   selector: 'app-line-form',
   templateUrl: './line-form.component.html',
-  styleUrls: ['./line-form.component.css'],
+  styleUrls: ['./line-form.component.scss'],
 })
 export class LineFormComponent implements DataControlComponent {
 

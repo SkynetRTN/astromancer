@@ -20,7 +20,7 @@ import { SimpleGraphButtonComponent } from "../shared/simple-graph-button/simple
 @Component({
   selector: 'app-curve',
   templateUrl: './curve.component.html',
-  styleUrls: ['./curve.component.css'],
+  styleUrls: ['./curve.component.scss'],
 })
 export class CurveComponent implements AfterViewInit {
   /**

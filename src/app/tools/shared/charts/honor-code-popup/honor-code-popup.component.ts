@@ -10,7 +10,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 @Component({
   selector: 'app-honor-code-popup',
   templateUrl: './honor-code-popup.component.html',
-  styleUrls: ['./honor-code-popup.component.css']
+  styleUrls: ['./honor-code-popup.component.scss']
 })
 export class HonorCodePopupComponent implements OnInit {
   form!: FormGroup;

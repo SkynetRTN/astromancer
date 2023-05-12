@@ -11,7 +11,7 @@ import { MatIconModule } from "@angular/material/icon";
 @Component({
   selector: 'app-menubar',
   templateUrl: './menubar.component.html',
-  styleUrls: ['./menubar.component.css']
+  styleUrls: ['./menubar.component.scss']
 })
 export class MenubarComponent {
   /**

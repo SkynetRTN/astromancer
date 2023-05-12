@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Injector, OnInit } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Injector } from '@angular/core';
 import { Chart, LinearScaleOptions } from "chart.js";
 import { ChartConfiguration, ChartOptions } from "chart.js/dist/types";
 import { updateLine } from "../../shared/charts/utils";
@@ -9,7 +9,7 @@ import { HonorCodePopupService } from "../../shared/charts/honor-code-popup/hono
 
 /**
  * Chart for the curve graphing tools.
- * 
+ *
  * Implements the {@link ChartComponent} interface.
  */
 @Component({
@@ -88,7 +88,7 @@ export class CurveChartComponent implements AfterViewInit, ChartComponent {
     }
   };
   /**
-   * 
+   *
    * @param args Injector from parent component
    * @param chartService chart service for saving graph etc.
    * @param honorCodePopupService service that prompts user to sign their name.

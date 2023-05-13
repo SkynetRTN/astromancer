@@ -4,17 +4,18 @@
       <form class="h-fit">
         <mat-form-field appearance="fill">
           <mat-label i18n>Number of Curves</mat-label>
-          <mat-select #selector (ngModelChange)="onCurveNumChange(selector.value)" [(ngModel)]="selectedValue"
-                      name="curves">
-            <mat-option *ngFor="let count of curveCounts; index as i" [value]="count.value">
-              {{count.viewValue}}
+          <mat-select [formControl]="form" name="curves" (selectionChange)="onCurveNumChange()">
+            <mat-option *ngFor="let count of curveCountsKeys" [value]="count">
+              {{count}}
             </mat-option>
           </mat-select>
         </mat-form-field>
       </form>
     </div>
     <div class="col-4">
-      <mat-button-toggle #button (change)="onMagnitude(button.checked)" i18n>Magnitudes</mat-button-toggle>
+      <mat-button-toggle #button (change)="onMagnitude(button.checked)" i18n>
+        Magnitudes
+      </mat-button-toggle>
     </div>
   </div>
 </div>

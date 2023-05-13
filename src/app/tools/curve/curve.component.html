@@ -1,14 +1,14 @@
-<app-standard-layout #stdLayout
-                     (chartUserActionObs$)="onChartUserObs($event)"
-                     (tableUserActionObs$)="onTableUserObs($event)"
-                     [chartType]="chartType"
-                     [chartUpdateObs$]="chartUpdateObserver$"
-                     [dataButtonType]="dataButtonType"
-                     [dataControlType]="dataControlType"
-                     [defaultChartInfo]="defaultChartInfo"
-                     [defaultTableArgs]="defaultArgs()"
-                     [graphButtonType]="graphButtonType"
-                     [graphInfoType]="graphInfoType"
-                     [tableType]="tableType"
-                     [tableUpdateObs$]="tableUpdateObserver$"
-></app-standard-layout>
+<div class="row container-row">
+  <div class="col-4">
+    <div class="row data-form-row">
+      <app-line-form></app-line-form>
+    </div>
+    <div class="row data-table-row">DATA TABLE</div>
+    <div class="row data-button-row">DATA BUTTON</div>
+  </div>
+  <div class="col-8">
+    <div class="row chart-row">CHART</div>
+    <div class="row chart-form-row">CHART FORM</div>
+    <div class="row chart-button-row">CHART BUTTON</div>
+  </div>
+</div>

@@ -13,6 +13,11 @@ export class CurveData {
       {x: 7, y1: 16, y2: null, y3: null, y4: null},
       {x: 8, y1: 25, y2: null, y3: null, y4: null},
       {x: 9, y1: 36, y2: null, y3: null, y4: null},
+      {x: null, y1: null, y2: null, y3: null, y4: null},
+      {x: null, y1: null, y2: null, y3: null, y4: null},
+      {x: null, y1: null, y2: null, y3: null, y4: null},
+      {x: null, y1: null, y2: null, y3: null, y4: null},
+      {x: null, y1: null, y2: null, y3: null, y4: null},
     ];
   }
 
@@ -38,26 +43,39 @@ export class CurveData {
     this.curveDataDict = data;
   }
 
-  public setDataByCell(value: number|null, row: number, col: CurveParam): void {
+  public setDataByCell(value: number | null, row: number, col: string): void {
     switch (col) {
       case CurveParam.X:
-        this.curveDataDict[row].x = value;
+        this.curveDataDict[row][CurveParam.X] = value;
         break;
       case CurveParam.Y1:
-        this.curveDataDict[row].y1 = value;
+        this.curveDataDict[row][CurveParam.Y1] = value;
         break;
       case CurveParam.Y2:
-        this.curveDataDict[row].y2 = value;
+        this.curveDataDict[row][CurveParam.Y2] = value;
         break;
       case CurveParam.Y3:
-        this.curveDataDict[row].y3 = value;
+        this.curveDataDict[row][CurveParam.Y3] = value;
         break;
       case CurveParam.Y4:
-        this.curveDataDict[row].y4 = value;
+        this.curveDataDict[row][CurveParam.Y4] = value;
         break;
     }
   }
 
+  getDataKeys(curveCount: number): string[] {
+    let result = ["x", "y1"];
+    if (curveCount >= CurveCounts.TWO) {
+      result.push("y2");
+    }
+    if (curveCount >= CurveCounts.THREE) {
+      result.push("y3");
+    }
+    if (curveCount >= CurveCounts.FOUR) {
+      result.push("y4");
+    }
+    return result;
+  }
 }
 
 export interface CurveDataDict {
@@ -69,11 +87,11 @@ export interface CurveDataDict {
 }
 
 export enum CurveParam {
-  X = 0,
-  Y1 = 1,
-  Y2 = 2,
-  Y3 = 3,
-  Y4 = 4
+  X = 'x',
+  Y1 = 'y1',
+  Y2 = 'y2',
+  Y3 = 'y3',
+  Y4 = 'y4'
 }
 
 export enum CurveCounts {
@@ -81,4 +99,8 @@ export enum CurveCounts {
   TWO = 2,
   THREE = 3,
   FOUR = 4
+}
+
+export interface CurveObservable {
+  update(): void;
 }

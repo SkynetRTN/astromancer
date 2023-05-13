@@ -1,5 +1,6 @@
 import {Component, OnInit,} from '@angular/core';
 import {CurveDataService} from "../../service/curve-data.service";
+
 /**
  * Curve Component
  */
@@ -7,6 +8,7 @@ import {CurveDataService} from "../../service/curve-data.service";
   selector: 'app-curve',
   templateUrl: './curve.component.html',
   styleUrls: ['./curve.component.scss'],
+  providers: [CurveDataService],
 })
 export class CurveComponent implements OnInit{
   constructor() {

@@ -16,6 +16,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {CurveTableComponent} from './curve-table/curve-table.component';
 import {HotTableModule} from "@handsontable/angular";
 import {CurveDataService} from "../../service/curve-data.service";
+import {CurveService} from "../../service/curve.service";
 
 /**
  * Module encapsulating {@link CurveComponent}
@@ -43,7 +44,7 @@ import {CurveDataService} from "../../service/curve-data.service";
     CurveTableComponent,
   ],
   exports: [CurveComponent],
-  providers: [CurveDataService],
+  providers: [CurveDataService, CurveService],
 })
 export class CurveModule {
 }

@@ -6,7 +6,9 @@
     <div class="row data-table-row">
       <app-curve-table></app-curve-table>
     </div>
-    <div class="row data-button-row">DATA BUTTON</div>
+    <div class="row data-button-row">
+      <app-simple-data-button (tableUserActionObs$)="actionHandler($event)"></app-simple-data-button>
+    </div>
   </div>
   <div class="col-8">
     <div class="row chart-row">CHART</div>

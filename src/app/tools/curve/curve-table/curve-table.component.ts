@@ -1,8 +1,7 @@
 import {Component} from '@angular/core';
 import {CurveDataService} from "../../../service/curve-data.service";
 import {CurveObservable} from "../../../model/curve.model";
-import Handsontable from "handsontable";
-import {HotTableRegisterer} from "@handsontable/angular";
+import {CurveService} from "../../../service/curve.service";
 
 @Component({
   selector: 'app-curve-table',
@@ -13,9 +12,8 @@ export class CurveTableComponent implements CurveObservable {
   colNames: any;
   dataSet: any;
   id = "dataTable";
-  private hotRegisterer = new HotTableRegisterer();
 
-  constructor(private dataService: CurveDataService) {
+  constructor(private dataService: CurveDataService, private service: CurveService) {
     this.colNames = this.dataService.getDataKeys();
     this.dataSet = this.dataService.getData();
     this.dataService.addObserver(this);
@@ -24,11 +22,7 @@ export class CurveTableComponent implements CurveObservable {
   public update(): void {
     this.colNames = this.dataService.getDataKeys();
     this.dataSet = this.dataService.getData();
-    this.getTable().render();
-  }
-
-  private getTable(): Handsontable {
-    return this.hotRegisterer.getInstance(this.id);
+    this.service.getTable().render();
   }
 
   public onChange = (changes: any) => {

@@ -27,6 +27,9 @@ export class SimpleDataButtonComponent implements OnInit, DataButtonComponent {
 @NgModule({
   imports: [MatButtonModule],
   declarations: [SimpleDataButtonComponent],
+  exports: [
+    SimpleDataButtonComponent
+  ]
 })
 export class SimpleDataButtonModule {
 }

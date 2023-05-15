@@ -16,15 +16,23 @@ export class CurveDataService {
     return this.curveData.getDataKeys(this.curveCount);
   }
 
-  public setDataByCell(value: number | null, row: number, col: string): void {
-    this.curveData.setDataByCell(value, row, col);
-    this.kickObservers();
-  }
+  public setDataByCellOnTableChange(changes: any) {
+    changes?.forEach(([row, col, , newValue]: any[]) => {
+      this.curveData.setDataByCell(newValue, row, col);
+    });
+    if (changes) {
+      this.kickObservers();
+    }
 
+  }
 
   public setCurveCount(count: number): void {
     this.curveCount = count;
     this.kickObservers();
+  }
+
+  public getCurveCount(): number {
+    return this.curveCount;
   }
 
   public setMagnitudeOn(isMagnitudeOn: boolean): void {
@@ -39,6 +47,7 @@ export class CurveDataService {
   public addObserver(observer: CurveObservable): void {
     this.observers.push(observer);
   }
+
 
   private kickObservers(): void {
     for (const observer of this.observers) {

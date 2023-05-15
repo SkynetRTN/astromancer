@@ -4,7 +4,6 @@ import {StandardLayoutModule} from "../shared/standard-layout/standard-layout.co
 import {StandardGraphInfoModule} from "../shared/standard-graph-info/standard-graph-info.component";
 import {SimpleDataButtonModule} from "../shared/simple-data-button/simple-data-button.component";
 import {SimpleGraphButtonModule} from "../shared/simple-graph-button/simple-graph-button.component";
-import {CurveChartModule} from "./curve-chart/curve-chart.module";
 import {SimpleTableImplModule} from "../shared/tables/simple-table-impl/simple-table-impl.module";
 import {LineFormComponent} from "./line-form/line-form.component";
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
@@ -17,6 +16,8 @@ import {CurveTableComponent} from './curve-table/curve-table.component';
 import {HotTableModule} from "@handsontable/angular";
 import {CurveDataService} from "../../service/curve-data.service";
 import {CurveService} from "../../service/curve.service";
+import {CurveChartComponent} from "./curve-chart/curve-chart.component";
+import {NgChartsModule} from "ng2-charts";
 
 /**
  * Module encapsulating {@link CurveComponent}
@@ -24,7 +25,7 @@ import {CurveService} from "../../service/curve.service";
 @NgModule({
   imports: [
     StandardLayoutModule,
-    CurveChartModule,
+    NgChartsModule,
     SimpleDataButtonModule,
     SimpleGraphButtonModule,
     StandardGraphInfoModule,
@@ -42,6 +43,7 @@ import {CurveService} from "../../service/curve.service";
     CurveComponent,
     LineFormComponent,
     CurveTableComponent,
+    CurveChartComponent,
   ],
   exports: [CurveComponent],
   providers: [CurveDataService, CurveService],

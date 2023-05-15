@@ -26,9 +26,7 @@ export class CurveTableComponent implements CurveObservable {
   }
 
   public onChange = (changes: any) => {
-    changes?.forEach(([row, col, , newValue]: any[]) => {
-      this.dataService.setDataByCell(newValue, row, col);
-    });
+    this.dataService.setDataByCellOnTableChange(changes);
   }
 
 }

@@ -10,7 +10,7 @@ import {CurveService} from "../../service/curve.service";
   selector: 'app-curve',
   templateUrl: './curve.component.html',
   styleUrls: ['./curve.component.scss'],
-  providers: [CurveDataService],
+  providers: [CurveDataService, CurveService],
 })
 export class CurveComponent {
   constructor(private service: CurveService) {

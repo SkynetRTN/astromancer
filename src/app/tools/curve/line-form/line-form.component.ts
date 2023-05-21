@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {CurveCounts} from "../../../model/curve.model";
 import {FormControl} from "@angular/forms";
-import {CurveDataService} from "../../../service/curve-data.service";
+import {CurveService} from "../curve.service";
 
 /**
  * Type for passing/parsing number of curve to be plotted to the @LineFormComponent
@@ -29,7 +29,7 @@ export class LineFormComponent {
 
   form = new FormControl(CurveCounts.ONE);
 
-  constructor(private dataService: CurveDataService) {
+  constructor(private dataService: CurveService) {
   }
 
   onCurveNumChange() {

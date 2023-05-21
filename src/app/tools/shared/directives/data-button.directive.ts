@@ -9,7 +9,7 @@ import {
   Type,
   ViewContainerRef
 } from '@angular/core';
-import { TableAction } from "../types/actions";
+import {TableAction} from "../types/actions";
 
 /**
  * Interface for components that can be created by {@link DataButtonDirective}.
@@ -23,7 +23,7 @@ export interface DataButtonComponent {
 
 /**
  * Directive for data button control areas
- * 
+ *
  * Declared in {@link DataButtonDirectiveModule }
  */
 @Directive({
@@ -45,7 +45,7 @@ export class DataButtonDirective implements OnInit {
 }
 
 /**
- * Module encapsulating {@link DataButtonDirective} 
+ * Module encapsulating {@link DataButtonDirective}
  */
 @NgModule({
   declarations: [DataButtonDirective],

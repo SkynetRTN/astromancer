@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import {Component, OnInit} from '@angular/core';
+import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
 /**
  * Popup window to collect signature before initiating graph downloading.
- * 
+ *
  * Declared in {@link HonorCodePopupModule}
  */
 @Component({

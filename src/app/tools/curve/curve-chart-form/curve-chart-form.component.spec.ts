@@ -1,18 +1,18 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {CurveTableComponent} from './curve-table.component';
+import {CurveChartFormComponent} from './curve-chart-form.component';
 
-describe('CurveTableComponent', () => {
-  let component: CurveTableComponent;
-  let fixture: ComponentFixture<CurveTableComponent>;
+describe('CurveChartFormComponent', () => {
+  let component: CurveChartFormComponent;
+  let fixture: ComponentFixture<CurveChartFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CurveTableComponent ]
+      declarations: [ CurveChartFormComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(CurveTableComponent);
+    fixture = TestBed.createComponent(CurveChartFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

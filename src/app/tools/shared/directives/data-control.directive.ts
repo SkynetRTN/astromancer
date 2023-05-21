@@ -9,7 +9,7 @@ import {
   Type,
   ViewContainerRef
 } from '@angular/core';
-import { ChartAction, TableAction } from "../types/actions";
+import {ChartAction, TableAction} from "../types/actions";
 
 /**
  * Interface for components that can be created by {@link DataButtonDirective}.
@@ -27,7 +27,7 @@ export interface DataControlComponent {
 
 /**
  * Directive for control forms of data table
- * 
+ *
  * Decalred in {@link DataButtonDirectiveModule}
  */
 @Directive({

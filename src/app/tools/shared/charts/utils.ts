@@ -1,4 +1,4 @@
-import { Chart } from "chart.js/dist/types";
+import {Chart} from "chart.js/dist/types";
 import * as piexif from 'piexif-ts';
 
 /**
@@ -32,7 +32,7 @@ export function updateLine(tableData: any[], myChart: Chart, dataSetIndex = 0, x
  * @param jpegData data of a jpeg file
  * @param signature signature of the user
  * @param time time of download initiation
- * @returns 
+ * @returns
  */
 export function addEXIFToImage(jpegData: string, signature: string, time: string): string {
   const zeroth: piexif.IExifElement = {};
@@ -85,7 +85,7 @@ function dateAppendZero(num: number): string {
 
 /**
  * Turn dataurl into a blob object
- * @param dataurl 
+ * @param dataurl
  * @returns Blob object
  * Credits: https://stackoverflow.com/a/30407959/1154380
  */

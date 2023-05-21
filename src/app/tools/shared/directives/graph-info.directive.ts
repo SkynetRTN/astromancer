@@ -10,9 +10,9 @@ import {
   Type,
   ViewContainerRef
 } from '@angular/core';
-import { ChartAction } from "../types/actions";
-import { DataControlComponent } from "./data-control.directive";
-import { StandardGraphInfo } from "../standard-graph-info/standard-graphinfo";
+import {ChartAction} from "../types/actions";
+import {DataControlComponent} from "./data-control.directive";
+import {StandardGraphInfo} from "../standard-graph-info/standard-graphinfo";
 
 /**
  * Interface for components that can be created by {@link GraphInfoDirective}
@@ -26,7 +26,7 @@ export interface GraphInfoComponent {
 
 /**
  * Directive contains a form for graph information.
- * 
+ *
  * Declared in {@link GraphInfoDirectiveModule}
  */
 @Directive({

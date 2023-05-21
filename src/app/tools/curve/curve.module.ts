@@ -14,39 +14,44 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {CurveTableComponent} from './curve-table/curve-table.component';
 import {HotTableModule} from "@handsontable/angular";
-import {CurveDataService} from "../../service/curve-data.service";
-import {CurveService} from "../../service/curve.service";
+import {CurveService} from "./curve.service";
 import {CurveChartComponent} from "./curve-chart/curve-chart.component";
 import {NgChartsModule} from "ng2-charts";
+import {CurveChartFormComponent} from './curve-chart-form/curve-chart-form.component';
+import {MatButtonModule} from "@angular/material/button";
+import {MatIconModule} from "@angular/material/icon";
 
 /**
  * Module encapsulating {@link CurveComponent}
  */
 @NgModule({
-  imports: [
-    StandardLayoutModule,
-    NgChartsModule,
-    SimpleDataButtonModule,
-    SimpleGraphButtonModule,
-    StandardGraphInfoModule,
-    SimpleTableImplModule,
-    MatButtonToggleModule,
-    MatInputModule,
-    MatSelectModule,
-    FormsModule,
-    MatFormFieldModule,
-    BrowserAnimationsModule,
-    ReactiveFormsModule,
-    HotTableModule,
-  ],
+    imports: [
+        StandardLayoutModule,
+        NgChartsModule,
+        SimpleDataButtonModule,
+        SimpleGraphButtonModule,
+        StandardGraphInfoModule,
+        SimpleTableImplModule,
+        MatButtonToggleModule,
+        MatInputModule,
+        MatSelectModule,
+        FormsModule,
+        MatFormFieldModule,
+        BrowserAnimationsModule,
+        ReactiveFormsModule,
+        HotTableModule,
+        MatButtonModule,
+        MatIconModule,
+    ],
   declarations: [
     CurveComponent,
     LineFormComponent,
     CurveTableComponent,
     CurveChartComponent,
+    CurveChartFormComponent,
   ],
   exports: [CurveComponent],
-  providers: [CurveDataService, CurveService],
+  providers: [CurveService],
 })
 export class CurveModule {
 }

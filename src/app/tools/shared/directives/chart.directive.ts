@@ -9,10 +9,11 @@ import {
   Type,
   ViewContainerRef
 } from '@angular/core';
-import { ChartAction } from "../types/actions";
+import {ChartAction} from "../types/actions";
+
 /**
  * Interface for components that can be created by {@link ChartDirective}
- * 
+ *
  */
 export interface ChartComponent {
   /**
@@ -60,7 +61,7 @@ export interface ChartComponent {
 
 /**
  * Directive for charts.
- * 
+ *
  * Delcared in {@link ChartDirectiveModule}
  */
 @Directive({

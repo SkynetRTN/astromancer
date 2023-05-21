@@ -10,8 +10,8 @@ import {
   Type,
   ViewContainerRef
 } from '@angular/core';
-import { SimpleTableInitArgs } from "../tables/simpleTable";
-import { TableAction } from "../types/actions";
+import {SimpleTableInitArgs} from "../tables/simpleTable";
+import {TableAction} from "../types/actions";
 
 /**
  * Interface for components that can be created by {@link DataTableDirective}
@@ -25,7 +25,7 @@ export interface DataTableComponent {
 
 /**
  * Directive that contains a data table.
- * 
+ *
  * Declared in {@link DataTableDirectiveModule}
  */
 @Directive({

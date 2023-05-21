@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { Chart } from "chart.js/dist/types";
-import { addEXIFToImage, dataURLtoBlob, formatTime, getDateString } from "./utils";
-import { saveAs } from 'file-saver';
+import {Injectable} from '@angular/core';
+import {Chart} from "chart.js/dist/types";
+import {addEXIFToImage, dataURLtoBlob, formatTime, getDateString} from "./utils";
+import {saveAs} from 'file-saver';
 
 /**
  * Services for charts to perform

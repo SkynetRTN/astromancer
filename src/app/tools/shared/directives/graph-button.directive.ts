@@ -9,21 +9,21 @@ import {
   Type,
   ViewContainerRef
 } from '@angular/core';
-import { ChartAction } from "../types/actions";
+import {ChartAction} from "../types/actions";
 
 /**
  * Interface for components that can be created by {@link GraphButtonDirective}
  */
 export interface GraphButtonComponent {
   /**
-   * Observable that detects when user is inputing actions that is related to the chart 
+   * Observable that detects when user is inputing actions that is related to the chart
    */
   chartUserActionObs$: EventEmitter<ChartAction[]>;
 }
 
 /**
  * Directive that contains control area/form for charts.
- * 
+ *
  * Declared in {@link GraphButtonDirectiveModule}
  */
 @Directive({

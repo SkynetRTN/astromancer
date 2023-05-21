@@ -76,6 +76,14 @@ export class CurveData {
     }
     return result;
   }
+
+  addRow() {
+    this.curveDataDict.push({x: null, y1: null, y2: null, y3: null, y4: null});
+  }
+
+  removeRow(index: number, amount: number) {
+    this.curveDataDict = this.curveDataDict.slice(0, index).concat(this.curveDataDict.slice(index + amount));
+  }
 }
 
 export interface CurveDataDict {

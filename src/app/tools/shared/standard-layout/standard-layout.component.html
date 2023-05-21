@@ -3,7 +3,8 @@
     <div class="col-4">
       <div class="row h-80" title="Data Ctrl/Table">
         <div class="container h-80">
-          <ng-template (chartUserActionObs$)="onChartUserAction($event)" (tableUserActionObs$)="onTableUserAction($event)"
+          <ng-template (chartUserActionObs$)="onChartUserAction($event)"
+                       (tableUserActionObs$)="onTableUserAction($event)"
                        [controlType]="dataControlType"
                        data-control-directive
           ></ng-template>
@@ -22,7 +23,8 @@
         <ng-template [chartType]="chartType" [chartUpdateObs$]="chartUpdateObs$" chart-directive></ng-template>
       </div>
       <div class="row h-15" title="Graph Info">
-        <ng-template (chartUserActionObs$)="onChartUserAction($event)" [defaultChartInfo]="defaultChartInfo" [graphInfoType]="graphInfoType"
+        <ng-template (chartUserActionObs$)="onChartUserAction($event)" [defaultChartInfo]="defaultChartInfo"
+                     [graphInfoType]="graphInfoType"
                      graph-info-directive></ng-template>
       </div>
       <div class="row" title="Graph Buttons">

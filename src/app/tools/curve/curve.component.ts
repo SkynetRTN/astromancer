@@ -9,7 +9,7 @@ import {CurveService} from "./curve.service";
   selector: 'app-curve',
   templateUrl: './curve.component.html',
   styleUrls: ['./curve.component.scss'],
-  providers: [CurveService],
+  providers: [],
 })
 export class CurveComponent {
   constructor(private service: CurveService) {
@@ -17,10 +17,9 @@ export class CurveComponent {
 
   actionHandler(actions: TableAction[]) {
     actions.forEach((action) => {
-      if (action.action === "addRow"){
-        this.service.getTable().alter("insert_row_below");
+      if (action.action === "addRow") {
+        this.service.addRow();
       }
     })
   }
 }
-

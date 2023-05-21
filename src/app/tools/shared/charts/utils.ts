@@ -19,7 +19,7 @@ export function updateLine(tableData: any[], myChart: Chart, dataSetIndex = 0, x
       tableData[i][xKey] === null || tableData[i][yKey] === null) {
       continue;
     }
-    data[start++] = { x: tableData[i][xKey], y: tableData[i][yKey] };
+    data[start++] = {x: tableData[i][xKey], y: tableData[i][yKey]};
   }
   while (data.length !== start) {
     data.pop();
@@ -41,7 +41,7 @@ export function addEXIFToImage(jpegData: string, signature: string, time: string
   exif[piexif.TagValues.ExifIFD.DateTimeOriginal] = time;
   exif[piexif.TagValues.ExifIFD.FileSource] = window.location.href;
 
-  const exifObj = { '0th': zeroth, 'Exif': exif };
+  const exifObj = {'0th': zeroth, 'Exif': exif};
   const exifBytes = piexif.dump(exifObj);
   return piexif.insert(exifBytes, jpegData);
 }
@@ -96,5 +96,5 @@ export function dataURLtoBlob(dataurl: string): Blob {
   while (n--) {
     u8arr[n] = bstr.charCodeAt(n);
   }
-  return new Blob([u8arr], { type: mime });
+  return new Blob([u8arr], {type: mime});
 }

@@ -8,9 +8,9 @@ describe('CurveChartFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CurveChartFormComponent ]
+      declarations: [CurveChartFormComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(CurveChartFormComponent);
     component = fixture.componentInstance;

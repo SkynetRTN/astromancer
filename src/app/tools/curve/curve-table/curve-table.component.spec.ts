@@ -8,9 +8,9 @@ describe('CurveTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CurveTableComponent ]
+      declarations: [CurveTableComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(CurveTableComponent);
     component = fixture.componentInstance;

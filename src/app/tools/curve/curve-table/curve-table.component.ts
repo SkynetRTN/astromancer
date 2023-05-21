@@ -15,7 +15,6 @@ export class CurveTableComponent implements AfterViewInit {
   constructor(private dataService: CurveService, private service: CurveService) {
     this.colNames = this.dataService.getDataKeys();
     this.dataSet = this.dataService.getData();
-
   }
 
   ngAfterViewInit(): void {
@@ -36,4 +35,7 @@ export class CurveTableComponent implements AfterViewInit {
     this.dataService.setDataByCellOnTableChange(changes);
   }
 
+  public onRemove = (index: number, amount: number) => {
+    this.dataService.removeRow(index, amount);
+  }
 }

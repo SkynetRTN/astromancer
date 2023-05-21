@@ -44,10 +44,10 @@ export class DataTableDirective implements OnInit {
 
   ngOnInit(): void {
     const tableInjector: Injector = Injector.create({
-      providers: [{ provide: 'tableArgs', useValue: this.tableArgs, },
-      { provide: 'tableUpdateObs$', useValue: this.tableUpdateObs$ }]
+      providers: [{provide: 'tableArgs', useValue: this.tableArgs,},
+        {provide: 'tableUpdateObs$', useValue: this.tableUpdateObs$}]
     });
-    const component = this.container.createComponent(this.tableType, { injector: tableInjector });
+    const component = this.container.createComponent(this.tableType, {injector: tableInjector});
     (component.instance as DataTableComponent).tableUserActionObs$.subscribe(this.tableUserActionObs$);
   }
 

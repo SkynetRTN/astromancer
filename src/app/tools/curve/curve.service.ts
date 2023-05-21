@@ -7,7 +7,7 @@ import {ChartInfo} from "../shared/types/chart-form-interface";
 import {ChartConfiguration, ChartOptions} from "chart.js";
 
 @Injectable()
-export class CurveService implements ChartInfo{
+export class CurveService implements ChartInfo {
   private curveData: CurveData = new CurveData();
   private curveCount: number = CurveCounts.ONE;
   private isMagnitudeOn: boolean = false;
@@ -18,11 +18,10 @@ export class CurveService implements ChartInfo{
   private chartInfo: CurveChartInfo = new CurveChartInfo();
 
   private dataSubject = new BehaviorSubject<CurveDataDict[]>(this.getData());
-  private dataKeysSubject = new BehaviorSubject<string[]>(this.getDataKeys());
-  private chartInfoSubject = new BehaviorSubject<ChartInfo>(this.chartInfo);
-
   data$ = this.dataSubject.asObservable();
+  private dataKeysSubject = new BehaviorSubject<string[]>(this.getDataKeys());
   dataKeys$ = this.dataKeysSubject.asObservable();
+  private chartInfoSubject = new BehaviorSubject<ChartInfo>(this.chartInfo);
   chartInfo$ = this.chartInfoSubject.asObservable();
 
   public getData(): CurveDataDict[] {
@@ -37,6 +36,16 @@ export class CurveService implements ChartInfo{
     changes?.forEach(([row, col, , newValue]: any[]) => {
       this.curveData.setDataByCell(newValue, row, col);
     });
+    this.dataSubject.next(this.getData());
+  }
+
+  public addRow(): void {
+    this.curveData.addRow();
+    this.dataSubject.next(this.getData());
+  }
+
+  public removeRow(index: number, amount: number): void {
+    this.curveData.removeRow(index, amount);
     this.dataSubject.next(this.getData());
   }
 
@@ -106,32 +115,12 @@ export class CurveService implements ChartInfo{
     const data = this.getChartDataRaw(this.getData(), this.getCurveCount());
     for (let i = 0; i < this.getCurveCount(); i++) {
       result['datasets'].push({
-        label: this.chartInfo.getTableLabels()[i+1],
+        label: this.chartInfo.getTableLabels()[i + 1],
         data: data[i],
         borderWidth: 2,
         tension: 0.1,
         fill: false,
       })
-    }
-
-
-    return result;
-  }
-
-  private getChartDataRaw(dataDict: CurveDataDict[], curveCount: number): any[][] {
-    const data = dataDict;
-    let result: any[][] = [[], [], [], []];
-    if (data.length == 0)
-      return result;
-    for (let i = 0; i < data.length; i++) {
-      if (curveCount >= CurveCounts.ONE && data[i].y1 != null)
-        result[0].push({x: data[i].x, y: data[i].y1});
-      if (curveCount >= CurveCounts.TWO && data[i].y2 != null)
-        result[1].push({x: data[i].x, y: data[i].y2});
-      if (curveCount >= CurveCounts.THREE && data[i].y3 != null)
-        result[2].push({x: data[i].x, y: data[i].y3});
-      if (curveCount >= CurveCounts.FOUR && data[i].y4 != null)
-        result[3].push({x: data[i].x, y: data[i].y4});
     }
     return result;
   }
@@ -162,6 +151,24 @@ export class CurveService implements ChartInfo{
         duration: 0,
       }
     };
+  }
+
+  private getChartDataRaw(dataDict: CurveDataDict[], curveCount: number): any[][] {
+    const data = dataDict;
+    let result: any[][] = [[], [], [], []];
+    if (data.length == 0)
+      return result;
+    for (let i = 0; i < data.length; i++) {
+      if (curveCount >= CurveCounts.ONE && data[i].y1 != null)
+        result[0].push({x: data[i].x, y: data[i].y1});
+      if (curveCount >= CurveCounts.TWO && data[i].y2 != null)
+        result[1].push({x: data[i].x, y: data[i].y2});
+      if (curveCount >= CurveCounts.THREE && data[i].y3 != null)
+        result[2].push({x: data[i].x, y: data[i].y3});
+      if (curveCount >= CurveCounts.FOUR && data[i].y4 != null)
+        result[3].push({x: data[i].x, y: data[i].y4});
+    }
+    return result;
   }
 
 }

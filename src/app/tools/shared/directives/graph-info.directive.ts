@@ -43,9 +43,9 @@ export class GraphInfoDirective implements OnInit {
 
   ngOnInit(): void {
     const graphInfoInjector: Injector = Injector.create({
-      providers: [{ provide: 'defaultChartInfo', useValue: this.defaultChartInfo }]
+      providers: [{provide: 'defaultChartInfo', useValue: this.defaultChartInfo}]
     });
-    const component = this.container.createComponent(this.graphInfoType, { injector: graphInfoInjector });
+    const component = this.container.createComponent(this.graphInfoType, {injector: graphInfoInjector});
     (component.instance as DataControlComponent).chartUserActionObs$.subscribe(this.chartUserActionObs$);
   }
 }

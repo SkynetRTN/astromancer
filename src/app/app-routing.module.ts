@@ -9,11 +9,11 @@ import {PageNotFoundComponent} from "./shared/page-not-found/page-not-found.comp
  * Routes for the site
  */
 const TOOLS_ROUTES: Routes = [
-  { path: "home", component: HomeComponent, data: { title: getToolSiteName($localize`:home:Home`) } },
-  { path: "about", component: AboutComponent, data: { title: getToolSiteName($localize`:about:About`) } },
-  { path: "curve", component: CurveComponent, data: { title: getToolSiteName($localize`:curve:Curve`) } },
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: '**', component: PageNotFoundComponent, data: { title: $localize`:page-not-found:Page Not Found` } }
+  {path: "home", component: HomeComponent, data: {title: getToolSiteName($localize`:home:Home`)}},
+  {path: "about", component: AboutComponent, data: {title: getToolSiteName($localize`:about:About`)}},
+  {path: "curve", component: CurveComponent, data: {title: getToolSiteName($localize`:curve:Curve`)}},
+  {path: '', redirectTo: '/home', pathMatch: 'full'},
+  {path: '**', component: PageNotFoundComponent, data: {title: $localize`:page-not-found:Page Not Found`}}
 ]
 
 /**

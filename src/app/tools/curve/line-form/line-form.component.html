@@ -4,7 +4,7 @@
       <form class="h-fit">
         <mat-form-field appearance="fill">
           <mat-label i18n>Number of Curves</mat-label>
-          <mat-select [formControl]="form" name="curves" (selectionChange)="onCurveNumChange()">
+          <mat-select (selectionChange)="onCurveNumChange()" [formControl]="form" name="curves">
             <mat-option *ngFor="let count of curveCountsKeys" [value]="count">
               {{count}}
             </mat-option>

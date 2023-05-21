@@ -77,8 +77,8 @@ export class ChartDirective implements OnInit {
 
   ngOnInit(): void {
     const chartInjector: Injector = Injector.create(
-      { providers: [{ provide: 'chartUpdateObs$', useValue: this.chartUpdateObs$ }] });
-    this.container.createComponent(this.chartType, { injector: chartInjector });
+      {providers: [{provide: 'chartUpdateObs$', useValue: this.chartUpdateObs$}]});
+    this.container.createComponent(this.chartType, {injector: chartInjector});
   }
 
 }
@@ -87,9 +87,9 @@ export class ChartDirective implements OnInit {
  * Module encapsulating {@link ChartDirective}
  */
 @NgModule({
-  declarations: [ChartDirective],
-  exports: [ChartDirective],
-}
+    declarations: [ChartDirective],
+    exports: [ChartDirective],
+  }
 )
 export class ChartDirectiveModule {
 }

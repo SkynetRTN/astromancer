@@ -1,17 +1,16 @@
 <div class="container">
   <hot-table #table
+             [afterChange]="onChange"
              [allowInsertColumn]="false"
              [allowInsertRow]="true"
+             [beforeRemoveRow]="onRemove"
              [colHeaders]="colNames"
              [contextMenu]="[
-      'undo',
-      'redo',
-      'copy',
-      '---------',
-      'row_above',
-      'row_below',
-      '---------',
-      'remove_row']"
+                'undo',
+                'redo',
+                'copy',
+                '---------',
+                'remove_row']"
              [data]="dataSet"
              [hiddenColumns]="true"
              [hotId]="id"
@@ -20,7 +19,6 @@
              [rowHeaders]="true"
              [stretchH]="'all'"
              [type]="'numeric'"
-             [afterChange]="onChange"
              licenseKey="non-commercial-and-evaluation">
   </hot-table>
 </div>

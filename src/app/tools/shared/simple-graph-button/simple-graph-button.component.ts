@@ -1,4 +1,4 @@
-import {Component, EventEmitter, NgModule, OnInit} from '@angular/core';
+import {Component, EventEmitter, NgModule, OnInit, Output} from '@angular/core';
 import {GraphButtonComponent} from "../directives/graph-button.directive";
 import {ChartAction} from "../types/actions";
 import {MatButtonModule} from "@angular/material/button";
@@ -9,7 +9,7 @@ import {MatButtonModule} from "@angular/material/button";
   styleUrls: ['./simple-graph-button.component.scss']
 })
 export class SimpleGraphButtonComponent implements OnInit, GraphButtonComponent {
-
+  @Output()
   chartUserActionObs$: EventEmitter<ChartAction[]>;
 
   constructor() {
@@ -29,6 +29,9 @@ export class SimpleGraphButtonComponent implements OnInit, GraphButtonComponent 
 
 @NgModule({
   imports: [MatButtonModule],
+  exports: [
+    SimpleGraphButtonComponent
+  ],
   declarations: [SimpleGraphButtonComponent]
 })
 export class SimpleGraphButtonModule {

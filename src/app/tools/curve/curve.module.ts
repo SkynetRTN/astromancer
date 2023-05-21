@@ -1,7 +1,6 @@
 import {NgModule} from "@angular/core";
 import {CurveComponent} from "./curve.component";
 import {StandardLayoutModule} from "../shared/standard-layout/standard-layout.component";
-import {StandardGraphInfoModule} from "../shared/standard-graph-info/standard-graph-info.component";
 import {SimpleDataButtonModule} from "../shared/simple-data-button/simple-data-button.component";
 import {SimpleGraphButtonModule} from "../shared/simple-graph-button/simple-graph-button.component";
 import {SimpleTableImplModule} from "../shared/tables/simple-table-impl/simple-table-impl.module";
@@ -30,7 +29,6 @@ import {MatIconModule} from "@angular/material/icon";
     NgChartsModule,
     SimpleDataButtonModule,
     SimpleGraphButtonModule,
-    StandardGraphInfoModule,
     SimpleTableImplModule,
     MatButtonToggleModule,
     MatInputModule,

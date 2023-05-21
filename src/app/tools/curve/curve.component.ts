@@ -1,6 +1,8 @@
 import {Component,} from '@angular/core';
-import {TableAction} from "../shared/types/actions";
+import {MyAction} from "../shared/types/actions";
 import {CurveService} from "./curve.service";
+import {HonorCodePopupService} from "../shared/charts/honor-code-popup/honor-code-popup.service";
+import {ChartService} from "../shared/charts/chart.service";
 
 /**
  * Curve Component
@@ -12,13 +14,20 @@ import {CurveService} from "./curve.service";
   providers: [],
 })
 export class CurveComponent {
-  constructor(private service: CurveService) {
+  constructor(private service: CurveService,
+              private honorCodeService: HonorCodePopupService,
+              private chartService: ChartService) {
   }
 
-  actionHandler(actions: TableAction[]) {
+  actionHandler(actions: MyAction[]) {
     actions.forEach((action) => {
       if (action.action === "addRow") {
         this.service.addRow();
+      } else if (action.action == "saveGraph") {
+        this.honorCodeService.honored().then((name: string) => {
+          console.log(name)
+          this.chartService.saveImage(this.service.getChart(), name);
+        })
       }
     })
   }

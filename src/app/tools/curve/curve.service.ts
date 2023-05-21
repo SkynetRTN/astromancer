@@ -4,7 +4,7 @@ import {BehaviorSubject} from "rxjs";
 import {HotTableRegisterer} from "@handsontable/angular";
 import Handsontable from "handsontable";
 import {ChartInfo} from "../shared/types/chart-form-interface";
-import {ChartConfiguration, ChartOptions} from "chart.js";
+import {Chart, ChartConfiguration, ChartOptions} from "chart.js";
 
 @Injectable()
 export class CurveService implements ChartInfo {
@@ -110,6 +110,10 @@ export class CurveService implements ChartInfo {
     this.chartInfoSubject.next(this.chartInfo);
   }
 
+  public getChart(): Chart {
+    return Chart.getChart("chart") as Chart;
+  }
+
   public getChartData(): ChartConfiguration<'line'>['data'] {
     let result: any = {datasets: []};
     const data = this.getChartDataRaw(this.getData(), this.getCurveCount());
@@ -170,7 +174,6 @@ export class CurveService implements ChartInfo {
     }
     return result;
   }
-
 }
 
 class CurveChartInfo implements ChartInfo {

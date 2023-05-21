@@ -17,6 +17,8 @@
     <div class="row chart-form-row">
       <app-curve-chart-form></app-curve-chart-form>
     </div>
-    <div class="row chart-button-row">CHART BUTTON</div>
+    <div class="row chart-button-row">
+      <app-simple-graph-button (chartUserActionObs$)="actionHandler($event)"></app-simple-graph-button>
+    </div>
   </div>
 </div>

@@ -32,7 +32,7 @@ export class CurveChartComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.lineChart = Chart.getChart("chart") as Chart;
+    this.lineChart = this.service.getChart();
     this.service.data$.subscribe(
       () => {
         this.lineChartData = this.service.getChartData();

@@ -41,6 +41,7 @@ export class CurveData {
 
   public setData(data: CurveDataDict[]): void {
     this.curveDataDict = data;
+    this.sortDataByX();
   }
 
   public setDataByCell(value: number | null, row: number, col: string): void {
@@ -61,9 +62,27 @@ export class CurveData {
         this.curveDataDict[row][CurveParam.Y4] = value;
         break;
     }
+    this.sortDataByX();
   }
 
-  getDataKeys(curveCount: number): string[] {
+  private sortDataByX(): void {
+    this.curveDataDict = this.curveDataDict.sort(
+      (a, b) => {
+        if (a['x'] === null)
+          return 1;
+        if (b['x'] === null)
+          return -1;
+        if (a['x'] < b['x'])
+          return -1;
+        if (a['x'] > b['x'])
+          return 1;
+        else
+          return 0;
+      }
+    );
+  }
+
+  public getDataKeys(curveCount: number): string[] {
     let result = ["x", "y1"];
     if (curveCount >= CurveCounts.TWO) {
       result.push("y2");

@@ -23,11 +23,12 @@ export class CurveComponent {
     actions.forEach((action) => {
       if (action.action === "addRow") {
         this.service.addRow(-1, 1);
-      } else if (action.action == "saveGraph") {
+      } else if (action.action === "saveGraph") {
         this.honorCodeService.honored().then((name: string) => {
-          console.log(name)
           this.chartService.saveImage(this.service.getChart(), name);
         })
+      } else if (action.action === "resetData") {
+        this.service.resetStorageData();
       }
     })
   }

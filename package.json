@@ -35,6 +35,7 @@
     "file-saver": "^2.0.5",
     "handsontable": "^12.4.0",
     "ng2-charts": "^4.1.1",
+    "ngx-webstorage-service": "^5.0.0",
     "piexif-ts": "^2.0.16",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",

@@ -22,6 +22,9 @@ export class SimpleDataButtonComponent implements OnInit, DataButtonComponent {
     this.tableUserActionObs$.emit([{action: "addRow"}]);
   }
 
+  dataReset() {
+    this.tableUserActionObs$.emit([{action: "resetData"}]);
+  }
 }
 
 @NgModule({

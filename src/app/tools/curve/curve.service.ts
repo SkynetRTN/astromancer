@@ -1,22 +1,21 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {CurveCounts, CurveData, CurveDataDict} from "../../model/curve.model";
 import {BehaviorSubject} from "rxjs";
 import {HotTableRegisterer} from "@handsontable/angular";
 import Handsontable from "handsontable";
 import {ChartInfo} from "../shared/types/chart-form-interface";
 import {Chart, ChartConfiguration, ChartOptions} from "chart.js";
+import {LOCAL_STORAGE, StorageService} from "ngx-webstorage-service";
 
 @Injectable()
 export class CurveService implements ChartInfo {
+  private static STORAGE_KEY: string = "curveData";
   private curveData: CurveData = new CurveData();
   private curveCount: number = CurveCounts.ONE;
   private isMagnitudeOn: boolean = false;
-
   private id = "dataTable";
   private hotRegisterer = new HotTableRegisterer();
-
   private chartInfo: CurveChartInfo = new CurveChartInfo();
-
   private dataSubject = new BehaviorSubject<CurveDataDict[]>(this.getData());
   data$ = this.dataSubject.asObservable();
   private dataKeysSubject = new BehaviorSubject<string[]>(this.getDataKeys());
@@ -24,8 +23,22 @@ export class CurveService implements ChartInfo {
   private chartInfoSubject = new BehaviorSubject<ChartInfo>(this.chartInfo);
   chartInfo$ = this.chartInfoSubject.asObservable();
 
+  constructor(@Inject(LOCAL_STORAGE) private storage: StorageService) {
+    if (this.storage.has(CurveService.STORAGE_KEY)) {
+      this.setData(JSON.parse(this.storage.get(CurveService.STORAGE_KEY)));
+    } else {
+      this.storage.set(CurveService.STORAGE_KEY, JSON.stringify(this.getData()));
+    }
+  }
+
   public getData(): CurveDataDict[] {
     return this.curveData.getData(this.curveCount);
+  }
+
+  public setData(dataDict: CurveDataDict[]): void {
+    this.curveData.setData(dataDict);
+    this.storage.set(CurveService.STORAGE_KEY, JSON.stringify(this.getData()));
+    this.dataSubject.next(this.getData());
   }
 
   public getDataKeys(): string[] {
@@ -36,6 +49,13 @@ export class CurveService implements ChartInfo {
     changes?.forEach(([row, col, , newValue]: any[]) => {
       this.curveData.setDataByCell(newValue, row, col);
     });
+    this.storage.set(CurveService.STORAGE_KEY, JSON.stringify(this.getData()));
+    this.dataSubject.next(this.getData());
+  }
+
+  public resetStorageData(): void {
+    this.curveData.setData(this.curveData.getDefaultData());
+    this.storage.set(CurveService.STORAGE_KEY, JSON.stringify(this.getData()));
     this.dataSubject.next(this.getData());
   }
 

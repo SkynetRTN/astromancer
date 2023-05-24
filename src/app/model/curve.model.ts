@@ -1,8 +1,12 @@
 export class CurveData {
-  private curveDataDict: CurveDataDict[];
+  private curveDataDict!: CurveDataDict[];
 
   constructor() {
-    this.curveDataDict = [
+    this.setData(this.getDefaultData());
+  }
+
+  public getDefaultData(): CurveDataDict[] {
+    return [
       {x: 0, y1: 25, y2: null, y3: null, y4: null},
       {x: 1, y1: 16, y2: null, y3: null, y4: null},
       {x: 2, y1: 9, y2: null, y3: null, y4: null},
@@ -65,23 +69,6 @@ export class CurveData {
     this.sortDataByX();
   }
 
-  private sortDataByX(): void {
-    this.curveDataDict = this.curveDataDict.sort(
-      (a, b) => {
-        if (a['x'] === null)
-          return 1;
-        if (b['x'] === null)
-          return -1;
-        if (a['x'] < b['x'])
-          return -1;
-        if (a['x'] > b['x'])
-          return 1;
-        else
-          return 0;
-      }
-    );
-  }
-
   public getDataKeys(curveCount: number): string[] {
     let result = ["x", "y1"];
     if (curveCount >= CurveCounts.TWO) {
@@ -107,6 +94,23 @@ export class CurveData {
 
   removeRow(index: number, amount: number) {
     this.curveDataDict = this.curveDataDict.slice(0, index).concat(this.curveDataDict.slice(index + amount));
+  }
+
+  private sortDataByX(): void {
+    this.curveDataDict = this.curveDataDict.sort(
+      (a, b) => {
+        if (a['x'] === null)
+          return 1;
+        if (b['x'] === null)
+          return -1;
+        if (a['x'] < b['x'])
+          return -1;
+        if (a['x'] > b['x'])
+          return 1;
+        else
+          return 0;
+      }
+    );
   }
 }
 

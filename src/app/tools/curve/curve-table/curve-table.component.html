@@ -1,6 +1,7 @@
 <div class="container">
   <hot-table #table
              [afterChange]="onChange"
+             [afterCreateRow]="onInsert"
              [allowInsertColumn]="false"
              [allowInsertRow]="true"
              [beforeRemoveRow]="onRemove"
@@ -9,6 +10,9 @@
                 'undo',
                 'redo',
                 'copy',
+                '---------',
+                'row_above',
+                'row_below',
                 '---------',
                 'remove_row']"
              [data]="dataSet"

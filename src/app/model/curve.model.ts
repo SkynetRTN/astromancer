@@ -77,8 +77,13 @@ export class CurveData {
     return result;
   }
 
-  addRow() {
-    this.curveDataDict.push({x: null, y1: null, y2: null, y3: null, y4: null});
+  addRow(index: number, amount: number) {
+    if (index > 0) {
+      for (let i = 0; i < amount; i++) {
+        this.curveDataDict.splice(index + i, 0, {x: null, y1: null, y2: null, y3: null, y4: null});
+      }
+    } else
+      this.curveDataDict.push({x: null, y1: null, y2: null, y3: null, y4: null});
   }
 
   removeRow(index: number, amount: number) {

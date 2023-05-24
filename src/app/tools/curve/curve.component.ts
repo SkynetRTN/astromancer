@@ -22,7 +22,7 @@ export class CurveComponent {
   actionHandler(actions: MyAction[]) {
     actions.forEach((action) => {
       if (action.action === "addRow") {
-        this.service.addRow();
+        this.service.addRow(-1, 1);
       } else if (action.action == "saveGraph") {
         this.honorCodeService.honored().then((name: string) => {
           console.log(name)

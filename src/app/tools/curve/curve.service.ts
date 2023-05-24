@@ -39,8 +39,8 @@ export class CurveService implements ChartInfo {
     this.dataSubject.next(this.getData());
   }
 
-  public addRow(): void {
-    this.curveData.addRow();
+  public addRow(index: number, amount: number): void {
+    this.curveData.addRow(index, amount);
     this.dataSubject.next(this.getData());
   }
 

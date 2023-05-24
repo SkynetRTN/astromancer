@@ -38,4 +38,16 @@ export class CurveTableComponent implements AfterViewInit {
   public onRemove = (index: number, amount: number) => {
     this.dataService.removeRow(index, amount);
   }
+
+  public onInsert = (index: number, amount: number) => {
+    this.dataService.addRow(index, amount);
+  }
+
+  public onReUndo = (action: any) => {
+    // index: number, data: any[], actionType: string
+    if (action['actionType'] === "remove_row")
+      console.log(action);
+    else if (action['actionType'] === "")
+      console.log(action);
+  }
 }

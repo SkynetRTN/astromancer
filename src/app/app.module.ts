@@ -8,6 +8,7 @@ import {registerAllModules} from 'handsontable/registry';
 import {HomeComponent} from "./shared/home/home.component";
 import {AboutComponent} from "./shared/about/about.component";
 import {PageNotFoundComponent} from "./shared/page-not-found/page-not-found.component";
+import {HonorCodePopupModule} from "./tools/shared/honor-code-popup/honor-code-popup.module";
 
 
 registerAllModules();
@@ -18,6 +19,7 @@ registerAllModules();
     AppRoutingModule,
     BrowserAnimationsModule,
     ToolsNavbarModule,
+    HonorCodePopupModule,
   ],
   declarations: [
     AppComponent,

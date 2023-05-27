@@ -1,15 +1,14 @@
-import {Component, EventEmitter, NgModule, OnInit} from '@angular/core';
-import {GraphButtonComponent} from "../directives/graph-button.directive";
+import {Component, EventEmitter, NgModule, OnInit, Output} from '@angular/core';
 import {ChartAction} from "../types/actions";
 import {MatButtonModule} from "@angular/material/button";
 
 @Component({
   selector: 'app-simple-graph-button',
   templateUrl: './simple-graph-button.component.html',
-  styleUrls: ['./simple-graph-button.component.css']
+  styleUrls: ['./simple-graph-button.component.scss']
 })
-export class SimpleGraphButtonComponent implements OnInit, GraphButtonComponent {
-
+export class SimpleGraphButtonComponent implements OnInit {
+  @Output()
   chartUserActionObs$: EventEmitter<ChartAction[]>;
 
   constructor() {
@@ -25,10 +24,16 @@ export class SimpleGraphButtonComponent implements OnInit, GraphButtonComponent 
   }
 
 
+  resetGraphInfo() {
+    this.chartUserActionObs$.emit([{action: "resetChartInfo"}])
+  }
 }
 
 @NgModule({
   imports: [MatButtonModule],
+  exports: [
+    SimpleGraphButtonComponent
+  ],
   declarations: [SimpleGraphButtonComponent]
 })
 export class SimpleGraphButtonModule {

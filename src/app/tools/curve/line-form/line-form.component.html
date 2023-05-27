@@ -1,21 +1,26 @@
 <div class="container">
   <div class="row">
-    <div class="col-8">
+    <div class="col-6">
       <form class="h-fit">
         <mat-form-field appearance="fill">
           <mat-label i18n>Number of Curves</mat-label>
-          <mat-select #selector (ngModelChange)="onCurveNumChange(selector.value)" [(ngModel)]="selectedValue"
-                      name="curves">
-            <mat-option *ngFor="let count of curveCounts; index as i" [value]="count.value">
-              {{count.viewValue}}
+          <mat-select (selectionChange)="onCurveNumChange()" [formControl]="form" name="curves">
+            <mat-option *ngFor="let count of curveCountsKeys" [value]="count">
+              {{count}}
             </mat-option>
           </mat-select>
         </mat-form-field>
       </form>
     </div>
-    <div class="col-4">
-      <mat-button-toggle #button (change)="onMagnitude(button.checked)" i18n>Magnitudes</mat-button-toggle>
+    <div class="col-6">
+      <mat-slide-toggle
+        #magSlider
+        (change)="onMagnitude(magSlider.checked)"
+        [checked]="magnitude"
+        [color]="'primary'"
+      >
+        <span>Magnitude Mode</span>
+      </mat-slide-toggle>
     </div>
   </div>
 </div>
-

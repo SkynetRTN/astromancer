@@ -1,188 +1,155 @@
-import { AfterViewInit, Component, EventEmitter, Injector, OnInit } from '@angular/core';
-import { Chart, LinearScaleOptions } from "chart.js";
-import { ChartConfiguration, ChartOptions } from "chart.js/dist/types";
-import { updateLine } from "../../shared/charts/utils";
-import { ChartComponent } from "../../shared/directives/chart.directive";
-import { ChartAction } from "../../shared/types/actions";
-import { ChartService } from "../../shared/charts/chart.service";
-import { HonorCodePopupService } from "../../shared/charts/honor-code-popup/honor-code-popup.service";
+import {AfterViewInit, Component} from '@angular/core';
+import {Chart} from "chart.js";
+import {ChartConfiguration, ChartOptions} from "chart.js/dist/types";
+import {CurveService} from "../curve.service";
+import {ChartInfo, MyChart} from "../../shared/charts/chart.interface";
+import {MyData} from "../../shared/data/data.interface";
+import {CurveChartInfo, CurveCounts, CurveDataDict, CurveInterface} from "../curve.service.util";
 
 /**
  * Chart for the curve graphing tools.
- * 
- * Implements the {@link ChartComponent} interface.
+ *
  */
 @Component({
   selector: 'app-curve-chart',
   templateUrl: './curve-chart.component.html',
-  styleUrls: ['./curve-chart.component.css'],
+  styleUrls: ['./curve-chart.component.scss'],
 })
-export class CurveChartComponent implements AfterViewInit, ChartComponent {
+export class CurveChartComponent implements AfterViewInit {
   /**
-   * Observer that subsrcibes to interface command to execute actions on the chart.
+   * Chart.js object id
    */
-  chartUpdateObs$: EventEmitter<ChartAction[]>;
+  id!: string;
   /**
-   * The Chart.js Object
+   * Custom Chart object
    */
-  lineChart!: Chart;
+  chart!: CurveChart;
   /**
    * Chart.js object data configuration
    */
-  lineChartData: ChartConfiguration<'line'>['data'] = {
-    datasets: [
-      {
-        label: 'y1',
-        data: [],
-        borderWidth: 2,
-        tension: 0.1,
-        fill: false,
-        hidden: false,
-      }, {
-        label: 'y2',
-        data: [],
-        borderWidth: 2,
-        tension: 0.1,
-        fill: false,
-        hidden: true,
-      }, {
-        label: 'y3',
-        data: [],
-        borderWidth: 2,
-        tension: 0.1,
-        fill: false,
-        hidden: true,
-      }, {
-        label: 'y4',
-        data: [],
-        borderWidth: 2,
-        tension: 0.1,
-        fill: false,
-        hidden: true,
-      }
-    ]
-  };
+  lineChartData!: ChartConfiguration<'line'>['data'];
   /**
    * Chart.js object options configuration
    */
-  lineChartOptions: ChartOptions<'line'> = {
-    responsive: true,
-    maintainAspectRatio: false,
-    hover: { mode: 'nearest' },
-    scales: {
-      x: {
-        title: { text: 'x', display: true },
-        type: 'linear',
-        position: 'bottom',
-      },
-      y: {
-        title: { text: 'y', display: true },
-        reverse: false,
-      }
-    },
-    plugins: {
-      title: {
-        text: 'Title',
-        display: true,
-      }
-    }
-  };
-  /**
-   * 
-   * @param args Injector from parent component
-   * @param chartService chart service for saving graph etc.
-   * @param honorCodePopupService service that prompts user to sign their name.
-   */
-  constructor(args: Injector, private chartService: ChartService, private honorCodePopupService: HonorCodePopupService) {
-    this.chartUpdateObs$ = args.get('chartUpdateObs$');
-    this.chartUpdateObs$.subscribe((actions: ChartAction[]) => {
-      for (let action of actions) {
-        if (action.action == "flipY") {
-          this.setYAxisReverse(action.payload);
-        } else if (action.action == "setTitle") {
-          this.setTitle(action.payload);
-        } else if (action.action == "setXAxis") {
-          this.setXAxis(action.payload);
-        } else if (action.action == "setYAxis") {
-          this.setYAxis(action.payload);
-        } else if (action.action.includes("setData")) {
-          this.setDataLabel(action.action, action.payload);
-        } else if (action.action == 'showDataSet') {
-          this.showDataSet(action.payload);
-        } else if (action.action == 'hideDataSet') {
-          this.hideDataSet(action.payload);
-        } else if (action.action == 'plotData' && this.lineChart) {
-          for (let i = 0; i < 4; i++) {
-            updateLine(action.payload, this.lineChart, i, 'x', 'y' + (i + 1));
-          }
-        } else if (action.action == "saveGraph") {
-          honorCodePopupService.honored()
-            .then((signature) => {
-              chartService.saveImage(this.lineChart, signature)
-            })
-            .catch(() => {
-              console.log("User is defeated!")
-            });
-        }
-      }
-      this.lineChart.update('none');
-    });
+  lineChartOptions!: ChartOptions<'line'>;
+
+
+  constructor(private service: CurveService) {
+    this.id = "curve-chart";
+    this.chart = new CurveChart(this.id);
+    this.lineChartData = this.chart.generateChartConfig(
+      this.service.getDataObject(),
+      this.service.getChartInfoObject(),
+      this.service.getInterfaceObject());
+    this.lineChartOptions = this.chart.generateChartOptions(
+      this.service.getChartInfoObject(),
+      this.service.getInterfaceObject()
+    );
   }
 
-  /**
-   * set up {@link lineChart} after it's initialized
-   */
   ngAfterViewInit(): void {
-    this.lineChart = Chart.getChart("chart") as Chart;
+    this.service.data$.subscribe(
+      () => {
+        this.lineChartData = this.chart.generateChartConfig(
+          this.service.getDataObject(),
+          this.service.getChartInfoObject(),
+          this.service.getInterfaceObject());
+        console.log(this.chart.generateChartConfig(
+          this.service.getDataObject(),
+          this.service.getChartInfoObject(),
+          this.service.getInterfaceObject()))
+        this.chart.renderChart();
+      }
+    )
+    this.service.chartInfo$.subscribe(
+      () => {
+        this.lineChartOptions = this.chart.generateChartOptions(
+          this.service.getChartInfoObject(),
+          this.service.getInterfaceObject()
+        );
+        this.chart.renderChart();
+      }
+    )
+  }
+}
+
+class CurveChart implements MyChart {
+  private readonly id: string;
+
+  constructor(id: string) {
+    this.id = id;
   }
 
-  /**
-   * reverse the y-axis scale
-   * @param isReversed if the y-axis should be reversed
-   */
-  setYAxisReverse(isReversed: boolean): void {
-    if (this.lineChart.options.scales && this.lineChart.options.scales['y']) {
-      this.lineChart.options.scales['y'].reverse = isReversed;
+  public generateChartConfig(data: MyData, chartInfo: ChartInfo, toolInterface: any): ChartConfiguration<'line'>['data'] {
+    return this.generateCurveChartConfig(
+      data.getData(),
+      (toolInterface as CurveInterface).getCurveCount(),
+      (chartInfo as CurveChartInfo).getTableLabels());
+  }
+
+  public generateChartOptions(chartInfo: ChartInfo, toolInterface: any): ChartOptions {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      hover: {mode: 'nearest'},
+      scales: {
+        x: {
+          title: {text: (chartInfo as CurveChartInfo).getXAxisLabel(), display: true},
+          type: 'linear',
+          position: 'bottom',
+        },
+        y: {
+          title: {text: (chartInfo as CurveChartInfo).getYAxisLabel(), display: true},
+          reverse: (toolInterface as CurveInterface).getIsMagnitudeOn(),
+        }
+      },
+      plugins: {
+        title: {
+          text: (chartInfo as CurveChartInfo).getChartTitle(),
+          display: true,
+        }
+      },
+      animation: {
+        duration: 0,
+      }
+    };
+  }
+
+  public renderChart(): void {
+    Chart.getChart(this.id)?.update('none');
+  }
+
+  private generateCurveChartConfig(chartData: CurveDataDict[], curveCount: number, labels: string[]): ChartConfiguration<'line'>['data'] {
+    let result: any = {datasets: []};
+    const data = this.makeRawData(chartData, curveCount);
+    for (let i = 0; i < curveCount; i++) {
+      result['datasets'].push({
+        label: labels[i + 1],
+        data: data[i],
+        borderWidth: 2,
+        tension: 0.1,
+        fill: false,
+      })
     }
+    return result;
   }
 
-  setTitle(title: string): void {
-    if (this.lineChart.options.plugins && this.lineChart.options.plugins.title) {
-      this.lineChart.options.plugins.title.text = title;
+  private makeRawData(dataDict: CurveDataDict[], curveCount: number): any[][] {
+    const data = dataDict;
+    let result: any[][] = [[], [], [], []];
+    if (data.length == 0)
+      return result;
+    for (let i = 0; i < data.length; i++) {
+      if (curveCount >= CurveCounts.ONE && data[i].y1 != null)
+        result[0].push({x: data[i].x, y: data[i].y1});
+      if (curveCount >= CurveCounts.TWO && data[i].y2 != null)
+        result[1].push({x: data[i].x, y: data[i].y2});
+      if (curveCount >= CurveCounts.THREE && data[i].y3 != null)
+        result[2].push({x: data[i].x, y: data[i].y3});
+      if (curveCount >= CurveCounts.FOUR && data[i].y4 != null)
+        result[3].push({x: data[i].x, y: data[i].y4});
     }
-  }
-
-  setXAxis(title: string): void {
-    if (this.lineChart.options.scales && this.lineChart.options.scales['x']) {
-      (this.lineChart.options.scales['x'] as LinearScaleOptions).title.text = title;
-    }
-  }
-
-  setYAxis(title: string): void {
-    if (this.lineChart.options.scales && this.lineChart.options.scales['y']) {
-      (this.lineChart.options.scales['y'] as LinearScaleOptions).title.text = title;
-    }
-  }
-
-  setDataLabel(data: string, title: string): void {
-    let tag: number = parseInt(data.charAt(data.length - 1)) - 1;
-    // if (!this.lineChart.data.datasets[tag].hidden){
-    this.lineChart.data.datasets[tag].label = title;
-    // }
-  }
-
-  hideDataSet(index: number | number[]): void {
-    let indices = (typeof index == 'number') ? [index] : index;
-    for (let i of indices) {
-      this.lineChart.data.datasets[i].hidden = true;
-    }
-  }
-
-  showDataSet(index: number | number[]): void {
-    let indices = (typeof index == 'number') ? [index] : index;
-    for (let i of indices) {
-      this.lineChart.data.datasets[i].hidden = false;
-    }
+    return result;
   }
 
 }

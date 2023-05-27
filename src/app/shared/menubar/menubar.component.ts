@@ -1,9 +1,9 @@
-import { Component, Input, NgModule } from '@angular/core';
-import { ToolsNavbarComponent } from "../tools-navbar/tools-navbar.component";
-import { AppRoutingModule } from "../../app-routing.module";
-import { MatButtonModule } from "@angular/material/button";
-import { MatToolbarModule } from "@angular/material/toolbar";
-import { MatIconModule } from "@angular/material/icon";
+import {Component, Input, NgModule} from '@angular/core';
+import {ToolsNavbarComponent} from "../tools-navbar/tools-navbar.component";
+import {AppRoutingModule} from "../../app-routing.module";
+import {MatButtonModule} from "@angular/material/button";
+import {MatToolbarModule} from "@angular/material/toolbar";
+import {MatIconModule} from "@angular/material/icon";
 
 /**
  * Menu bar for the entire app
@@ -11,7 +11,7 @@ import { MatIconModule } from "@angular/material/icon";
 @Component({
   selector: 'app-menubar',
   templateUrl: './menubar.component.html',
-  styleUrls: ['./menubar.component.css']
+  styleUrls: ['./menubar.component.scss']
 })
 export class MenubarComponent {
   /**

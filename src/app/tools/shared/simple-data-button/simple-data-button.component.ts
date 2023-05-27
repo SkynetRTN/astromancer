@@ -1,14 +1,13 @@
 import {Component, EventEmitter, NgModule, OnInit, Output} from '@angular/core';
 import {TableAction} from "../types/actions";
-import {DataButtonComponent} from "../directives/data-button.directive";
 import {MatButtonModule} from "@angular/material/button";
 
 @Component({
   selector: 'app-simple-data-button',
   templateUrl: './simple-data-button.component.html',
-  styleUrls: ['./simple-data-button.component.css']
+  styleUrls: ['./simple-data-button.component.scss']
 })
-export class SimpleDataButtonComponent implements OnInit, DataButtonComponent {
+export class SimpleDataButtonComponent implements OnInit {
   @Output() tableUserActionObs$: EventEmitter<TableAction[]>;
 
   constructor() {
@@ -22,11 +21,21 @@ export class SimpleDataButtonComponent implements OnInit, DataButtonComponent {
     this.tableUserActionObs$.emit([{action: "addRow"}]);
   }
 
+  dataReset() {
+    this.tableUserActionObs$.emit([{action: "resetData"}]);
+  }
+
+  interfaceReset() {
+    this.tableUserActionObs$.emit([{action: "resetInterface"}]);
+  }
 }
 
 @NgModule({
   imports: [MatButtonModule],
   declarations: [SimpleDataButtonComponent],
+  exports: [
+    SimpleDataButtonComponent
+  ]
 })
 export class SimpleDataButtonModule {
 }

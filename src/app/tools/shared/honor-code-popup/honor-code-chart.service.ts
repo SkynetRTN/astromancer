@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Chart} from "chart.js/dist/types";
-import {addEXIFToImage, dataURLtoBlob, formatTime, getDateString} from "./utils";
+import {addEXIFToImage, dataURLtoBlob, formatTime, getDateString} from "../charts/utils";
 import {saveAs} from 'file-saver';
 
 /**
@@ -9,7 +9,7 @@ import {saveAs} from 'file-saver';
 @Injectable({
   providedIn: 'root'
 })
-export class ChartService {
+export class HonorCodeChartService {
 
   /**
    * Save image to user's device as jpg.

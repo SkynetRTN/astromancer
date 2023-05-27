@@ -1,61 +1,124 @@
-import {Inject, Injectable} from '@angular/core';
-import {CurveCounts, CurveData, CurveDataDict} from "../../model/curve.model";
+import {Injectable} from '@angular/core';
 import {BehaviorSubject} from "rxjs";
-import {HotTableRegisterer} from "@handsontable/angular";
-import Handsontable from "handsontable";
-import {ChartInfo} from "../shared/types/chart-form-interface";
-import {Chart, ChartConfiguration, ChartOptions} from "chart.js";
-import {LOCAL_STORAGE, StorageService} from "ngx-webstorage-service";
+import {ChartInfo} from "../shared/charts/chart.interface";
+import {Chart} from "chart.js";
+import {CurveChartInfo, CurveData, CurveDataDict, CurveImpl, CurveInterface, CurveStorage,} from "./curve.service.util";
+import {MyData} from "../shared/data/data.interface";
 
 @Injectable()
-export class CurveService implements ChartInfo {
-  private static STORAGE_KEY: string = "curveData";
-  private curveData: CurveData = new CurveData();
-  private curveCount: number = CurveCounts.ONE;
-  private isMagnitudeOn: boolean = false;
-  private id = "dataTable";
-  private hotRegisterer = new HotTableRegisterer();
+export class CurveService implements ChartInfo, MyData, CurveInterface {
+  // Decorator Design Pattern
+  /**
+   * @private chartInfo: CurveChartInfo
+   * Delegate Chart Information to CurveChartInfo
+   */
   private chartInfo: CurveChartInfo = new CurveChartInfo();
+  /**
+   * @private curveData: CurveData
+   * Delegate Data to CurveData
+   */
+  private curveData: CurveData = new CurveData();
+  /**
+   * @private curveImpl: CurveImpl
+   * Delegate Curve interface feature to CurveImpl
+   */
+
+  private curveImpl: CurveImpl = new CurveImpl();
+  /**
+   *
+   */
+  private curveStorage!: CurveStorage;
   private dataSubject = new BehaviorSubject<CurveDataDict[]>(this.getData());
   data$ = this.dataSubject.asObservable();
-  private dataKeysSubject = new BehaviorSubject<string[]>(this.getDataKeys());
+  private dataKeysSubject = new BehaviorSubject<string[]>(this.getDataLabelArray());
   dataKeys$ = this.dataKeysSubject.asObservable();
   private chartInfoSubject = new BehaviorSubject<ChartInfo>(this.chartInfo);
   chartInfo$ = this.chartInfoSubject.asObservable();
+  private interfaceSubject = new BehaviorSubject<CurveInterface>(this.curveImpl);
+  interface$ = this.interfaceSubject.asObservable();
 
-  constructor(@Inject(LOCAL_STORAGE) private storage: StorageService) {
-    if (this.storage.has(CurveService.STORAGE_KEY)) {
-      this.setData(JSON.parse(this.storage.get(CurveService.STORAGE_KEY)));
-    } else {
-      this.storage.set(CurveService.STORAGE_KEY, JSON.stringify(this.getData()));
-    }
+  constructor() {
+    this.curveStorage = new CurveStorage(
+      CurveData.getDefaultData(),
+      CurveChartInfo.getDefaultStorageObject(),
+      CurveImpl.getDefaultStorageObject());
+    this.curveData.setData(this.curveStorage.getData());
+    this.chartInfo.setStorageObject(this.curveStorage.getChartInfo());
+    this.curveImpl.setStorageObject(this.curveStorage.getInterface());
   }
 
+  public getChartInfoObject(): ChartInfo {
+    return this.chartInfo;
+  }
+
+  public getDataObject(): MyData {
+    return this.curveData;
+  }
+
+  public getInterfaceObject(): any {
+    return this.curveImpl;
+  }
+
+  // ChartInfo Methods
+  public getChartTitle(): string {
+    return this.chartInfo.getChartTitle();
+  }
+
+  public getXAxisLabel(): string {
+    return this.chartInfo.getXAxisLabel();
+  }
+
+  public getYAxisLabel(): string {
+    return this.chartInfo.getYAxisLabel();
+  }
+
+  public getDataLabel(): string {
+    return this.chartInfo.getDataLabelByCurveCount(this.getCurveCount());
+  }
+
+  public getDataLabelArray(): string[] {
+    return this.chartInfo.getTableLabels();
+  }
+
+  public setChartTitle(title: string): void {
+    this.chartInfo.setChartTitle(title);
+    this.curveStorage.saveChartInfo(this.chartInfo.getStorageObject());
+    this.chartInfoSubject.next(this.chartInfo);
+  }
+
+  public setXAxisLabel(label: string): void {
+    this.chartInfo.setXAxisLabel(label);
+    this.curveStorage.saveChartInfo(this.chartInfo.getStorageObject());
+    this.chartInfoSubject.next(this.chartInfo);
+  }
+
+  public setYAxisLabel(label: string): void {
+    this.chartInfo.setYAxisLabel(label);
+    this.curveStorage.saveChartInfo(this.chartInfo.getStorageObject());
+    this.chartInfoSubject.next(this.chartInfo);
+  }
+
+  public setDataLabel(label: string): void {
+    this.chartInfo.setDataLabel(label);
+    this.curveStorage.saveChartInfo(this.chartInfo.getStorageObject());
+    this.chartInfoSubject.next(this.chartInfo);
+    this.dataKeysSubject.next(this.getDataLabelArray());
+  }
+
+  // MyData Methods
   public getData(): CurveDataDict[] {
-    return this.curveData.getData(this.curveCount);
+    return this.curveData.getCurveData(this.getCurveCount());
   }
 
   public setData(dataDict: CurveDataDict[]): void {
     this.curveData.setData(dataDict);
-    this.storage.set(CurveService.STORAGE_KEY, JSON.stringify(this.getData()));
+    this.curveStorage.saveData(dataDict);
     this.dataSubject.next(this.getData());
-  }
-
-  public getDataKeys(): string[] {
-    return this.chartInfo.getTableLabels();
   }
 
   public setDataByCellOnTableChange(changes: any) {
-    changes?.forEach(([row, col, , newValue]: any[]) => {
-      this.curveData.setDataByCell(newValue, row, col);
-    });
-    this.storage.set(CurveService.STORAGE_KEY, JSON.stringify(this.getData()));
-    this.dataSubject.next(this.getData());
-  }
-
-  public resetStorageData(): void {
-    this.curveData.setData(this.curveData.getDefaultData());
-    this.storage.set(CurveService.STORAGE_KEY, JSON.stringify(this.getData()));
+    this.curveData.setDataByCellOnTableChange(changes);
+    this.curveStorage.saveData(this.getData());
     this.dataSubject.next(this.getData());
   }
 
@@ -69,188 +132,53 @@ export class CurveService implements ChartInfo {
     this.dataSubject.next(this.getData());
   }
 
+  // CurveInterface Methods
+  public getCurveCount(): number {
+    return this.curveImpl.getCurveCount();
+  }
+
+  public getIsMagnitudeOn(): boolean {
+    return this.curveImpl.getIsMagnitudeOn();
+  }
+
   public setCurveCount(count: number): void {
-    this.curveCount = count;
-    this.dataKeysSubject.next(this.getDataKeys());
+    this.curveImpl.setCurveCount(count);
+    this.curveStorage.saveInterface(this.curveImpl.getStorageObject());
+    this.dataKeysSubject.next(this.getDataLabelArray());
     this.dataSubject.next(this.getData());
     this.chartInfoSubject.next(this.chartInfo);
   }
 
-  public getCurveCount(): number {
-    return this.curveCount;
-  }
-
-  public setMagnitudeOn(isMagnitudeOn: boolean): void {
-    this.isMagnitudeOn = isMagnitudeOn;
+  public setIsMagnitudeOn(isMagnitudeOn: boolean): void {
+    this.curveImpl.setIsMagnitudeOn(isMagnitudeOn);
+    this.curveStorage.saveInterface(this.curveImpl.getStorageObject());
     this.chartInfoSubject.next(this.chartInfo);
   }
 
-  public getMagnitudeOn(): boolean {
-    return this.isMagnitudeOn;
+  // CurveStorage Methods
+  public resetData(): void {
+    this.setData(CurveData.getDefaultData());
+    this.curveStorage.resetData();
+    this.dataSubject.next(this.getData());
   }
 
-  public getTable(): Handsontable {
-    return this.hotRegisterer.getInstance(this.id);
-  }
-
-  public getChartTitle(): string {
-    return this.chartInfo.getChartTitle();
-  }
-
-  public getDataLabel(): string {
-    return this.chartInfo.getDataLabelByCurveCount(this.curveCount);
-  }
-
-  public getXAxisLabel(): string {
-    return this.chartInfo.getXAxisLabel();
-  }
-
-  public getYAxisLabel(): string {
-    return this.chartInfo.getYAxisLabel();
-  }
-
-  public setChartTitle(title: string): void {
-    this.chartInfo.setChartTitle(title);
+  public resetChartInfo(): void {
+    this.chartInfo.setStorageObject(CurveChartInfo.getDefaultStorageObject());
+    this.curveStorage.resetChartInfo();
     this.chartInfoSubject.next(this.chartInfo);
   }
 
-  public setDataLabel(label: string): void {
-    this.chartInfo.setDataLabel(label);
+  public resetInterface(): void {
+    this.curveImpl.setStorageObject(CurveImpl.getDefaultStorageObject());
+    this.curveStorage.resetInterface();
+    this.interfaceSubject.next(this.curveImpl);
     this.chartInfoSubject.next(this.chartInfo);
-    this.dataKeysSubject.next(this.getDataKeys());
-  }
-
-  public setXAxisLabel(label: string): void {
-    this.chartInfo.setXAxisLabel(label);
-    this.chartInfoSubject.next(this.chartInfo);
-  }
-
-  public setYAxisLabel(label: string): void {
-    this.chartInfo.setYAxisLabel(label);
-    this.chartInfoSubject.next(this.chartInfo);
+    this.dataSubject.next(this.getData());
   }
 
   public getChart(): Chart {
-    return Chart.getChart("chart") as Chart;
-  }
-
-  public getChartData(): ChartConfiguration<'line'>['data'] {
-    let result: any = {datasets: []};
-    const data = this.getChartDataRaw(this.getData(), this.getCurveCount());
-    for (let i = 0; i < this.getCurveCount(); i++) {
-      result['datasets'].push({
-        label: this.chartInfo.getTableLabels()[i + 1],
-        data: data[i],
-        borderWidth: 2,
-        tension: 0.1,
-        fill: false,
-      })
-    }
-    return result;
-  }
-
-  public getChartOptions(): ChartOptions<'line'> {
-    return {
-      responsive: true,
-      maintainAspectRatio: false,
-      hover: {mode: 'nearest'},
-      scales: {
-        x: {
-          title: {text: this.chartInfo.getXAxisLabel(), display: true},
-          type: 'linear',
-          position: 'bottom',
-        },
-        y: {
-          title: {text: this.chartInfo.getYAxisLabel(), display: true},
-          reverse: this.isMagnitudeOn,
-        }
-      },
-      plugins: {
-        title: {
-          text: this.chartInfo.getChartTitle(),
-          display: true,
-        }
-      },
-      animation: {
-        duration: 0,
-      }
-    };
-  }
-
-  private getChartDataRaw(dataDict: CurveDataDict[], curveCount: number): any[][] {
-    const data = dataDict;
-    let result: any[][] = [[], [], [], []];
-    if (data.length == 0)
-      return result;
-    for (let i = 0; i < data.length; i++) {
-      if (curveCount >= CurveCounts.ONE && data[i].y1 != null)
-        result[0].push({x: data[i].x, y: data[i].y1});
-      if (curveCount >= CurveCounts.TWO && data[i].y2 != null)
-        result[1].push({x: data[i].x, y: data[i].y2});
-      if (curveCount >= CurveCounts.THREE && data[i].y3 != null)
-        result[2].push({x: data[i].x, y: data[i].y3});
-      if (curveCount >= CurveCounts.FOUR && data[i].y4 != null)
-        result[3].push({x: data[i].x, y: data[i].y4});
-    }
-    return result;
-  }
-}
-
-class CurveChartInfo implements ChartInfo {
-  private chartTitle: string;
-  private xAxisLabel: string;
-  private yAxisLabel: string;
-  private dataLabels: string[];
-
-  constructor() {
-    this.chartTitle = "Title";
-    this.xAxisLabel = "x";
-    this.yAxisLabel = "y";
-    this.dataLabels = ["y1", "y2", "y3", "y4"];
-  }
-
-  getChartTitle(): string {
-    return this.chartTitle;
-  }
-
-  getDataLabel(): string {
-    return this.dataLabels.join(", ");
-  }
-
-  getTableLabels(): string[] {
-    return ["x"].concat(this.dataLabels);
-  }
-
-  getDataLabelByCurveCount(curveCount: number): string {
-    const result = this.dataLabels;
-    return result.slice(0, curveCount).join(", ");
-  }
-
-  getXAxisLabel(): string {
-    return this.xAxisLabel;
-  }
-
-  getYAxisLabel(): string {
-    return this.yAxisLabel;
-  }
-
-  setChartTitle(title: string): void {
-    this.chartTitle = title;
-  }
-
-  setDataLabel(dataLabel: string): void {
-    const dataLabelArray = dataLabel.split(",").map((label) => label.trim());
-    for (let i = 0; i < Math.min(this.dataLabels.length, dataLabelArray.length); i++) {
-      this.dataLabels[i] = dataLabelArray[i];
-    }
-  }
-
-  setXAxisLabel(xAxisLabel: string): void {
-    this.xAxisLabel = xAxisLabel;
-  }
-
-  setYAxisLabel(yAxisLabel: string): void {
-    this.yAxisLabel = yAxisLabel;
+    return (Chart.getChart("curve-chart") as Chart);
   }
 
 }
+

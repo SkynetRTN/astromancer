@@ -1,9 +1,7 @@
 import {NgModule} from "@angular/core";
 import {CurveComponent} from "./curve.component";
-import {StandardLayoutModule} from "../shared/standard-layout/standard-layout.component";
 import {SimpleDataButtonModule} from "../shared/simple-data-button/simple-data-button.component";
 import {SimpleGraphButtonModule} from "../shared/simple-graph-button/simple-graph-button.component";
-import {SimpleTableImplModule} from "../shared/tables/simple-table-impl/simple-table-impl.module";
 import {LineFormComponent} from "./line-form/line-form.component";
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import {MatInputModule} from "@angular/material/input";
@@ -19,17 +17,16 @@ import {NgChartsModule} from "ng2-charts";
 import {CurveChartFormComponent} from './curve-chart-form/curve-chart-form.component';
 import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 
 /**
  * Module encapsulating {@link CurveComponent}
  */
 @NgModule({
   imports: [
-    StandardLayoutModule,
     NgChartsModule,
     SimpleDataButtonModule,
     SimpleGraphButtonModule,
-    SimpleTableImplModule,
     MatButtonToggleModule,
     MatInputModule,
     MatSelectModule,
@@ -40,6 +37,7 @@ import {MatIconModule} from "@angular/material/icon";
     HotTableModule,
     MatButtonModule,
     MatIconModule,
+    MatSlideToggleModule,
   ],
   declarations: [
     CurveComponent,

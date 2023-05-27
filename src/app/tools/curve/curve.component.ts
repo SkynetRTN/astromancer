@@ -1,8 +1,8 @@
 import {Component,} from '@angular/core';
 import {MyAction} from "../shared/types/actions";
 import {CurveService} from "./curve.service";
-import {HonorCodePopupService} from "../shared/charts/honor-code-popup/honor-code-popup.service";
-import {ChartService} from "../shared/charts/chart.service";
+import {HonorCodePopupService} from "../shared/honor-code-popup/honor-code-popup.service";
+import {HonorCodeChartService} from "../shared/honor-code-popup/honor-code-chart.service";
 
 /**
  * Curve Component
@@ -16,7 +16,7 @@ import {ChartService} from "../shared/charts/chart.service";
 export class CurveComponent {
   constructor(private service: CurveService,
               private honorCodeService: HonorCodePopupService,
-              private chartService: ChartService) {
+              private chartService: HonorCodeChartService) {
   }
 
   actionHandler(actions: MyAction[]) {
@@ -28,7 +28,11 @@ export class CurveComponent {
           this.chartService.saveImage(this.service.getChart(), name);
         })
       } else if (action.action === "resetData") {
-        this.service.resetStorageData();
+        this.service.resetData();
+      } else if (action.action === "resetChartInfo") {
+        this.service.resetChartInfo();
+      } else if (action.action === "resetInterface") {
+        this.service.resetInterface();
       }
     })
   }

@@ -1,6 +1,10 @@
 import {AfterViewInit, Component} from '@angular/core';
 import {CurveService} from "../curve.service";
-import {CurveDataDict} from "../../../model/curve.model";
+
+import {CurveDataDict} from "../curve.service.util";
+import {MyTable} from "../../shared/tables/table-interface";
+import Handsontable from "handsontable";
+import {HotTableRegisterer} from "@handsontable/angular";
 
 @Component({
   selector: 'app-curve-table',
@@ -10,10 +14,11 @@ import {CurveDataDict} from "../../../model/curve.model";
 export class CurveTableComponent implements AfterViewInit {
   colNames: any;
   dataSet: any;
-  id = "dataTable";
+  id: string = "curve-table";
+  table: CurveTable = new CurveTable(this.id);
 
-  constructor(private dataService: CurveService, private service: CurveService) {
-    this.colNames = this.dataService.getDataKeys();
+  constructor(private dataService: CurveService) {
+    this.colNames = this.dataService.getDataLabelArray();
     this.dataSet = this.dataService.getData();
   }
 
@@ -21,12 +26,12 @@ export class CurveTableComponent implements AfterViewInit {
     this.dataService.data$.subscribe(
       (data: CurveDataDict[]) => {
         this.dataSet = data;
-        this.service.getTable().render();
+        this.table.renderTable();
       })
     this.dataService.dataKeys$.subscribe(
       (keys: string[]) => {
         this.colNames = keys;
-        this.service.getTable().render();
+        this.table.renderTable();
       }
     )
   }
@@ -49,5 +54,23 @@ export class CurveTableComponent implements AfterViewInit {
       console.log(action);
     else if (action['actionType'] === "")
       console.log(action);
+  }
+}
+
+
+class CurveTable implements MyTable {
+  private readonly id: string;
+  private hotRegisterer = new HotTableRegisterer();
+
+  constructor(id: string) {
+    this.id = id;
+  }
+
+  getTable(): Handsontable {
+    return this.hotRegisterer.getInstance(this.id);
+  }
+
+  renderTable(): void {
+    this.getTable().render();
   }
 }

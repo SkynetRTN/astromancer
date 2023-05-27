@@ -1,6 +1,5 @@
 import {Component, EventEmitter, NgModule, OnInit, Output} from '@angular/core';
 import {TableAction} from "../types/actions";
-import {DataButtonComponent} from "../directives/data-button.directive";
 import {MatButtonModule} from "@angular/material/button";
 
 @Component({
@@ -8,7 +7,7 @@ import {MatButtonModule} from "@angular/material/button";
   templateUrl: './simple-data-button.component.html',
   styleUrls: ['./simple-data-button.component.scss']
 })
-export class SimpleDataButtonComponent implements OnInit, DataButtonComponent {
+export class SimpleDataButtonComponent implements OnInit {
   @Output() tableUserActionObs$: EventEmitter<TableAction[]>;
 
   constructor() {
@@ -24,6 +23,10 @@ export class SimpleDataButtonComponent implements OnInit, DataButtonComponent {
 
   dataReset() {
     this.tableUserActionObs$.emit([{action: "resetData"}]);
+  }
+
+  interfaceReset() {
+    this.tableUserActionObs$.emit([{action: "resetInterface"}]);
   }
 }
 

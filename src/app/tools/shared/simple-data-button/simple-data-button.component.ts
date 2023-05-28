@@ -25,9 +25,6 @@ export class SimpleDataButtonComponent implements OnInit {
     this.tableUserActionObs$.emit([{action: "resetData"}]);
   }
 
-  interfaceReset() {
-    this.tableUserActionObs$.emit([{action: "resetInterface"}]);
-  }
 }
 
 @NgModule({

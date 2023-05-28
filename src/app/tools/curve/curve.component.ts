@@ -31,8 +31,6 @@ export class CurveComponent {
         this.service.resetData();
       } else if (action.action === "resetChartInfo") {
         this.service.resetChartInfo();
-      } else if (action.action === "resetInterface") {
-        this.service.resetInterface();
       }
     })
   }

@@ -1,10 +1,13 @@
 <mat-sidenav-container (backdropClick)="close()" class="tool-sidenav-container">
   <mat-sidenav #toolsnav (keydown.escape)="close()">
+    <p class="tool-sidenav-p prompt">
+      Select a Tool
+    </p>
     <p class="tool-sidenav-p">
       <button (click)="close()" [routerLink]="['/curve']" i18n="curve" mat-button>Curve</button>
     </p>
     <p class="tool-sidenav-p">
-      <button (click)="close()" i18n="moon" mat-button>Moon</button>
+      <button (click)="close()" [routerLink]="['/moon']" i18n="moon" mat-button>Moon</button>
     </p>
   </mat-sidenav>
 

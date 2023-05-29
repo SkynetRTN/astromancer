@@ -167,19 +167,6 @@ export class CurveData implements MyData {
     this.sortDataByX();
   }
 
-  public getCurveDataKeys(curveCount: number): string[] {
-    let result = ["x", "y1"];
-    if (curveCount >= CurveCounts.TWO) {
-      result.push("y2");
-    }
-    if (curveCount >= CurveCounts.THREE) {
-      result.push("y3");
-    }
-    if (curveCount >= CurveCounts.FOUR) {
-      result.push("y4");
-    }
-    return result;
-  }
 
   addRow(index: number, amount: number) {
     if (index > 0) {

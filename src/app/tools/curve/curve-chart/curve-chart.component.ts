@@ -54,10 +54,6 @@ export class CurveChartComponent implements AfterViewInit {
           this.service.getDataObject(),
           this.service.getChartInfoObject(),
           this.service.getInterfaceObject());
-        console.log(this.chart.generateChartConfig(
-          this.service.getDataObject(),
-          this.service.getChartInfoObject(),
-          this.service.getInterfaceObject()))
         this.chart.renderChart();
       }
     )

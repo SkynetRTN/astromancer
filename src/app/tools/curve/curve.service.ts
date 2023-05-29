@@ -116,11 +116,6 @@ export class CurveService implements ChartInfo, MyData, CurveInterface {
     this.dataSubject.next(this.getData());
   }
 
-  public setDataByCellOnTableChange(changes: any) {
-    this.curveData.setDataByCellOnTableChange(changes);
-    this.curveStorage.saveData(this.getData());
-    this.dataSubject.next(this.getData());
-  }
 
   public addRow(index: number, amount: number): void {
     this.curveData.addRow(index, amount);

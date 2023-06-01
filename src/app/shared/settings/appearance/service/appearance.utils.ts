@@ -27,9 +27,10 @@ export interface MyFontSize {
 }
 
 export enum FontSizes {
-  DEFAULT = "1em",
-  LARGE = "1.25em",
-  LARGER = "1.5em",
+  SMALL = "small",
+  DEFAULT = "default",
+  LARGE = "large",
+  LARGER = "larger",
 }
 
 export class ColorThemeSettings {
@@ -52,6 +53,7 @@ export class ColorThemeSettings {
 
   public static getFontSizeLists(): MyFontSize[] {
     return [
+      {key: FontSizes.SMALL, displayName: 'Small'},
       {key: FontSizes.DEFAULT, displayName: 'Default'},
       {key: FontSizes.LARGE, displayName: 'Large'},
       {key: FontSizes.LARGER, displayName: 'Larger'}

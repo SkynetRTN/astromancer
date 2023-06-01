@@ -1,4 +1,5 @@
-import {Component, Renderer2} from '@angular/core';
+import {Component} from '@angular/core';
+import {AppearanceService} from "./shared/settings/appearance/service/appearance.service";
 
 /**
  * App Component
@@ -14,10 +15,7 @@ export class AppComponent {
    */
   title = 'skynet-plotting-neo';
 
-  constructor(private renderer: Renderer2) {
-    const theme = "indigo-light-theme";
-    const fontSize = "medium";
-    this.renderer.addClass(document.body, fontSize);
-    this.renderer.addClass(document.body, theme);
+  constructor(private appearanceService: AppearanceService) {
+    this.appearanceService.setFontSize(this.appearanceService.getFontSize());
   }
 }

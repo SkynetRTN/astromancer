@@ -1,13 +1,13 @@
 import {TestBed} from '@angular/core/testing';
 
-import {AppearanceStorageService} from './appearance-storage.service';
+import {AppearanceService} from './appearance.service';
 
 describe('AppearanceService', () => {
-  let service: AppearanceStorageService;
+  let service: AppearanceService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(AppearanceStorageService);
+    service = TestBed.inject(AppearanceService);
   });
 
   it('should be created', () => {

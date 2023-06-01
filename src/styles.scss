@@ -32,29 +32,52 @@ $light-theme: mat.define-light-theme($light-primary, $light-accent, $light-warn)
 //@include mat.all-component-themes($dark-theme);
 
 
-.small {
-  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span {
+.fontSize-small {
+  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span, htNumeric {
     font-size: 0.8em;
   }
 }
 
-.medium {
-  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span {
+.fontSize-default {
+  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span, htNumeric {
     font-size: 1em;
   }
 }
 
-.large {
-  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span {
+.fontSize-large {
+  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span, {
     font-size: 1.25em;
   }
 }
 
-.xLarge {
-  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span {
-    font-size: 1.4em;
+.fontSize-larger {
+  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span, htNumeric {
+    font-size: 1.5em;
+  }
+
+  mat-select {
+    margin-top: 15px;
   }
 }
+
+.fontStyle-normal {
+  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span, htNumeric {
+    font-weight: normal;
+  }
+}
+
+.fontStyle-bold {
+  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span, htNumeric {
+    font-weight: bold;
+  }
+}
+
+.fontStyle-bolder {
+  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span, {
+    font-weight: bolder;
+  }
+}
+
 
 .mat-list-item.active, .mat-list-item.active:focus, .mat-list-item.active:hover {
   font-weight: bold;

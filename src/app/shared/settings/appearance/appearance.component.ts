@@ -1,7 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {ColorThemeSettings, DefaultAppearanceSettings, MyColorTheme, MyFontSize, MyFontStyle} from "./appearance.utils";
+import {
+  ColorThemeSettings,
+  DefaultAppearanceSettings,
+  MyColorTheme,
+  MyFontSize,
+  MyFontStyle
+} from "./service/appearance.utils";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {AppearanceStorageService} from "./appearance-storage.service";
+import {AppearanceService} from "./service/appearance.service";
 
 @Component({
   selector: 'app-appearance',
@@ -16,7 +22,7 @@ export class AppearanceComponent implements OnInit {
 
   protected formGroup!: FormGroup;
 
-  constructor(private appearanceService: AppearanceStorageService) {
+  constructor(private appearanceService: AppearanceService) {
     this.getFormGroup(appearanceService.getColorTheme(),
       appearanceService.getFontStyle(),
       appearanceService.getFontSize());
@@ -26,7 +32,7 @@ export class AppearanceComponent implements OnInit {
   }
 
   protected resetDefault(): void {
-    this.appearanceService.setColorTheme(DefaultAppearanceSettings.theme);
+    // this.appearanceService.setColorTheme(DefaultAppearanceSettings.theme);
     this.appearanceService.setFontStyle(DefaultAppearanceSettings.fontStyle);
     this.appearanceService.setFontSize(DefaultAppearanceSettings.fontSize);
     this.getFormGroup(DefaultAppearanceSettings.theme,
@@ -44,7 +50,7 @@ export class AppearanceComponent implements OnInit {
       fontSize: new FormControl(fontSize, [Validators.required])
     });
     this.formGroup.get("colorTheme")?.valueChanges.subscribe(value => {
-      this.appearanceService.setColorTheme(value);
+      // this.appearanceService.setColorTheme(value);
     });
     this.formGroup.get("fontStyle")?.valueChanges.subscribe(value => {
       this.appearanceService.setFontStyle(value);

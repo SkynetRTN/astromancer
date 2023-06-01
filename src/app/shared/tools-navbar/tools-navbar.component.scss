@@ -6,17 +6,20 @@
   right: 0;
 }
 
+mat-nav-list {
+  width: 200px;
+}
+
 .tool-container {
   padding: 20px 100px 20px 100px;
   height: 100%;
   width: 100%;
 }
 
-button {
-  font-size: large;
-  margin: 5px 10px 5px 10px;
-  padding: 5px 40px 5px 40px;
+.mat-list-item-content {
+  text-align: center;
 }
+
 
 .prompt {
   font-size: large;

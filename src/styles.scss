@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
-@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+@use '@angular/material' as mat;
+@import '~@angular/material/theming';
 @import "~bootstrap/dist/css/bootstrap.css";
 @import '~handsontable/dist/handsontable.full.css';
 
@@ -15,3 +16,50 @@ body {
 mat-app-background {
   height: 100%
 }
+
+//Define a light theme.
+$light-primary: mat.define-palette(mat.$blue-grey-palette, 600, 400, 200);
+$light-accent: mat.define-palette(mat.$brown-palette);
+$light-warn: mat.define-palette(mat.$lime-palette);
+$light-theme: mat.define-light-theme($light-primary, $light-accent, $light-warn);
+@include mat.all-component-themes($light-theme);
+
+////Define a light theme.
+//$dark-primary: mat.define-palette(mat.$blue-grey-palette, 600, 400, 200);
+//$dark-accent: mat.define-palette(mat.$brown-palette);
+//$dark-warn: mat.define-palette(mat.$lime-palette, 800, 700, 600);
+//$dark-theme: mat.define-dark-theme($dark-primary, $dark-accent, $dark-warn);
+//@include mat.all-component-themes($dark-theme);
+
+
+.small {
+  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span {
+    font-size: 0.8em;
+  }
+}
+
+.medium {
+  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span {
+    font-size: 1em;
+  }
+}
+
+.large {
+  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span {
+    font-size: 1.25em;
+  }
+}
+
+.xLarge {
+  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span {
+    font-size: 1.4em;
+  }
+}
+
+.mat-list-item.active, .mat-list-item.active:focus, .mat-list-item.active:hover {
+  font-weight: bold;
+  //noinspection CssInvalidFunction
+  color: mat-color($light-accent, darker) !important;
+  background-color: mat-color($light-primary, darker) !important;
+}
+

@@ -12,14 +12,13 @@
         </mat-form-field>
       </form>
     </div>
-    <div class="col-6">
+    <div class="col-6" style="display: flex">
       <mat-slide-toggle
         #magSlider
         (change)="onMagnitude(magSlider.checked)"
         [checked]="magnitude"
-        [color]="'primary'"
-      >
-        <span>Magnitude Mode</span>
+        [color]="'accent'">
+        <p>Magnitude</p>
       </mat-slide-toggle>
     </div>
   </div>

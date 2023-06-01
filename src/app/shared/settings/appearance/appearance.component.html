@@ -1,0 +1,37 @@
+<div class="setting-container">
+  <form [formGroup]="formGroup">
+    <div class="row">
+      <mat-form-field>
+        <mat-label>Color Theme</mat-label>
+        <mat-select [formControlName]="'colorTheme'">
+          <mat-option *ngFor="let color of ColorThemesList"
+                      [value]="color.key">{{color.displayName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field>
+        <mat-label>Font Style</mat-label>
+        <mat-select [formControlName]="'fontStyle'">
+          <mat-option *ngFor="let style of FontStylesList"
+                      [value]="style.key">{{style.displayName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field>
+        <mat-label>Font Size</mat-label>
+        <mat-select [formControlName]="'fontSize'">
+          <mat-option *ngFor="let size of FontSizesList"
+                      [value]="size.key">{{size.displayName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <button (click)="resetDefault()" color="primary"
+              mat-raised-button>Reset Default
+      </button>
+    </div>
+  </form>
+
+</div>

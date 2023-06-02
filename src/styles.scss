@@ -42,7 +42,7 @@ $light-theme: mat.define-light-theme($light-primary, $light-accent, $light-warn)
 //Define a dark theme.
 $dark-primary: mat.define-palette($md-mint, 500, 400, 200);
 $dark-accent: mat.define-palette($md-mint, A200, A100);
-$dark-warn: mat.define-palette($md-indigodye, A100, A200);
+$dark-warn: mat.define-palette($md-fireenginered, A700);
 $dark-theme: mat.define-dark-theme($dark-primary, $dark-accent, $dark-warn);
 
 .DARK_THEME {
@@ -52,7 +52,7 @@ $dark-theme: mat.define-dark-theme($dark-primary, $dark-accent, $dark-warn);
   .mat-list-item.active, .mat-list-item.active:focus, .mat-list-item.active:hover {
     font-weight: bold;
     //noinspection CssInvalidFunction
-    color: mat-color($dark-warn, darker) !important;
+    color: mat-color($dark-primary, A100) !important;
     //noinspection CssInvalidFunction
     background-color: mat-color($dark-primary, darker) !important;
 

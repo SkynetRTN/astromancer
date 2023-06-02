@@ -151,3 +151,27 @@ $dark-hc-theme: map_merge(
 }
 
 
+@font-face {
+  font-family: "Roboto";
+  src: url(assets/Roboto/Roboto-Regular.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "Comic Neue";
+  src: url(assets/Comic_Neue/ComicNeue-Regular.ttf) format("truetype");
+}
+
+$roboto-typography: mat.define-typography-config(
+  $font-family: "Roboto, sans",);
+
+.fontFamily-Roboto {
+  @include mat.all-component-typographies($roboto-typography);
+}
+
+$comic-typography: mat.define-typography-config(
+  $font-family: "Comic Neue",);
+
+.fontFamily-Comic-Neue {
+  @include mat.all-component-typographies($comic-typography);
+}
+

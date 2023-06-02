@@ -1,5 +1,5 @@
 import {Injectable, Renderer2, RendererFactory2} from '@angular/core';
-import {ColorThemes, FontSizes, FontStyles} from "./appearance.utils";
+import {ColorThemes, FontFamily, FontSizes, FontStyles} from "./appearance.utils";
 import {AppearanceStorageService} from "./appearance-storage.service";
 
 @Injectable({
@@ -14,6 +14,7 @@ export class AppearanceService {
 
   public intialize(): void {
     this.setColorTheme(this.getColorTheme());
+    this.setFontFamily(this.getFontFamily());
     this.setFontSize(this.getFontSize());
     this.setFontStyle(this.getFontStyle());
   }
@@ -49,6 +50,16 @@ export class AppearanceService {
     return this.storageService.getFontStyle();
   }
 
+  public setFontFamily(fontFamily: FontFamily): void {
+    this.renderer.removeClass(document.body, this.getFontFamilyClassname(this.getFontFamily()));
+    this.renderer.addClass(document.body, this.getFontFamilyClassname(fontFamily));
+    this.storageService.setFont(fontFamily);
+  }
+
+  public getFontFamily(): FontFamily {
+    return this.storageService.getFont();
+  }
+
 
   private getFontSizeClassname(fontSize: FontSizes): string {
     return 'fontSize-' + fontSize;
@@ -56,5 +67,9 @@ export class AppearanceService {
 
   private getFontStyleClassname(fontStyle: FontStyles): string {
     return 'fontStyle-' + fontStyle;
+  }
+
+  private getFontFamilyClassname(font: FontFamily): string {
+    return 'fontFamily-' + font;
   }
 }

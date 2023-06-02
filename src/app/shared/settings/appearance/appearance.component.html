@@ -11,6 +11,15 @@
     </div>
     <div class="row">
       <mat-form-field>
+        <mat-label>Font Family</mat-label>
+        <mat-select [formControlName]="'fontFamily'">
+          <mat-option *ngFor="let family of FontList"
+                      [value]="family.key">{{family.displayName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field>
         <mat-label>Font Style</mat-label>
         <mat-select [formControlName]="'fontStyle'">
           <mat-option *ngFor="let style of FontStylesList"

@@ -4,7 +4,7 @@
     <mat-icon>close</mat-icon>
   </button>
 </div>
-<form (ngSubmit)="submit(signature.value)" [formGroup]="form">
+<form (ngSubmit)="submit()" [formGroup]="form">
   <div class="modal-body">
     <p i18n>REQUIRED FOR RECEIVING CREDIT</p>
     <mat-form-field>
@@ -15,6 +15,6 @@
     </mat-form-field>
   </div>
   <div class="modal-footer" style="flex-direction: row-reverse; justify-content: space-between">
-    <button color="accent" i18n mat-flat-button type="submit">Submit</button>
+    <button [mat-dialog-close]="form.controls['signature'].value" color="accent" i18n mat-flat-button>Submit</button>
   </div>
 </form>

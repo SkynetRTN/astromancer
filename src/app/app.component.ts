@@ -16,6 +16,6 @@ export class AppComponent {
   title = 'skynet-plotting-neo';
 
   constructor(private appearanceService: AppearanceService) {
-    this.appearanceService.setFontSize(this.appearanceService.getFontSize());
+    this.appearanceService.intialize();
   }
 }

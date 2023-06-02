@@ -12,6 +12,13 @@ export class AppearanceService {
     this.renderer = rendererFactory.createRenderer(document.body, null);
   }
 
+  public intialize(): void {
+    this.setColorTheme(this.getColorTheme());
+    this.setFontSize(this.getFontSize());
+    this.setFontStyle(this.getFontStyle());
+  }
+
+
   public setFontSize(fontSize: FontSizes): void {
     this.renderer.removeClass(document.body, this.getFontSizeClassname(this.getFontSize()));
     this.renderer.addClass(document.body, this.getFontSizeClassname(fontSize));
@@ -23,7 +30,9 @@ export class AppearanceService {
   }
 
   public setColorTheme(colorTheme: ColorThemes): void {
-
+    this.renderer.removeClass(document.body, this.getColorTheme());
+    this.renderer.addClass(document.body, colorTheme);
+    this.storageService.setColorTheme(colorTheme);
   }
 
   public getColorTheme(): ColorThemes {

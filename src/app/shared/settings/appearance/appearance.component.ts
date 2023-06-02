@@ -32,7 +32,7 @@ export class AppearanceComponent implements OnInit {
   }
 
   protected resetDefault(): void {
-    // this.appearanceService.setColorTheme(DefaultAppearanceSettings.theme);
+    this.appearanceService.setColorTheme(DefaultAppearanceSettings.theme);
     this.appearanceService.setFontStyle(DefaultAppearanceSettings.fontStyle);
     this.appearanceService.setFontSize(DefaultAppearanceSettings.fontSize);
     this.getFormGroup(DefaultAppearanceSettings.theme,
@@ -50,7 +50,7 @@ export class AppearanceComponent implements OnInit {
       fontSize: new FormControl(fontSize, [Validators.required])
     });
     this.formGroup.get("colorTheme")?.valueChanges.subscribe(value => {
-      // this.appearanceService.setColorTheme(value);
+      this.appearanceService.setColorTheme(value);
     });
     this.formGroup.get("fontStyle")?.valueChanges.subscribe(value => {
       this.appearanceService.setFontStyle(value);

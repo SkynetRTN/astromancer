@@ -22,14 +22,80 @@ $light-primary: mat.define-palette(mat.$blue-grey-palette, 600, 400, 200);
 $light-accent: mat.define-palette(mat.$brown-palette);
 $light-warn: mat.define-palette(mat.$lime-palette);
 $light-theme: mat.define-light-theme($light-primary, $light-accent, $light-warn);
-@include mat.all-component-themes($light-theme);
 
-////Define a light theme.
-//$dark-primary: mat.define-palette(mat.$blue-grey-palette, 600, 400, 200);
-//$dark-accent: mat.define-palette(mat.$brown-palette);
-//$dark-warn: mat.define-palette(mat.$lime-palette, 800, 700, 600);
-//$dark-theme: mat.define-dark-theme($dark-primary, $dark-accent, $dark-warn);
-//@include mat.all-component-themes($dark-theme);
+.LIGHT_THEME {
+  @include mat.all-component-themes($light-theme);
+
+  .mat-list-item.active, .mat-list-item.active:focus, .mat-list-item.active:hover {
+    font-weight: bold;
+    //noinspection CssInvalidFunction
+    color: mat-color($light-accent, darker) !important;
+    //noinspection CssInvalidFunction
+    background-color: mat-color($light-primary, darker) !important;
+  }
+}
+
+
+//Define a dark theme.
+$dark-primary: mat.define-palette(mat.$blue-grey-palette, 600, 400, 200);
+$dark-accent: mat.define-palette(mat.$brown-palette);
+$dark-warn: mat.define-palette(mat.$lime-palette, 800, 700, 600);
+$dark-theme: mat.define-dark-theme($dark-primary, $dark-accent, $dark-warn);
+
+.DARK_THEME {
+  @include mat.all-component-themes($dark-theme);
+
+  .mat-list-item.active, .mat-list-item.active:focus, .mat-list-item.active:hover {
+    font-weight: bold;
+    //noinspection CssInvalidFunction
+    color: mat-color($dark-accent, darker) !important;
+    //noinspection CssInvalidFunction
+    background-color: mat-color($dark-primary, darker) !important;
+  }
+}
+
+
+//Define a high contrast theme.
+// Define a dark high contrast theme.
+$dark-hc-primary: mat.define-palette(mat.$yellow-palette, 500, 400, 600);
+$dark-hc-text: mat.get-color-from-palette(mat.$yellow-palette, 500);
+$dark-hc-disabled-text: mat.get-color-from-palette(mat.$yellow-palette, 700);
+$dark-hc-icons: mat.get-color-from-palette(mat.$yellow-palette, 400);
+$dark-hc-accent: mat.define-palette(mat.$yellow-palette, 600);
+$dark-hc-theme: mat.define-dark-theme($dark-hc-primary, $dark-hc-accent, $dark-warn);
+$dark-hc-foreground: map-get($dark-hc-theme, foreground);
+$dark-hc-foreground: map_merge(
+    $dark-hc-foreground,
+    (
+      text: $dark-hc-text,
+      "secondary-text": $dark-hc-text,
+      icon: $dark-hc-icons,
+    )
+);
+
+$dark-hc-background: map-get($dark-hc-theme, background);
+// @debug $foreground;
+$dark-hc-background: map_merge($dark-hc-background, ());
+
+$dark-hc-theme: map_merge(
+    $dark-hc-theme,
+    (
+      foreground: $dark-hc-foreground,
+      background: $dark-hc-background,
+    )
+);
+
+.HC_DARK_THEME {
+  @include mat.all-component-themes($dark-hc-theme);
+
+  .mat-list-item.active, .mat-list-item.active:focus, .mat-list-item.active:hover {
+    font-weight: bold;
+    //noinspection CssInvalidFunction
+    color: #424242;
+    //noinspection CssInvalidFunction
+    background-color: mat-color($dark-hc-primary, darker) !important;
+  }
+}
 
 
 .fontSize-small {
@@ -78,11 +144,4 @@ $light-theme: mat.define-light-theme($light-primary, $light-accent, $light-warn)
   }
 }
 
-
-.mat-list-item.active, .mat-list-item.active:focus, .mat-list-item.active:hover {
-  font-weight: bold;
-  //noinspection CssInvalidFunction
-  color: mat-color($light-accent, darker) !important;
-  background-color: mat-color($light-primary, darker) !important;
-}
 

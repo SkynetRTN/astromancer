@@ -6,7 +6,7 @@ export interface MyColorTheme {
 export enum ColorThemes {
   LIGHT = 'LIGHT_THEME',
   DARK = 'DARK_THEME',
-  HIGH_CONTRAST = 'HC_THEME',
+  // HIGH_CONTRAST = 'HC_THEME',
   HIGH_CONTRAST_DARK = 'HC_DARK_THEME'
 }
 
@@ -38,7 +38,7 @@ export class ColorThemeSettings {
     return [
       {key: ColorThemes.LIGHT, displayName: 'Light'},
       {key: ColorThemes.DARK, displayName: 'Dark'},
-      {key: ColorThemes.HIGH_CONTRAST, displayName: 'High Contrast'},
+      // {key: ColorThemes.HIGH_CONTRAST, displayName: 'High Contrast'},
       {key: ColorThemes.HIGH_CONTRAST_DARK, displayName: 'High Contrast Dark'}
     ];
   }

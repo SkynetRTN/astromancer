@@ -5,6 +5,7 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
 import {MatInputModule} from "@angular/material/input";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {MatDialogModule} from "@angular/material/dialog";
 
 /**
  * Module encapsulating {@link HonorCodePopupComponent}
@@ -17,6 +18,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
     MatInputModule,
     ReactiveFormsModule,
     FormsModule,
+    MatDialogModule,
   ],
   declarations: [HonorCodePopupComponent]
 })

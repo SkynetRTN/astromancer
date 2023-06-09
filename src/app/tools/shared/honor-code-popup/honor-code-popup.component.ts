@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {MatDialogRef} from "@angular/material/dialog";
 
 /**
  * Popup window to collect signature before initiating graph downloading.
@@ -15,7 +15,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 export class HonorCodePopupComponent implements OnInit {
   form!: FormGroup;
 
-  constructor(private activeModal: NgbActiveModal, private formBuilder: FormBuilder) {
+  constructor(private matDialogRef: MatDialogRef<any>, private formBuilder: FormBuilder) {
   }
 
   ngOnInit(): void {
@@ -25,12 +25,12 @@ export class HonorCodePopupComponent implements OnInit {
   }
 
   public dismiss() {
-    this.activeModal.dismiss();
+    this.matDialogRef.close();
   }
 
-  public submit(sign: string) {
+  public submit() {
     if (this.form.valid)
-      this.activeModal.close(sign);
+      this.matDialogRef.close();
   }
 
 }

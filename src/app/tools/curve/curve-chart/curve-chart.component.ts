@@ -5,6 +5,8 @@ import {CurveService} from "../curve.service";
 import {ChartInfo, MyChart} from "../../shared/charts/chart.interface";
 import {MyData} from "../../shared/data/data.interface";
 import {CurveChartInfo, CurveCounts, CurveDataDict, CurveInterface} from "../curve.service.util";
+import {AppearanceService} from "../../../shared/settings/appearance/service/appearance.service";
+import {ChartColor} from "../../../shared/settings/appearance/service/appearance.utils";
 
 /**
  * Chart for the curve graphing tools.
@@ -34,8 +36,10 @@ export class CurveChartComponent implements AfterViewInit {
   lineChartOptions!: ChartOptions<'line'>;
 
 
-  constructor(private service: CurveService) {
+  constructor(private service: CurveService, private appearanceService: AppearanceService) {
     this.id = "curve-chart";
+    Chart.defaults.color = this.appearanceService.getChartFontColor();
+    Chart.defaults.borderColor = this.appearanceService.getChartBackgroundColor();
     this.chart = new CurveChart(this.id);
     this.lineChartData = this.chart.generateChartConfig(
       this.service.getDataObject(),
@@ -103,6 +107,9 @@ class CurveChart implements MyChart {
         title: {
           text: (chartInfo as CurveChartInfo).getChartTitle(),
           display: true,
+        },
+        colors: {
+          forceOverride: true,
         }
       },
       animation: {
@@ -125,6 +132,11 @@ class CurveChart implements MyChart {
         borderWidth: 2,
         tension: 0.1,
         fill: false,
+        color: ChartColor.getLineColor(i),
+        backgroundColor: ChartColor.getLineColor(i),
+        borderColor: ChartColor.getLineColor(i),
+        pointBackgroundColor: ChartColor.getLineColor(i),
+        pointBorderColor: ChartColor.getLineColor(i),
       })
     }
     return result;

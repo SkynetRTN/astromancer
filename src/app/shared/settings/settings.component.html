@@ -1,0 +1,13 @@
+<mat-drawer-container>
+  <mat-drawer mode="side" opened>
+    <mat-nav-list>
+      <a [routerLink]="'appearance'"
+         mat-list-item
+         routerLinkActive="active"
+      >Appearance</a>
+    </mat-nav-list>
+  </mat-drawer>
+  <mat-drawer-content>
+    <router-outlet></router-outlet>
+  </mat-drawer-content>
+</mat-drawer-container>

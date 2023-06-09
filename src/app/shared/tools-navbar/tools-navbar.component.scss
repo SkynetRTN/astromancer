@@ -6,8 +6,24 @@
   right: 0;
 }
 
+mat-nav-list {
+  width: 200px;
+}
+
 .tool-container {
   padding: 20px 100px 20px 100px;
   height: 100%;
   width: 100%;
+}
+
+.mat-list-item-content {
+  text-align: center;
+}
+
+
+.prompt {
+  font-size: large;
+  font-style: italic;
+  text-align: center;
+  margin-top: 20px;
 }

@@ -1,5 +1,13 @@
 import {Injectable, Renderer2, RendererFactory2} from '@angular/core';
-import {ColorThemes, FontFamily, FontSizes, FontStyles} from "./appearance.utils";
+import {
+  ChartColor,
+  ChartColorMode,
+  ColorThemes,
+  DefaultAppearanceSettings,
+  FontFamily,
+  FontSizes,
+  FontStyles
+} from "./appearance.utils";
 import {AppearanceStorageService} from "./appearance-storage.service";
 
 @Injectable({
@@ -72,4 +80,22 @@ export class AppearanceService {
   private getFontFamilyClassname(font: FontFamily): string {
     return 'fontFamily-' + font;
   }
+
+  private getChartColorMode(): ChartColorMode {
+    if (this.getColorTheme() === ColorThemes.LIGHT)
+      return ChartColorMode.LIGHT;
+    else if (this.getColorTheme() === ColorThemes.DARK)
+      return ChartColorMode.DARK;
+    else
+      return DefaultAppearanceSettings.chartColorMode;
+  }
+
+  public getChartFontColor(): string {
+    return ChartColor.getFontColor(this.getChartColorMode());
+  }
+
+  public getChartBackgroundColor(): string {
+    return ChartColor.getBackgroundColor(this.getChartColorMode());
+  }
+
 }

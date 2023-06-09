@@ -78,9 +78,41 @@ export class ColorThemeSettings {
   }
 }
 
+export enum ChartColorMode {
+  LIGHT = 'LIGHT',
+  DARK = 'DARK'
+}
+
+
 export class DefaultAppearanceSettings {
   public static theme: ColorThemes = ColorThemes.LIGHT;
   public static fontStyle: FontStyles = FontStyles.DEFAULT;
   public static fontSize: FontSizes = FontSizes.DEFAULT;
   public static fontFamily: FontFamily = FontFamily.ROBOTO;
+  public static chartColorMode: ChartColorMode = ChartColorMode.LIGHT;
+}
+
+
+export class ChartColor {
+  private static readonly lineColorLightArray: string[] = ["red", "orange", "green", "blue"];
+  private static readonly lineColorDarkArray: string[] = ["red", "orange", "green", "blue"];
+
+  public static getFontColor(mode: ChartColorMode): string {
+    return mode === ChartColorMode.LIGHT ? '#2b4162' : '#f5f0f6';
+  }
+
+  public static getBackgroundColor(mode: ChartColorMode): string {
+    return mode === ChartColorMode.LIGHT ? '#C3CFD4' : '#325769';
+  }
+
+  public static getLineColor(index: number ): string {
+    if (index <0 || index >= this.lineColorLightArray.length)
+      return 'black';
+    else
+      // return mode === ChartColorMode.LIGHT ? this.lineColorLightArray[index] : this.lineColorDarkArray[index];
+      return this.lineColorLightArray[index];
+  }
+
+
+
 }

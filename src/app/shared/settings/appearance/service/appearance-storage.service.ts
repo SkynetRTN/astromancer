@@ -1,5 +1,12 @@
 import {Injectable} from '@angular/core';
-import {ColorThemes, DefaultAppearanceSettings, FontFamily, FontSizes, FontStyles} from "./appearance.utils";
+import {
+  ChartColorMode,
+  ColorThemes,
+  DefaultAppearanceSettings,
+  FontFamily,
+  FontSizes,
+  FontStyles
+} from "./appearance.utils";
 
 @Injectable({
   providedIn: 'root'
@@ -9,10 +16,12 @@ export class AppearanceStorageService {
   private fontStyle!: FontStyles;
   private fontSize!: FontSizes;
   private font!: FontFamily;
+  private chartColorMode!: ChartColorMode;
   private readonly colorThemeKey = "colorTheme";
   private readonly fontStyleKey = "fontStyle";
   private readonly fontSizeKey = "fontSize";
   private readonly fontKey = "font";
+  private readonly chartColorModeKey = "chartColorMode";
 
   constructor() {
   }

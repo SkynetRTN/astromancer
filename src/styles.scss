@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @use '@angular/material' as mat;
-@import '~@angular/material/theming';
+@use '@angular/material/theming';
 @import "~bootstrap/dist/css/bootstrap.css";
 @import '~handsontable/dist/handsontable.full.css';
 @import 'palette.scss';
@@ -27,12 +27,12 @@ $light-warn: mat.define-palette($md-fireenginered, 500);
 $light-theme: mat.define-light-theme($light-primary, $light-accent, $light-warn);
 
 .LIGHT_THEME {
-  @include mat.all-component-themes($light-theme);
+  @include mat.all-legacy-component-themes($light-theme);
 
   .mat-list-item.active, .mat-list-item.active:focus, .mat-list-item.active:hover {
     font-weight: bold;
     //noinspection CssInvalidFunction
-    color: mat-color($light-primary, 900) !important;
+    color: mat-color($light-primary, 500) !important;
     //noinspection CssInvalidFunction
     background-color: mat-color($light-primary, 100) !important;
   }
@@ -46,7 +46,7 @@ $dark-warn: mat.define-palette($md-fireenginered, A700);
 $dark-theme: mat.define-dark-theme($dark-primary, $dark-accent, $dark-warn);
 
 .DARK_THEME {
-  @include mat.all-component-themes($dark-theme);
+  @include mat.all-legacy-component-themes($dark-theme);
   //@include
 
   .mat-list-item.active, .mat-list-item.active:focus, .mat-list-item.active:hover {
@@ -264,7 +264,7 @@ $dark-hc-theme: map_merge(
 );
 
 .HC_DARK_THEME {
-  @include mat.all-component-themes($dark-hc-theme);
+  @include mat.all-legacy-component-themes($dark-hc-theme);
 
   .mat-list-item.active, .mat-list-item.active:focus, .mat-list-item.active:hover {
     font-weight: bold;
@@ -333,17 +333,17 @@ $dark-hc-theme: map_merge(
   src: url(assets/Comic_Neue/ComicNeue-Regular.ttf) format("truetype");
 }
 
-$roboto-typography: mat.define-typography-config(
+$roboto-typography: mat.define-legacy-typography-config(
   $font-family: "Roboto, sans",);
 
 .fontFamily-Roboto {
-  @include mat.all-component-typographies($roboto-typography);
+  @include mat.all-legacy-component-typographies($roboto-typography);
 }
 
-$comic-typography: mat.define-typography-config(
+$comic-typography: mat.define-legacy-typography-config(
   $font-family: "Comic Neue",);
 
 .fontFamily-Comic-Neue {
-  @include mat.all-component-typographies($comic-typography);
+  @include mat.all-legacy-component-typographies($comic-typography);
 }
 

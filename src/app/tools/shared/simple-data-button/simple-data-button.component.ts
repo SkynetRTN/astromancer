@@ -1,6 +1,6 @@
 import {Component, EventEmitter, NgModule, OnInit, Output} from '@angular/core';
 import {TableAction} from "../types/actions";
-import {MatButtonModule} from "@angular/material/button";
+import {MatLegacyButtonModule as MatButtonModule} from "@angular/material/legacy-button";
 
 @Component({
   selector: 'app-simple-data-button',

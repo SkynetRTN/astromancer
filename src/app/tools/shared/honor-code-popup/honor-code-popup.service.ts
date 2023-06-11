@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HonorCodePopupComponent} from "./honor-code-popup.component";
-import {MatDialog} from "@angular/material/dialog";
+import {MatLegacyDialog as MatDialog} from "@angular/material/legacy-dialog";
 import {Observable} from "rxjs";
 
 @Injectable({

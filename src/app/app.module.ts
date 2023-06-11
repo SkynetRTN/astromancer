@@ -11,11 +11,11 @@ import {PageNotFoundComponent} from "./shared/page-not-found/page-not-found.comp
 import {HonorCodePopupModule} from "./tools/shared/honor-code-popup/honor-code-popup.module";
 import {SettingsModule} from './shared/settings/settings.component';
 import {AppearanceComponent} from './shared/settings/appearance/appearance.component';
-import {MatInputModule} from "@angular/material/input";
-import {MatSelectModule} from "@angular/material/select";
+import {MatLegacyInputModule as MatInputModule} from "@angular/material/legacy-input";
+import {MatLegacySelectModule as MatSelectModule} from "@angular/material/legacy-select";
 import {ReactiveFormsModule} from "@angular/forms";
 import {AppearanceStorageService} from "./shared/settings/appearance/service/appearance-storage.service";
-import {MatButtonModule} from "@angular/material/button";
+import {MatLegacyButtonModule as MatButtonModule} from "@angular/material/legacy-button";
 import {AppearanceService} from "./shared/settings/appearance/service/appearance.service";
 
 

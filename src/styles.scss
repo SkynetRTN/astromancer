@@ -28,13 +28,12 @@ $light-theme: mat.define-light-theme($light-primary, $light-accent, $light-warn)
 
 .LIGHT_THEME {
   @include mat.all-legacy-component-themes($light-theme);
-
   .mat-list-item.active, .mat-list-item.active:focus, .mat-list-item.active:hover {
     font-weight: bold;
     //noinspection CssInvalidFunction
-    color: mat-color($light-primary, 500) !important;
+    color: map-get($light-primary, 500);
     //noinspection CssInvalidFunction
-    background-color: mat-color($light-primary, 100) !important;
+    background-color: map-get($light-primary, 100);
   }
 }
 
@@ -52,10 +51,9 @@ $dark-theme: mat.define-dark-theme($dark-primary, $dark-accent, $dark-warn);
   .mat-list-item.active, .mat-list-item.active:focus, .mat-list-item.active:hover {
     font-weight: bold;
     //noinspection CssInvalidFunction
-    color: mat-color($dark-primary, A100) !important;
+    color: map-get($dark-primary, A100);
     //noinspection CssInvalidFunction
-    background-color: mat-color($dark-primary, darker) !important;
-
+    background-color: map-get($dark-primary, darker);
   }
 
   //Handsontable Dark Theme
@@ -271,7 +269,7 @@ $dark-hc-theme: map_merge(
     //noinspection CssInvalidFunction
     color: #424242;
     //noinspection CssInvalidFunction
-    background-color: mat-color($dark-hc-primary, darker) !important;
+    background-color: map-get($dark-hc-primary, darker) !important;
   }
 }
 

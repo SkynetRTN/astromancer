@@ -9,7 +9,7 @@ import {CurveService} from "../curve.service";
 })
 export class CurveHighChartComponent implements AfterViewInit, OnInit {
   Highcharts: typeof Highcharts = Highcharts;
-  updateFlag: boolean = false;
+  updateFlag: boolean = true;
   chartConstructor: any = "chart";
   chartObject!: Highcharts.Chart;
   chartOptions: Highcharts.Options = {

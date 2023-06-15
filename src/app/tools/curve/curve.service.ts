@@ -110,6 +110,10 @@ export class CurveService implements ChartInfo, MyData, CurveInterface {
     return this.curveData.getCurveData(this.getCurveCount());
   }
 
+  public getDataArray(): any[] {
+    return this.curveData.getDataArray();
+  }
+
   public setData(dataDict: CurveDataDict[]): void {
     this.curveData.setData(dataDict);
     this.curveStorage.saveData(dataDict);

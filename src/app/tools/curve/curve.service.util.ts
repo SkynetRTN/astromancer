@@ -162,9 +162,20 @@ export class CurveData implements MyData {
     return result;
   }
 
+  public getDataArray(): any[] {
+    let result: any[] = [[], [], [], []];
+    for (const entry of this.curveDataDict) {
+      result[0].push([entry.x, entry.y1]);
+      result[1].push([entry.x, entry.y2]);
+      result[2].push([entry.x, entry.y3]);
+      result[3].push([entry.x, entry.y4]);
+    }
+    return result;
+  }
+
   public setData(data: CurveDataDict[]): void {
     this.curveDataDict = data;
-    this.sortDataByX();
+    // this.sortDataByX();
   }
 
 
@@ -209,7 +220,7 @@ export class CurveData implements MyData {
         this.curveDataDict[row][CurveParam.Y4] = value;
         break;
     }
-    this.sortDataByX();
+    // this.sortDataByX();
   }
 
   private sortDataByX(): void {

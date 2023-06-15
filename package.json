@@ -34,6 +34,7 @@
     "chart.js": "^4.2.1",
     "file-saver": "^2.0.5",
     "handsontable": "^12.4.0",
+    "highcharts-angular": "^3.1.2",
     "ng2-charts": "^4.1.1",
     "ngx-webstorage-service": "^5.0.0",
     "node-sass": "^8.0.0",

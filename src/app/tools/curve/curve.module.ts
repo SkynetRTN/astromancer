@@ -18,6 +18,8 @@ import {CurveChartFormComponent} from './curve-chart-form/curve-chart-form.compo
 import {MatLegacyButtonModule as MatButtonModule} from "@angular/material/legacy-button";
 import {MatIconModule} from "@angular/material/icon";
 import {MatLegacySlideToggleModule as MatSlideToggleModule} from "@angular/material/legacy-slide-toggle";
+import { CurveHighChartComponent } from './curve-highchart/curve-high-chart.component';
+import {HighchartsChartModule} from "highcharts-angular";
 
 /**
  * Module encapsulating {@link CurveComponent}
@@ -38,6 +40,7 @@ import {MatLegacySlideToggleModule as MatSlideToggleModule} from "@angular/mater
     MatButtonModule,
     MatIconModule,
     MatSlideToggleModule,
+    HighchartsChartModule,
   ],
   declarations: [
     CurveComponent,
@@ -45,6 +48,7 @@ import {MatLegacySlideToggleModule as MatSlideToggleModule} from "@angular/mater
     CurveTableComponent,
     CurveChartComponent,
     CurveChartFormComponent,
+    CurveHighChartComponent,
   ],
   exports: [CurveComponent],
   providers: [CurveService],

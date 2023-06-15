@@ -35,6 +35,9 @@ $light-theme: mat.define-light-theme($light-primary, $light-accent, $light-warn)
     //noinspection CssInvalidFunction
     background-color: map-get($light-primary, 100);
   }
+  .highcharts-background {
+    fill: rgb(250, 250, 250);
+  }
 }
 
 

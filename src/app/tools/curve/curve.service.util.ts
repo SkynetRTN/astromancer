@@ -223,22 +223,22 @@ export class CurveData implements MyData {
     // this.sortDataByX();
   }
 
-  private sortDataByX(): void {
-    this.curveDataDict = this.curveDataDict.sort(
-      (a, b) => {
-        if (a['x'] === null)
-          return 1;
-        if (b['x'] === null)
-          return -1;
-        if (a['x'] < b['x'])
-          return -1;
-        if (a['x'] > b['x'])
-          return 1;
-        else
-          return 0;
-      }
-    );
-  }
+  // private sortDataByX(): void {
+  //   this.curveDataDict = this.curveDataDict.sort(
+  //     (a, b) => {
+  //       if (a['x'] === null)
+  //         return 1;
+  //       if (b['x'] === null)
+  //         return -1;
+  //       if (a['x'] < b['x'])
+  //         return -1;
+  //       if (a['x'] > b['x'])
+  //         return 1;
+  //       else
+  //         return 0;
+  //     }
+  //   );
+  // }
 }
 
 

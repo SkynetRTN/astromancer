@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { CurveHighChartComponent } from './curve-high-chart.component';
+import {CurveHighChartComponent} from './curve-high-chart.component';
 
 describe('CurveHighchartComponent', () => {
   let component: CurveHighChartComponent;
@@ -8,9 +8,9 @@ describe('CurveHighchartComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CurveHighChartComponent ]
+      declarations: [CurveHighChartComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(CurveHighChartComponent);
     component = fixture.componentInstance;

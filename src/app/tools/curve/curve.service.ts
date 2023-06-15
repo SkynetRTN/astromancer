@@ -151,7 +151,7 @@ export class CurveService implements ChartInfo, MyData, CurveInterface {
   public setIsMagnitudeOn(isMagnitudeOn: boolean): void {
     this.curveImpl.setIsMagnitudeOn(isMagnitudeOn);
     this.curveStorage.saveInterface(this.curveImpl.getStorageObject());
-    this.chartInfoSubject.next(this.chartInfo);
+    this.interfaceSubject.next(this.curveImpl);
   }
 
   // CurveStorage Methods

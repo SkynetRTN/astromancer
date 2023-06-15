@@ -1,6 +1,5 @@
 <div class="container">
   <hot-table #table
-             id="table"
              [afterChange]="onChange"
              [afterCreateRow]="onInsert"
              [allowInsertColumn]="false"
@@ -24,6 +23,7 @@
              [rowHeaders]="true"
              [stretchH]="'all'"
              [type]="'numeric'"
+             id="table"
              licenseKey="non-commercial-and-evaluation">
   </hot-table>
 </div>

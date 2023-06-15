@@ -1,11 +1,11 @@
-<div id="chart-container" class="chart-container">
+<div class="chart-container" id="chart-container">
   <highcharts-chart
-    [Highcharts]="Highcharts"
-    [constructorType]="chartConstructor"
-    [options]="chartOptions"
     (chartInstance)="chartInitialized($event)"
     [(update)]="updateFlag"
+    [Highcharts]="Highcharts"
     [callbackFunction]="creationCallback"
+    [constructorType]="chartConstructor"
+    [options]="chartOptions"
     style="width: 100%; height: 100%; display: block;"
   ></highcharts-chart>
 </div>

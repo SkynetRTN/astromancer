@@ -3,7 +3,7 @@ import {MatSidenavModule} from "@angular/material/sidenav";
 import {MatLegacyButtonModule as MatButtonModule} from "@angular/material/legacy-button";
 import {MatIconModule} from "@angular/material/icon";
 import {MatLegacyListModule as MatListModule} from "@angular/material/legacy-list";
-import {RouterLinkActive, RouterLink, RouterOutlet} from "@angular/router";
+import {RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
 
 @Component({
   selector: 'app-settings',

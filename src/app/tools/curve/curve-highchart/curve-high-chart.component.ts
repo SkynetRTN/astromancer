@@ -20,18 +20,19 @@ export class CurveHighChartComponent implements AfterViewInit, OnInit {
       align: 'center',
     },
   };
-  creationCallback = () => {
-  }
-
-  chartInitialized($event: Highcharts.Chart) {
-    this.chartObject = $event;
-  }
 
   constructor(private service: CurveService) {
     this.setChartTitle();
     this.setChartSeries();
     this.setChartXAxis();
     this.setChartYAxis();
+  }
+
+  creationCallback = () => {
+  }
+
+  chartInitialized($event: Highcharts.Chart) {
+    this.chartObject = $event;
   }
 
   ngOnInit(): void {
@@ -49,7 +50,11 @@ export class CurveHighChartComponent implements AfterViewInit, OnInit {
       this.updateChartSeries();
       this.updateChart();
     });
-
+    this.service.interface$.subscribe(() => {
+      console.log("amongus");
+      this.reverseYAxis();
+      this.updateChart();
+    });
   }
 
   private updateChart(): void {
@@ -78,7 +83,6 @@ export class CurveHighChartComponent implements AfterViewInit, OnInit {
   }
 
   private updateChartSeries(): void {
-    let existingSeriesCount = this.chartOptions.series!.length;
     for (let count = 0; count < 4; count++) {
       this.chartObject.series[count].update({
         name: this.service.getDataLabelArray()[count + 1],
@@ -107,6 +111,11 @@ export class CurveHighChartComponent implements AfterViewInit, OnInit {
 
   private updateChartYAxis(): void {
     this.chartObject.yAxis[0].setTitle({text: this.service.getYAxisLabel()});
+  }
+
+  private reverseYAxis(): void {
+    console.log(this.service.getIsMagnitudeOn());
+    this.chartObject.yAxis[0].update({reversed: this.service.getIsMagnitudeOn()});
   }
 
   private processData(data: number[][]): number[][] {

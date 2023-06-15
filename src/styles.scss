@@ -28,6 +28,7 @@ $light-theme: mat.define-light-theme($light-primary, $light-accent, $light-warn)
 
 .LIGHT_THEME {
   @include mat.all-legacy-component-themes($light-theme);
+
   .mat-list-item.active, .mat-list-item.active:focus, .mat-list-item.active:hover {
     font-weight: bold;
     //noinspection CssInvalidFunction
@@ -35,6 +36,7 @@ $light-theme: mat.define-light-theme($light-primary, $light-accent, $light-warn)
     //noinspection CssInvalidFunction
     background-color: map-get($light-primary, 100);
   }
+
   .highcharts-background {
     fill: rgb(250, 250, 250);
   }

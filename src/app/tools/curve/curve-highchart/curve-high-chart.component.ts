@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component} from '@angular/core';
 import * as Highcharts from 'highcharts';
 import {CurveService} from "../curve.service";
 
@@ -7,7 +7,7 @@ import {CurveService} from "../curve.service";
   templateUrl: './curve-high-chart.component.html',
   styleUrls: ['./curve-high-chart.component.scss']
 })
-export class CurveHighChartComponent implements AfterViewInit, OnInit {
+export class CurveHighChartComponent implements AfterViewInit {
   Highcharts: typeof Highcharts = Highcharts;
   updateFlag: boolean = true;
   chartConstructor: any = "chart";
@@ -19,26 +19,25 @@ export class CurveHighChartComponent implements AfterViewInit, OnInit {
     legend: {
       align: 'center',
     },
+    tooltip: {
+      enabled: true,
+      shared: true,
+    }
   };
 
   constructor(private service: CurveService) {
-    this.setChartTitle();
-    this.setChartSeries();
-    this.setChartXAxis();
-    this.setChartYAxis();
-  }
-
-  creationCallback = () => {
   }
 
   chartInitialized($event: Highcharts.Chart) {
     this.chartObject = $event;
-  }
-
-  ngOnInit(): void {
+    this.setChartTitle();
+    this.setChartXAxis();
+    this.setChartYAxis();
+    this.setChartSeries();
   }
 
   ngAfterViewInit(): void {
+
     this.service.chartInfo$.subscribe(() => {
       this.updateChartTitle();
       this.updateChartXAxis();
@@ -46,12 +45,11 @@ export class CurveHighChartComponent implements AfterViewInit, OnInit {
       this.updateChartSeries();
       this.updateChart();
     });
-    this.service.data$.subscribe(() => {
+    this.service.data$.subscribe((data) => {
       this.updateChartSeries();
       this.updateChart();
     });
     this.service.interface$.subscribe(() => {
-      console.log("amongus");
       this.reverseYAxis();
       this.updateChart();
     });
@@ -70,23 +68,23 @@ export class CurveHighChartComponent implements AfterViewInit, OnInit {
   }
 
   private setChartSeries(): void {
-    let series: any[] = [];
     for (let count = 0; count < 4; count++) {
-      series.push({
+      this.chartObject.addSeries({
         name: this.service.getDataLabelArray()[count + 1],
         type: 'line',
         data: this.processData(this.service.getDataArray()[count]),
-        visible: false,
       });
     }
-    this.chartOptions.series = series;
   }
 
   private updateChartSeries(): void {
+    const name = this.service.getDataLabelArray();
+    const data = this.service.getDataArray();
     for (let count = 0; count < 4; count++) {
+      const processedData = this.processData(data[count]);
       this.chartObject.series[count].update({
-        name: this.service.getDataLabelArray()[count + 1],
-        data: this.processData(this.service.getDataArray()[count]),
+        name: name[count + 1],
+        data: processedData,
         type: 'line',
         visible: count < this.service.getCurveCount(),
       })
@@ -114,13 +112,13 @@ export class CurveHighChartComponent implements AfterViewInit, OnInit {
   }
 
   private reverseYAxis(): void {
-    console.log(this.service.getIsMagnitudeOn());
     this.chartObject.yAxis[0].update({reversed: this.service.getIsMagnitudeOn()});
   }
 
   private processData(data: number[][]): number[][] {
     return data.filter((value: number[]) => {
-      return (value[0] !== null) && (value[1] !== null);
+      // return true;
+      return (value[0] !== null);
     }).sort((a: number[], b: number[]) => {
       return a[0] - b[0];
     });

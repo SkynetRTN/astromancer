@@ -40,11 +40,14 @@ export class HonorCodeChartService {
   }
 
   public saveImageHighChart(chart: Highcharts.Chart, chartType: string, signature: string): void {
-    chart.exportChart({
-        filename: this.generateFileName(chartType, signature),
-        type: 'image/jpeg',
-      },
-      {credits: {text: this.generateSignature(signature)}});
+    if (chartType && signature) {
+      chart.exportChart(
+        {
+          filename: this.generateFileName(chartType, signature),
+          type: 'image/jpeg',
+        },
+        {credits: {text: this.generateSignature(signature)}});
+    }
   }
 
   private generateFileName(chartType: string, signature: string): string {

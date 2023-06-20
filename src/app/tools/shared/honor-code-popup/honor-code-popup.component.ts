@@ -29,8 +29,9 @@ export class HonorCodePopupComponent implements OnInit {
   }
 
   public submit() {
-    if (this.form.valid)
+    if (this.form.valid) {
       this.matDialogRef.close();
+    }
   }
 
 }

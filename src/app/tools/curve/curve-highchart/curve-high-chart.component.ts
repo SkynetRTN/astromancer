@@ -34,6 +34,7 @@ export class CurveHighChartComponent implements AfterViewInit {
     this.setChartXAxis();
     this.setChartYAxis();
     this.setChartSeries();
+    this.service.setHighChart(this.chartObject);
   }
 
   ngAfterViewInit(): void {

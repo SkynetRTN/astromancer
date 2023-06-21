@@ -4,6 +4,7 @@ import {addEXIFToImage, dataURLtoBlob, formatTime, getDateString} from "../chart
 import {saveAs} from 'file-saver';
 import * as Highcharts from 'highcharts';
 import HC_exporting from "highcharts/modules/exporting";
+import HC_offline_exporting from "highcharts/modules/offline-exporting";
 
 /**
  * Services for charts to perform
@@ -15,6 +16,7 @@ export class HonorCodeChartService {
 
   constructor() {
     HC_exporting(Highcharts);
+    HC_offline_exporting(Highcharts);
   }
 
   /**
@@ -44,6 +46,17 @@ export class HonorCodeChartService {
       chart.exportChart(
         {
           filename: this.generateFileName(chartType, signature),
+          type: 'image/jpeg',
+        },
+        {credits: {text: this.generateSignature(signature)}});
+    }
+  }
+
+  public saveImageHighChartOffline(chart: Highcharts.Chart, ChartType: string, signature: string): void {
+    if (ChartType && signature) {
+      chart.exportChartLocal(
+        {
+          filename: this.generateFileName(ChartType, signature),
           type: 'image/jpeg',
         },
         {credits: {text: this.generateSignature(signature)}});

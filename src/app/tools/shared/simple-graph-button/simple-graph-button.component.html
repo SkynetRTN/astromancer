@@ -1,2 +1,6 @@
-<button (click)="saveGraph()" i18n mat-raised-button>Save Graph</button>
+<button #saveGraphButton (click)="saveGraph()" i18n mat-raised-button>
+  Save Graph
+  <mat-spinner #saveGraphSpinner [diameter]="20"
+               style="display: none;"></mat-spinner>
+</button>
 <button (click)="resetGraphInfo()" i18n mat-raised-button>Reset Graph Labels</button>

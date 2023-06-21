@@ -22,7 +22,7 @@ export class CurveHighChartComponent implements AfterViewInit {
     tooltip: {
       enabled: true,
       shared: true,
-    }
+    },
   };
 
   constructor(private service: CurveService) {

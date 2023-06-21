@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, EventEmitter, NgModule, OnInit, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, NgModule, Output, ViewChild} from '@angular/core';
 import {ChartAction} from "../types/actions";
 import {MatLegacyButtonModule as MatButtonModule} from "@angular/material/legacy-button";
 import {MatProgressSpinner, MatProgressSpinnerModule} from "@angular/material/progress-spinner";
@@ -11,10 +11,10 @@ import {HonorCodePopupService} from "../honor-code-popup/honor-code-popup.servic
   styleUrls: ['./simple-graph-button.component.scss']
 })
 export class SimpleGraphButtonComponent implements AfterViewInit {
-  @Output()
-  private chartUserActionObs$: EventEmitter<ChartAction[]>;
   @ViewChild("saveGraphButton") saveGraphButton!: MatButton;
   @ViewChild("saveGraphSpinner") saveGraphSpinner!: MatProgressSpinner;
+  @Output()
+  private chartUserActionObs$: EventEmitter<ChartAction[]>;
 
   constructor(private popupService: HonorCodePopupService) {
     this.chartUserActionObs$ = new EventEmitter<ChartAction[]>();

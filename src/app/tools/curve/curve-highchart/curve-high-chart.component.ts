@@ -16,6 +16,7 @@ export class CurveHighChartComponent implements AfterViewInit {
   chartOptions: Highcharts.Options = {
     chart: {
       animation: false,
+
     },
     legend: {
       align: 'center',
@@ -24,6 +25,13 @@ export class CurveHighChartComponent implements AfterViewInit {
       enabled: true,
       shared: true,
     },
+    exporting: {
+      buttons: {
+        contextButton: {
+          enabled: false,
+        }
+      }
+    }
   };
 
   constructor(private service: CurveService) {

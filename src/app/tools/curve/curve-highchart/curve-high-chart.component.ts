@@ -1,6 +1,7 @@
 import {AfterViewInit, Component} from '@angular/core';
 import * as Highcharts from 'highcharts';
 import {CurveService} from "../curve.service";
+import {ChartInfo} from "../../shared/charts/chart.interface";
 
 @Component({
   selector: 'app-curve-highchart',
@@ -26,24 +27,22 @@ export class CurveHighChartComponent implements AfterViewInit {
   };
 
   constructor(private service: CurveService) {
+    this.setChartTitle();
+    this.setChartXAxis();
+    this.setChartYAxis();
   }
 
   chartInitialized($event: Highcharts.Chart) {
     this.chartObject = $event;
-    this.setChartTitle();
-    this.setChartXAxis();
-    this.setChartYAxis();
     this.setChartSeries();
     this.service.setHighChart(this.chartObject);
   }
 
   ngAfterViewInit(): void {
-
-    this.service.chartInfo$.subscribe(() => {
-      this.updateChartTitle();
-      this.updateChartXAxis();
-      this.updateChartYAxis();
-      this.updateChartSeries();
+    this.service.chartInfo$.subscribe((info: ChartInfo) => {
+      this.setChartYAxis();
+      this.setChartXAxis();
+      this.setChartTitle();
       this.updateChart();
     });
     this.service.data$.subscribe((data) => {
@@ -62,10 +61,6 @@ export class CurveHighChartComponent implements AfterViewInit {
 
   private setChartTitle(): void {
     this.chartOptions.title = {text: this.service.getChartTitle()};
-  }
-
-  private updateChartTitle(): void {
-    this.chartObject.setTitle({text: this.service.getChartTitle()});
   }
 
   private setChartSeries(): void {
@@ -98,18 +93,10 @@ export class CurveHighChartComponent implements AfterViewInit {
     };
   }
 
-  private updateChartXAxis(): void {
-    this.chartObject.xAxis[0].setTitle({text: this.service.getXAxisLabel()});
-  }
-
   private setChartYAxis(): void {
     this.chartOptions.yAxis = {
       title: {text: this.service.getYAxisLabel()}
     };
-  }
-
-  private updateChartYAxis(): void {
-    this.chartObject.yAxis[0].setTitle({text: this.service.getYAxisLabel()});
   }
 
   private reverseYAxis(): void {

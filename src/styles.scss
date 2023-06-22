@@ -456,6 +456,7 @@ $roboto-typography: mat.define-legacy-typography-config(
 
 .fontFamily-Roboto {
   @include mat.all-legacy-component-typographies($roboto-typography);
+
   .highcharts-title, .highcharts-axis-title, .highcharts-legend-item, .highcharts-tooltip, .highcharts-credits {
     font-family: "Roboto, sans";
   }
@@ -466,6 +467,7 @@ $comic-typography: mat.define-legacy-typography-config(
 
 .fontFamily-Comic-Neue {
   @include mat.all-legacy-component-typographies($comic-typography);
+
   .highcharts-title, .highcharts-axis-title, .highcharts-legend-item, .highcharts-tooltip, .highcharts-credits {
     font-family: "Comic Neue";
   }

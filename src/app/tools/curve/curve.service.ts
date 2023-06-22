@@ -168,6 +168,7 @@ export class CurveService implements ChartInfo, MyData, CurveInterface {
     this.chartInfo.setStorageObject(CurveChartInfo.getDefaultStorageObject());
     this.curveStorage.resetChartInfo();
     this.chartInfoSubject.next(this.chartInfo);
+    this.dataKeysSubject.next(this.getDataLabelArray());
   }
 
   public resetInterface(): void {

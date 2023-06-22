@@ -42,11 +42,12 @@ export class CurveHighChartComponent implements AfterViewInit {
 
   chartInitialized($event: Highcharts.Chart) {
     this.chartObject = $event;
-    this.setChartSeries();
-    this.service.setHighChart(this.chartObject);
+
   }
 
   ngAfterViewInit(): void {
+    this.setChartSeries();
+    this.service.setHighChart(this.chartObject);
     this.service.chartInfo$.subscribe((info: ChartInfo) => {
       this.setChartYAxis();
       this.setChartXAxis();
@@ -61,6 +62,10 @@ export class CurveHighChartComponent implements AfterViewInit {
       this.reverseYAxis();
       this.updateChart();
     });
+    this.service.dataKeys$.subscribe(() => {
+      this.updateChartSeries();
+      this.updateChart();
+    })
   }
 
   private updateChart(): void {

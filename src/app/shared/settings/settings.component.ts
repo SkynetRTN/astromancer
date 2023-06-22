@@ -1,9 +1,9 @@
 import {Component, NgModule, OnInit} from '@angular/core';
 import {MatSidenavModule} from "@angular/material/sidenav";
-import {MatButtonModule} from "@angular/material/button";
+import {MatLegacyButtonModule as MatButtonModule} from "@angular/material/legacy-button";
 import {MatIconModule} from "@angular/material/icon";
-import {MatListModule} from "@angular/material/list";
-import {RouterLinkActive, RouterLinkWithHref, RouterOutlet} from "@angular/router";
+import {MatLegacyListModule as MatListModule} from "@angular/material/legacy-list";
+import {RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
 
 @Component({
   selector: 'app-settings',
@@ -27,7 +27,7 @@ export class SettingsComponent implements OnInit {
     MatIconModule,
     MatListModule,
     RouterOutlet,
-    RouterLinkWithHref,
+    RouterLink,
     RouterLinkActive,
   ],
   declarations: [

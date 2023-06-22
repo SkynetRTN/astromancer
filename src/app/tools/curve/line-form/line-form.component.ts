@@ -2,7 +2,7 @@ import {AfterViewInit, Component, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {CurveService} from "../curve.service";
 import {CurveCounts} from "../curve.service.util";
-import {MatSlideToggle} from "@angular/material/slide-toggle";
+import {MatLegacySlideToggle as MatSlideToggle} from "@angular/material/legacy-slide-toggle";
 
 /**
  * Type for passing/parsing number of curve to be plotted to the @LineFormComponent

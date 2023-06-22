@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {MatDialogRef} from "@angular/material/dialog";
+import {MatLegacyDialogRef as MatDialogRef} from "@angular/material/legacy-dialog";
 
 /**
  * Popup window to collect signature before initiating graph downloading.
@@ -29,8 +29,9 @@ export class HonorCodePopupComponent implements OnInit {
   }
 
   public submit() {
-    if (this.form.valid)
+    if (this.form.valid) {
       this.matDialogRef.close();
+    }
   }
 
 }

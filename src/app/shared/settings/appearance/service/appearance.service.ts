@@ -68,6 +68,13 @@ export class AppearanceService {
     return this.storageService.getFont();
   }
 
+  public getChartFontColor(): string {
+    return ChartColor.getFontColor(this.getChartColorMode());
+  }
+
+  public getChartBackgroundColor(): string {
+    return ChartColor.getBackgroundColor(this.getChartColorMode());
+  }
 
   private getFontSizeClassname(fontSize: FontSizes): string {
     return 'fontSize-' + fontSize;
@@ -88,14 +95,6 @@ export class AppearanceService {
       return ChartColorMode.DARK;
     else
       return DefaultAppearanceSettings.chartColorMode;
-  }
-
-  public getChartFontColor(): string {
-    return ChartColor.getFontColor(this.getChartColorMode());
-  }
-
-  public getChartBackgroundColor(): string {
-    return ChartColor.getBackgroundColor(this.getChartColorMode());
   }
 
 }

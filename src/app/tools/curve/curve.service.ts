@@ -4,6 +4,7 @@ import {ChartInfo} from "../shared/charts/chart.interface";
 import {Chart} from "chart.js";
 import {CurveChartInfo, CurveData, CurveDataDict, CurveImpl, CurveInterface, CurveStorage,} from "./curve.service.util";
 import {MyData} from "../shared/data/data.interface";
+import * as Highcharts from 'highcharts';
 
 @Injectable()
 export class CurveService implements ChartInfo, MyData, CurveInterface {
@@ -24,6 +25,8 @@ export class CurveService implements ChartInfo, MyData, CurveInterface {
    */
 
   private curveImpl: CurveImpl = new CurveImpl();
+
+  private highChart!: Highcharts.Chart;
   /**
    *
    */
@@ -110,6 +113,10 @@ export class CurveService implements ChartInfo, MyData, CurveInterface {
     return this.curveData.getCurveData(this.getCurveCount());
   }
 
+  public getDataArray(): any[] {
+    return this.curveData.getDataArray();
+  }
+
   public setData(dataDict: CurveDataDict[]): void {
     this.curveData.setData(dataDict);
     this.curveStorage.saveData(dataDict);
@@ -147,7 +154,7 @@ export class CurveService implements ChartInfo, MyData, CurveInterface {
   public setIsMagnitudeOn(isMagnitudeOn: boolean): void {
     this.curveImpl.setIsMagnitudeOn(isMagnitudeOn);
     this.curveStorage.saveInterface(this.curveImpl.getStorageObject());
-    this.chartInfoSubject.next(this.chartInfo);
+    this.interfaceSubject.next(this.curveImpl);
   }
 
   // CurveStorage Methods
@@ -171,8 +178,16 @@ export class CurveService implements ChartInfo, MyData, CurveInterface {
     this.dataSubject.next(this.getData());
   }
 
-  public getChart(): Chart {
+  public getChartJs(): Chart {
     return (Chart.getChart("curve-chart") as Chart);
+  }
+
+  public setHighChart(highChart: Highcharts.Chart): void {
+    this.highChart = highChart;
+  }
+
+  public getHighChart(): Highcharts.Chart {
+    return this.highChart;
   }
 
 }

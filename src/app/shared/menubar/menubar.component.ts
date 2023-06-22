@@ -1,7 +1,7 @@
 import {Component, Input, NgModule} from '@angular/core';
 import {ToolsNavbarComponent} from "../tools-navbar/tools-navbar.component";
 import {AppRoutingModule} from "../../app-routing.module";
-import {MatButtonModule} from "@angular/material/button";
+import {MatLegacyButtonModule as MatButtonModule} from "@angular/material/legacy-button";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatIconModule} from "@angular/material/icon";
 

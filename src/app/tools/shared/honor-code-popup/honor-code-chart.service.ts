@@ -2,6 +2,9 @@ import {Injectable} from '@angular/core';
 import {Chart} from "chart.js/dist/types";
 import {addEXIFToImage, dataURLtoBlob, formatTime, getDateString} from "../charts/utils";
 import {saveAs} from 'file-saver';
+import * as Highcharts from 'highcharts';
+import HC_exporting from "highcharts/modules/exporting";
+import HC_offline_exporting from "highcharts/modules/offline-exporting";
 
 /**
  * Services for charts to perform
@@ -10,6 +13,11 @@ import {saveAs} from 'file-saver';
   providedIn: 'root'
 })
 export class HonorCodeChartService {
+
+  constructor() {
+    HC_exporting(Highcharts);
+    HC_offline_exporting(Highcharts);
+  }
 
   /**
    * Save image to user's device as jpg.
@@ -31,5 +39,35 @@ export class HonorCodeChartService {
     const exifImage = addEXIFToImage(destCanvas.toDataURL('image/jpeg', 1.0), signature, time);
     //create image
     saveAs(dataURLtoBlob(exifImage), 'chart-' + formatTime(time) + '.jpg');
+  }
+
+  public saveImageHighChart(chart: Highcharts.Chart, chartType: string, signature: string): void {
+    if (chartType && signature) {
+      chart.exportChart(
+        {
+          filename: this.generateFileName(chartType, signature),
+          type: 'image/jpeg',
+        },
+        {credits: {text: this.generateSignature(signature)}});
+    }
+  }
+
+  public saveImageHighChartOffline(chart: Highcharts.Chart, ChartType: string, signature: string): void {
+    if (ChartType && signature) {
+      chart.exportChartLocal(
+        {
+          filename: this.generateFileName(ChartType, signature),
+          type: 'image/jpeg',
+        },
+        {credits: {text: this.generateSignature(signature)}});
+    }
+  }
+
+  private generateFileName(chartType: string, signature: string): string {
+    return chartType + '-' + formatTime(getDateString()) + '-' + signature;
+  }
+
+  private generateSignature(signature: string): string {
+    return "Created by " + signature + " at skynet.unc.edu";
   }
 }

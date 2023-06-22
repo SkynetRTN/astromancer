@@ -105,14 +105,13 @@ export class ChartColor {
     return mode === ChartColorMode.LIGHT ? '#C3CFD4' : '#325769';
   }
 
-  public static getLineColor(index: number ): string {
-    if (index <0 || index >= this.lineColorLightArray.length)
+  public static getLineColor(index: number): string {
+    if (index < 0 || index >= this.lineColorLightArray.length)
       return 'black';
     else
       // return mode === ChartColorMode.LIGHT ? this.lineColorLightArray[index] : this.lineColorDarkArray[index];
       return this.lineColorLightArray[index];
   }
-
 
 
 }

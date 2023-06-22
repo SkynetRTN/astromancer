@@ -1,36 +1,44 @@
-import {Component, EventEmitter, NgModule, OnInit, Output} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, NgModule, Output, ViewChild} from '@angular/core';
 import {ChartAction} from "../types/actions";
-import {MatButtonModule} from "@angular/material/button";
+import {MatLegacyButtonModule as MatButtonModule} from "@angular/material/legacy-button";
+import {MatProgressSpinner, MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import {MatButton} from "@angular/material/button";
+import {HonorCodePopupService} from "../honor-code-popup/honor-code-popup.service";
 
 @Component({
   selector: 'app-simple-graph-button',
   templateUrl: './simple-graph-button.component.html',
   styleUrls: ['./simple-graph-button.component.scss']
 })
-export class SimpleGraphButtonComponent implements OnInit {
+export class SimpleGraphButtonComponent implements AfterViewInit {
+  @ViewChild("saveGraphButton") saveGraphButton!: MatButton;
+  @ViewChild("saveGraphSpinner") saveGraphSpinner!: MatProgressSpinner;
   @Output()
-  chartUserActionObs$: EventEmitter<ChartAction[]>;
+  private chartUserActionObs$: EventEmitter<ChartAction[]>;
 
-  constructor() {
+  constructor(private popupService: HonorCodePopupService) {
     this.chartUserActionObs$ = new EventEmitter<ChartAction[]>();
+
   }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
+    this.popupService.registerSaveGraphButton(this.saveGraphButton);
+    this.popupService.registerSaveGraphSpinner(this.saveGraphSpinner);
   }
 
 
   saveGraph() {
-    this.chartUserActionObs$.emit([{action: "saveGraph"}])
+    this.chartUserActionObs$.emit([{action: "saveGraph"}]);
   }
-
 
   resetGraphInfo() {
     this.chartUserActionObs$.emit([{action: "resetChartInfo"}])
   }
+
 }
 
 @NgModule({
-  imports: [MatButtonModule],
+  imports: [MatButtonModule, MatProgressSpinnerModule],
   exports: [
     SimpleGraphButtonComponent
   ],

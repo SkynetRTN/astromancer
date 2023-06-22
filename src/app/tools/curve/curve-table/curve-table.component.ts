@@ -25,19 +25,21 @@ export class CurveTableComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.dataService.data$.subscribe(
       (data: CurveDataDict[]) => {
-        this.dataSet = data;
+        this.dataSet = this.dataService.getData();
         this.table.renderTable();
-      })
+      });
     this.dataService.dataKeys$.subscribe(
       (keys: string[]) => {
         this.colNames = keys;
         this.table.renderTable();
       }
-    )
+    );
   }
 
-  public onChange = () => {
-    this.dataService.setData(this.table.getData());
+  public onChange = (changes: any, source: any) => {
+    if (changes) {
+      this.dataService.setData(this.table.getData());
+    }
   }
 
   public onRemove = (index: number, amount: number) => {

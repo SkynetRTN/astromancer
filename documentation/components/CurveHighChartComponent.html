@@ -365,8 +365,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="49"
-                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:49</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="48"
+                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:48</a></div>
                 </td>
             </tr>
 
@@ -404,8 +404,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="114"
-                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:114</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="119"
+                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:119</a></div>
                 </td>
             </tr>
 
@@ -475,8 +475,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="110"
-                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:110</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="115"
+                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:115</a></div>
                 </td>
             </tr>
 
@@ -514,8 +514,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="74"
-                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:74</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="79"
+                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:79</a></div>
                 </td>
             </tr>
 
@@ -553,8 +553,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="70"
-                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:70</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="75"
+                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:75</a></div>
                 </td>
             </tr>
 
@@ -592,8 +592,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="98"
-                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:98</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="103"
+                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:103</a></div>
                 </td>
             </tr>
 
@@ -631,8 +631,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="104"
-                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:104</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="109"
+                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:109</a></div>
                 </td>
             </tr>
 
@@ -670,8 +670,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="66"
-                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:66</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="71"
+                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:71</a></div>
                 </td>
             </tr>
 
@@ -709,8 +709,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="84"
-                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:84</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="89"
+                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:89</a></div>
                 </td>
             </tr>
 
@@ -945,11 +945,12 @@ export class CurveHighChartComponent implements AfterViewInit {
 
   chartInitialized($event: Highcharts.Chart) {
     this.chartObject &#x3D; $event;
-    this.setChartSeries();
-    this.service.setHighChart(this.chartObject);
+
   }
 
   ngAfterViewInit(): void {
+    this.setChartSeries();
+    this.service.setHighChart(this.chartObject);
     this.service.chartInfo$.subscribe((info: ChartInfo) &#x3D;&gt; {
       this.setChartYAxis();
       this.setChartXAxis();
@@ -964,6 +965,10 @@ export class CurveHighChartComponent implements AfterViewInit {
       this.reverseYAxis();
       this.updateChart();
     });
+    this.service.dataKeys$.subscribe(() &#x3D;&gt; {
+      this.updateChartSeries();
+      this.updateChart();
+    })
   }
 
   private updateChart(): void {

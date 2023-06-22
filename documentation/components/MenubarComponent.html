@@ -13,7 +13,7 @@
     </head>
     <body>
 
-        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+        <div class="navbar navbar-default navbar-fixed-top d-block d-sm-none">
             <a href="../" class="navbar-brand">skynet-plotting-neo documentation</a>
             <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
         </div>
@@ -35,32 +35,37 @@
 
 
 <ol class="breadcrumb">
-  <li>Components</li>
-  <li
+  <li class="breadcrumb-item">Components</li>
+  <li class="breadcrumb-item"
   >
   MenubarComponent</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">
-        <li class="active">
-            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
         </li>
-        <li >
-            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
         </li>
-        <li >
-            <a href="#templateData" role="tab" id="templateData-tab" data-toggle="tab" data-link="template">Template</a>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
         </li>
-        <li >
-            <a href="#styleData" role="tab" id="styleData-tab" data-toggle="tab" data-link="style">Styles</a>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
         </li>
-        <li >
-            <a href="#tree" role="tab" id="tree-tab" data-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
         </li>
 </ul>
 
 <div class="tab-content">
-    <div class="tab-pane fade active in" id="c-info"><p class="comment">
+    <div class="tab-pane fade active in" id="info"><p class="comment">
     <h3>File</h3>
 </p>
 <p class="comment">
@@ -79,10 +84,11 @@
 
 
 
-<section>
+<section data-compodoc="block-metadata">
     <h3>Metadata</h3>
     <table class="table table-sm table-hover metadata">
         <tbody>
+
 
 
 
@@ -99,9 +105,11 @@
                 <td class="col-md-9"><code>app-menubar</code></td>
             </tr>
 
+
+
             <tr>
                 <td class="col-md-3">styleUrls</td>
-                <td class="col-md-9"><code>./menubar.component.css</code></td>
+                <td class="col-md-9"><code>./menubar.component.scss</code></td>
             </tr>
 
 
@@ -122,7 +130,7 @@
     </table>
 </section>
 
-    <section>
+    <section data-compodoc="block-index">
     <h3 id="index">Index</h3>
     <table class="table table-sm table-bordered index-table">
         <tbody>
@@ -165,7 +173,7 @@
 </section>
 
 
-    <section>
+    <section data-compodoc="block-inputs">
     <h3 id="inputs">Inputs</h3>
         <table class="table table-sm table-bordered">
             <tbody>
@@ -198,7 +206,7 @@
 
 
 
-    <section>
+    <section data-compodoc="block-methods">
     
     <h3 id="methods">
         Methods
@@ -247,13 +255,13 @@
 </div>
 
 
-    <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, Input, NgModule } from &#x27;@angular/core&#x27;;
-import { ToolsNavbarComponent } from &quot;../tools-navbar/tools-navbar.component&quot;;
-import { AppRoutingModule } from &quot;../../app-routing.module&quot;;
-import { MatButtonModule } from &quot;@angular/material/button&quot;;
-import { MatToolbarModule } from &quot;@angular/material/toolbar&quot;;
-import { MatIconModule } from &quot;@angular/material/icon&quot;;
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {Component, Input, NgModule} from &#x27;@angular/core&#x27;;
+import {ToolsNavbarComponent} from &quot;../tools-navbar/tools-navbar.component&quot;;
+import {AppRoutingModule} from &quot;../../app-routing.module&quot;;
+import {MatLegacyButtonModule as MatButtonModule} from &quot;@angular/material/legacy-button&quot;;
+import {MatToolbarModule} from &quot;@angular/material/toolbar&quot;;
+import {MatIconModule} from &quot;@angular/material/icon&quot;;
 
 /**
  * Menu bar for the entire app
@@ -261,7 +269,7 @@ import { MatIconModule } from &quot;@angular/material/icon&quot;;
 @Component({
   selector: &#x27;app-menubar&#x27;,
   templateUrl: &#x27;./menubar.component.html&#x27;,
-  styleUrls: [&#x27;./menubar.component.css&#x27;]
+  styleUrls: [&#x27;./menubar.component.scss&#x27;]
 })
 export class MenubarComponent {
   /**
@@ -299,7 +307,7 @@ export class MenubarModule {
 </code></pre>
     </div>
 
-    <div class="tab-pane fade " id="c-templateData">
+    <div class="tab-pane fade " id="templateData">
         <pre class="line-numbers"><code class="language-html">&lt;mat-toolbar color&#x3D;&quot;primary&quot;&gt;
   &lt;button (click)&#x3D;&quot;openToolNavbar()&quot; aria-label&#x3D;&quot;tools dropdown&quot; mat-icon-button&gt;
     &lt;mat-icon&gt;menu&lt;/mat-icon&gt;
@@ -307,6 +315,9 @@ export class MenubarModule {
   &lt;button [routerLink]&#x3D;&quot;[&#x27;/home&#x27;]&quot; aria-label&#x3D;&quot;Home&quot; color&#x3D;&quot;primary&quot; i18n i18n-aria-label mat-flat-button&gt;
     Skynet Graphing Tool &lt;span class&#x3D;&quot;cursive&quot;&gt;neo&lt;/span&gt;&lt;/button&gt;
   &lt;span class&#x3D;&quot;toolbar-spacer&quot;&gt;&lt;/span&gt;
+  &lt;button [routerLink]&#x3D;&quot;[&#x27;/settings&#x27;]&quot; aria-label&#x3D;&quot;settings&quot; i18n-aria-label mat-icon-button&gt;
+    &lt;mat-icon&gt;settings&lt;/mat-icon&gt;
+  &lt;/button&gt;
   &lt;button [routerLink]&#x3D;&quot;[&#x27;/about&#x27;]&quot; aria-label&#x3D;&quot;about this site&quot; i18n-aria-label mat-icon-button&gt;
     &lt;mat-icon&gt;info&lt;/mat-icon&gt;
   &lt;/button&gt;
@@ -322,9 +333,9 @@ export class MenubarModule {
 </code></pre>
     </div>
 
-    <div class="tab-pane fade " id="c-styleData">
+    <div class="tab-pane fade " id="styleData">
                 <p class="comment">
-                    <code>./menubar.component.css</code>
+                    <code>./menubar.component.scss</code>
                 </p>
                 <pre class="line-numbers"><code class="language-scss">.cursive {
   font-family: &quot;Brush Script MT&quot;, serif;
@@ -340,7 +351,7 @@ export class MenubarModule {
 </code></pre>
     </div>
 
-    <div class="tab-pane fade " id="c-tree">
+    <div class="tab-pane fade " id="tree">
         <div id="tree-container"></div>
         <div class="tree-legend">
             <div class="title">
@@ -365,9 +376,9 @@ export class MenubarModule {
 <script src="../js/libs/htmlparser.js"></script>
 <script src="../js/libs/deep-iterator.js"></script>
 <script>
-        var COMPONENT_TEMPLATE = '<div><mat-toolbar color="primary">  <button (click)="openToolNavbar()" aria-label="tools dropdown" mat-icon-button>    <mat-icon>menu</mat-icon>  </button>  <button [routerLink]="[\'/home\']" aria-label="Home" color="primary" i18n i18n-aria-label mat-flat-button>    Skynet Graphing Tool <span class="cursive">neo</span></button>  <span class="toolbar-spacer"></span>  <button [routerLink]="[\'/about\']" aria-label="about this site" i18n-aria-label mat-icon-button>    <mat-icon>info</mat-icon>  </button>  <a aria-label="link to Github" href="https://github.com/RuideFu/skynet-plotting-neo" i18n-aria-label mat-icon-button     target="_blank">    <svg class="bi bi-github" fill="currentColor" height="20" viewBox="0 0 16 16" width="20"         xmlns="http://www.w3.org/2000/svg">      <path        d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>    </svg>  </a></mat-toolbar></div>'
-    var COMPONENTS = [{'name': 'AboutComponent', 'selector': 'app-about'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'CurveChartComponent', 'selector': 'app-curve-chart'},{'name': 'CurveComponent', 'selector': 'app-curve'},{'name': 'HomeComponent', 'selector': 'app-home'},{'name': 'HonorCodePopupComponent', 'selector': 'app-honor-code-popup'},{'name': 'LineFormComponent', 'selector': 'app-line-form'},{'name': 'MenubarComponent', 'selector': 'app-menubar'},{'name': 'PageNotFoundComponent', 'selector': 'app-page-not-found'},{'name': 'SimpleDataButtonComponent', 'selector': 'app-simple-data-button'},{'name': 'SimpleGraphButtonComponent', 'selector': 'app-simple-graph-button'},{'name': 'SimpleTableImplComponent', 'selector': 'app-simple-table-impl'},{'name': 'StandardGraphInfoComponent', 'selector': 'app-standard-graphinfo'},{'name': 'StandardLayoutComponent', 'selector': 'app-standard-layout'},{'name': 'ToolsNavbarComponent', 'selector': 'app-tools-navbar'}];
-    var DIRECTIVES = [{'name': 'ChartDirective', 'selector': '[chart-directive]'},{'name': 'DataButtonDirective', 'selector': '[data-button-directive]'},{'name': 'DataControlDirective', 'selector': '[data-control-directive]'},{'name': 'DataTableDirective', 'selector': '[data-table-directive]'},{'name': 'GraphButtonDirective', 'selector': '[graph-button-directive]'},{'name': 'GraphInfoDirective', 'selector': '[graph-info-directive]'}];
+        var COMPONENT_TEMPLATE = '<div><mat-toolbar color="primary">  <button (click)="openToolNavbar()" aria-label="tools dropdown" mat-icon-button>    <mat-icon>menu</mat-icon>  </button>  <button [routerLink]="[\'/home\']" aria-label="Home" color="primary" i18n i18n-aria-label mat-flat-button>    Skynet Graphing Tool <span class="cursive">neo</span></button>  <span class="toolbar-spacer"></span>  <button [routerLink]="[\'/settings\']" aria-label="settings" i18n-aria-label mat-icon-button>    <mat-icon>settings</mat-icon>  </button>  <button [routerLink]="[\'/about\']" aria-label="about this site" i18n-aria-label mat-icon-button>    <mat-icon>info</mat-icon>  </button>  <a aria-label="link to Github" href="https://github.com/RuideFu/skynet-plotting-neo" i18n-aria-label mat-icon-button     target="_blank">    <svg class="bi bi-github" fill="currentColor" height="20" viewBox="0 0 16 16" width="20"         xmlns="http://www.w3.org/2000/svg">      <path        d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>    </svg>  </a></mat-toolbar></div>'
+    var COMPONENTS = [{'name': 'AboutComponent', 'selector': 'app-about'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'AppearanceComponent', 'selector': 'app-appearance'},{'name': 'CurveChartComponent', 'selector': 'app-curve-chart'},{'name': 'CurveChartFormComponent', 'selector': 'app-curve-chart-form'},{'name': 'CurveComponent', 'selector': 'app-curve'},{'name': 'CurveHighChartComponent', 'selector': 'app-curve-highchart'},{'name': 'CurveTableComponent', 'selector': 'app-curve-table'},{'name': 'HomeComponent', 'selector': 'app-home'},{'name': 'HonorCodePopupComponent', 'selector': 'app-honor-code-popup'},{'name': 'LineFormComponent', 'selector': 'app-line-form'},{'name': 'MenubarComponent', 'selector': 'app-menubar'},{'name': 'PageNotFoundComponent', 'selector': 'app-page-not-found'},{'name': 'SettingsComponent', 'selector': 'app-settings'},{'name': 'SimpleDataButtonComponent', 'selector': 'app-simple-data-button'},{'name': 'SimpleGraphButtonComponent', 'selector': 'app-simple-graph-button'},{'name': 'ToolsNavbarComponent', 'selector': 'app-tools-navbar'}];
+    var DIRECTIVES = [];
     var ACTUAL_COMPONENT = {'name': 'MenubarComponent'};
 </script>
 <script src="../js/tree.js"></script>

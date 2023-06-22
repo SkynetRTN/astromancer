@@ -13,7 +13,7 @@
     </head>
     <body>
 
-        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+        <div class="navbar navbar-default navbar-fixed-top d-block d-sm-none">
             <a href="../" class="navbar-brand">skynet-plotting-neo documentation</a>
             <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
         </div>
@@ -34,22 +34,28 @@
 
 
 <ol class="breadcrumb">
-    <li>Modules</li>
-    <li >AppRoutingModule</li>
+    <li class="breadcrumb-item">Modules</li>
+    <li class="breadcrumb-item" >AppRoutingModule</li>
 </ol>
 
 
 <ul class="nav nav-tabs" role="tablist">
-    <li  class="active" >
-        <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+    <li class="nav-item">
+        <a href="#info" 
+            class="nav-link"
+            class="nav-link active"
+            role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
     </li>
-    <li >
-        <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+    <li class="nav-item">
+        <a href="#source" 
+            class="nav-link"
+            
+            role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
     </li>
 </ul>
 
 <div class="tab-content">
-    <div class="tab-pane fade active in" id="c-info">
+    <div class="tab-pane fade active in" id="info">
 
         <p class="comment">
             <h3>File</h3>
@@ -71,29 +77,45 @@
     </div>
 
 
-    <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { NgModule } from &#x27;@angular/core&#x27;;
-import { RouterModule, Routes } from &#x27;@angular/router&#x27;;
-import { CurveComponent } from &quot;./tools/curve/curve.component&quot;;
-import { HomeComponent } from &quot;./shared/home/home.component&quot;;
-import { AboutComponent } from &quot;./shared/about/about.component&quot;;
-import { PageNotFoundComponent } from &quot;./shared/page-not-found/page-not-found.component&quot;;
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {NgModule} from &#x27;@angular/core&#x27;;
+import {RouterModule, Routes} from &#x27;@angular/router&#x27;;
+import {CurveComponent} from &quot;./tools/curve/curve.component&quot;;
+import {HomeComponent} from &quot;./shared/home/home.component&quot;;
+import {AboutComponent} from &quot;./shared/about/about.component&quot;;
+import {PageNotFoundComponent} from &quot;./shared/page-not-found/page-not-found.component&quot;;
+import {SettingsComponent} from &quot;./shared/settings/settings.component&quot;;
+import {AppearanceComponent} from &quot;./shared/settings/appearance/appearance.component&quot;;
 
 /**
  * Routes for the site
  */
 const TOOLS_ROUTES: Routes &#x3D; [
-  { path: &quot;home&quot;, component: HomeComponent, data: { title: &quot;getToolSiteName($localize&#x60;:home:Home&#x60;)&quot; } },
-  { path: &quot;about&quot;, component: AboutComponent, data: { title: &quot;getToolSiteName($localize&#x60;:about:About&#x60;)&quot; } },
-  { path: &quot;curve&quot;, component: CurveComponent, data: { title: &quot;getToolSiteName($localize&#x60;:curve:Curve&#x60;)&quot; } },
-  { path: &#x27;&#x27;, redirectTo: &#x27;/home&#x27;, pathMatch: &#x27;full&#x27; },
-  { path: &#x27;**&#x27;, component: PageNotFoundComponent, data: { title: $localize&#x60;:page-not-found:Page Not Found&#x60; } }
+  {path: &quot;home&quot;, component: HomeComponent, data: {title: &quot;getToolSiteName($localize&#x60;:home:Home&#x60;)&quot;}},
+  {path: &quot;about&quot;, component: AboutComponent, data: {title: &quot;getToolSiteName($localize&#x60;:about:About&#x60;)&quot;}},
+  {path: &quot;curve&quot;, component: CurveComponent, data: {title: &quot;getToolSiteName($localize&#x60;:curve:Curve&#x60;)&quot;}},
+  {
+    path: &quot;settings&quot;, component: SettingsComponent, data: {title: &quot;getToolSiteName($localize&#x60;:settings:Settings&#x60;)&quot;},
+    children: [
+      {
+        path: &#x27;&#x27;,
+        pathMatch: &#x27;full&#x27;,
+        redirectTo: &#x27;appearance&#x27;
+      },
+      {
+        path: &#x27;appearance&#x27;,
+        component: AppearanceComponent,
+        data: {title: &#x27;Appearance Settings&#x27;},
+      },]
+  },
+  {path: &#x27;&#x27;, redirectTo: &#x27;/home&#x27;, pathMatch: &#x27;full&#x27;},
+  {path: &#x27;**&#x27;, component: PageNotFoundComponent, data: {title: $localize&#x60;:page-not-found:Page Not Found&#x60;}}
 ]
 
 /**
  * Generate name of the site based on the graphing tool in use.
  * @param tool the graphing tool in use
- * @returns 
+ * @returns
  */
 function getToolSiteName(tool: string): string {
   return $localize&#x60;:site-name:Skynet Plotting Neo&#x60; + tool;

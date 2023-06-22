@@ -13,7 +13,7 @@
     </head>
     <body>
 
-        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+        <div class="navbar navbar-default navbar-fixed-top d-block d-sm-none">
             <a href="../" class="navbar-brand">skynet-plotting-neo documentation</a>
             <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
         </div>
@@ -35,32 +35,37 @@
 
 
 <ol class="breadcrumb">
-  <li>Components</li>
-  <li
+  <li class="breadcrumb-item">Components</li>
+  <li class="breadcrumb-item"
   >
   HomeComponent</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">
-        <li class="active">
-            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
         </li>
-        <li >
-            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
         </li>
-        <li >
-            <a href="#templateData" role="tab" id="templateData-tab" data-toggle="tab" data-link="template">Template</a>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
         </li>
-        <li >
-            <a href="#styleData" role="tab" id="styleData-tab" data-toggle="tab" data-link="style">Styles</a>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
         </li>
-        <li >
-            <a href="#tree" role="tab" id="tree-tab" data-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
         </li>
 </ul>
 
 <div class="tab-content">
-    <div class="tab-pane fade active in" id="c-info"><p class="comment">
+    <div class="tab-pane fade active in" id="info"><p class="comment">
     <h3>File</h3>
 </p>
 <p class="comment">
@@ -79,10 +84,11 @@
 
 
 
-<section>
+<section data-compodoc="block-metadata">
     <h3>Metadata</h3>
     <table class="table table-sm table-hover metadata">
         <tbody>
+
 
 
 
@@ -99,9 +105,11 @@
                 <td class="col-md-9"><code>app-home</code></td>
             </tr>
 
+
+
             <tr>
                 <td class="col-md-3">styleUrls</td>
-                <td class="col-md-9"><code>./home.component.css</code></td>
+                <td class="col-md-9"><code>./home.component.scss</code></td>
             </tr>
 
 
@@ -133,8 +141,8 @@
 </div>
 
 
-    <div class="tab-pane fade  tab-source-code" id="c-source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, OnInit } from &#x27;@angular/core&#x27;;
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {Component} from &#x27;@angular/core&#x27;;
 
 /**
  * Home page of the site
@@ -142,7 +150,7 @@
 @Component({
   selector: &#x27;app-home&#x27;,
   templateUrl: &#x27;./home.component.html&#x27;,
-  styleUrls: [&#x27;./home.component.css&#x27;]
+  styleUrls: [&#x27;./home.component.scss&#x27;]
 })
 export class HomeComponent {
 
@@ -150,19 +158,19 @@ export class HomeComponent {
 </code></pre>
     </div>
 
-    <div class="tab-pane fade " id="c-templateData">
+    <div class="tab-pane fade " id="templateData">
         <pre class="line-numbers"><code class="language-html">&lt;p&gt;home works!&lt;/p&gt;
 </code></pre>
     </div>
 
-    <div class="tab-pane fade " id="c-styleData">
+    <div class="tab-pane fade " id="styleData">
                 <p class="comment">
-                    <code>./home.component.css</code>
+                    <code>./home.component.scss</code>
                 </p>
                 <pre class="line-numbers"><code class="language-scss"></code></pre>
     </div>
 
-    <div class="tab-pane fade " id="c-tree">
+    <div class="tab-pane fade " id="tree">
         <div id="tree-container"></div>
         <div class="tree-legend">
             <div class="title">
@@ -188,8 +196,8 @@ export class HomeComponent {
 <script src="../js/libs/deep-iterator.js"></script>
 <script>
         var COMPONENT_TEMPLATE = '<div><p>home works!</p></div>'
-    var COMPONENTS = [{'name': 'AboutComponent', 'selector': 'app-about'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'CurveChartComponent', 'selector': 'app-curve-chart'},{'name': 'CurveComponent', 'selector': 'app-curve'},{'name': 'HomeComponent', 'selector': 'app-home'},{'name': 'HonorCodePopupComponent', 'selector': 'app-honor-code-popup'},{'name': 'LineFormComponent', 'selector': 'app-line-form'},{'name': 'MenubarComponent', 'selector': 'app-menubar'},{'name': 'PageNotFoundComponent', 'selector': 'app-page-not-found'},{'name': 'SimpleDataButtonComponent', 'selector': 'app-simple-data-button'},{'name': 'SimpleGraphButtonComponent', 'selector': 'app-simple-graph-button'},{'name': 'SimpleTableImplComponent', 'selector': 'app-simple-table-impl'},{'name': 'StandardGraphInfoComponent', 'selector': 'app-standard-graphinfo'},{'name': 'StandardLayoutComponent', 'selector': 'app-standard-layout'},{'name': 'ToolsNavbarComponent', 'selector': 'app-tools-navbar'}];
-    var DIRECTIVES = [{'name': 'ChartDirective', 'selector': '[chart-directive]'},{'name': 'DataButtonDirective', 'selector': '[data-button-directive]'},{'name': 'DataControlDirective', 'selector': '[data-control-directive]'},{'name': 'DataTableDirective', 'selector': '[data-table-directive]'},{'name': 'GraphButtonDirective', 'selector': '[graph-button-directive]'},{'name': 'GraphInfoDirective', 'selector': '[graph-info-directive]'}];
+    var COMPONENTS = [{'name': 'AboutComponent', 'selector': 'app-about'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'AppearanceComponent', 'selector': 'app-appearance'},{'name': 'CurveChartComponent', 'selector': 'app-curve-chart'},{'name': 'CurveChartFormComponent', 'selector': 'app-curve-chart-form'},{'name': 'CurveComponent', 'selector': 'app-curve'},{'name': 'CurveHighChartComponent', 'selector': 'app-curve-highchart'},{'name': 'CurveTableComponent', 'selector': 'app-curve-table'},{'name': 'HomeComponent', 'selector': 'app-home'},{'name': 'HonorCodePopupComponent', 'selector': 'app-honor-code-popup'},{'name': 'LineFormComponent', 'selector': 'app-line-form'},{'name': 'MenubarComponent', 'selector': 'app-menubar'},{'name': 'PageNotFoundComponent', 'selector': 'app-page-not-found'},{'name': 'SettingsComponent', 'selector': 'app-settings'},{'name': 'SimpleDataButtonComponent', 'selector': 'app-simple-data-button'},{'name': 'SimpleGraphButtonComponent', 'selector': 'app-simple-graph-button'},{'name': 'ToolsNavbarComponent', 'selector': 'app-tools-navbar'}];
+    var DIRECTIVES = [];
     var ACTUAL_COMPONENT = {'name': 'HomeComponent'};
 </script>
 <script src="../js/tree.js"></script>

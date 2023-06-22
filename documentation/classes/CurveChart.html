@@ -1,0 +1,859 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>skynet-plotting-neo documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top d-block d-sm-none">
+            <a href="../" class="navbar-brand">skynet-plotting-neo documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content class">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Classes</li>
+  <li class="breadcrumb-item" >CurveChart</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>src/app/tools/curve/curve-chart/curve-chart.component.ts</code>
+        </p>
+
+
+
+
+            <p class="comment">
+                <h3>Implements</h3>
+            </p>
+            <p class="comment">
+                            <code><a href="../interfaces/MyChart.html" target="_self" >MyChart</a></code>
+            </p>
+
+
+            <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Private</span>
+                                    <span class="modifier">Readonly</span>
+                                <a href="#id" >id</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#generateChartConfig" >generateChartConfig</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#generateChartOptions" >generateChartOptions</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#generateCurveChartConfig" >generateCurveChartConfig</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#makeRawData" >makeRawData</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#renderChart" >renderChart</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+            <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="77" class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:77</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>id</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+            <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="id"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                            <span class="modifier">Readonly</span>
+                        <span ><b>id</b></span>
+                        <a href="#id"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="77" class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:77</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+            <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="generateChartConfig"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>generateChartConfig</b></span>
+                        <a href="#generateChartConfig"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>generateChartConfig(data: <a href="../interfaces/MyData.html" target="_self">MyData</a>, chartInfo: <a href="../interfaces/ChartInfo.html" target="_self">ChartInfo</a>, toolInterface: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="83"
+                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:83</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>data</td>
+                                    <td>
+                                                <code><a href="../interfaces/MyData.html" target="_self" >MyData</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>chartInfo</td>
+                                    <td>
+                                                <code><a href="../interfaces/ChartInfo.html" target="_self" >ChartInfo</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>toolInterface</td>
+                                    <td>
+                                                <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="generateChartOptions"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>generateChartOptions</b></span>
+                        <a href="#generateChartOptions"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>generateChartOptions(chartInfo: <a href="../interfaces/ChartInfo.html" target="_self">ChartInfo</a>, toolInterface: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="90"
+                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:90</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>chartInfo</td>
+                                    <td>
+                                                <code><a href="../interfaces/ChartInfo.html" target="_self" >ChartInfo</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>toolInterface</td>
+                                    <td>
+                                                <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>ChartOptions</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="generateCurveChartConfig"></a>
+                    <span class="name">
+                        <span class="modifier">Private</span>
+                        <span ><b>generateCurveChartConfig</b></span>
+                        <a href="#generateCurveChartConfig"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>generateCurveChartConfig(chartData: <a href="../interfaces/CurveDataDict.html" target="_self">CurveDataDict[]</a>, curveCount: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, labels: string[])</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="125"
+                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:125</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>chartData</td>
+                                    <td>
+                                                <code><a href="../interfaces/CurveDataDict.html" target="_self" >CurveDataDict[]</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>curveCount</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>labels</td>
+                                    <td>
+                                            <code>string[]</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="makeRawData"></a>
+                    <span class="name">
+                        <span class="modifier">Private</span>
+                        <span ><b>makeRawData</b></span>
+                        <a href="#makeRawData"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>makeRawData(dataDict: <a href="../interfaces/CurveDataDict.html" target="_self">CurveDataDict[]</a>, curveCount: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="145"
+                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:145</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>dataDict</td>
+                                    <td>
+                                                <code><a href="../interfaces/CurveDataDict.html" target="_self" >CurveDataDict[]</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>curveCount</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>[][]</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="renderChart"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>renderChart</b></span>
+                        <a href="#renderChart"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>renderChart()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="121"
+                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:121</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+
+
+
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {AfterViewInit, Component} from &#x27;@angular/core&#x27;;
+import {Chart} from &quot;chart.js&quot;;
+import {ChartConfiguration, ChartOptions} from &quot;chart.js/dist/types&quot;;
+import {CurveService} from &quot;../curve.service&quot;;
+import {ChartInfo, MyChart} from &quot;../../shared/charts/chart.interface&quot;;
+import {MyData} from &quot;../../shared/data/data.interface&quot;;
+import {CurveChartInfo, CurveCounts, CurveDataDict, CurveInterface} from &quot;../curve.service.util&quot;;
+import {AppearanceService} from &quot;../../../shared/settings/appearance/service/appearance.service&quot;;
+import {ChartColor} from &quot;../../../shared/settings/appearance/service/appearance.utils&quot;;
+
+/**
+ * Chart for the curve graphing tools.
+ *
+ */
+@Component({
+  selector: &#x27;app-curve-chart&#x27;,
+  templateUrl: &#x27;./curve-chart.component.html&#x27;,
+  styleUrls: [&#x27;./curve-chart.component.scss&#x27;],
+})
+export class CurveChartComponent implements AfterViewInit {
+  /**
+   * Chart.js object id
+   */
+  id!: string;
+  /**
+   * Custom Chart object
+   */
+  chart!: CurveChart;
+  /**
+   * Chart.js object data configuration
+   */
+  lineChartData!: ChartConfiguration&lt;&#x27;line&#x27;&gt;[&#x27;data&#x27;];
+  /**
+   * Chart.js object options configuration
+   */
+  lineChartOptions!: ChartOptions&lt;&#x27;line&#x27;&gt;;
+
+
+  constructor(private service: CurveService, private appearanceService: AppearanceService) {
+    this.id &#x3D; &quot;curve-chart&quot;;
+    Chart.defaults.color &#x3D; this.appearanceService.getChartFontColor();
+    Chart.defaults.borderColor &#x3D; this.appearanceService.getChartBackgroundColor();
+    this.chart &#x3D; new CurveChart(this.id);
+    this.lineChartData &#x3D; this.chart.generateChartConfig(
+      this.service.getDataObject(),
+      this.service.getChartInfoObject(),
+      this.service.getInterfaceObject());
+    this.lineChartOptions &#x3D; this.chart.generateChartOptions(
+      this.service.getChartInfoObject(),
+      this.service.getInterfaceObject()
+    );
+  }
+
+  ngAfterViewInit(): void {
+    this.service.data$.subscribe(
+      () &#x3D;&gt; {
+        this.lineChartData &#x3D; this.chart.generateChartConfig(
+          this.service.getDataObject(),
+          this.service.getChartInfoObject(),
+          this.service.getInterfaceObject());
+        this.chart.renderChart();
+      }
+    )
+    this.service.chartInfo$.subscribe(
+      () &#x3D;&gt; {
+        this.lineChartOptions &#x3D; this.chart.generateChartOptions(
+          this.service.getChartInfoObject(),
+          this.service.getInterfaceObject()
+        );
+        this.chart.renderChart();
+      }
+    )
+  }
+}
+
+class CurveChart implements MyChart {
+  private readonly id: string;
+
+  constructor(id: string) {
+    this.id &#x3D; id;
+  }
+
+  public generateChartConfig(data: MyData, chartInfo: ChartInfo, toolInterface: any): ChartConfiguration&lt;&#x27;line&#x27;&gt;[&#x27;data&#x27;] {
+    return this.generateCurveChartConfig(
+      data.getData(),
+      (toolInterface as CurveInterface).getCurveCount(),
+      (chartInfo as CurveChartInfo).getTableLabels());
+  }
+
+  public generateChartOptions(chartInfo: ChartInfo, toolInterface: any): ChartOptions {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      hover: {mode: &#x27;nearest&#x27;},
+      scales: {
+        x: {
+          title: {text: (chartInfo as CurveChartInfo).getXAxisLabel(), display: true},
+          type: &#x27;linear&#x27;,
+          position: &#x27;bottom&#x27;,
+        },
+        y: {
+          title: {text: (chartInfo as CurveChartInfo).getYAxisLabel(), display: true},
+          reverse: (toolInterface as CurveInterface).getIsMagnitudeOn(),
+        }
+      },
+      plugins: {
+        title: {
+          text: (chartInfo as CurveChartInfo).getChartTitle(),
+          display: true,
+        },
+        colors: {
+          forceOverride: true,
+        }
+      },
+      animation: {
+        duration: 0,
+      }
+    };
+  }
+
+  public renderChart(): void {
+    Chart.getChart(this.id)?.update(&#x27;none&#x27;);
+  }
+
+  private generateCurveChartConfig(chartData: CurveDataDict[], curveCount: number, labels: string[]): ChartConfiguration&lt;&#x27;line&#x27;&gt;[&#x27;data&#x27;] {
+    let result: any &#x3D; {datasets: []};
+    const data &#x3D; this.makeRawData(chartData, curveCount);
+    for (let i &#x3D; 0; i &lt; curveCount; i++) {
+      result[&#x27;datasets&#x27;].push({
+        label: labels[i + 1],
+        data: data[i],
+        borderWidth: 2,
+        tension: 0.1,
+        fill: false,
+        color: ChartColor.getLineColor(i),
+        backgroundColor: ChartColor.getLineColor(i),
+        borderColor: ChartColor.getLineColor(i),
+        pointBackgroundColor: ChartColor.getLineColor(i),
+        pointBorderColor: ChartColor.getLineColor(i),
+      })
+    }
+    return result;
+  }
+
+  private makeRawData(dataDict: CurveDataDict[], curveCount: number): any[][] {
+    const data &#x3D; dataDict;
+    let result: any[][] &#x3D; [[], [], [], []];
+    if (data.length &#x3D;&#x3D; 0)
+      return result;
+    for (let i &#x3D; 0; i &lt; data.length; i++) {
+      if (curveCount &gt;&#x3D; CurveCounts.ONE &amp;&amp; data[i].y1 !&#x3D; null)
+        result[0].push({x: data[i].x, y: data[i].y1});
+      if (curveCount &gt;&#x3D; CurveCounts.TWO &amp;&amp; data[i].y2 !&#x3D; null)
+        result[1].push({x: data[i].x, y: data[i].y2});
+      if (curveCount &gt;&#x3D; CurveCounts.THREE &amp;&amp; data[i].y3 !&#x3D; null)
+        result[2].push({x: data[i].x, y: data[i].y3});
+      if (curveCount &gt;&#x3D; CurveCounts.FOUR &amp;&amp; data[i].y4 !&#x3D; null)
+        result[3].push({x: data[i].x, y: data[i].y4});
+    }
+    return result;
+  }
+
+}
+</code></pre>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'class';
+            var COMPODOC_CURRENT_PAGE_URL = 'CurveChart.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

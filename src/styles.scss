@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @use '@angular/material' as mat;
 @use '@angular/material/theming';
+@import url("https://code.highcharts.com/css/highcharts.css");
 @import "~bootstrap/dist/css/bootstrap.css";
 @import '~handsontable/dist/handsontable.full.css';
 @import 'palette.scss';
@@ -37,9 +38,80 @@ $light-theme: mat.define-light-theme($light-primary, $light-accent, $light-warn)
     background-color: map-get($light-primary, 100);
   }
 
-  .highcharts-background {
-    fill: rgb(250, 250, 250);
-  }
+
+  /* Highcharts Light Theme */
+
+  /* Colors for data series and points */
+  --highcharts-color-0: #2caffe;
+  --highcharts-color-1: #544fc5;
+  --highcharts-color-2: #00e272;
+  --highcharts-color-3: #fe6a35;
+  --highcharts-color-4: #6b8abc;
+  --highcharts-color-5: #d568fb;
+  --highcharts-color-6: #2ee0ca;
+  --highcharts-color-7: #fa4b42;
+  --highcharts-color-8: #feb56a;
+  --highcharts-color-9: #91e8e1;
+
+  /* Chart background, point stroke for markers and columns etc */
+  --highcharts-background-color: rgb(250, 250, 250);
+
+  /*
+  Neutral colors, grayscale by default. The default colors are defined by
+  mixing the background-color with neutral, with a weight corresponding to
+  the number in the name.
+
+  https://www.highcharts.com/samples/highcharts/css/palette-helper
+  */
+
+  /* Strong text. */
+  --highcharts-neutral-color-100: #000000;
+
+  /* Main text, axis labels and some strokes. */
+  --highcharts-neutral-color-80: #333333;
+
+  /* Axis title, connector fallback. */
+  --highcharts-neutral-color-60: #666666;
+
+  /* Credits text, export menu stroke. */
+  --highcharts-neutral-color-40: #999999;
+
+  /* Disabled texts, button strokes, crosshair etc. */
+  --highcharts-neutral-color-20: #cccccc;
+
+  /* Grid lines etc. */
+  --highcharts-neutral-color-10: #e6e6e6;
+
+  /* Minor grid lines etc. */
+  --highcharts-neutral-color-5: #f2f2f2;
+
+  /* Tooltip backgroud, button fills, map null points. */
+  --highcharts-neutral-color-3: #f7f7f7;
+
+  /*
+  Highlights, shades of blue by default
+  */
+
+  /* Drilldown clickable labels, color axis max color. */
+  --highcharts-highlight-color-100: #0022ff;
+
+  /* Selection marker, menu hover, button hover, chart border, navigator
+  series. */
+  --highcharts-highlight-color-80: #334eff;
+
+  /* Navigator mask fill. */
+  --highcharts-highlight-color-60: #667aff;
+
+  /* Ticks and axis line. */
+  --highcharts-highlight-color-20: #ccd3ff;
+
+  /* Pressed button, color axis min color. */
+  --highcharts-highlight-color-10: #e6e9ff;
+
+  /* Indicators */
+  --highcharts-positive-color: #06b535;
+  --highcharts-negative-color: #f21313;
+
 }
 
 
@@ -51,7 +123,6 @@ $dark-theme: mat.define-dark-theme($dark-primary, $dark-accent, $dark-warn);
 
 .DARK_THEME {
   @include mat.all-legacy-component-themes($dark-theme);
-  //@include
 
   .mat-list-item.active, .mat-list-item.active:focus, .mat-list-item.active:hover {
     font-weight: bold;
@@ -233,6 +304,40 @@ $dark-theme: mat.define-dark-theme($dark-primary, $dark-accent, $dark-warn);
     background-color: var(--ctx-background);
   }
 
+  /* Highcharts Dark Theme */
+
+  /* Chart background, point stroke for markers and columns etc */
+  --highcharts-background-color: rgb(48, 48, 48);
+
+  /* Colors for data series and points. */
+  --highcharts-color-0: #2b908f;
+  --highcharts-color-1: #90ee7e;
+  --highcharts-color-2: #f45b5b;
+  --highcharts-color-3: #7798bf;
+  --highcharts-color-4: #aaeeee;
+  --highcharts-color-5: #ff0066;
+  --highcharts-color-6: #eeaaee;
+  --highcharts-color-7: #55bf3b;
+  --highcharts-color-8: #df5353;
+  --highcharts-color-9: #7798bf;
+
+  /* Neutral colors */
+  --highcharts-neutral-color-100: #ffffff;
+  --highcharts-neutral-color-80: #e0e0e3;
+  --highcharts-neutral-color-60: #e0e0e3;
+  --highcharts-neutral-color-40: #666666;
+  --highcharts-neutral-color-20: #606063;
+  --highcharts-neutral-color-10: #707073;
+  --highcharts-neutral-color-5: #505053;
+  --highcharts-neutral-color-3: #303033;
+
+  /* Highlight colors https://jsfiddle.net/highcharts/pukradvh/ */
+  --highcharts-highlight-color-100: rgb(166, 199, 237);
+  --highcharts-highlight-color-80: rgb(134, 165, 201);
+  --highcharts-highlight-color-60: rgb(102, 131, 164);
+  --highcharts-highlight-color-20: rgb(39, 64, 91);
+  --highcharts-highlight-color-10: rgb(23, 47, 73);
+
 }
 
 
@@ -280,47 +385,57 @@ $dark-hc-theme: map_merge(
 
 
 .fontSize-small {
-  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span, htNumeric {
+  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span, htNumeric,
+  .highcharts-title, .highcharts-axis-title, .highcharts-legend-item, .highcharts-tooltip, .highcharts-credits,
+  {
     font-size: 0.8em;
   }
 }
 
 .fontSize-default {
-  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span, htNumeric {
+  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span, htNumeric,
+  .highcharts-title, .highcharts-axis-title, .highcharts-legend-item, .highcharts-tooltip, .highcharts-credits,
+  {
     font-size: 1em;
   }
 }
 
 .fontSize-large {
-  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span, {
+  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span, htNumeric,
+  .highcharts-title, .highcharts-axis-title, .highcharts-legend-item, .highcharts-tooltip, .highcharts-credits,
+  {
     font-size: 1.25em;
   }
 }
 
 .fontSize-larger {
-  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span, htNumeric {
+  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span, htNumeric,
+  .highcharts-title, .highcharts-axis-title, .highcharts-legend-item, .highcharts-tooltip, .highcharts-credits,
+  {
     font-size: 1.5em;
-  }
-
-  mat-select {
-    margin-top: 15px;
   }
 }
 
 .fontStyle-normal {
-  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span, htNumeric {
+  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span, htNumeric,
+  .highcharts-title, .highcharts-axis-title, .highcharts-legend-item, .highcharts-tooltip, .highcharts-credits,
+  {
     font-weight: normal;
   }
 }
 
 .fontStyle-bold {
-  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span, htNumeric {
+  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span, htNumeric,
+  .highcharts-title, .highcharts-axis-title, .highcharts-legend-item, .highcharts-tooltip, .highcharts-credits,
+  {
     font-weight: bold;
   }
 }
 
 .fontStyle-bolder {
-  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span, {
+  label, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6, th, td, p, span, input, button, a, th, td, .mat-cell, span, htNumeric,
+  .highcharts-title, .highcharts-axis-title, .highcharts-legend-item, .highcharts-tooltip, .highcharts-credits,
+  {
     font-weight: bolder;
   }
 }
@@ -341,6 +456,9 @@ $roboto-typography: mat.define-legacy-typography-config(
 
 .fontFamily-Roboto {
   @include mat.all-legacy-component-typographies($roboto-typography);
+  .highcharts-title, .highcharts-axis-title, .highcharts-legend-item, .highcharts-tooltip, .highcharts-credits {
+    font-family: "Roboto, sans";
+  }
 }
 
 $comic-typography: mat.define-legacy-typography-config(
@@ -348,5 +466,8 @@ $comic-typography: mat.define-legacy-typography-config(
 
 .fontFamily-Comic-Neue {
   @include mat.all-legacy-component-typographies($comic-typography);
+  .highcharts-title, .highcharts-axis-title, .highcharts-legend-item, .highcharts-tooltip, .highcharts-credits {
+    font-family: "Comic Neue";
+  }
 }
 

@@ -16,7 +16,7 @@ export class CurveHighChartComponent implements AfterViewInit {
   chartOptions: Highcharts.Options = {
     chart: {
       animation: false,
-
+      styledMode: true,
     },
     legend: {
       align: 'center',

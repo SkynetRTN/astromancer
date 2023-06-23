@@ -1,14 +1,15 @@
-import {AfterViewInit, Component} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import * as Highcharts from 'highcharts';
 import {CurveService} from "../curve.service";
 import {ChartInfo} from "../../shared/charts/chart.interface";
+import {Subject, takeUntil} from 'rxjs';
 
 @Component({
   selector: 'app-curve-highchart',
   templateUrl: './curve-high-chart.component.html',
   styleUrls: ['./curve-high-chart.component.scss']
 })
-export class CurveHighChartComponent implements AfterViewInit {
+export class CurveHighChartComponent implements AfterViewInit, OnDestroy {
   Highcharts: typeof Highcharts = Highcharts;
   updateFlag: boolean = true;
   chartConstructor: any = "chart";
@@ -33,6 +34,7 @@ export class CurveHighChartComponent implements AfterViewInit {
       }
     }
   };
+  private destroy$: Subject<any> = new Subject<any>();
 
   constructor(private service: CurveService) {
     this.setChartTitle();
@@ -48,24 +50,37 @@ export class CurveHighChartComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.setChartSeries();
     this.service.setHighChart(this.chartObject);
-    this.service.chartInfo$.subscribe((info: ChartInfo) => {
+    this.service.chartInfo$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe((info: ChartInfo) => {
       this.setChartYAxis();
       this.setChartXAxis();
       this.setChartTitle();
       this.updateChart();
     });
-    this.service.data$.subscribe((data) => {
+    this.service.data$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe((data) => {
       this.updateChartSeries();
       this.updateChart();
     });
-    this.service.interface$.subscribe(() => {
+    this.service.interface$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
       this.reverseYAxis();
       this.updateChart();
     });
-    this.service.dataKeys$.subscribe(() => {
+    this.service.dataKeys$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
       this.updateChartSeries();
       this.updateChart();
     })
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(null);
+    this.destroy$.complete();
   }
 
   private updateChart(): void {

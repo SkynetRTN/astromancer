@@ -1,4 +1,4 @@
-import {AfterViewInit, Component} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import {Chart} from "chart.js";
 import {ChartConfiguration, ChartOptions} from "chart.js/dist/types";
 import {CurveService} from "../curve.service";
@@ -7,6 +7,7 @@ import {MyData} from "../../shared/data/data.interface";
 import {CurveChartInfo, CurveCounts, CurveDataDict, CurveInterface} from "../curve.service.util";
 import {AppearanceService} from "../../../shared/settings/appearance/service/appearance.service";
 import {ChartColor} from "../../../shared/settings/appearance/service/appearance.utils";
+import {Subject, takeUntil} from 'rxjs';
 
 /**
  * Chart for the curve graphing tools.
@@ -17,7 +18,7 @@ import {ChartColor} from "../../../shared/settings/appearance/service/appearance
   templateUrl: './curve-chart.component.html',
   styleUrls: ['./curve-chart.component.scss'],
 })
-export class CurveChartComponent implements AfterViewInit {
+export class CurveChartComponent implements AfterViewInit, OnDestroy {
   /**
    * Chart.js object id
    */
@@ -34,7 +35,7 @@ export class CurveChartComponent implements AfterViewInit {
    * Chart.js object options configuration
    */
   lineChartOptions!: ChartOptions<'line'>;
-
+  private destroy$: Subject<any> = new Subject<any>();
 
   constructor(private service: CurveService, private appearanceService: AppearanceService) {
     this.id = "curve-chart";
@@ -51,8 +52,11 @@ export class CurveChartComponent implements AfterViewInit {
     );
   }
 
+
   ngAfterViewInit(): void {
-    this.service.data$.subscribe(
+    this.service.data$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(
       () => {
         this.lineChartData = this.chart.generateChartConfig(
           this.service.getDataObject(),
@@ -61,7 +65,9 @@ export class CurveChartComponent implements AfterViewInit {
         this.chart.renderChart();
       }
     )
-    this.service.chartInfo$.subscribe(
+    this.service.chartInfo$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(
       () => {
         this.lineChartOptions = this.chart.generateChartOptions(
           this.service.getChartInfoObject(),
@@ -70,6 +76,11 @@ export class CurveChartComponent implements AfterViewInit {
         this.chart.renderChart();
       }
     )
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(null);
+    this.destroy$.complete();
   }
 }
 

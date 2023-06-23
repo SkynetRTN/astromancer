@@ -1,18 +1,21 @@
-import {Component} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
 import {CurveService} from "../curve.service";
-import {debounceTime} from "rxjs";
+import {debounceTime, Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-curve-chart-form',
   templateUrl: './curve-chart-form.component.html',
   styleUrls: ['./curve-chart-form.component.scss']
 })
-export class CurveChartFormComponent {
+export class CurveChartFormComponent implements OnDestroy {
   public formGroup!: FormGroup;
+  private destroy$: Subject<any> = new Subject<any>();
 
   constructor(private service: CurveService) {
-    this.service.chartInfo$.subscribe(info => {
+    this.service.chartInfo$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(info => {
       this.formGroup = new FormGroup({
         chartTitle: new FormControl(this.service.getChartTitle()),
         dataLabel: new FormControl(this.service.getDataLabel()),
@@ -40,6 +43,11 @@ export class CurveChartFormComponent {
         this.service.setYAxisLabel(label);
       });
     })
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(null);
+    this.destroy$.complete();
   }
 
 }

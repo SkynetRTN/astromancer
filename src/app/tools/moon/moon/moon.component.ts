@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {ChartAction} from "../../shared/types/actions";
 
 @Component({
   selector: 'app-moon',
@@ -7,4 +8,7 @@ import { Component } from '@angular/core';
 })
 export class MoonComponent {
 
+  actionHandler($event: ChartAction[]) {
+    console.log($event);
+  }
 }

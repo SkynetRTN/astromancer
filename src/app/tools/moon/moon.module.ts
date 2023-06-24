@@ -10,7 +10,12 @@ import {HighchartsChartModule} from "highcharts-angular";
 import {MoonChartFormComponent} from './moon-chart-form/moon-chart-form.component';
 import {MatLegacyFormFieldModule} from "@angular/material/legacy-form-field";
 import {MatLegacyInputModule} from "@angular/material/legacy-input";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {MoonFormComponent} from './moon-form/moon-form.component';
+import {MatSliderModule} from "@angular/material/slider";
+import {NgIf} from "@angular/common";
+import {HonorCodePopupService} from "../shared/honor-code-popup/honor-code-popup.service";
+import {InterfaceUtilModule} from "../shared/interface/util";
 
 @NgModule({
   declarations: [
@@ -18,17 +23,22 @@ import {ReactiveFormsModule} from "@angular/forms";
     MoonTableComponent,
     MoonHighchartComponent,
     MoonChartFormComponent,
+    MoonFormComponent,
   ],
   imports: [
     SimpleDataButtonModule,
     SimpleGraphButtonModule,
+    InterfaceUtilModule,
     HotTableModule,
     HighchartsChartModule,
     MatLegacyFormFieldModule,
     MatLegacyInputModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatSliderModule,
+    FormsModule,
+    NgIf,
   ],
-  providers: [MoonService],
+  providers: [MoonService, HonorCodePopupService],
 })
 export class MoonModule {
 }

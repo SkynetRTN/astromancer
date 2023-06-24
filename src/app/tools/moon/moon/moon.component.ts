@@ -7,7 +7,7 @@ import {HonorCodeChartService} from "../../shared/honor-code-popup/honor-code-ch
 @Component({
   selector: 'app-moon',
   templateUrl: './moon.component.html',
-  styleUrls: ['./moon.component.scss']
+  styleUrls: ['./moon.component.scss'],
 })
 export class MoonComponent {
   constructor(private service: MoonService,

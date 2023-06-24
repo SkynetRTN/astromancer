@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {ChartAction} from "../../shared/types/actions";
+import {MoonService} from "../moon.service";
 
 @Component({
   selector: 'app-moon',
@@ -7,8 +8,18 @@ import {ChartAction} from "../../shared/types/actions";
   styleUrls: ['./moon.component.scss']
 })
 export class MoonComponent {
+  constructor(private service: MoonService) {
+  }
 
-  actionHandler($event: ChartAction[]) {
-    console.log($event);
+  actionHandler(actions: ChartAction[]) {
+    actions.forEach((action) => {
+      if (action.action === "addRow") {
+        this.service.addRow(-1, 1);
+      } else if (action.action === "saveGraph") {
+      } else if (action.action === "resetData") {
+        this.service.resetData();
+      } else if (action.action === "resetChartInfo") {
+      }
+    })
   }
 }

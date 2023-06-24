@@ -1,18 +1,18 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {MoonComponent} from './moon.component';
+import {MoonTableComponent} from './moon-table.component';
 
-describe('MoonComponent', () => {
-  let component: MoonComponent;
-  let fixture: ComponentFixture<MoonComponent>;
+describe('MoonTableComponent', () => {
+  let component: MoonTableComponent;
+  let fixture: ComponentFixture<MoonTableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MoonComponent]
+      declarations: [MoonTableComponent]
     })
       .compileComponents();
 
-    fixture = TestBed.createComponent(MoonComponent);
+    fixture = TestBed.createComponent(MoonTableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

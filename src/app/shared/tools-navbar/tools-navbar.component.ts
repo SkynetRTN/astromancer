@@ -6,7 +6,7 @@ import {MatLegacyButtonModule as MatButtonModule} from "@angular/material/legacy
 import {MatIconModule} from "@angular/material/icon";
 import {CurveModule} from "../../tools/curve/curve.module";
 import {MatLegacyListModule as MatListModule} from "@angular/material/legacy-list";
-import {MoonModule} from "../../tools/moon/moon/moon.module";
+import {MoonModule} from "../../tools/moon/moon.module";
 
 /**
  * Sidenav with custom escape and backdrop click behavior

@@ -10,6 +10,8 @@ export interface ChartInfo {
 
   getDataLabel(): string;
 
+  getStorageObject(): any;
+
   setChartTitle(title: string): void;
 
   setXAxisLabel(xAxis: string): void;
@@ -17,6 +19,9 @@ export interface ChartInfo {
   setYAxisLabel(yAxis: string): void;
 
   setDataLabel(data: string): void;
+
+  setStorageObject(storageObject: any): void;
+
 }
 
 export interface MyChart {

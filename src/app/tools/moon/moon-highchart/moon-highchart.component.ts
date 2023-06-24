@@ -37,11 +37,15 @@ export class MoonHighchartComponent implements AfterViewInit, OnDestroy{
   };
 
   constructor(private service: MoonService) {
+    this.setChartTitle();
+    this.setChartXAxis();
+    this.setChartYAxis();
   }
 
   chartInitialized($event: Highcharts.Chart) {
     this.chartObject = $event;
     this.service.setHighChart(this.chartObject);
+
   }
 
   ngAfterViewInit(): void {
@@ -51,6 +55,15 @@ export class MoonHighchartComponent implements AfterViewInit, OnDestroy{
     ).subscribe(() => {
       this.updateData();
     });
+    this.service.chartInfo$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      this.setChartTitle();
+      this.setChartXAxis();
+      this.setChartYAxis();
+      this.updateChart();
+    });
+
   }
 
   ngOnDestroy(): void {
@@ -60,13 +73,38 @@ export class MoonHighchartComponent implements AfterViewInit, OnDestroy{
 
   setData() {
     this.chartObject.addSeries({
-      name: 'Data',
+      name: this.service.getDataLabel(),
       data: this.service.getDataArray(),
       type: 'scatter',
     })
   }
 
   updateData() {
-    this.chartObject.series[0].setData(this.service.getDataArray());
+    this.chartObject.series[0].update({
+      name: this.service.getDataLabel(),
+      data: this.service.getDataArray(),
+      type: 'scatter',
+    });
   }
+
+  private updateChart(): void {
+    this.updateFlag = true;
+  }
+
+  private setChartTitle(): void {
+    this.chartOptions.title = {text: this.service.getChartTitle()};
+  }
+
+  private setChartXAxis(): void {
+    this.chartOptions.xAxis = {
+      title: {text: this.service.getXAxisLabel()}
+    };
+  }
+
+  private setChartYAxis(): void {
+    this.chartOptions.yAxis = {
+      title: {text: this.service.getYAxisLabel()}
+    };
+  }
+
 }

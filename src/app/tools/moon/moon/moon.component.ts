@@ -26,6 +26,7 @@ export class MoonComponent {
       } else if (action.action === "resetData") {
         this.service.resetData();
       } else if (action.action === "resetChartInfo") {
+        this.service.resetChartInfo();
       }
     })
   }

@@ -7,18 +7,26 @@ import {HotTableModule} from "@handsontable/angular";
 import {MoonService} from "./moon.service";
 import {MoonHighchartComponent} from "./moon-highchart/moon-highchart.component";
 import {HighchartsChartModule} from "highcharts-angular";
+import {MoonChartFormComponent} from './moon-chart-form/moon-chart-form.component';
+import {MatLegacyFormFieldModule} from "@angular/material/legacy-form-field";
+import {MatLegacyInputModule} from "@angular/material/legacy-input";
+import {ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
     MoonComponent,
     MoonTableComponent,
     MoonHighchartComponent,
+    MoonChartFormComponent,
   ],
   imports: [
     SimpleDataButtonModule,
     SimpleGraphButtonModule,
     HotTableModule,
-    HighchartsChartModule
+    HighchartsChartModule,
+    MatLegacyFormFieldModule,
+    MatLegacyInputModule,
+    ReactiveFormsModule
   ],
   providers: [MoonService],
 })

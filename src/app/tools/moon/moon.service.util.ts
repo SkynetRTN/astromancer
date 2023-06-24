@@ -1,5 +1,6 @@
 import {MyData} from "../shared/data/data.interface";
 import {MyStorage} from "../shared/storage/storage.interface";
+import {ChartInfo} from "../shared/charts/chart.interface";
 
 export interface MoonDataDict {
   julianDate: number | null;
@@ -61,10 +62,96 @@ export class MoonData implements MyData {
 }
 
 
+export interface MoonChartInfoStorageObject {
+  chartTitle: string;
+  dataLabel: string;
+  xAxisLabel: string;
+  yAxisLabel: string;
+}
+
+export class MoonChartInfo implements ChartInfo {
+  private chartTitle: string;
+  private dataLabel: string;
+  private xAxisLabel: string;
+  private yAxisLabel: string;
+
+  constructor() {
+    this.chartTitle = MoonChartInfo.getDefaultChartInfo().chartTitle;
+    this.dataLabel = MoonChartInfo.getDefaultChartInfo().dataLabel;
+    this.xAxisLabel = MoonChartInfo.getDefaultChartInfo().xAxisLabel;
+    this.yAxisLabel = MoonChartInfo.getDefaultChartInfo().yAxisLabel;
+  }
+
+  static getDefaultChartInfo(): MoonChartInfoStorageObject {
+    return {
+      chartTitle: "Title",
+      dataLabel: "Data",
+      xAxisLabel: "x",
+      yAxisLabel: "y",
+    };
+  }
+
+  getChartTitle(): string {
+    return this.chartTitle;
+  }
+
+  getDataLabel(): string {
+    return this.dataLabel;
+  }
+
+  getXAxisLabel(): string {
+    return this.xAxisLabel;
+  }
+
+  getYAxisLabel(): string {
+    return this.yAxisLabel;
+  }
+
+  setChartTitle(title: string): void {
+    this.chartTitle = title;
+  }
+
+  setDataLabel(data: string): void {
+    this.dataLabel = data;
+  }
+
+  setXAxisLabel(xAxis: string): void {
+    this.xAxisLabel = xAxis;
+  }
+
+  setYAxisLabel(yAxis: string): void {
+    this.yAxisLabel = yAxis;
+  }
+
+  getStorageObject(): MoonChartInfoStorageObject {
+    return {
+      chartTitle: this.chartTitle,
+      xAxisLabel: this.xAxisLabel,
+      yAxisLabel: this.yAxisLabel,
+      dataLabel: this.dataLabel,
+    };
+  }
+
+  setStorageObject(storageObject: MoonChartInfoStorageObject): void {
+    this.setChartTitle(storageObject.chartTitle);
+    this.setXAxisLabel(storageObject.xAxisLabel);
+    this.setYAxisLabel(storageObject.yAxisLabel);
+    this.setDataLabel(storageObject.dataLabel);
+  }
+
+}
+
+
 export class MoonStorage implements MyStorage {
+  private readonly chartInfoKey: string = 'moonChartInfo';
   private readonly dataKey: string = 'moonData';
 
-  getChartInfo(): any {
+  getChartInfo(): MoonChartInfoStorageObject {
+    if (localStorage.getItem(this.chartInfoKey)) {
+      return JSON.parse(localStorage.getItem(this.chartInfoKey) as string);
+    } else {
+      return MoonChartInfo.getDefaultChartInfo();
+    }
   }
 
   getData(): any[] {
@@ -79,6 +166,7 @@ export class MoonStorage implements MyStorage {
   }
 
   resetChartInfo(): void {
+    localStorage.setItem(this.chartInfoKey, JSON.stringify(MoonChartInfo.getDefaultChartInfo()));
   }
 
   resetData(): void {
@@ -88,7 +176,8 @@ export class MoonStorage implements MyStorage {
   resetInterface(): void {
   }
 
-  saveChartInfo(chartInfo: any): void {
+  saveChartInfo(chartInfo: MoonChartInfoStorageObject): void {
+    localStorage.setItem(this.chartInfoKey, JSON.stringify(chartInfo));
   }
 
   saveData(data: MoonDataDict[]): void {

@@ -1,23 +1,85 @@
 import {Injectable} from '@angular/core';
 import {MyData} from "../shared/data/data.interface";
-import {MoonData, MoonDataDict, MoonStorage} from "./moon.service.util";
+import {MoonChartInfo, MoonData, MoonDataDict, MoonStorage} from "./moon.service.util";
 import {BehaviorSubject} from "rxjs";
 import * as Highcharts from 'highcharts';
+import {ChartInfo} from "../shared/charts/chart.interface";
 
 @Injectable()
-export class MoonService implements MyData {
-  private moonData: MoonData = new MoonData();
+export class MoonService implements MyData, ChartInfo {
+  private moonChartInfo: ChartInfo = new MoonChartInfo();
+  private moonData: MyData = new MoonData();
   private moonStorage: MoonStorage = new MoonStorage();
   private highChart!: Highcharts.Chart;
 
-
+  private chartInfoSubject = new BehaviorSubject<ChartInfo>(this.moonChartInfo);
+  public chartInfo$ = this.chartInfoSubject.asObservable();
   private dataSubject = new BehaviorSubject<MoonDataDict[]>(this.getData());
   public data$ = this.dataSubject.asObservable();
 
   constructor() {
+    this.moonChartInfo.setStorageObject(this.moonStorage.getChartInfo());
     this.moonData.setData(this.moonStorage.getData());
   }
 
+  /** ChartInfo Methods **/
+  getChartTitle(): string {
+    return this.moonChartInfo.getChartTitle();
+  }
+
+  getXAxisLabel(): string {
+    return this.moonChartInfo.getXAxisLabel();
+  }
+
+  getYAxisLabel(): string {
+    return this.moonChartInfo.getYAxisLabel();
+  }
+
+  getDataLabel(): string {
+    return this.moonChartInfo.getDataLabel();
+  }
+
+  getStorageObject() {
+    return this.moonChartInfo.getStorageObject();
+  }
+
+  setChartTitle(title: string): void {
+    this.moonChartInfo.setChartTitle(title);
+    this.moonStorage.saveChartInfo(this.getStorageObject());
+    this.chartInfoSubject.next(this.moonChartInfo);
+  }
+
+  setXAxisLabel(xAxis: string): void {
+    this.moonChartInfo.setXAxisLabel(xAxis);
+    this.moonStorage.saveChartInfo(this.getStorageObject());
+    this.chartInfoSubject.next(this.moonChartInfo);
+  }
+
+  setYAxisLabel(yAxis: string): void {
+    this.moonChartInfo.setYAxisLabel(yAxis);
+    this.moonStorage.saveChartInfo(this.getStorageObject());
+    this.chartInfoSubject.next(this.moonChartInfo);
+  }
+
+  setDataLabel(data: string): void {
+    this.moonChartInfo.setDataLabel(data);
+    this.moonStorage.saveChartInfo(this.getStorageObject());
+    this.chartInfoSubject.next(this.moonChartInfo);
+    this.dataSubject.next(this.getData());
+  }
+
+  setStorageObject(storageObject: any): void {
+    this.moonChartInfo.setStorageObject(storageObject);
+  }
+
+  public resetChartInfo(): void {
+    this.moonChartInfo.setStorageObject(MoonChartInfo.getDefaultChartInfo());
+    this.moonStorage.saveChartInfo(this.getStorageObject());
+    this.chartInfoSubject.next(this.moonChartInfo);
+  }
+
+
+  /** MyData Methods **/
   addRow(index: number, amount: number): void {
     this.moonData.addRow(index, amount);
     this.moonStorage.saveData(this.getData());

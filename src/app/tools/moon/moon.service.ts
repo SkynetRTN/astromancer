@@ -6,14 +6,16 @@ import {
   MoonDataDict,
   MoonInterface,
   MoonInterfaceImpl,
+  MoonModel,
   MoonStorage
 } from "./moon.service.util";
 import {BehaviorSubject} from "rxjs";
 import * as Highcharts from 'highcharts';
 import {ChartInfo} from "../shared/charts/chart.interface";
+import {rad} from "../shared/data/utils";
 
 @Injectable()
-export class MoonService implements MyData, ChartInfo, MoonInterface {
+export class MoonService implements MyData, ChartInfo, MoonInterface, MoonModel {
   private moonInterface: MoonInterface = new MoonInterfaceImpl();
   private moonChartInfo: ChartInfo = new MoonChartInfo();
   private moonData: MyData = new MoonData();
@@ -31,6 +33,37 @@ export class MoonService implements MyData, ChartInfo, MoonInterface {
     this.moonInterface.setStorageObject(this.moonStorage.getInterface());
     this.moonChartInfo.setStorageObject(this.moonStorage.getChartInfo());
     this.moonData.setData(this.moonStorage.getData());
+  }
+
+  /** MoonModel Methods **/
+  getMoonModelData(): number[][] {
+    const dataSorted: number[][] = this.moonData.getDataArray().filter((entry: number[]) => {
+      return !(isNaN(entry[0]) || isNaN(entry[1]) || entry[0] === null || entry[1] === null)
+    }).sort((a: number[], b: number[]) => {
+      return a[0] - b[0]
+    });
+    if (dataSorted.length <= 1)
+      return [];
+
+    const minMaxOffset: number = 2;
+    const minJd: number = dataSorted[0][0] - minMaxOffset;
+    const maxJd: number = dataSorted[dataSorted.length - 1][0] + minMaxOffset;
+
+    let modelData: number[][] = [];
+    const steps: number = 2000;
+    const stepSize: number = (maxJd - minJd) / steps;
+    for (let i: number = 0; i < steps; i++) {
+      const x = minJd + i * stepSize;
+      const theta: number = (x - minJd - 2) / this.getPeriod() * Math.PI * 2 - rad(this.getPhase());
+      const alpha: number = rad(this.getTilt());
+      const y: number = this.getAmplitude() * Math.sqrt(
+        Math.pow(Math.cos(theta), 2) +
+        Math.pow(Math.sin(theta), 2) * Math.pow(Math.sin(alpha), 2)
+      );
+      modelData.push([x, y]);
+    }
+
+    return modelData;
   }
 
   /** MoonInterface Methods **/

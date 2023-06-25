@@ -318,3 +318,8 @@ export class MoonStorage implements MyStorage {
   }
 
 }
+
+
+export interface MoonModel {
+  getMoonModelData(): number[][];
+}

@@ -48,7 +48,7 @@ export class MoonHighchartComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.setData();
+    this.initChartSeries();
     this.service.data$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
@@ -62,12 +62,23 @@ export class MoonHighchartComponent implements AfterViewInit, OnDestroy {
       this.setChartYAxis();
       this.updateChart();
     });
-
+    this.service.interface$.pipe(
+      takeUntil(this.destroy$),
+    ).subscribe(
+      () => {
+        this.updateModel();
+      }
+    );
   }
 
   ngOnDestroy(): void {
     this.destroy$.next(null);
     this.destroy$.complete();
+  }
+
+  initChartSeries() {
+    this.setData();
+    this.setModel();
   }
 
   setData() {
@@ -85,6 +96,23 @@ export class MoonHighchartComponent implements AfterViewInit, OnDestroy {
       type: 'scatter',
     });
   }
+
+  setModel() {
+    this.chartObject.addSeries({
+      name: "Model",
+      data: this.service.getMoonModelData(),
+      type: 'line',
+    })
+  }
+
+  updateModel() {
+    this.chartObject.series[1].update({
+      name: "Model",
+      data: this.service.getMoonModelData(),
+      type: 'line',
+    });
+  }
+
 
   private updateChart(): void {
     this.updateFlag = true;

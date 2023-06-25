@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { MoonFormComponent } from './moon-form.component';
+import {MoonFormComponent} from './moon-form.component';
 
 describe('MoonFormComponent', () => {
   let component: MoonFormComponent;
@@ -8,9 +8,9 @@ describe('MoonFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MoonFormComponent ]
+      declarations: [MoonFormComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(MoonFormComponent);
     component = fixture.componentInstance;

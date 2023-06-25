@@ -8,9 +8,7 @@ import {Subject, takeUntil} from "rxjs";
   templateUrl: './moon-highchart.component.html',
   styleUrls: ['./moon-highchart.component.scss']
 })
-export class MoonHighchartComponent implements AfterViewInit, OnDestroy{
-  private destroy$: Subject<any> = new Subject<any>();
-
+export class MoonHighchartComponent implements AfterViewInit, OnDestroy {
   Highcharts: typeof Highcharts = Highcharts;
   updateFlag: boolean = true;
   chartConstructor: any = "chart";
@@ -35,6 +33,7 @@ export class MoonHighchartComponent implements AfterViewInit, OnDestroy{
       }
     }
   };
+  private destroy$: Subject<any> = new Subject<any>();
 
   constructor(private service: MoonService) {
     this.setChartTitle();

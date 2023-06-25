@@ -25,12 +25,10 @@ export class InputSliderComponent implements OnDestroy, AfterViewInit {
 
   @ViewChild("input") inputChild!: MatInput;
   protected sliderSubject: Subject<any> = new Subject<any>();
-  private slider$ = this.sliderSubject.asObservable();
-
-
   protected readonly SliderUtil = SliderUtil;
-  private destroy$ = new Subject<void>();
   protected formControl!: FormControl;
+  private slider$ = this.sliderSubject.asObservable();
+  private destroy$ = new Subject<void>();
 
   constructor() {
     this.formControl = new FormControl(

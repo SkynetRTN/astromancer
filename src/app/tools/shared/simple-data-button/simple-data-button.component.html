@@ -1,5 +1,5 @@
 <div class="container">
   <button (click)="tableAddRow()" i18n mat-raised-button>Add Row</button>
   <button (click)="dataReset()" i18n mat-raised-button>Reset Data</button>
-  <button [hidden]="!modelResetVisible" (click)="modelReset()" i18n mat-raised-button>Reset Model</button>
+  <button (click)="modelReset()" [hidden]="!modelResetVisible" i18n mat-raised-button>Reset Model</button>
 </div>

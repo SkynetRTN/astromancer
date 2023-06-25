@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { InputSliderComponent } from './input-slider.component';
+import {InputSliderComponent} from './input-slider.component';
 
 describe('InputSliderComponent', () => {
   let component: InputSliderComponent;
@@ -8,9 +8,9 @@ describe('InputSliderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ InputSliderComponent ]
+      declarations: [InputSliderComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(InputSliderComponent);
     component = fixture.componentInstance;

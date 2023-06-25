@@ -1,25 +1,25 @@
-<div class="container" [formGroup]="formGroup">
+<div [formGroup]="formGroup" class="container">
   <my-input-slider
-    [minValue]="1" [maxValue]="750" [defaultValue]="30"
-    [stepValue]="0.1" [isLog]="true"
-    [name]="'amplitude'" [label]="'Amplitude (&quot;)'"
-    [value$]="amplitudeSubject" (value)="onChange($event)"
+    (value)="onChange($event)" [defaultValue]="30" [isLog]="true"
+    [label]="'Amplitude (&quot;)'" [maxValue]="750"
+    [minValue]="1" [name]="'amplitude'"
+    [stepValue]="0.1" [value$]="amplitudeSubject"
   ></my-input-slider>
   <my-input-slider
-    [minValue]="0.5" [maxValue]="20" [defaultValue]="10"
-    [stepValue]="0.01" [numOverride]="true"
-    [name]="'period'" [label]="'Period (d)'"
-    [value$]="periodSubject" (value)="onChange($event)"
+    (value)="onChange($event)" [defaultValue]="10" [label]="'Period (d)'"
+    [maxValue]="20" [minValue]="0.5"
+    [name]="'period'" [numOverride]="true"
+    [stepValue]="0.01" [value$]="periodSubject"
   ></my-input-slider>
   <my-input-slider
-    [minValue]="0" [maxValue]="360" [defaultValue]="0"
-    [stepValue]="1" [numOverride]="true"
-    [name]="'phase'" [label]="'Phase (&deg;)'"
-    [value$]="phaseSubject" (value)="onChange($event)"
+    (value)="onChange($event)" [defaultValue]="0" [label]="'Phase (&deg;)'"
+    [maxValue]="360" [minValue]="0"
+    [name]="'phase'" [numOverride]="true"
+    [stepValue]="1" [value$]="phaseSubject"
   ></my-input-slider>
   <my-input-slider
-    [minValue]="0" [maxValue]="90" [defaultValue]="0"
-    [stepValue]="1" [name]="'tilt'" [label]="'Tilt (&deg;)'"
-    [value$]="tiltSubject" (value)="onChange($event)"
+    (value)="onChange($event)" [defaultValue]="0" [label]="'Tilt (&deg;)'"
+    [maxValue]="90" [minValue]="0" [name]="'tilt'"
+    [stepValue]="1" [value$]="tiltSubject"
   ></my-input-slider>
 </div>

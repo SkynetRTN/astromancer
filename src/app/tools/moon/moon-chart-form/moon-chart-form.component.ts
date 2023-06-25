@@ -9,8 +9,8 @@ import {debounceTime, Subject, takeUntil} from "rxjs";
   styleUrls: ['./moon-chart-form.component.scss']
 })
 export class MoonChartFormComponent implements OnDestroy {
-  private destroy$: Subject<any> = new Subject<any>();
   formGroup!: FormGroup;
+  private destroy$: Subject<any> = new Subject<any>();
 
   constructor(private service: MoonService) {
     this.service.chartInfo$.pipe(

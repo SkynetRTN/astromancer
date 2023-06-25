@@ -1,6 +1,6 @@
 import {Component, OnDestroy} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {Observable, Subject} from "rxjs";
+import {Subject} from "rxjs";
 
 @Component({
   selector: 'app-moon-form',
@@ -8,17 +8,16 @@ import {Observable, Subject} from "rxjs";
   styleUrls: ['./moon-form.component.scss'],
 })
 export class MoonFormComponent implements OnDestroy {
-  private destroy$ = new Subject<void>();
   formGroup = new FormGroup({
     amplitude: new FormControl(30,
       [Validators.required, Validators.min(1), Validators.max(750)],
     ),
   })
-
   protected amplitudeSubject: Subject<number> = new Subject<number>();
   protected periodSubject: Subject<number> = new Subject<number>();
   protected phaseSubject: Subject<number> = new Subject<number>();
   protected tiltSubject: Subject<number> = new Subject<number>();
+  private destroy$ = new Subject<void>();
 
   constructor() {
   }
@@ -27,6 +26,7 @@ export class MoonFormComponent implements OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
   onChange($event: any) {
   }
 }

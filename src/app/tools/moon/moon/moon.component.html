@@ -8,7 +8,8 @@
     </div>
     <div class="row data-button-row">
       <app-simple-data-button (tableUserActionObs$)="actionHandler($event)"
-                              [modelResetVisible]="true"></app-simple-data-button>
+                              [isDataRandom]="true" [modelResetVisible]="true">
+      </app-simple-data-button>
     </div>
   </div>
   <div class="col-8">

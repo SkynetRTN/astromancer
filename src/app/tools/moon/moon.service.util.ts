@@ -87,6 +87,7 @@ export interface MoonChartInfoStorageObject {
   yAxisLabel: string;
 }
 
+
 export class MoonChartInfo implements ChartInfo {
   private chartTitle: string;
   private dataLabel: string;
@@ -160,9 +161,113 @@ export class MoonChartInfo implements ChartInfo {
 }
 
 
+export interface MoonInterface {
+  getAmplitude(): number;
+
+  getPeriod(): number;
+
+  getPhase(): number;
+
+  getTilt(): number;
+
+  getStorageObject(): MoonInterfaceStorageObject;
+
+  setAmplitude(amplitude: number): void;
+
+  setPeriod(period: number): void;
+
+  setPhase(phase: number): void;
+
+  setTilt(tilt: number): void;
+
+  setStorageObject(storageObject: MoonInterfaceStorageObject): void;
+
+  resetInterface(): void;
+}
+
+
+export interface MoonInterfaceStorageObject {
+  amplitude: number;
+  period: number;
+  phase: number;
+  tilt: number;
+}
+
+
+export class MoonInterfaceImpl implements MoonInterface {
+  private amplitude!: number;
+  private period!: number;
+  private phase!: number;
+  private tilt!: number;
+
+  getAmplitude(): number {
+    return this.amplitude;
+  }
+
+  getPeriod(): number {
+    return this.period;
+  }
+
+  getPhase(): number {
+    return this.phase;
+  }
+
+  getTilt(): number {
+    return this.tilt;
+  }
+
+  resetInterface(): void {
+    this.setStorageObject(this.getDefaultStorageObject());
+  }
+
+  setAmplitude(amplitude: number): void {
+    this.amplitude = amplitude;
+  }
+
+  setPeriod(period: number): void {
+    this.period = period;
+  }
+
+  setPhase(phase: number): void {
+    this.phase = phase;
+  }
+
+  setTilt(tilt: number): void {
+    this.tilt = tilt;
+  }
+
+  getStorageObject(): MoonInterfaceStorageObject {
+    return {
+      amplitude: this.amplitude,
+      period: this.period,
+      phase: this.phase,
+      tilt: this.tilt,
+    };
+  }
+
+  setStorageObject(storageObject: MoonInterfaceStorageObject): void {
+    this.setAmplitude(storageObject.amplitude);
+    this.setPeriod(storageObject.period);
+    this.setPhase(storageObject.phase);
+    this.setTilt(storageObject.tilt);
+  }
+
+  getDefaultStorageObject(): MoonInterfaceStorageObject {
+    return {
+      amplitude: 30,
+      period: 10,
+      phase: 0,
+      tilt: 0,
+    };
+  }
+
+}
+
+
 export class MoonStorage implements MyStorage {
   private readonly chartInfoKey: string = 'moonChartInfo';
   private readonly dataKey: string = 'moonData';
+  private readonly interfaceKey: string = 'moonInterface';
 
   getChartInfo(): MoonChartInfoStorageObject {
     if (localStorage.getItem(this.chartInfoKey)) {
@@ -172,7 +277,7 @@ export class MoonStorage implements MyStorage {
     }
   }
 
-  getData(): any[] {
+  getData(): MoonDataDict[] {
     if (localStorage.getItem(this.dataKey)) {
       return JSON.parse(localStorage.getItem(this.dataKey) as string);
     } else {
@@ -180,7 +285,12 @@ export class MoonStorage implements MyStorage {
     }
   }
 
-  getInterface(): any {
+  getInterface(): MoonInterfaceStorageObject {
+    if (localStorage.getItem(this.interfaceKey)) {
+      return JSON.parse(localStorage.getItem(this.interfaceKey) as string);
+    } else {
+      return new MoonInterfaceImpl().getDefaultStorageObject();
+    }
   }
 
   resetChartInfo(): void {
@@ -192,6 +302,7 @@ export class MoonStorage implements MyStorage {
   }
 
   resetInterface(): void {
+    localStorage.setItem(this.interfaceKey, JSON.stringify(new MoonInterfaceImpl().getDefaultStorageObject()));
   }
 
   saveChartInfo(chartInfo: MoonChartInfoStorageObject): void {
@@ -202,7 +313,8 @@ export class MoonStorage implements MyStorage {
     localStorage.setItem(this.dataKey, JSON.stringify(data));
   }
 
-  saveInterface(interfaceInfo: any): void {
+  saveInterface(interfaceInfo: MoonInterfaceStorageObject): void {
+    localStorage.setItem(this.interfaceKey, JSON.stringify(interfaceInfo));
   }
 
 }

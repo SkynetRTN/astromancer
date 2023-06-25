@@ -1,25 +1,83 @@
 import {Injectable} from '@angular/core';
 import {MyData} from "../shared/data/data.interface";
-import {MoonChartInfo, MoonData, MoonDataDict, MoonStorage} from "./moon.service.util";
+import {
+  MoonChartInfo,
+  MoonData,
+  MoonDataDict,
+  MoonInterface,
+  MoonInterfaceImpl,
+  MoonStorage
+} from "./moon.service.util";
 import {BehaviorSubject} from "rxjs";
 import * as Highcharts from 'highcharts';
 import {ChartInfo} from "../shared/charts/chart.interface";
 
 @Injectable()
-export class MoonService implements MyData, ChartInfo {
+export class MoonService implements MyData, ChartInfo, MoonInterface {
+  private moonInterface: MoonInterface = new MoonInterfaceImpl();
   private moonChartInfo: ChartInfo = new MoonChartInfo();
   private moonData: MyData = new MoonData();
   private moonStorage: MoonStorage = new MoonStorage();
   private highChart!: Highcharts.Chart;
 
+  private interfaceSubject = new BehaviorSubject<MoonInterface>(this.moonInterface);
+  public interface$ = this.interfaceSubject.asObservable();
   private chartInfoSubject = new BehaviorSubject<ChartInfo>(this.moonChartInfo);
   public chartInfo$ = this.chartInfoSubject.asObservable();
   private dataSubject = new BehaviorSubject<MoonDataDict[]>(this.getData());
   public data$ = this.dataSubject.asObservable();
 
   constructor() {
+    this.moonInterface.setStorageObject(this.moonStorage.getInterface());
     this.moonChartInfo.setStorageObject(this.moonStorage.getChartInfo());
     this.moonData.setData(this.moonStorage.getData());
+  }
+
+  /** MoonInterface Methods **/
+  getAmplitude(): number {
+    return this.moonInterface.getAmplitude();
+  }
+
+  getPeriod(): number {
+    return this.moonInterface.getPeriod();
+  }
+
+  getPhase(): number {
+    return this.moonInterface.getPhase();
+  }
+
+  getTilt(): number {
+    return this.moonInterface.getTilt();
+  }
+
+  resetInterface(): void {
+    this.moonInterface.resetInterface();
+    this.moonStorage.resetInterface();
+    this.interfaceSubject.next(this.moonInterface);
+  }
+
+  setAmplitude(amplitude: number): void {
+    this.moonInterface.setAmplitude(amplitude);
+    this.moonStorage.saveInterface(this.moonInterface.getStorageObject());
+    this.interfaceSubject.next(this.moonInterface);
+  }
+
+  setPeriod(period: number): void {
+    this.moonInterface.setPeriod(period);
+    this.moonStorage.saveInterface(this.moonInterface.getStorageObject());
+    this.interfaceSubject.next(this.moonInterface);
+  }
+
+  setPhase(phase: number): void {
+    this.moonInterface.setPhase(phase);
+    this.moonStorage.saveInterface(this.moonInterface.getStorageObject());
+    this.interfaceSubject.next(this.moonInterface);
+  }
+
+  setTilt(tilt: number): void {
+    this.moonInterface.setTilt(tilt);
+    this.moonStorage.saveInterface(this.moonInterface.getStorageObject());
+    this.interfaceSubject.next(this.moonInterface);
   }
 
   /** ChartInfo Methods **/

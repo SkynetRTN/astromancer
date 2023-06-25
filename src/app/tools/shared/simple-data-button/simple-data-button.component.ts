@@ -1,4 +1,4 @@
-import {Component, EventEmitter, NgModule, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, NgModule, OnInit, Output} from '@angular/core';
 import {TableAction} from "../types/actions";
 import {MatLegacyButtonModule as MatButtonModule} from "@angular/material/legacy-button";
 
@@ -8,6 +8,7 @@ import {MatLegacyButtonModule as MatButtonModule} from "@angular/material/legacy
   styleUrls: ['./simple-data-button.component.scss']
 })
 export class SimpleDataButtonComponent implements OnInit {
+  @Input() modelResetVisible: boolean = false;
   @Output() tableUserActionObs$: EventEmitter<TableAction[]>;
 
   constructor() {
@@ -25,6 +26,9 @@ export class SimpleDataButtonComponent implements OnInit {
     this.tableUserActionObs$.emit([{action: "resetData"}]);
   }
 
+  modelReset() {
+    this.tableUserActionObs$.emit([{action: "resetModel"}]);
+  }
 }
 
 @NgModule({

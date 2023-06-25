@@ -1,6 +1,7 @@
 import {MyData} from "../shared/data/data.interface";
 import {MyStorage} from "../shared/storage/storage.interface";
 import {ChartInfo} from "../shared/charts/chart.interface";
+import {rad} from "../shared/data/utils";
 
 export interface MoonDataDict {
   julianDate: number | null;
@@ -14,19 +15,36 @@ export class MoonData implements MyData {
     this.setData(MoonData.getDefaultData());
   }
 
+  /**
+   *  This function returns an array of data points that represent a moon's orbit with randomly
+   *  generated parameters. This function also introduce a 5% noise to all data points.
+   *  @returns    {Array}
+   */
   public static getDefaultData(): MoonDataDict[] {
-    return [
-      {julianDate: 0.678068081541067, angularSeparation: 68.8317496406889},
-      {julianDate: 3.88220266882816, angularSeparation: 60.8832019426422},
-      {julianDate: 4.00257863614228, angularSeparation: 55.5114455497664},
-      {julianDate: 6.04550228545733, angularSeparation: 76.919338562074},
-      {julianDate: 9.88276841776618, angularSeparation: 60.8906879224334},
-      {julianDate: 11.6014421002906, angularSeparation: 62.6268697230885},
-      {julianDate: 13.4725797086606, angularSeparation: 32.800634704227},
-      {julianDate: 15.0955821156675, angularSeparation: 75.8537444888792},
-      {julianDate: 17.3118375861181, angularSeparation: 47.9843650393894},
-      {julianDate: 19.3216532252681, angularSeparation: 40.9112797512196},
-    ]
+    /**
+     *  ln(750) = 6.62
+     *  ln(1) = 0
+     */
+    const a = Math.exp(Math.random() * 4 + 1.62);
+    const p = Math.random() * 10 + 5;
+    const phase = Math.random() * 360;
+    const tilt = Math.random() * 45;
+
+    const returnData: MoonDataDict[] = [];
+
+    for (let i = 0; i < 10; i++) {
+      const x = i * 2 + Math.random() * 2;
+      const theta = x / p * Math.PI * 2 - rad(phase);
+      const alpha = rad(tilt);
+      returnData[i] = {
+        julianDate: x,
+        angularSeparation: (a * Math.sqrt(Math.pow(Math.cos(theta), 2)
+            + Math.pow(Math.sin(theta), 2) * Math.pow(Math.sin(alpha), 2)))
+          * (1 + Math.random() * 0.05),
+      }
+    }
+    // console.log('Cheat code:', round(a, 2), round(p, 2), round(phase, 0), round(tilt, 0));
+    return returnData;
   }
 
   addRow(index: number, amount: number): void {

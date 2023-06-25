@@ -15,6 +15,11 @@ export class MoonFormComponent implements OnDestroy {
     ),
   })
 
+  protected amplitudeSubject: Subject<number> = new Subject<number>();
+  protected periodSubject: Subject<number> = new Subject<number>();
+  protected phaseSubject: Subject<number> = new Subject<number>();
+  protected tiltSubject: Subject<number> = new Subject<number>();
+
   constructor() {
   }
 
@@ -23,6 +28,5 @@ export class MoonFormComponent implements OnDestroy {
     this.destroy$.complete();
   }
   onChange($event: any) {
-    console.log($event);
   }
 }

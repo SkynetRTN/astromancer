@@ -3,23 +3,23 @@
     [minValue]="1" [maxValue]="750" [defaultValue]="30"
     [stepValue]="0.1" [isLog]="true"
     [name]="'amplitude'" [label]="'Amplitude (&quot;)'"
-    (value)="onChange($event)"
+    [value$]="amplitudeSubject" (value)="onChange($event)"
   ></my-input-slider>
   <my-input-slider
     [minValue]="0.5" [maxValue]="20" [defaultValue]="10"
     [stepValue]="0.01" [numOverride]="true"
     [name]="'period'" [label]="'Period (d)'"
-    (value)="onChange($event)"
+    [value$]="periodSubject" (value)="onChange($event)"
   ></my-input-slider>
   <my-input-slider
     [minValue]="0" [maxValue]="360" [defaultValue]="0"
     [stepValue]="1" [numOverride]="true"
     [name]="'phase'" [label]="'Phase (&deg;)'"
-    (value)="onChange($event)"
+    [value$]="phaseSubject" (value)="onChange($event)"
   ></my-input-slider>
   <my-input-slider
     [minValue]="0" [maxValue]="90" [defaultValue]="0"
     [stepValue]="1" [name]="'tilt'" [label]="'Tilt (&deg;)'"
-    (value)="onChange($event)"
+    [value$]="tiltSubject" (value)="onChange($event)"
   ></my-input-slider>
 </div>

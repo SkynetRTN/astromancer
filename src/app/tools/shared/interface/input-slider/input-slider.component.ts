@@ -19,6 +19,7 @@ export class InputSliderComponent implements OnDestroy, AfterViewInit {
   @Input() numOverride: boolean = false;
   @Input() name!: string;
   @Input() label!: string;
+  @Input() value$!: Subject<number>;
   @Output() value: EventEmitter<InputSliderValue> = new EventEmitter<InputSliderValue>();
 
 
@@ -71,6 +72,12 @@ export class InputSliderComponent implements OnDestroy, AfterViewInit {
       (value) => {
         this.formControl.setValue(value);
         this.valueChange(value);
+      });
+    this.value$?.pipe(
+      takeUntil(this.destroy$),
+    ).subscribe(
+      (value) => {
+        this.formControl.setValue(value);
       });
   }
 

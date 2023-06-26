@@ -3,6 +3,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Subject, takeUntil} from "rxjs";
 import {MoonService} from "../moon.service";
 import {InputSliderValue} from "../../shared/interface/input-slider/input-slider.component";
+import {UpdateSource} from "../moon.service.util";
 
 @Component({
   selector: 'app-moon-form',
@@ -45,11 +46,13 @@ export class MoonFormComponent implements AfterViewInit, OnDestroy {
     this.service.interface$.pipe(
       takeUntil(this.destroy$),
     ).subscribe(
-      (interfaceModel) => {
-        this.amplitudeSubject.next(interfaceModel.getAmplitude());
-        this.periodSubject.next(interfaceModel.getPeriod());
-        this.phaseSubject.next(interfaceModel.getPhase());
-        this.tiltSubject.next(interfaceModel.getTilt());
+      (source: UpdateSource) => {
+        if (source !== UpdateSource.INTERFACE) {
+          this.amplitudeSubject.next(this.service.getAmplitude());
+          this.periodSubject.next(this.service.getPeriod());
+          this.phaseSubject.next(this.service.getPhase());
+          this.tiltSubject.next(this.service.getTilt());
+        }
       }
     )
   }

@@ -7,7 +7,8 @@ import {
   MoonInterface,
   MoonInterfaceImpl,
   MoonModel,
-  MoonStorage
+  MoonStorage,
+  UpdateSource
 } from "./moon.service.util";
 import {BehaviorSubject} from "rxjs";
 import * as Highcharts from 'highcharts';
@@ -22,7 +23,7 @@ export class MoonService implements MyData, ChartInfo, MoonInterface, MoonModel 
   private moonStorage: MoonStorage = new MoonStorage();
   private highChart!: Highcharts.Chart;
 
-  private interfaceSubject = new BehaviorSubject<MoonInterface>(this.moonInterface);
+  private interfaceSubject = new BehaviorSubject<UpdateSource>(UpdateSource.INIT);
   public interface$ = this.interfaceSubject.asObservable();
   private chartInfoSubject = new BehaviorSubject<ChartInfo>(this.moonChartInfo);
   public chartInfo$ = this.chartInfoSubject.asObservable();
@@ -86,31 +87,31 @@ export class MoonService implements MyData, ChartInfo, MoonInterface, MoonModel 
   resetInterface(): void {
     this.moonInterface.resetInterface();
     this.moonStorage.resetInterface();
-    this.interfaceSubject.next(this.moonInterface);
+    this.interfaceSubject.next(UpdateSource.RESET);
   }
 
   setAmplitude(amplitude: number): void {
     this.moonInterface.setAmplitude(amplitude);
     this.moonStorage.saveInterface(this.moonInterface.getStorageObject());
-    this.interfaceSubject.next(this.moonInterface);
+    this.interfaceSubject.next(UpdateSource.INTERFACE);
   }
 
   setPeriod(period: number): void {
     this.moonInterface.setPeriod(period);
     this.moonStorage.saveInterface(this.moonInterface.getStorageObject());
-    this.interfaceSubject.next(this.moonInterface);
+    this.interfaceSubject.next(UpdateSource.INTERFACE);
   }
 
   setPhase(phase: number): void {
     this.moonInterface.setPhase(phase);
     this.moonStorage.saveInterface(this.moonInterface.getStorageObject());
-    this.interfaceSubject.next(this.moonInterface);
+    this.interfaceSubject.next(UpdateSource.INTERFACE);
   }
 
   setTilt(tilt: number): void {
     this.moonInterface.setTilt(tilt);
     this.moonStorage.saveInterface(this.moonInterface.getStorageObject());
-    this.interfaceSubject.next(this.moonInterface);
+    this.interfaceSubject.next(UpdateSource.INTERFACE);
   }
 
   /** ChartInfo Methods **/

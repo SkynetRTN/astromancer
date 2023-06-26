@@ -1,7 +1,7 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { VenusComponent } from './venus/venus.component';
-
+import {NgModule} from '@angular/core';
+import {VenusComponent} from './venus/venus.component';
+import {SimpleDataButtonModule} from "../shared/simple-data-button/simple-data-button.component";
+import {SimpleGraphButtonModule} from "../shared/simple-graph-button/simple-graph-button.component";
 
 
 @NgModule({
@@ -9,7 +9,8 @@ import { VenusComponent } from './venus/venus.component';
     VenusComponent
   ],
   imports: [
-    CommonModule
+    SimpleDataButtonModule,
+    SimpleGraphButtonModule
   ]
 })
 export class VenusModule { }

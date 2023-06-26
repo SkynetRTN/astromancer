@@ -7,6 +7,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {CurveModule} from "../../tools/curve/curve.module";
 import {MatLegacyListModule as MatListModule} from "@angular/material/legacy-list";
 import {MoonModule} from "../../tools/moon/moon.module";
+import {VenusModule} from "../../tools/venus/venus.module";
 
 /**
  * Sidenav with custom escape and backdrop click behavior
@@ -54,6 +55,7 @@ export class ToolsNavbarComponent {
     MatListModule,
     CurveModule,
     MoonModule,
+    VenusModule,
   ],
   declarations: [
     ToolsNavbarComponent,

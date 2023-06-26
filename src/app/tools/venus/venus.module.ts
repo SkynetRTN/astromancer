@@ -6,18 +6,22 @@ import {VenusService} from "./venus.service";
 import {VenusTableComponent} from './venus-table/venus-table.component';
 import {HotTableModule} from "@handsontable/angular";
 import {FormsModule} from "@angular/forms";
+import { VenusHighchartComponent } from './venus-highchart/venus-highchart.component';
+import {HighchartsChartModule} from "highcharts-angular";
 
 
 @NgModule({
   declarations: [
     VenusComponent,
-    VenusTableComponent
+    VenusTableComponent,
+    VenusHighchartComponent
   ],
   imports: [
     SimpleDataButtonModule,
     SimpleGraphButtonModule,
     HotTableModule,
     FormsModule,
+    HighchartsChartModule,
   ],
   providers: [VenusService],
 })

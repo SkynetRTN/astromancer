@@ -1,5 +1,6 @@
 import {MyData} from "../shared/data/data.interface";
 import {MyStorage} from "../shared/storage/storage.interface";
+import {ChartInfo} from "../shared/charts/chart.interface";
 
 export interface VenusDataDict {
   diameter: number | null;
@@ -60,9 +61,98 @@ export class VenusData implements MyData {
 }
 
 
+export interface VenusChartInfoStorageObject {
+  chartTitle: string;
+  dataLabel: string;
+  xAxisLabel: string;
+  yAxisLabel: string;
+}
+
+
+export class VenusChartInfo implements ChartInfo {
+  private chartTitle: string;
+  private dataLabel: string;
+  private xAxisLabel: string;
+  private yAxisLabel: string;
+
+
+  constructor() {
+    this.chartTitle = VenusChartInfo.getDefaultChartInfo().chartTitle;
+    this.dataLabel = VenusChartInfo.getDefaultChartInfo().dataLabel;
+    this.xAxisLabel = VenusChartInfo.getDefaultChartInfo().xAxisLabel;
+    this.yAxisLabel = VenusChartInfo.getDefaultChartInfo().yAxisLabel;
+  }
+
+  getChartTitle(): string {
+    return this.chartTitle;
+  }
+
+  getDataLabel(): string {
+    return this.dataLabel;
+  }
+
+  getStorageObject(): VenusChartInfoStorageObject {
+    return {
+      chartTitle: this.chartTitle,
+      dataLabel: this.dataLabel,
+      xAxisLabel: this.xAxisLabel,
+      yAxisLabel: this.yAxisLabel,
+    }
+  }
+
+  getXAxisLabel(): string {
+    return this.xAxisLabel;
+  }
+
+  getYAxisLabel(): string {
+    return this.yAxisLabel;
+  }
+
+  setChartTitle(title: string): void {
+    this.chartTitle = title;
+  }
+
+  setDataLabel(data: string): void {
+    this.dataLabel = data;
+  }
+
+  setStorageObject(storageObject: VenusChartInfoStorageObject): void {
+    this.chartTitle = storageObject.chartTitle;
+    this.dataLabel = storageObject.dataLabel;
+    this.xAxisLabel = storageObject.xAxisLabel;
+    this.yAxisLabel = storageObject.yAxisLabel;
+  }
+
+  setXAxisLabel(xAxis: string): void {
+    this.xAxisLabel = xAxis;
+  }
+
+  setYAxisLabel(yAxis: string): void {
+    this.yAxisLabel = yAxis;
+  }
+
+  public static getDefaultChartInfo() {
+    return {
+      chartTitle: "Title",
+      dataLabel: "Data",
+      xAxisLabel: "x",
+      yAxisLabel: "y",
+    };
+  }
+}
+
+
 export class VenusStorage implements MyStorage {
   private readonly dataKey: string = "venusData";
-  getChartInfo(): any {
+  private readonly chartInfoKey: string = "venusChartInfo";
+  getChartInfo(): VenusChartInfoStorageObject {
+    if (localStorage.getItem(this.chartInfoKey)) {
+      return JSON.parse(localStorage.getItem(this.chartInfoKey) as string);
+    } else {
+      this.saveChartInfo(VenusChartInfo.getDefaultChartInfo());
+      return VenusChartInfo.getDefaultChartInfo();
+    }
+
   }
 
   getData(): VenusDataDict[] {
@@ -78,6 +168,7 @@ export class VenusStorage implements MyStorage {
   }
 
   resetChartInfo(): void {
+    this.saveChartInfo(VenusChartInfo.getDefaultChartInfo());
   }
 
   resetData(): void {
@@ -87,7 +178,8 @@ export class VenusStorage implements MyStorage {
   resetInterface(): void {
   }
 
-  saveChartInfo(chartInfo: any): void {
+  saveChartInfo(chartInfo: VenusChartInfoStorageObject): void {
+    localStorage.setItem(this.chartInfoKey, JSON.stringify(chartInfo));
   }
 
   saveData(data: VenusDataDict[]): void {

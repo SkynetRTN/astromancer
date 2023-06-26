@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output, ViewChild} from '@angular/core';
 import {FormControl, Validators} from "@angular/forms";
-import {debounceTime, Subject, takeUntil} from "rxjs";
+import {debounceTime, Subject, takeUntil, throttleTime} from "rxjs";
 import {MatInput} from "@angular/material/input";
 
 @Component({
@@ -44,7 +44,7 @@ export class InputSliderComponent implements OnDestroy, AfterViewInit {
     );
     this.formControl.statusChanges.pipe(
       takeUntil(this.destroy$),
-      debounceTime(3000)
+      debounceTime(2000)
     ).subscribe(
       (status) => {
         if (status === "INVALID") {
@@ -58,18 +58,18 @@ export class InputSliderComponent implements OnDestroy, AfterViewInit {
     )
     this.formControl.valueChanges.pipe(
       takeUntil(this.destroy$),
-      debounceTime(100)
+      throttleTime(25, undefined, {leading: false, trailing: true}),
     ).subscribe(
       (value) => {
         this.valueChange(value);
       });
     this.slider$.pipe(
       takeUntil(this.destroy$),
-      debounceTime(10)
+      throttleTime(25, undefined, {leading: false, trailing: true}),
     ).subscribe(
       (value) => {
         this.formControl.setValue(value);
-        this.valueChange(value);
+        this.valueChange(this.formControl.value);
       });
     this.value$?.pipe(
       takeUntil(this.destroy$),

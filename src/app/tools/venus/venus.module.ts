@@ -5,16 +5,20 @@ import {SimpleGraphButtonModule} from "../shared/simple-graph-button/simple-grap
 import {VenusService} from "./venus.service";
 import {VenusTableComponent} from './venus-table/venus-table.component';
 import {HotTableModule} from "@handsontable/angular";
-import {FormsModule} from "@angular/forms";
-import { VenusHighchartComponent } from './venus-highchart/venus-highchart.component';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {VenusHighchartComponent} from './venus-highchart/venus-highchart.component';
 import {HighchartsChartModule} from "highcharts-angular";
+import {VenusChartFormComponent} from './venus-chart-form/venus-chart-form.component';
+import {MatLegacyFormFieldModule} from "@angular/material/legacy-form-field";
+import {MatLegacyInputModule} from "@angular/material/legacy-input";
 
 
 @NgModule({
   declarations: [
     VenusComponent,
     VenusTableComponent,
-    VenusHighchartComponent
+    VenusHighchartComponent,
+    VenusChartFormComponent
   ],
   imports: [
     SimpleDataButtonModule,
@@ -22,6 +26,9 @@ import {HighchartsChartModule} from "highcharts-angular";
     HotTableModule,
     FormsModule,
     HighchartsChartModule,
+    MatLegacyFormFieldModule,
+    MatLegacyInputModule,
+    ReactiveFormsModule,
   ],
   providers: [VenusService],
 })

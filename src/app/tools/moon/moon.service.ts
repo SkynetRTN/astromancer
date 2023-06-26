@@ -23,6 +23,8 @@ export class MoonService implements MyData, ChartInfo, MoonInterface, MoonModel 
   private moonStorage: MoonStorage = new MoonStorage();
   private highChart!: Highcharts.Chart;
 
+  private static CHARTPRECISION: number = 3;
+
   private interfaceSubject = new BehaviorSubject<UpdateSource>(UpdateSource.INIT);
   public interface$ = this.interfaceSubject.asObservable();
   private chartInfoSubject = new BehaviorSubject<ChartInfo>(this.moonChartInfo);
@@ -64,7 +66,7 @@ export class MoonService implements MyData, ChartInfo, MoonInterface, MoonModel 
       modelData.push([x, y]);
     }
 
-    return modelData;
+    return this.limitPrecision(modelData, MoonService.CHARTPRECISION);
   }
 
   /** MoonInterface Methods **/
@@ -183,7 +185,7 @@ export class MoonService implements MyData, ChartInfo, MoonInterface, MoonModel 
   }
 
   getDataArray(): any[] {
-    return this.moonData.getDataArray();
+    return this.limitPrecision(this.moonData.getDataArray(), MoonService.CHARTPRECISION);
   }
 
   removeRow(index: number, amount: number): void {
@@ -210,5 +212,14 @@ export class MoonService implements MyData, ChartInfo, MoonInterface, MoonModel 
 
   getHighChart(): Highcharts.Chart {
     return this.highChart;
+  }
+
+  private limitPrecision(dataArray: number[][], precision: number): number[][] {
+    return dataArray.map(
+      (row: number[]) => {
+        return row.map((value: number) => {
+          return value ? parseFloat(value.toFixed(precision)) : value;
+        });
+      });
   }
 }

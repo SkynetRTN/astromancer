@@ -23,7 +23,7 @@ export class MoonHighchartComponent implements AfterViewInit, OnDestroy {
     },
     tooltip: {
       enabled: true,
-      shared: true,
+      shared: false,
     },
     exporting: {
       buttons: {

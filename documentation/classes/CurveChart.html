@@ -154,7 +154,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="77" class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:77</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="88" class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:88</a></div>
                             </td>
                         </tr>
 
@@ -218,7 +218,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="77" class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:77</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="88" class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:88</a></div>
                         </td>
                     </tr>
 
@@ -254,8 +254,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="83"
-                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:83</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="94"
+                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:94</a></div>
                 </td>
             </tr>
 
@@ -342,8 +342,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="90"
-                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:90</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="101"
+                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:101</a></div>
                 </td>
             </tr>
 
@@ -425,8 +425,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="125"
-                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:125</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="136"
+                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:136</a></div>
                 </td>
             </tr>
 
@@ -513,8 +513,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="145"
-                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:145</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="156"
+                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:156</a></div>
                 </td>
             </tr>
 
@@ -596,8 +596,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="121"
-                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:121</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="132"
+                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:132</a></div>
                 </td>
             </tr>
 
@@ -623,7 +623,7 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {AfterViewInit, Component} from &#x27;@angular/core&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {AfterViewInit, Component, OnDestroy} from &#x27;@angular/core&#x27;;
 import {Chart} from &quot;chart.js&quot;;
 import {ChartConfiguration, ChartOptions} from &quot;chart.js/dist/types&quot;;
 import {CurveService} from &quot;../curve.service&quot;;
@@ -632,6 +632,7 @@ import {MyData} from &quot;../../shared/data/data.interface&quot;;
 import {CurveChartInfo, CurveCounts, CurveDataDict, CurveInterface} from &quot;../curve.service.util&quot;;
 import {AppearanceService} from &quot;../../../shared/settings/appearance/service/appearance.service&quot;;
 import {ChartColor} from &quot;../../../shared/settings/appearance/service/appearance.utils&quot;;
+import {Subject, takeUntil} from &#x27;rxjs&#x27;;
 
 /**
  * Chart for the curve graphing tools.
@@ -642,7 +643,7 @@ import {ChartColor} from &quot;../../../shared/settings/appearance/service/appea
   templateUrl: &#x27;./curve-chart.component.html&#x27;,
   styleUrls: [&#x27;./curve-chart.component.scss&#x27;],
 })
-export class CurveChartComponent implements AfterViewInit {
+export class CurveChartComponent implements AfterViewInit, OnDestroy {
   /**
    * Chart.js object id
    */
@@ -659,7 +660,7 @@ export class CurveChartComponent implements AfterViewInit {
    * Chart.js object options configuration
    */
   lineChartOptions!: ChartOptions&lt;&#x27;line&#x27;&gt;;
-
+  private destroy$: Subject&lt;any&gt; &#x3D; new Subject&lt;any&gt;();
 
   constructor(private service: CurveService, private appearanceService: AppearanceService) {
     this.id &#x3D; &quot;curve-chart&quot;;
@@ -676,8 +677,11 @@ export class CurveChartComponent implements AfterViewInit {
     );
   }
 
+
   ngAfterViewInit(): void {
-    this.service.data$.subscribe(
+    this.service.data$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(
       () &#x3D;&gt; {
         this.lineChartData &#x3D; this.chart.generateChartConfig(
           this.service.getDataObject(),
@@ -686,7 +690,9 @@ export class CurveChartComponent implements AfterViewInit {
         this.chart.renderChart();
       }
     )
-    this.service.chartInfo$.subscribe(
+    this.service.chartInfo$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(
       () &#x3D;&gt; {
         this.lineChartOptions &#x3D; this.chart.generateChartOptions(
           this.service.getChartInfoObject(),
@@ -695,6 +701,11 @@ export class CurveChartComponent implements AfterViewInit {
         this.chart.renderChart();
       }
     )
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(null);
+    this.destroy$.complete();
   }
 }
 

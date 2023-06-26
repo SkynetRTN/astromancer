@@ -24,67 +24,67 @@
 <title>cluster_SettingsModule</title>
 <polygon fill="none" stroke="black" stroke-dasharray="1,5" points="8,-70 8,-195 513,-195 513,-70 8,-70"/>
 </g>
-<g id="clust4" class="cluster">
-<title>cluster_SettingsModule_imports</title>
-<polygon fill="none" stroke="black" points="166,-78 166,-130 505,-130 505,-78 166,-78"/>
-</g>
 <g id="clust2" class="cluster">
 <title>cluster_SettingsModule_declarations</title>
-<polygon fill="none" stroke="black" points="16,-78 16,-130 158,-130 158,-78 16,-78"/>
+<polygon fill="none" stroke="black" points="363,-78 363,-130 505,-130 505,-78 363,-78"/>
+</g>
+<g id="clust4" class="cluster">
+<title>cluster_SettingsModule_imports</title>
+<polygon fill="none" stroke="black" points="16,-78 16,-130 355,-130 355,-78 16,-78"/>
 </g>
 <!-- SettingsComponent -->
 <g id="node1" class="node">
 <title>SettingsComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="150.45,-122 23.55,-122 23.55,-86 150.45,-86 150.45,-122"/>
-<text text-anchor="middle" x="87" y="-99.8" font-family="Times,serif" font-size="14.00">SettingsComponent</text>
+<polygon fill="#ffffb3" stroke="black" points="497.45,-122 370.55,-122 370.55,-86 497.45,-86 497.45,-122"/>
+<text text-anchor="middle" x="434" y="-99.8" font-family="Times,serif" font-size="14.00">SettingsComponent</text>
 </g>
 <!-- SettingsModule -->
 <g id="node2" class="node">
 <title>SettingsModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="331.16,-187 328.16,-191 307.16,-191 304.16,-187 226.84,-187 226.84,-151 331.16,-151 331.16,-187"/>
-<text text-anchor="middle" x="279" y="-164.8" font-family="Times,serif" font-size="14.00">SettingsModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="300.16,-187 297.16,-191 276.16,-191 273.16,-187 195.84,-187 195.84,-151 300.16,-151 300.16,-187"/>
+<text text-anchor="middle" x="248" y="-164.8" font-family="Times,serif" font-size="14.00">SettingsModule</text>
 </g>
 <!-- SettingsComponent&#45;&gt;SettingsModule -->
 <g id="edge1" class="edge">
 <title>SettingsComponent&#45;&gt;SettingsModule</title>
-<path fill="none" stroke="black" d="M87,-122.11C87,-141.34 87,-169 87,-169 87,-169 216.79,-169 216.79,-169"/>
-<polygon fill="black" stroke="black" points="216.79,-172.5 226.79,-169 216.79,-165.5 216.79,-172.5"/>
+<path fill="none" stroke="black" d="M434,-122.11C434,-141.34 434,-169 434,-169 434,-169 310.31,-169 310.31,-169"/>
+<polygon fill="black" stroke="black" points="310.31,-165.5 300.31,-169 310.31,-172.5 310.31,-165.5"/>
 </g>
 <!-- RouterLink -->
 <g id="node3" class="node">
 <title>RouterLink</title>
-<polygon fill="#8dd3c7" stroke="black" points="497.05,-122 494.05,-126 473.05,-126 470.05,-122 416.95,-122 416.95,-86 497.05,-86 497.05,-122"/>
-<text text-anchor="middle" x="457" y="-99.8" font-family="Times,serif" font-size="14.00">RouterLink</text>
+<polygon fill="#8dd3c7" stroke="black" points="347.05,-122 344.05,-126 323.05,-126 320.05,-122 266.95,-122 266.95,-86 347.05,-86 347.05,-122"/>
+<text text-anchor="middle" x="307" y="-99.8" font-family="Times,serif" font-size="14.00">RouterLink</text>
 </g>
 <!-- RouterLink&#45;&gt;SettingsModule -->
 <g id="edge2" class="edge">
 <title>RouterLink&#45;&gt;SettingsModule</title>
-<path fill="none" stroke="black" d="M457,-122.11C457,-141.34 457,-169 457,-169 457,-169 341.44,-169 341.44,-169"/>
-<polygon fill="black" stroke="black" points="341.44,-165.5 331.44,-169 341.44,-172.5 341.44,-165.5"/>
+<path fill="none" stroke="black" d="M283.53,-122.11C283.53,-122.11 283.53,-140.99 283.53,-140.99"/>
+<polygon fill="black" stroke="black" points="280.03,-140.99 283.53,-150.99 287.03,-140.99 280.03,-140.99"/>
 </g>
 <!-- RouterLinkActive -->
 <g id="node4" class="node">
 <title>RouterLinkActive</title>
-<polygon fill="#8dd3c7" stroke="black" points="398.86,-122 395.86,-126 374.86,-126 371.86,-122 281.14,-122 281.14,-86 398.86,-86 398.86,-122"/>
-<text text-anchor="middle" x="340" y="-99.8" font-family="Times,serif" font-size="14.00">RouterLinkActive</text>
+<polygon fill="#8dd3c7" stroke="black" points="248.86,-122 245.86,-126 224.86,-126 221.86,-122 131.14,-122 131.14,-86 248.86,-86 248.86,-122"/>
+<text text-anchor="middle" x="190" y="-99.8" font-family="Times,serif" font-size="14.00">RouterLinkActive</text>
 </g>
 <!-- RouterLinkActive&#45;&gt;SettingsModule -->
 <g id="edge3" class="edge">
 <title>RouterLinkActive&#45;&gt;SettingsModule</title>
-<path fill="none" stroke="black" d="M306.2,-122.11C306.2,-122.11 306.2,-140.99 306.2,-140.99"/>
-<polygon fill="black" stroke="black" points="302.7,-140.99 306.2,-150.99 309.7,-140.99 302.7,-140.99"/>
+<path fill="none" stroke="black" d="M222.3,-122.11C222.3,-122.11 222.3,-140.99 222.3,-140.99"/>
+<polygon fill="black" stroke="black" points="218.8,-140.99 222.3,-150.99 225.8,-140.99 218.8,-140.99"/>
 </g>
 <!-- RouterOutlet -->
 <g id="node5" class="node">
 <title>RouterOutlet</title>
-<polygon fill="#8dd3c7" stroke="black" points="263.6,-122 260.6,-126 239.6,-126 236.6,-122 174.4,-122 174.4,-86 263.6,-86 263.6,-122"/>
-<text text-anchor="middle" x="219" y="-99.8" font-family="Times,serif" font-size="14.00">RouterOutlet</text>
+<polygon fill="#8dd3c7" stroke="black" points="113.6,-122 110.6,-126 89.6,-126 86.6,-122 24.4,-122 24.4,-86 113.6,-86 113.6,-122"/>
+<text text-anchor="middle" x="69" y="-99.8" font-family="Times,serif" font-size="14.00">RouterOutlet</text>
 </g>
 <!-- RouterOutlet&#45;&gt;SettingsModule -->
 <g id="edge4" class="edge">
 <title>RouterOutlet&#45;&gt;SettingsModule</title>
-<path fill="none" stroke="black" d="M245.11,-122.11C245.11,-122.11 245.11,-140.99 245.11,-140.99"/>
-<polygon fill="black" stroke="black" points="241.61,-140.99 245.11,-150.99 248.61,-140.99 241.61,-140.99"/>
+<path fill="none" stroke="black" d="M69,-122.11C69,-141.34 69,-169 69,-169 69,-169 185.74,-169 185.74,-169"/>
+<polygon fill="black" stroke="black" points="185.74,-172.5 195.74,-169 185.74,-165.5 185.74,-172.5"/>
 </g>
 </g>
 </svg>

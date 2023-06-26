@@ -44,7 +44,7 @@
 
 <ol class="breadcrumb">
   <li class="breadcrumb-item">Classes</li>
-  <li class="breadcrumb-item" >CurveTable</li>
+  <li class="breadcrumb-item" >MoonTable</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">
@@ -68,7 +68,7 @@
             <h3>File</h3>
         </p>
         <p class="comment">
-            <code>src/app/tools/curve/curve-table/curve-table.component.ts</code>
+            <code>src/app/tools/moon/moon-table/moon-table.component.ts</code>
         </p>
 
 
@@ -147,7 +147,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="70" class="link-to-prism">src/app/tools/curve/curve-table/curve-table.component.ts:70</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="70" class="link-to-prism">src/app/tools/moon/moon-table/moon-table.component.ts:70</a></div>
                             </td>
                         </tr>
 
@@ -209,7 +209,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="70" class="link-to-prism">src/app/tools/curve/curve-table/curve-table.component.ts:70</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="70" class="link-to-prism">src/app/tools/moon/moon-table/moon-table.component.ts:70</a></div>
                         </td>
                     </tr>
 
@@ -237,7 +237,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="69" class="link-to-prism">src/app/tools/curve/curve-table/curve-table.component.ts:69</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="69" class="link-to-prism">src/app/tools/moon/moon-table/moon-table.component.ts:69</a></div>
                         </td>
                     </tr>
 
@@ -272,7 +272,7 @@
             <tr>
                 <td class="col-md-4">
                     <div class="io-line">Defined in <a href="" data-line="84"
-                            class="link-to-prism">src/app/tools/curve/curve-table/curve-table.component.ts:84</a></div>
+                            class="link-to-prism">src/app/tools/moon/moon-table/moon-table.component.ts:84</a></div>
                 </td>
             </tr>
 
@@ -309,7 +309,7 @@
             <tr>
                 <td class="col-md-4">
                     <div class="io-line">Defined in <a href="" data-line="76"
-                            class="link-to-prism">src/app/tools/curve/curve-table/curve-table.component.ts:76</a></div>
+                            class="link-to-prism">src/app/tools/moon/moon-table/moon-table.component.ts:76</a></div>
                 </td>
             </tr>
 
@@ -346,7 +346,7 @@
             <tr>
                 <td class="col-md-4">
                     <div class="io-line">Defined in <a href="" data-line="80"
-                            class="link-to-prism">src/app/tools/curve/curve-table/curve-table.component.ts:80</a></div>
+                            class="link-to-prism">src/app/tools/moon/moon-table/moon-table.component.ts:80</a></div>
                 </td>
             </tr>
 
@@ -373,73 +373,73 @@
 
     <div class="tab-pane fade  tab-source-code" id="source">
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {AfterViewInit, Component, OnDestroy} from &#x27;@angular/core&#x27;;
-import {CurveService} from &quot;../curve.service&quot;;
-
-import {CurveDataDict} from &quot;../curve.service.util&quot;;
+import {MoonService} from &quot;../moon.service&quot;;
+import {MoonDataDict} from &quot;../moon.service.util&quot;;
 import {MyTable} from &quot;../../shared/tables/table-interface&quot;;
-import Handsontable from &quot;handsontable&quot;;
 import {HotTableRegisterer} from &quot;@handsontable/angular&quot;;
-import {Subject, takeUntil} from &#x27;rxjs&#x27;;
+import Handsontable from &quot;handsontable&quot;;
+import {Subject, takeUntil} from &quot;rxjs&quot;;
 
 @Component({
-  selector: &#x27;app-curve-table&#x27;,
-  templateUrl: &#x27;./curve-table.component.html&#x27;,
-  styleUrls: [&#x27;./curve-table.component.scss&#x27;]
+  selector: &#x27;app-moon-table&#x27;,
+  templateUrl: &#x27;./moon-table.component.html&#x27;,
+  styleUrls: [&#x27;./moon-table.component.scss&#x27;]
 })
-export class CurveTableComponent implements AfterViewInit, OnDestroy {
-  colNames: any;
+export class MoonTableComponent implements AfterViewInit, OnDestroy {
+  static FLOAT_PRECISION: number &#x3D; 2;
+  id: string &#x3D; &quot;moon-table&quot;;
+  table: MoonTable &#x3D; new MoonTable(this.id);
+  colNames: string[] &#x3D; [&quot;Julian Date&quot;, &quot;Angular Separation&quot;];
   dataSet: any;
-  id: string &#x3D; &quot;curve-table&quot;;
-  table: CurveTable &#x3D; new CurveTable(this.id);
   private destroy$: Subject&lt;any&gt; &#x3D; new Subject&lt;any&gt;();
 
-  constructor(private dataService: CurveService) {
-    this.colNames &#x3D; this.dataService.getDataLabelArray();
-    this.dataSet &#x3D; this.dataService.getData();
+  constructor(private service: MoonService) {
+    this.dataSet &#x3D; this.limitPrecision(this.service.getData(), MoonTableComponent.FLOAT_PRECISION);
+
   }
 
   ngAfterViewInit(): void {
-    this.dataService.data$.pipe(
+    this.service.data$.pipe(
       takeUntil(this.destroy$)
-    ).subscribe(
-      (data: CurveDataDict[]) &#x3D;&gt; {
-        this.dataSet &#x3D; this.dataService.getData();
-        this.table.renderTable();
-      });
-    this.dataService.dataKeys$.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(
-      (keys: string[]) &#x3D;&gt; {
-        this.colNames &#x3D; keys;
-        this.table.renderTable();
-      }
-    );
+    ).subscribe((data: MoonDataDict[]) &#x3D;&gt; {
+      this.dataSet &#x3D; this.limitPrecision(this.service.getData(), MoonTableComponent.FLOAT_PRECISION);
+      this.table.renderTable();
+    })
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     this.destroy$.next(null);
     this.destroy$.complete();
   }
 
   public onChange &#x3D; (changes: any, source: any) &#x3D;&gt; {
     if (changes) {
-      this.dataService.setData(this.table.getData());
+      this.service.setData(this.table.getData());
     }
   }
 
   public onRemove &#x3D; (index: number, amount: number) &#x3D;&gt; {
-    this.dataService.removeRow(index, amount);
+    this.service.removeRow(index, amount);
   }
 
   public onInsert &#x3D; (index: number, amount: number) &#x3D;&gt; {
-    this.dataService.addRow(index, amount);
+    this.service.addRow(index, amount);
   }
 
+  private limitPrecision(data: MoonDataDict[], precision: number): MoonDataDict[] {
+    return data.map(
+      (row: MoonDataDict) &#x3D;&gt; {
+        return {
+          julianDate: row.julianDate ? parseFloat(row.julianDate.toFixed(precision)) : row.julianDate,
+          angularSeparation: row.angularSeparation ? parseFloat(row.angularSeparation.toFixed(precision)) : row.angularSeparation
+        }
+      }
+    );
+  }
 
 }
 
-
-class CurveTable implements MyTable {
+class MoonTable implements MyTable {
   private readonly id: string;
   private hotRegisterer &#x3D; new HotTableRegisterer();
 
@@ -458,6 +458,7 @@ class CurveTable implements MyTable {
   getData(): any[] {
     return this.getTable().getSourceData();
   }
+
 }
 </code></pre>
     </div>
@@ -497,7 +498,7 @@ class CurveTable implements MyTable {
        <script>
             var COMPODOC_CURRENT_PAGE_DEPTH = 1;
             var COMPODOC_CURRENT_PAGE_CONTEXT = 'class';
-            var COMPODOC_CURRENT_PAGE_URL = 'CurveTable.html';
+            var COMPODOC_CURRENT_PAGE_URL = 'MoonTable.html';
             var MAX_SEARCH_RESULTS = 15;
        </script>
 

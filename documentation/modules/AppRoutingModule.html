@@ -86,6 +86,7 @@ import {AboutComponent} from &quot;./shared/about/about.component&quot;;
 import {PageNotFoundComponent} from &quot;./shared/page-not-found/page-not-found.component&quot;;
 import {SettingsComponent} from &quot;./shared/settings/settings.component&quot;;
 import {AppearanceComponent} from &quot;./shared/settings/appearance/appearance.component&quot;;
+import {MoonComponent} from &quot;./tools/moon/moon/moon.component&quot;;
 
 /**
  * Routes for the site
@@ -94,6 +95,7 @@ const TOOLS_ROUTES: Routes &#x3D; [
   {path: &quot;home&quot;, component: HomeComponent, data: {title: &quot;getToolSiteName($localize&#x60;:home:Home&#x60;)&quot;}},
   {path: &quot;about&quot;, component: AboutComponent, data: {title: &quot;getToolSiteName($localize&#x60;:about:About&#x60;)&quot;}},
   {path: &quot;curve&quot;, component: CurveComponent, data: {title: &quot;getToolSiteName($localize&#x60;:curve:Curve&#x60;)&quot;}},
+  {path: &quot;moon&quot;, component: MoonComponent, data: {title: &quot;getToolSiteName($localize&#x60;:moon:Moon&#x60;)&quot;}},
   {
     path: &quot;settings&quot;, component: SettingsComponent, data: {title: &quot;getToolSiteName($localize&#x60;:settings:Settings&#x60;)&quot;},
     children: [

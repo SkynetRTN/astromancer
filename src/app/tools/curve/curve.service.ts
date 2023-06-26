@@ -2,7 +2,15 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject} from "rxjs";
 import {ChartInfo} from "../shared/charts/chart.interface";
 import {Chart} from "chart.js";
-import {CurveChartInfo, CurveData, CurveDataDict, CurveImpl, CurveInterface, CurveStorage,} from "./curve.service.util";
+import {
+  CurveChartInfo,
+  CurveChartInfoStorageObject,
+  CurveData,
+  CurveDataDict,
+  CurveImpl,
+  CurveInterface,
+  CurveStorage,
+} from "./curve.service.util";
 import {MyData} from "../shared/data/data.interface";
 import * as Highcharts from 'highcharts';
 
@@ -106,6 +114,14 @@ export class CurveService implements ChartInfo, MyData, CurveInterface {
     this.curveStorage.saveChartInfo(this.chartInfo.getStorageObject());
     this.chartInfoSubject.next(this.chartInfo);
     this.dataKeysSubject.next(this.getDataLabelArray());
+  }
+
+  getStorageObject() {
+    return this.chartInfo.getStorageObject();
+  }
+
+  setStorageObject(storageObject: CurveChartInfoStorageObject): void {
+    this.chartInfo.setStorageObject(storageObject);
   }
 
   // MyData Methods

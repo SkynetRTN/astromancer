@@ -1,0 +1,21 @@
+<div class="row">
+  <div class="col-6">
+    <mat-form-field [hideRequiredMarker]="true">
+      <mat-label>{{label}}</mat-label>
+      <input #input [formControl]="formControl" [max]="maxValue"
+             [min]="minValue"
+             [step]="stepValue" matInput type="number">
+      <mat-error>range: {{minValue}}-{{maxValue}}</mat-error>
+    </mat-form-field>
+  </div>
+  <div class="col-6">
+    <mat-slider
+      [max]="SliderUtil.getSliderMax(input.max, isLog)"
+      [min]="SliderUtil.getSliderMin(input.min, isLog)"
+      [step]="SliderUtil.getSliderStep(input.min, input.max, input.step, isLog)">
+      <input (input)="sliderSubject.next(SliderUtil.sliderToInput($event, isLog))"
+             [value]="SliderUtil.inputToSlider(input.value, isLog)"
+             matSliderThumb>
+    </mat-slider>
+  </div>
+</div>

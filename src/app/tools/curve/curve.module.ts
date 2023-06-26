@@ -20,6 +20,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatLegacySlideToggleModule as MatSlideToggleModule} from "@angular/material/legacy-slide-toggle";
 import {CurveHighChartComponent} from './curve-highchart/curve-high-chart.component';
 import {HighchartsChartModule} from "highcharts-angular";
+import {HonorCodePopupService} from "../shared/honor-code-popup/honor-code-popup.service";
 
 /**
  * Module encapsulating {@link CurveComponent}
@@ -51,7 +52,7 @@ import {HighchartsChartModule} from "highcharts-angular";
     CurveHighChartComponent,
   ],
   exports: [CurveComponent],
-  providers: [CurveService],
+  providers: [CurveService, HonorCodePopupService],
 })
 export class CurveModule {
 }

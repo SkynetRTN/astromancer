@@ -113,13 +113,13 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 <a href="modules/CurveModule.html" data-type="entity-link" >CurveModule</a>
                                     <li class="chapter inner">
                                         <div class="simple menu-toggler" data-bs-toggle="collapse" ${ isNormalMode ?
-                                            'data-bs-target="#components-links-module-CurveModule-d0e621b5ba20e96d064751e474ef0a0773d89427f30188d7a1523f661c6cf9769310f641f78cd1a4a5de124814fdf24d05f1d4e41b41928936314820216d89ba"' : 'data-bs-target="#xs-components-links-module-CurveModule-d0e621b5ba20e96d064751e474ef0a0773d89427f30188d7a1523f661c6cf9769310f641f78cd1a4a5de124814fdf24d05f1d4e41b41928936314820216d89ba"' }>
+                                            'data-bs-target="#components-links-module-CurveModule-024eace1333d50af470454238318784e895deb60c02effbb5ecac9d882618bd88ae6f5feb1d537104b6d5e616cef3a2680b252b6f8545372c0140dc8f30a635a"' : 'data-bs-target="#xs-components-links-module-CurveModule-024eace1333d50af470454238318784e895deb60c02effbb5ecac9d882618bd88ae6f5feb1d537104b6d5e616cef3a2680b252b6f8545372c0140dc8f30a635a"' }>
                                             <span class="icon ion-md-cog"></span>
                                             <span>Components</span>
                                             <span class="icon ion-ios-arrow-down"></span>
                                         </div>
-                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-CurveModule-d0e621b5ba20e96d064751e474ef0a0773d89427f30188d7a1523f661c6cf9769310f641f78cd1a4a5de124814fdf24d05f1d4e41b41928936314820216d89ba"' :
-                                            'id="xs-components-links-module-CurveModule-d0e621b5ba20e96d064751e474ef0a0773d89427f30188d7a1523f661c6cf9769310f641f78cd1a4a5de124814fdf24d05f1d4e41b41928936314820216d89ba"' }>
+                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-CurveModule-024eace1333d50af470454238318784e895deb60c02effbb5ecac9d882618bd88ae6f5feb1d537104b6d5e616cef3a2680b252b6f8545372c0140dc8f30a635a"' :
+                                            'id="xs-components-links-module-CurveModule-024eace1333d50af470454238318784e895deb60c02effbb5ecac9d882618bd88ae6f5feb1d537104b6d5e616cef3a2680b252b6f8545372c0140dc8f30a635a"' }>
                                             <li class="link">
                                                 <a href="components/CurveChartComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >CurveChartComponent</a>
                                             </li>
@@ -142,15 +142,18 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                     </li>
                                 <li class="chapter inner">
                                     <div class="simple menu-toggler" data-bs-toggle="collapse" ${ isNormalMode ?
-                                        'data-bs-target="#injectables-links-module-CurveModule-d0e621b5ba20e96d064751e474ef0a0773d89427f30188d7a1523f661c6cf9769310f641f78cd1a4a5de124814fdf24d05f1d4e41b41928936314820216d89ba"' : 'data-bs-target="#xs-injectables-links-module-CurveModule-d0e621b5ba20e96d064751e474ef0a0773d89427f30188d7a1523f661c6cf9769310f641f78cd1a4a5de124814fdf24d05f1d4e41b41928936314820216d89ba"' }>
+                                        'data-bs-target="#injectables-links-module-CurveModule-024eace1333d50af470454238318784e895deb60c02effbb5ecac9d882618bd88ae6f5feb1d537104b6d5e616cef3a2680b252b6f8545372c0140dc8f30a635a"' : 'data-bs-target="#xs-injectables-links-module-CurveModule-024eace1333d50af470454238318784e895deb60c02effbb5ecac9d882618bd88ae6f5feb1d537104b6d5e616cef3a2680b252b6f8545372c0140dc8f30a635a"' }>
                                         <span class="icon ion-md-arrow-round-down"></span>
                                         <span>Injectables</span>
                                         <span class="icon ion-ios-arrow-down"></span>
                                     </div>
-                                    <ul class="links collapse" ${ isNormalMode ? 'id="injectables-links-module-CurveModule-d0e621b5ba20e96d064751e474ef0a0773d89427f30188d7a1523f661c6cf9769310f641f78cd1a4a5de124814fdf24d05f1d4e41b41928936314820216d89ba"' :
-                                        'id="xs-injectables-links-module-CurveModule-d0e621b5ba20e96d064751e474ef0a0773d89427f30188d7a1523f661c6cf9769310f641f78cd1a4a5de124814fdf24d05f1d4e41b41928936314820216d89ba"' }>
+                                    <ul class="links collapse" ${ isNormalMode ? 'id="injectables-links-module-CurveModule-024eace1333d50af470454238318784e895deb60c02effbb5ecac9d882618bd88ae6f5feb1d537104b6d5e616cef3a2680b252b6f8545372c0140dc8f30a635a"' :
+                                        'id="xs-injectables-links-module-CurveModule-024eace1333d50af470454238318784e895deb60c02effbb5ecac9d882618bd88ae6f5feb1d537104b6d5e616cef3a2680b252b6f8545372c0140dc8f30a635a"' }>
                                         <li class="link">
                                             <a href="injectables/CurveService.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >CurveService</a>
+                                        </li>
+                                        <li class="link">
+                                            <a href="injectables/HonorCodePopupService.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >HonorCodePopupService</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -173,6 +176,23 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                     </li>
                             </li>
                             <li class="link">
+                                <a href="modules/InterfaceUtilModule.html" data-type="entity-link" >InterfaceUtilModule</a>
+                                    <li class="chapter inner">
+                                        <div class="simple menu-toggler" data-bs-toggle="collapse" ${ isNormalMode ?
+                                            'data-bs-target="#components-links-module-InterfaceUtilModule-1fee4bff69b17cfe8fed9a8f2c0a771844b4e6febab73004455015b2b320063171a87c94272baa57f4e787828de8ce9988fd8f115c3cfe54be019be78ac137af"' : 'data-bs-target="#xs-components-links-module-InterfaceUtilModule-1fee4bff69b17cfe8fed9a8f2c0a771844b4e6febab73004455015b2b320063171a87c94272baa57f4e787828de8ce9988fd8f115c3cfe54be019be78ac137af"' }>
+                                            <span class="icon ion-md-cog"></span>
+                                            <span>Components</span>
+                                            <span class="icon ion-ios-arrow-down"></span>
+                                        </div>
+                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-InterfaceUtilModule-1fee4bff69b17cfe8fed9a8f2c0a771844b4e6febab73004455015b2b320063171a87c94272baa57f4e787828de8ce9988fd8f115c3cfe54be019be78ac137af"' :
+                                            'id="xs-components-links-module-InterfaceUtilModule-1fee4bff69b17cfe8fed9a8f2c0a771844b4e6febab73004455015b2b320063171a87c94272baa57f4e787828de8ce9988fd8f115c3cfe54be019be78ac137af"' }>
+                                            <li class="link">
+                                                <a href="components/InputSliderComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >InputSliderComponent</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                            </li>
+                            <li class="link">
                                 <a href="modules/MenubarModule.html" data-type="entity-link" >MenubarModule</a>
                                     <li class="chapter inner">
                                         <div class="simple menu-toggler" data-bs-toggle="collapse" ${ isNormalMode ?
@@ -188,6 +208,52 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                             </li>
                                         </ul>
                                     </li>
+                            </li>
+                            <li class="link">
+                                <a href="modules/MoonModule.html" data-type="entity-link" >MoonModule</a>
+                                    <li class="chapter inner">
+                                        <div class="simple menu-toggler" data-bs-toggle="collapse" ${ isNormalMode ?
+                                            'data-bs-target="#components-links-module-MoonModule-a007dc1d522c397191c90e199aa96fb2e0c999086c45a9d931dfaf604b68b3a1ff030e1ec0a4163df479dbf7b0b0d00bda7add9223294ecd5f38d8a7fb0dceef"' : 'data-bs-target="#xs-components-links-module-MoonModule-a007dc1d522c397191c90e199aa96fb2e0c999086c45a9d931dfaf604b68b3a1ff030e1ec0a4163df479dbf7b0b0d00bda7add9223294ecd5f38d8a7fb0dceef"' }>
+                                            <span class="icon ion-md-cog"></span>
+                                            <span>Components</span>
+                                            <span class="icon ion-ios-arrow-down"></span>
+                                        </div>
+                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-MoonModule-a007dc1d522c397191c90e199aa96fb2e0c999086c45a9d931dfaf604b68b3a1ff030e1ec0a4163df479dbf7b0b0d00bda7add9223294ecd5f38d8a7fb0dceef"' :
+                                            'id="xs-components-links-module-MoonModule-a007dc1d522c397191c90e199aa96fb2e0c999086c45a9d931dfaf604b68b3a1ff030e1ec0a4163df479dbf7b0b0d00bda7add9223294ecd5f38d8a7fb0dceef"' }>
+                                            <li class="link">
+                                                <a href="components/MoonChartFormComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >MoonChartFormComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/MoonComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >MoonComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/MoonFormComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >MoonFormComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/MoonHighchartComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >MoonHighchartComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/MoonTableComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >MoonTableComponent</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                <li class="chapter inner">
+                                    <div class="simple menu-toggler" data-bs-toggle="collapse" ${ isNormalMode ?
+                                        'data-bs-target="#injectables-links-module-MoonModule-a007dc1d522c397191c90e199aa96fb2e0c999086c45a9d931dfaf604b68b3a1ff030e1ec0a4163df479dbf7b0b0d00bda7add9223294ecd5f38d8a7fb0dceef"' : 'data-bs-target="#xs-injectables-links-module-MoonModule-a007dc1d522c397191c90e199aa96fb2e0c999086c45a9d931dfaf604b68b3a1ff030e1ec0a4163df479dbf7b0b0d00bda7add9223294ecd5f38d8a7fb0dceef"' }>
+                                        <span class="icon ion-md-arrow-round-down"></span>
+                                        <span>Injectables</span>
+                                        <span class="icon ion-ios-arrow-down"></span>
+                                    </div>
+                                    <ul class="links collapse" ${ isNormalMode ? 'id="injectables-links-module-MoonModule-a007dc1d522c397191c90e199aa96fb2e0c999086c45a9d931dfaf604b68b3a1ff030e1ec0a4163df479dbf7b0b0d00bda7add9223294ecd5f38d8a7fb0dceef"' :
+                                        'id="xs-injectables-links-module-MoonModule-a007dc1d522c397191c90e199aa96fb2e0c999086c45a9d931dfaf604b68b3a1ff030e1ec0a4163df479dbf7b0b0d00bda7add9223294ecd5f38d8a7fb0dceef"' }>
+                                        <li class="link">
+                                            <a href="injectables/HonorCodePopupService.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >HonorCodePopupService</a>
+                                        </li>
+                                        <li class="link">
+                                            <a href="injectables/MoonService.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >MoonService</a>
+                                        </li>
+                                    </ul>
+                                </li>
                             </li>
                             <li class="link">
                                 <a href="modules/SettingsModule.html" data-type="entity-link" >SettingsModule</a>
@@ -210,13 +276,13 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 <a href="modules/SimpleDataButtonModule.html" data-type="entity-link" >SimpleDataButtonModule</a>
                                     <li class="chapter inner">
                                         <div class="simple menu-toggler" data-bs-toggle="collapse" ${ isNormalMode ?
-                                            'data-bs-target="#components-links-module-SimpleDataButtonModule-dda4594f337cc8016b1a63bb5447674328aba59b86cf7129a8f6e6b0c6f501ff65b36867a240a9389a603e159de493830599220871e8914e7252867374631815"' : 'data-bs-target="#xs-components-links-module-SimpleDataButtonModule-dda4594f337cc8016b1a63bb5447674328aba59b86cf7129a8f6e6b0c6f501ff65b36867a240a9389a603e159de493830599220871e8914e7252867374631815"' }>
+                                            'data-bs-target="#components-links-module-SimpleDataButtonModule-02b276d7965af22632e0c4fbf50dc09575d03d9a3f92f1458a617a6ef293deb3ecfb16ef42ae0e65a43ccbd39e9fa7d42dc7be9a49ae96c7cebefbefdb67f7c6"' : 'data-bs-target="#xs-components-links-module-SimpleDataButtonModule-02b276d7965af22632e0c4fbf50dc09575d03d9a3f92f1458a617a6ef293deb3ecfb16ef42ae0e65a43ccbd39e9fa7d42dc7be9a49ae96c7cebefbefdb67f7c6"' }>
                                             <span class="icon ion-md-cog"></span>
                                             <span>Components</span>
                                             <span class="icon ion-ios-arrow-down"></span>
                                         </div>
-                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-SimpleDataButtonModule-dda4594f337cc8016b1a63bb5447674328aba59b86cf7129a8f6e6b0c6f501ff65b36867a240a9389a603e159de493830599220871e8914e7252867374631815"' :
-                                            'id="xs-components-links-module-SimpleDataButtonModule-dda4594f337cc8016b1a63bb5447674328aba59b86cf7129a8f6e6b0c6f501ff65b36867a240a9389a603e159de493830599220871e8914e7252867374631815"' }>
+                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-SimpleDataButtonModule-02b276d7965af22632e0c4fbf50dc09575d03d9a3f92f1458a617a6ef293deb3ecfb16ef42ae0e65a43ccbd39e9fa7d42dc7be9a49ae96c7cebefbefdb67f7c6"' :
+                                            'id="xs-components-links-module-SimpleDataButtonModule-02b276d7965af22632e0c4fbf50dc09575d03d9a3f92f1458a617a6ef293deb3ecfb16ef42ae0e65a43ccbd39e9fa7d42dc7be9a49ae96c7cebefbefdb67f7c6"' }>
                                             <li class="link">
                                                 <a href="components/SimpleDataButtonComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >SimpleDataButtonComponent</a>
                                             </li>
@@ -244,13 +310,13 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 <a href="modules/ToolsNavbarModule.html" data-type="entity-link" >ToolsNavbarModule</a>
                                     <li class="chapter inner">
                                         <div class="simple menu-toggler" data-bs-toggle="collapse" ${ isNormalMode ?
-                                            'data-bs-target="#components-links-module-ToolsNavbarModule-f3583d5d7f14939ca09de2cd2d4a67b8068882bb324c6d50d35ea747b91cb5a4804c61a676cfd464ffac600381fe133a6525d18eccaf073f432c5c57dc938dd2"' : 'data-bs-target="#xs-components-links-module-ToolsNavbarModule-f3583d5d7f14939ca09de2cd2d4a67b8068882bb324c6d50d35ea747b91cb5a4804c61a676cfd464ffac600381fe133a6525d18eccaf073f432c5c57dc938dd2"' }>
+                                            'data-bs-target="#components-links-module-ToolsNavbarModule-445ce8bb6c881e64727119cab1dbb3e044de9a3c18f458d21a93494e3934ca516baceb74f710ee9869ac6e326e71ba5a0f339dd4971f07014b5203f77c751890"' : 'data-bs-target="#xs-components-links-module-ToolsNavbarModule-445ce8bb6c881e64727119cab1dbb3e044de9a3c18f458d21a93494e3934ca516baceb74f710ee9869ac6e326e71ba5a0f339dd4971f07014b5203f77c751890"' }>
                                             <span class="icon ion-md-cog"></span>
                                             <span>Components</span>
                                             <span class="icon ion-ios-arrow-down"></span>
                                         </div>
-                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-ToolsNavbarModule-f3583d5d7f14939ca09de2cd2d4a67b8068882bb324c6d50d35ea747b91cb5a4804c61a676cfd464ffac600381fe133a6525d18eccaf073f432c5c57dc938dd2"' :
-                                            'id="xs-components-links-module-ToolsNavbarModule-f3583d5d7f14939ca09de2cd2d4a67b8068882bb324c6d50d35ea747b91cb5a4804c61a676cfd464ffac600381fe133a6525d18eccaf073f432c5c57dc938dd2"' }>
+                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-ToolsNavbarModule-445ce8bb6c881e64727119cab1dbb3e044de9a3c18f458d21a93494e3934ca516baceb74f710ee9869ac6e326e71ba5a0f339dd4971f07014b5203f77c751890"' :
+                                            'id="xs-components-links-module-ToolsNavbarModule-445ce8bb6c881e64727119cab1dbb3e044de9a3c18f458d21a93494e3934ca516baceb74f710ee9869ac6e326e71ba5a0f339dd4971f07014b5203f77c751890"' }>
                                             <li class="link">
                                                 <a href="components/ToolsNavbarComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >ToolsNavbarComponent</a>
                                             </li>
@@ -294,6 +360,24 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             <li class="link">
                                 <a href="classes/DefaultAppearanceSettings.html" data-type="entity-link" >DefaultAppearanceSettings</a>
                             </li>
+                            <li class="link">
+                                <a href="classes/MoonChartInfo.html" data-type="entity-link" >MoonChartInfo</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/MoonData.html" data-type="entity-link" >MoonData</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/MoonInterfaceImpl.html" data-type="entity-link" >MoonInterfaceImpl</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/MoonStorage.html" data-type="entity-link" >MoonStorage</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/MoonTable.html" data-type="entity-link" >MoonTable</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/SliderUtil.html" data-type="entity-link" >SliderUtil</a>
+                            </li>
                         </ul>
                     </li>
                         <li class="chapter">
@@ -306,9 +390,6 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             <ul class="links collapse " ${ isNormalMode ? 'id="injectables-links"' : 'id="xs-injectables-links"' }>
                                 <li class="link">
                                     <a href="injectables/HonorCodeChartService.html" data-type="entity-link" >HonorCodeChartService</a>
-                                </li>
-                                <li class="link">
-                                    <a href="injectables/HonorCodePopupService.html" data-type="entity-link" >HonorCodePopupService</a>
                                 </li>
                             </ul>
                         </li>
@@ -334,6 +415,24 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             </li>
                             <li class="link">
                                 <a href="interfaces/CurveInterfaceStorageObject.html" data-type="entity-link" >CurveInterfaceStorageObject</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/InputSliderValue.html" data-type="entity-link" >InputSliderValue</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/MoonChartInfoStorageObject.html" data-type="entity-link" >MoonChartInfoStorageObject</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/MoonDataDict.html" data-type="entity-link" >MoonDataDict</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/MoonInterface.html" data-type="entity-link" >MoonInterface</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/MoonInterfaceStorageObject.html" data-type="entity-link" >MoonInterfaceStorageObject</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/MoonModel.html" data-type="entity-link" >MoonModel</a>
                             </li>
                             <li class="link">
                                 <a href="interfaces/MyChart.html" data-type="entity-link" >MyChart</a>

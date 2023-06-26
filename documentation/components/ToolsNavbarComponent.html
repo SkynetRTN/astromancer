@@ -207,8 +207,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="37"
-                            class="link-to-prism">src/app/shared/tools-navbar/tools-navbar.component.ts:37</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="38"
+                            class="link-to-prism">src/app/shared/tools-navbar/tools-navbar.component.ts:38</a></div>
                 </td>
             </tr>
 
@@ -246,8 +246,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="30"
-                            class="link-to-prism">src/app/shared/tools-navbar/tools-navbar.component.ts:30</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="31"
+                            class="link-to-prism">src/app/shared/tools-navbar/tools-navbar.component.ts:31</a></div>
                 </td>
             </tr>
 
@@ -300,7 +300,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="25" class="link-to-prism">src/app/shared/tools-navbar/tools-navbar.component.ts:25</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="26" class="link-to-prism">src/app/shared/tools-navbar/tools-navbar.component.ts:26</a></div>
                         </td>
                     </tr>
 
@@ -327,6 +327,7 @@ import {MatLegacyButtonModule as MatButtonModule} from &quot;@angular/material/l
 import {MatIconModule} from &quot;@angular/material/icon&quot;;
 import {CurveModule} from &quot;../../tools/curve/curve.module&quot;;
 import {MatLegacyListModule as MatListModule} from &quot;@angular/material/legacy-list&quot;;
+import {MoonModule} from &quot;../../tools/moon/moon.module&quot;;
 
 /**
  * Sidenav with custom escape and backdrop click behavior
@@ -367,12 +368,13 @@ export class ToolsNavbarComponent {
 @NgModule({
   imports: [
     MenubarModule,
-    CurveModule,
     AppRoutingModule,
     MatSidenavModule,
     MatButtonModule,
     MatIconModule,
     MatListModule,
+    CurveModule,
+    MoonModule,
   ],
   declarations: [
     ToolsNavbarComponent,
@@ -395,6 +397,23 @@ export class ToolsNavbarModule {
       &lt;a (click)&#x3D;&quot;close()&quot; [routerLink]&#x3D;&quot;[&#x27;/moon&#x27;]&quot;
          i18n&#x3D;&quot;Moon&quot; mat-list-item
          routerLinkActive&#x3D;&quot;active&quot;&gt;Moon&lt;/a&gt;
+      &lt;a (click)&#x3D;&quot;close()&quot; [routerLink]&#x3D;&quot;[&#x27;/venus&#x27;]&quot; disabled i18n&#x3D;&quot;Venus&quot; mat-list-item
+         routerLinkActive&#x3D;&quot;active&quot;&gt;Venus&lt;/a&gt;
+      &lt;a (click)&#x3D;&quot;close()&quot; [routerLink]&#x3D;&quot;[&#x27;/variable&#x27;]&quot; disabled i18n&#x3D;&quot;Variable&quot; mat-list-item
+         routerLinkActive&#x3D;&quot;active&quot;&gt;Variable&lt;/a&gt;
+      &lt;a (click)&#x3D;&quot;close()&quot; [routerLink]&#x3D;&quot;[&#x27;/scatter&#x27;]&quot; disabled i18n&#x3D;&quot;Scatter&quot; mat-list-item routerLinkActive&#x3D;&quot;active&quot;&gt;Scatter&lt;/a&gt;
+      &lt;a (click)&#x3D;&quot;close()&quot; [routerLink]&#x3D;&quot;[&#x27;/spectrum&#x27;]&quot; disabled i18n&#x3D;&quot;Spectrum&quot; mat-list-item
+         routerLinkActive&#x3D;&quot;active&quot;&gt;Spectrum&lt;/a&gt;
+      &lt;a (click)&#x3D;&quot;close()&quot; [routerLink]&#x3D;&quot;[&#x27;/dual&#x27;]&quot; disabled i18n&#x3D;&quot;Dual&quot; mat-list-item
+         routerLinkActive&#x3D;&quot;active&quot;&gt;Dual&lt;/a&gt;
+      &lt;a (click)&#x3D;&quot;close()&quot; [routerLink]&#x3D;&quot;[&#x27;/gravity&#x27;]&quot; disabled i18n&#x3D;&quot;Gravity&quot; mat-list-item routerLinkActive&#x3D;&quot;active&quot;&gt;Gravity&lt;/a&gt;
+      &lt;a (click)&#x3D;&quot;close()&quot; [routerLink]&#x3D;&quot;[&#x27;/radio&#x27;]&quot; disabled i18n&#x3D;&quot;Radio&quot; mat-list-item
+         routerLinkActive&#x3D;&quot;active&quot;&gt;Radio&lt;/a&gt;
+      &lt;a (click)&#x3D;&quot;close()&quot; [routerLink]&#x3D;&quot;[&#x27;/cluster&#x27;]&quot; disabled i18n&#x3D;&quot;Cluster Pro Plus&quot; mat-list-item
+         routerLinkActive&#x3D;&quot;active&quot;&gt;Cluster Pro Plus&lt;/a&gt;
+      &lt;a (click)&#x3D;&quot;close()&quot; [routerLink]&#x3D;&quot;[&#x27;/pulsar&#x27;]&quot; disabled i18n&#x3D;&quot;Pulsar&quot; mat-list-item routerLinkActive&#x3D;&quot;active&quot;&gt;Pulsar&lt;/a&gt;
+      &lt;a (click)&#x3D;&quot;close()&quot; [routerLink]&#x3D;&quot;[&#x27;/transient&#x27;]&quot; disabled i18n&#x3D;&quot;Transient&quot; mat-list-item
+         routerLinkActive&#x3D;&quot;active&quot;&gt;Transient&lt;/a&gt;
     &lt;/mat-nav-list&gt;
   &lt;/mat-sidenav&gt;
 
@@ -467,8 +486,8 @@ mat-nav-list {
 <script src="../js/libs/htmlparser.js"></script>
 <script src="../js/libs/deep-iterator.js"></script>
 <script>
-        var COMPONENT_TEMPLATE = '<div><mat-sidenav-container (backdropClick)="close()" class="tool-sidenav-container">  <mat-sidenav #toolsnav (keydown.escape)="close()">    <p class="prompt">Select a Tool</p>    <mat-nav-list>      <a (click)="close()" [routerLink]="[\'/curve\']"         i18n="Curve" mat-list-item         routerLinkActive="active">Curve</a>      <a (click)="close()" [routerLink]="[\'/moon\']"         i18n="Moon" mat-list-item         routerLinkActive="active">Moon</a>    </mat-nav-list>  </mat-sidenav>  <mat-sidenav-content>    <app-menubar [navbar]="this"></app-menubar>    <router-outlet></router-outlet>  </mat-sidenav-content></mat-sidenav-container></div>'
-    var COMPONENTS = [{'name': 'AboutComponent', 'selector': 'app-about'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'AppearanceComponent', 'selector': 'app-appearance'},{'name': 'CurveChartComponent', 'selector': 'app-curve-chart'},{'name': 'CurveChartFormComponent', 'selector': 'app-curve-chart-form'},{'name': 'CurveComponent', 'selector': 'app-curve'},{'name': 'CurveHighChartComponent', 'selector': 'app-curve-highchart'},{'name': 'CurveTableComponent', 'selector': 'app-curve-table'},{'name': 'HomeComponent', 'selector': 'app-home'},{'name': 'HonorCodePopupComponent', 'selector': 'app-honor-code-popup'},{'name': 'LineFormComponent', 'selector': 'app-line-form'},{'name': 'MenubarComponent', 'selector': 'app-menubar'},{'name': 'PageNotFoundComponent', 'selector': 'app-page-not-found'},{'name': 'SettingsComponent', 'selector': 'app-settings'},{'name': 'SimpleDataButtonComponent', 'selector': 'app-simple-data-button'},{'name': 'SimpleGraphButtonComponent', 'selector': 'app-simple-graph-button'},{'name': 'ToolsNavbarComponent', 'selector': 'app-tools-navbar'}];
+        var COMPONENT_TEMPLATE = '<div><mat-sidenav-container (backdropClick)="close()" class="tool-sidenav-container">  <mat-sidenav #toolsnav (keydown.escape)="close()">    <p class="prompt">Select a Tool</p>    <mat-nav-list>      <a (click)="close()" [routerLink]="[\'/curve\']"         i18n="Curve" mat-list-item         routerLinkActive="active">Curve</a>      <a (click)="close()" [routerLink]="[\'/moon\']"         i18n="Moon" mat-list-item         routerLinkActive="active">Moon</a>      <a (click)="close()" [routerLink]="[\'/venus\']" disabled i18n="Venus" mat-list-item         routerLinkActive="active">Venus</a>      <a (click)="close()" [routerLink]="[\'/variable\']" disabled i18n="Variable" mat-list-item         routerLinkActive="active">Variable</a>      <a (click)="close()" [routerLink]="[\'/scatter\']" disabled i18n="Scatter" mat-list-item routerLinkActive="active">Scatter</a>      <a (click)="close()" [routerLink]="[\'/spectrum\']" disabled i18n="Spectrum" mat-list-item         routerLinkActive="active">Spectrum</a>      <a (click)="close()" [routerLink]="[\'/dual\']" disabled i18n="Dual" mat-list-item         routerLinkActive="active">Dual</a>      <a (click)="close()" [routerLink]="[\'/gravity\']" disabled i18n="Gravity" mat-list-item routerLinkActive="active">Gravity</a>      <a (click)="close()" [routerLink]="[\'/radio\']" disabled i18n="Radio" mat-list-item         routerLinkActive="active">Radio</a>      <a (click)="close()" [routerLink]="[\'/cluster\']" disabled i18n="Cluster Pro Plus" mat-list-item         routerLinkActive="active">Cluster Pro Plus</a>      <a (click)="close()" [routerLink]="[\'/pulsar\']" disabled i18n="Pulsar" mat-list-item routerLinkActive="active">Pulsar</a>      <a (click)="close()" [routerLink]="[\'/transient\']" disabled i18n="Transient" mat-list-item         routerLinkActive="active">Transient</a>    </mat-nav-list>  </mat-sidenav>  <mat-sidenav-content>    <app-menubar [navbar]="this"></app-menubar>    <router-outlet></router-outlet>  </mat-sidenav-content></mat-sidenav-container></div>'
+    var COMPONENTS = [{'name': 'AboutComponent', 'selector': 'app-about'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'AppearanceComponent', 'selector': 'app-appearance'},{'name': 'CurveChartComponent', 'selector': 'app-curve-chart'},{'name': 'CurveChartFormComponent', 'selector': 'app-curve-chart-form'},{'name': 'CurveComponent', 'selector': 'app-curve'},{'name': 'CurveHighChartComponent', 'selector': 'app-curve-highchart'},{'name': 'CurveTableComponent', 'selector': 'app-curve-table'},{'name': 'HomeComponent', 'selector': 'app-home'},{'name': 'HonorCodePopupComponent', 'selector': 'app-honor-code-popup'},{'name': 'InputSliderComponent', 'selector': 'my-input-slider'},{'name': 'LineFormComponent', 'selector': 'app-line-form'},{'name': 'MenubarComponent', 'selector': 'app-menubar'},{'name': 'MoonChartFormComponent', 'selector': 'app-moon-chart-form'},{'name': 'MoonComponent', 'selector': 'app-moon'},{'name': 'MoonFormComponent', 'selector': 'app-moon-form'},{'name': 'MoonHighchartComponent', 'selector': 'app-moon-highchart'},{'name': 'MoonTableComponent', 'selector': 'app-moon-table'},{'name': 'PageNotFoundComponent', 'selector': 'app-page-not-found'},{'name': 'SettingsComponent', 'selector': 'app-settings'},{'name': 'SimpleDataButtonComponent', 'selector': 'app-simple-data-button'},{'name': 'SimpleGraphButtonComponent', 'selector': 'app-simple-graph-button'},{'name': 'ToolsNavbarComponent', 'selector': 'app-tools-navbar'}];
     var DIRECTIVES = [];
     var ACTUAL_COMPONENT = {'name': 'ToolsNavbarComponent'};
 </script>

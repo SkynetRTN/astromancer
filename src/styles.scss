@@ -57,6 +57,16 @@ $light-theme: mat.define-light-theme($light-primary, $light-accent, $light-warn)
   /* Chart background, point stroke for markers and columns etc */
   --highcharts-background-color: rgb(250, 250, 250);
 
+  .empty-series {
+    stroke: var(--highcharts-color-1);
+
+    .highcharts-area {
+      fill-opacity: 1;
+    }
+
+    fill: var(--highcharts-background-color);
+  }
+
   /*
   Neutral colors, grayscale by default. The default colors are defined by
   mixing the background-color with neutral, with a weight corresponding to
@@ -310,6 +320,16 @@ $dark-theme: mat.define-dark-theme($dark-primary, $dark-accent, $dark-warn);
 
   /* Chart background, point stroke for markers and columns etc */
   --highcharts-background-color: rgb(48, 48, 48);
+
+  .empty-series {
+    stroke: var(--highcharts-color-1);
+
+    .highcharts-area {
+      fill-opacity: 1;
+    }
+
+    fill: var(--highcharts-background-color);
+  }
 
   /* Colors for data series and points. */
   --highcharts-color-0: #2b908f;

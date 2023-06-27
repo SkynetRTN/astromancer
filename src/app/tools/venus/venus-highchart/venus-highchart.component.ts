@@ -78,7 +78,28 @@ export class VenusHighchartComponent implements AfterViewInit, OnDestroy {
       name: this.service.getDataLabel(),
       data: this.service.getDataArray(),
       type: 'scatter',
-    })
+    });
+    this.chartObject.addSeries({
+      name: "Geocentric",
+      data: this.service.getGeocentricModelDataUpper(),
+      type: 'area',
+      fillOpacity: 1,
+      enableMouseTracking: false,
+    });
+    this.chartObject.addSeries({
+      name: "Geocentric",
+      data: this.service.getGeocentricModelDataLower(),
+      type: 'area',
+      showInLegend: false,
+      fillOpacity: 1,
+      className: 'empty-series',
+      enableMouseTracking: false,
+    });
+    this.chartObject.addSeries({
+      name: "Heliocentric",
+      data: this.service.getHeliocentricModelData(),
+      type: 'line',
+    });
   }
 
   private updateData() {

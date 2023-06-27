@@ -5,6 +5,7 @@ import {
   VenusChartInfoStorageObject,
   VenusData,
   VenusDataDict,
+  VenusModels,
   VenusStorage
 } from "./venus.service.util";
 import {BehaviorSubject, Observable} from "rxjs";
@@ -33,6 +34,21 @@ export class VenusService implements MyData, ChartInfo {
     this.venusData.setData(this.venusStorage.getData());
     this.venusChartInfo.setStorageObject(this.venusStorage.getChartInfo());
   }
+
+  /** Venus Models**/
+
+  public getGeocentricModelDataUpper(): number[][] {
+    return this.limitPrecision(VenusModels.geocentric(10.15, 60, 0.445), 3);
+  }
+
+  public getGeocentricModelDataLower(): number[][] {
+    return this.limitPrecision(VenusModels.geocentric(10.15, 60, 0.8), 3);
+  }
+
+  public getHeliocentricModelData(): number[][] {
+    return this.limitPrecision(VenusModels.heliocentric(10.15, 60), 3);
+  }
+
 
   /** ChartInfo Methods **/
 
@@ -129,7 +145,18 @@ export class VenusService implements MyData, ChartInfo {
   setHighChart(highChart: Highcharts.Chart): void {
     this.highChart = highChart;
   }
+
   getHighChart(): Highcharts.Chart {
     return this.highChart;
+  }
+
+
+  private limitPrecision(dataArray: number[][], precision: number): number[][] {
+    return dataArray.map(
+      (row: number[]) => {
+        return row.map((value: number) => {
+          return value ? parseFloat(value.toFixed(precision)) : value;
+        });
+      });
   }
 }

@@ -1,6 +1,7 @@
 import {MyData} from "../shared/data/data.interface";
 import {MyStorage} from "../shared/storage/storage.interface";
 import {ChartInfo} from "../shared/charts/chart.interface";
+import {rad} from "../shared/data/utils";
 
 export interface VenusDataDict {
   diameter: number | null;
@@ -189,5 +190,82 @@ export class VenusStorage implements MyStorage {
   saveInterface(interfaceInfo: any): void {
   }
 
+}
+
+
+export class VenusModels {
+  // Angular diameter of Venus as its closest in arc-seconds.
+  private static maxA = 60;
+  // Max angular separation between Venus and Sun in radians.
+  private static beta = rad(45);
+  // Diameter of Venus in km
+  private static DV = 1.210e4;
+  // Distance from Sun to Earth in km
+  private static dE = 1.496e8;
+  // Distance from Sun to Venus in km
+  private static dV = 1.082e8;
+
+  /**
+   *  This function generates the data points for the Geocentric model.
+   *  @param start:   The start point of data points.
+   *  @param end:     The end point of data points.
+   *  @param x:       The parameter x that represents the ratio of distance of Sun to Venus versus the
+   *                  distance of Sun to Earth.
+   *  @param steps:   The number of data points to be generated. Default is 500.
+   *  @returns {Array}
+   */
+  public static geocentric(start: number, end: number, x: number, steps: number = 500): number[][] {
+    const data: number[][] = [];
+    const step = (end - start) / steps;
+
+    let a = start;
+    for (let i = 0; i < steps; i++) {
+      const d: number = (1 - x) * (1 - Math.sin(VenusModels.beta)) * VenusModels.maxA * VenusModels.dE / a;
+
+      // In geocentric model dV is a variable, so we need to override it
+      const dV: number = Math.sqrt((1 - x) * VenusModels.sqr(Math.sin(VenusModels.beta)) * VenusModels.sqr(VenusModels.dE) + x * VenusModels.sqr(VenusModels.dE) - x / (1 - x) * VenusModels.sqr(d));
+      const cosPhi: number = (VenusModels.sqr(d) + VenusModels.sqr(dV) - VenusModels.sqr(VenusModels.dE)) / (2 * d * dV);
+
+      data.push([
+        a,
+        (1 + cosPhi) / 2 > 0 ? (1 + cosPhi) / 2 : 0,
+        // How is below different from above????
+        // y: Math.max((1 + cosPhi) / 2, 0) // this doesn't work. I'm so confused
+      ]);
+      a += step;
+    }
+    return data;
+  }
+
+  /**
+   *  This function generates the data points for the Heliocentric model.
+   *  @param start:   The start point of data points.
+   *  @param end:     The end point of data points.
+   *  @param steps:   The number of data points to be generated. Default is 500.
+   *  @returns {Array}
+   */
+  public static heliocentric(start: number, end: number, steps: number = 500): number[][] {
+    const data: number[][] = [];
+    const step = (end - start) / steps;
+
+    let a = start;
+    for (let i = 0; i < steps; i++) {
+      const theta = Math.acos((VenusModels.sqr(VenusModels.DV) / VenusModels.sqr(rad(a / 3600)) - (VenusModels.sqr(VenusModels.dE) + VenusModels.sqr(VenusModels.dV))) / (2 * VenusModels.dE * VenusModels.dV));
+      const alpha = Math.atan(VenusModels.dV * Math.sin(theta) / (VenusModels.dE + VenusModels.dV * Math.cos(theta)));
+      data.push([
+        a,
+        (1 - Math.cos(Math.PI - theta + alpha)) / 2,
+        // Below is the percentage of illumination of the whole observable surface,
+        //   while the above is the actual phase calculation based on observed width over height.
+        // y: (Math.PI - theta + alpha) / Math.PI,
+      ]);
+      a += step;
+    }
+    return data;
+  }
+
+  private static sqr(x: number): number {
+    return Math.pow(x, 2);
+  }
 }
 

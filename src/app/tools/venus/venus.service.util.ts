@@ -17,12 +17,12 @@ export class VenusData implements MyData {
   }
 
   addRow(index: number, amount: number): void {
-    if (index < 0) {
-      this.dataDict.push({diameter: null, phase: null});
-    } else {
+    if (index > 0) {
       for (let i = 0; i < amount; i++) {
         this.dataDict.splice(index + i, 0, {diameter: null, phase: null});
       }
+    } else {
+      this.dataDict.push({diameter: null, phase: null});
     }
   }
 
@@ -31,10 +31,14 @@ export class VenusData implements MyData {
   }
 
   getDataArray(): (number|null)[][] {
-    return this.dataDict.map(
+    return this.dataDict.filter(
       (entry: VenusDataDict) => {
-      return [entry.diameter, entry.phase];
-    });
+        return entry.diameter !== null && entry.phase !== null;
+      }
+    ).map(
+      (entry: VenusDataDict) => {
+        return [entry.diameter, entry.phase];
+      });
   }
 
   removeRow(index: number, amount: number): void {

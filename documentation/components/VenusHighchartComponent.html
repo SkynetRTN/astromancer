@@ -441,8 +441,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="113"
-                            class="link-to-prism">src/app/tools/venus/venus-highchart/venus-highchart.component.ts:113</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="108"
+                            class="link-to-prism">src/app/tools/venus/venus-highchart/venus-highchart.component.ts:108</a></div>
                 </td>
             </tr>
 
@@ -480,8 +480,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="117"
-                            class="link-to-prism">src/app/tools/venus/venus-highchart/venus-highchart.component.ts:117</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="112"
+                            class="link-to-prism">src/app/tools/venus/venus-highchart/venus-highchart.component.ts:112</a></div>
                 </td>
             </tr>
 
@@ -519,8 +519,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="123"
-                            class="link-to-prism">src/app/tools/venus/venus-highchart/venus-highchart.component.ts:123</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="118"
+                            class="link-to-prism">src/app/tools/venus/venus-highchart/venus-highchart.component.ts:118</a></div>
                 </td>
             </tr>
 
@@ -597,8 +597,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="129"
-                            class="link-to-prism">src/app/tools/venus/venus-highchart/venus-highchart.component.ts:129</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="124"
+                            class="link-to-prism">src/app/tools/venus/venus-highchart/venus-highchart.component.ts:124</a></div>
                 </td>
             </tr>
 
@@ -636,8 +636,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="105"
-                            class="link-to-prism">src/app/tools/venus/venus-highchart/venus-highchart.component.ts:105</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="100"
+                            class="link-to-prism">src/app/tools/venus/venus-highchart/venus-highchart.component.ts:100</a></div>
                 </td>
             </tr>
 
@@ -945,17 +945,12 @@ export class VenusHighchartComponent implements AfterViewInit, OnDestroy {
       name: &quot;Geocentric&quot;,
       data: this.service.getGeocentricModelDataUpper(),
       type: &#x27;area&#x27;,
-      fillOpacity: 1,
-      enableMouseTracking: false,
     });
     this.chartObject.addSeries({
       name: &quot;Geocentric&quot;,
       data: this.service.getGeocentricModelDataLower(),
       type: &#x27;area&#x27;,
       showInLegend: false,
-      fillOpacity: 1,
-      className: &#x27;empty-series&#x27;,
-      enableMouseTracking: false,
     });
     this.chartObject.addSeries({
       name: &quot;Heliocentric&quot;,
@@ -1013,10 +1008,25 @@ export class VenusHighchartComponent implements AfterViewInit, OnDestroy {
                 <p class="comment">
                     <code>./venus-highchart.component.scss</code>
                 </p>
-                <pre class="line-numbers"><code class="language-scss">.chart-container {
+                <pre class="line-numbers"><code class="language-scss">@import url(&quot;https://code.highcharts.com/css/highcharts.css&quot;);
+
+.chart-container {
   width: 100%;
   height: 100%;
   padding: 10px;
+}
+
+:host ::ng-deep .highcharts-color-2 {
+  stroke: var(--highcharts-color-1);
+  fill: var(--highcharts-background-color);
+}
+
+:host ::ng-deep .highcharts-area {
+  fill-opacity: 1;
+}
+
+:host ::ng-deep .highcharts-series-inactive {
+  opacity: 1 !important;
 }
 </code></pre>
     </div>

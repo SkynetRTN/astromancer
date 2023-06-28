@@ -202,12 +202,12 @@ export class VenusData implements MyData {
   }
 
   addRow(index: number, amount: number): void {
-    if (index &lt; 0) {
-      this.dataDict.push({diameter: null, phase: null});
-    } else {
+    if (index &gt; 0) {
       for (let i &#x3D; 0; i &lt; amount; i++) {
         this.dataDict.splice(index + i, 0, {diameter: null, phase: null});
       }
+    } else {
+      this.dataDict.push({diameter: null, phase: null});
     }
   }
 
@@ -216,10 +216,14 @@ export class VenusData implements MyData {
   }
 
   getDataArray(): (number|null)[][] {
-    return this.dataDict.map(
+    return this.dataDict.filter(
       (entry: VenusDataDict) &#x3D;&gt; {
-      return [entry.diameter, entry.phase];
-    });
+        return entry.diameter !&#x3D;&#x3D; null &amp;&amp; entry.phase !&#x3D;&#x3D; null;
+      }
+    ).map(
+      (entry: VenusDataDict) &#x3D;&gt; {
+        return [entry.diameter, entry.phase];
+      });
   }
 
   removeRow(index: number, amount: number): void {

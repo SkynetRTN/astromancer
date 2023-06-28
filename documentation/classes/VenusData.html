@@ -376,8 +376,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="48"
-                            class="link-to-prism">src/app/tools/venus/venus.service.util.ts:48</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="52"
+                            class="link-to-prism">src/app/tools/venus/venus.service.util.ts:52</a></div>
                 </td>
             </tr>
 
@@ -413,8 +413,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="40"
-                            class="link-to-prism">src/app/tools/venus/venus.service.util.ts:40</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="44"
+                            class="link-to-prism">src/app/tools/venus/venus.service.util.ts:44</a></div>
                 </td>
             </tr>
 
@@ -494,8 +494,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="44"
-                            class="link-to-prism">src/app/tools/venus/venus.service.util.ts:44</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="48"
+                            class="link-to-prism">src/app/tools/venus/venus.service.util.ts:48</a></div>
                 </td>
             </tr>
 
@@ -572,12 +572,12 @@ export class VenusData implements MyData {
   }
 
   addRow(index: number, amount: number): void {
-    if (index &lt; 0) {
-      this.dataDict.push({diameter: null, phase: null});
-    } else {
+    if (index &gt; 0) {
       for (let i &#x3D; 0; i &lt; amount; i++) {
         this.dataDict.splice(index + i, 0, {diameter: null, phase: null});
       }
+    } else {
+      this.dataDict.push({diameter: null, phase: null});
     }
   }
 
@@ -586,10 +586,14 @@ export class VenusData implements MyData {
   }
 
   getDataArray(): (number|null)[][] {
-    return this.dataDict.map(
+    return this.dataDict.filter(
       (entry: VenusDataDict) &#x3D;&gt; {
-      return [entry.diameter, entry.phase];
-    });
+        return entry.diameter !&#x3D;&#x3D; null &amp;&amp; entry.phase !&#x3D;&#x3D; null;
+      }
+    ).map(
+      (entry: VenusDataDict) &#x3D;&gt; {
+        return [entry.diameter, entry.phase];
+      });
   }
 
   removeRow(index: number, amount: number): void {

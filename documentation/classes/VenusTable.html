@@ -147,7 +147,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="60" class="link-to-prism">src/app/tools/venus/venus-table/venus-table.component.ts:60</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="61" class="link-to-prism">src/app/tools/venus/venus-table/venus-table.component.ts:61</a></div>
                             </td>
                         </tr>
 
@@ -209,7 +209,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="60" class="link-to-prism">src/app/tools/venus/venus-table/venus-table.component.ts:60</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="61" class="link-to-prism">src/app/tools/venus/venus-table/venus-table.component.ts:61</a></div>
                         </td>
                     </tr>
 
@@ -237,7 +237,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="59" class="link-to-prism">src/app/tools/venus/venus-table/venus-table.component.ts:59</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="60" class="link-to-prism">src/app/tools/venus/venus-table/venus-table.component.ts:60</a></div>
                         </td>
                     </tr>
 
@@ -271,8 +271,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="74"
-                            class="link-to-prism">src/app/tools/venus/venus-table/venus-table.component.ts:74</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="75"
+                            class="link-to-prism">src/app/tools/venus/venus-table/venus-table.component.ts:75</a></div>
                 </td>
             </tr>
 
@@ -308,8 +308,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="66"
-                            class="link-to-prism">src/app/tools/venus/venus-table/venus-table.component.ts:66</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="67"
+                            class="link-to-prism">src/app/tools/venus/venus-table/venus-table.component.ts:67</a></div>
                 </td>
             </tr>
 
@@ -345,8 +345,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="70"
-                            class="link-to-prism">src/app/tools/venus/venus-table/venus-table.component.ts:70</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="71"
+                            class="link-to-prism">src/app/tools/venus/venus-table/venus-table.component.ts:71</a></div>
                 </td>
             </tr>
 
@@ -380,7 +380,6 @@ import {MyTable} from &quot;../../shared/tables/table-interface&quot;;
 import {HotTableRegisterer} from &quot;@handsontable/angular&quot;;
 import Handsontable from &quot;handsontable&quot;;
 
-//TODO: Table Inconsistency with add-row
 @Component({
   selector: &#x27;app-venus-table&#x27;,
   templateUrl: &#x27;./venus-table.component.html&#x27;,
@@ -388,14 +387,14 @@ import Handsontable from &quot;handsontable&quot;;
 })
 export class VenusTableComponent implements AfterViewInit, OnDestroy {
   private destroy$: Subject&lt;void&gt; &#x3D; new Subject&lt;void&gt;();
-  protected id: string &#x3D; &quot;moon-table&quot;;
-  private table: VenusTable &#x3D; new VenusTable(this.id);
-  protected colNames: string[] &#x3D; [&quot;Angular Diameter&quot;, &quot;Phase of Venus&quot;];
-  protected data: VenusDataDict[];
+  id: string &#x3D; &quot;moon-table&quot;;
+  table: VenusTable &#x3D; new VenusTable(this.id);
+  colNames: string[] &#x3D; [&quot;Angular Diameter&quot;, &quot;Phase of Venus&quot;];
+  dataSet: VenusDataDict[];
 
 
   constructor(private service: VenusService) {
-    this.data &#x3D; this.service.getData();
+    this.dataSet &#x3D; this.service.getData();
   }
 
   ngAfterViewInit(): void {
@@ -403,8 +402,8 @@ export class VenusTableComponent implements AfterViewInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(
       () &#x3D;&gt; {
-        this.data &#x3D; this.service.getData();
-        this.table.getTable().loadData(this.data);
+        this.dataSet &#x3D; this.service.getData();
+        this.table.getTable().loadData(this.dataSet);
       }
     )
   }
@@ -422,10 +421,12 @@ export class VenusTableComponent implements AfterViewInit, OnDestroy {
 
   public onRemove &#x3D; (index: number, amount: number) &#x3D;&gt; {
     this.service.removeRow(index, amount);
+    // this.service.setData(this.table.getData());
   }
 
   public onInsert &#x3D; (index: number, amount: number) &#x3D;&gt; {
     // this.service.addRow(index, amount);
+    this.service.setData(this.table.getData());
   }
 }
 

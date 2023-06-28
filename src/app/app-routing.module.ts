@@ -8,6 +8,7 @@ import {SettingsComponent} from "./shared/settings/settings.component";
 import {AppearanceComponent} from "./shared/settings/appearance/appearance.component";
 import {MoonComponent} from "./tools/moon/moon/moon.component";
 import {VenusComponent} from "./tools/venus/venus/venus.component";
+import {ScatterComponent} from "./tools/scatter/scatter/scatter.component";
 
 /**
  * Routes for the site
@@ -18,6 +19,7 @@ const TOOLS_ROUTES: Routes = [
   {path: "curve", component: CurveComponent, data: {title: getToolSiteName($localize`:curve:Curve`)}},
   {path: "moon", component: MoonComponent, data: {title: getToolSiteName($localize`:moon:Moon`)}},
   {path: "venus", component: VenusComponent, data: {title: getToolSiteName($localize`:venus:Venus`)}},
+  {path: "scatter", component: ScatterComponent, data: {title: getToolSiteName($localize`:scatter:Scatter`)}},
   {
     path: "settings", component: SettingsComponent, data: {title: getToolSiteName($localize`:settings:Settings`)},
     children: [

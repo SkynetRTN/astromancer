@@ -6,7 +6,6 @@ import {MyTable} from "../../shared/tables/table-interface";
 import {HotTableRegisterer} from "@handsontable/angular";
 import Handsontable from "handsontable";
 
-//TODO: Table Inconsistency with add-row
 @Component({
   selector: 'app-venus-table',
   templateUrl: './venus-table.component.html',
@@ -14,14 +13,14 @@ import Handsontable from "handsontable";
 })
 export class VenusTableComponent implements AfterViewInit, OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
-  protected id: string = "moon-table";
-  private table: VenusTable = new VenusTable(this.id);
-  protected colNames: string[] = ["Angular Diameter", "Phase of Venus"];
-  protected data: VenusDataDict[];
+  id: string = "moon-table";
+  table: VenusTable = new VenusTable(this.id);
+  colNames: string[] = ["Angular Diameter", "Phase of Venus"];
+  dataSet: VenusDataDict[];
 
 
   constructor(private service: VenusService) {
-    this.data = this.service.getData();
+    this.dataSet = this.service.getData();
   }
 
   ngAfterViewInit(): void {
@@ -29,8 +28,8 @@ export class VenusTableComponent implements AfterViewInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(
       () => {
-        this.data = this.service.getData();
-        this.table.getTable().loadData(this.data);
+        this.dataSet = this.service.getData();
+        this.table.getTable().loadData(this.dataSet);
       }
     )
   }
@@ -48,10 +47,12 @@ export class VenusTableComponent implements AfterViewInit, OnDestroy {
 
   public onRemove = (index: number, amount: number) => {
     this.service.removeRow(index, amount);
+    // this.service.setData(this.table.getData());
   }
 
   public onInsert = (index: number, amount: number) => {
     // this.service.addRow(index, amount);
+    this.service.setData(this.table.getData());
   }
 }
 

@@ -1,21 +1,21 @@
 <div class="container">
   <hot-table #table
-             [colHeaders]="colNames"
-             [data]="data"
              [afterChange]="onChange"
              [afterCreateRow]="onInsert"
-             [beforeRemoveRow]="onRemove"
              [allowInsertColumn]="false"
              [allowInsertRow]="true"
+             [beforeRemoveRow]="onRemove"
+             [colHeaders]="colNames"
              [contextMenu]="[
-    'undo',
-    'redo',
-    'copy',
-    '---------',
-    'row_above',
-    'row_below',
-    '---------',
-    'remove_row']"
+                'undo',
+                'redo',
+                'copy',
+                '---------',
+                'row_above',
+                'row_below',
+                '---------',
+                'remove_row']"
+             [data]="dataSet"
              [hiddenColumns]="true"
              [hotId]="id"
              [preventOverflow]="'horizontal'"

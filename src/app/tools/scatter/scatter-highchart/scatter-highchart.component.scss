@@ -1,0 +1,19 @@
+.chart-container {
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+}
+
+.LIGHT_THEME {
+  :host ::ng-deep .highcharts-color-0 {
+    stroke: orange;
+    fill: orange;
+  }
+}
+
+.DARK_THEME {
+  :host ::ng-deep .highcharts-color-0 {
+    stroke: yellow;
+    fill: yellow;
+  }
+}

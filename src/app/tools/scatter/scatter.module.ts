@@ -6,18 +6,30 @@ import {SimpleGraphButtonModule} from "../shared/simple-graph-button/simple-grap
 import {ScatterService} from "./scatter.service";
 import {ScatterTableComponent} from './scatter-table/scatter-table.component';
 import {HotTableModule} from "@handsontable/angular";
+import { ScatterHighchartComponent } from './scatter-highchart/scatter-highchart.component';
+import {HighchartsChartModule} from "highcharts-angular";
+import { ScatterChartFormComponent } from './scatter-chart-form/scatter-chart-form.component';
+import {MatLegacyFormFieldModule} from "@angular/material/legacy-form-field";
+import {MatLegacyInputModule} from "@angular/material/legacy-input";
+import {ReactiveFormsModule} from "@angular/forms";
 
 
 @NgModule({
   declarations: [
     ScatterComponent,
-    ScatterTableComponent
+    ScatterTableComponent,
+    ScatterHighchartComponent,
+    ScatterChartFormComponent
   ],
   imports: [
     CommonModule,
     SimpleDataButtonModule,
     SimpleGraphButtonModule,
-    HotTableModule
+    HotTableModule,
+    HighchartsChartModule,
+    MatLegacyFormFieldModule,
+    MatLegacyInputModule,
+    ReactiveFormsModule
   ],
   providers: [ScatterService,],
 })

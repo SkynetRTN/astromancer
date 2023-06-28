@@ -1,5 +1,7 @@
 import {MyData} from "../shared/data/data.interface";
 import {MyStorage} from "../shared/storage/storage.interface";
+import {parse} from "@babel/core";
+import {ChartInfo} from "../shared/charts/chart.interface";
 
 export interface ScatterDataDict {
   longitude: number | null;
@@ -9,6 +11,7 @@ export interface ScatterDataDict {
 
 export class ScatterData implements MyData {
   private dataDict: ScatterDataDict[];
+  private static readonly FLOAT_PRECISION = 3;
 
   constructor() {
     this.dataDict = ScatterData.getDefaultDataDict();
@@ -54,8 +57,8 @@ export class ScatterData implements MyData {
     ).map(
       (entry: ScatterDataDict) => {
         return [
-          Math.cos(entry.latitude! / 180 * Math.PI) * entry.distance! * Math.cos(entry.longitude! / 180 * Math.PI),
-          Math.cos(entry.latitude! / 180 * Math.PI) * entry.distance! * Math.sin(entry.longitude! / 180 * Math.PI),
+          parseFloat((Math.cos(entry.latitude! / 180 * Math.PI) * entry.distance! * Math.cos(entry.longitude! / 180 * Math.PI)).toFixed(ScatterData.FLOAT_PRECISION)),
+          parseFloat((Math.cos(entry.latitude! / 180 * Math.PI) * entry.distance! * Math.sin(entry.longitude! / 180 * Math.PI)).toFixed(ScatterData.FLOAT_PRECISION)),
         ];
       }
     );
@@ -72,10 +75,97 @@ export class ScatterData implements MyData {
 }
 
 
+export interface ScatterChartInfoStorageObject {
+  chartTitle: string;
+  dataLabel: string;
+  xAxisLabel: string;
+  yAxisLabel: string;
+}
+
+export class ScatterChartInfo implements ChartInfo {
+  private chartTitle: string;
+  private dataLabel: string;
+  private xAxisLabel: string;
+  private yAxisLabel: string;
+
+  constructor() {
+    this.chartTitle = ScatterChartInfo.getDefaultStorageObject().chartTitle;
+    this.dataLabel = ScatterChartInfo.getDefaultStorageObject().dataLabel;
+    this.xAxisLabel = ScatterChartInfo.getDefaultStorageObject().xAxisLabel;
+    this.yAxisLabel = ScatterChartInfo.getDefaultStorageObject().yAxisLabel;
+  }
+
+
+  public static getDefaultStorageObject(): ScatterChartInfoStorageObject {
+    return {
+      chartTitle: "Title",
+      dataLabel: "Data",
+      xAxisLabel: "x",
+      yAxisLabel: "y",
+    }
+  }
+
+  getChartTitle(): string {
+    return this.chartTitle;
+  }
+
+  getDataLabel(): string {
+    return this.dataLabel;
+  }
+
+  getStorageObject(): ScatterChartInfoStorageObject {
+    return {
+      chartTitle: this.chartTitle,
+      dataLabel: this.dataLabel,
+      xAxisLabel: this.xAxisLabel,
+      yAxisLabel: this.yAxisLabel,
+    }
+  }
+
+  getXAxisLabel(): string {
+    return this.xAxisLabel;
+  }
+
+  getYAxisLabel(): string {
+    return this.yAxisLabel;
+  }
+
+  setChartTitle(title: string): void {
+    this.chartTitle = title;
+  }
+
+  setDataLabel(data: string): void {
+    this.dataLabel = data;
+  }
+
+  setStorageObject(storageObject: ScatterChartInfoStorageObject): void {
+    this.chartTitle = storageObject.chartTitle;
+    this.dataLabel = storageObject.dataLabel;
+    this.xAxisLabel = storageObject.xAxisLabel;
+    this.yAxisLabel = storageObject.yAxisLabel;
+  }
+
+  setXAxisLabel(xAxis: string): void {
+    this.xAxisLabel = xAxis;
+  }
+
+  setYAxisLabel(yAxis: string): void {
+    this.yAxisLabel = yAxis;
+  }
+
+}
+
+
 export class ScatterStorage implements MyStorage {
   private static readonly dataKey: string = "scatterData";
+  private static readonly chartInfoKey: string = "scatterChartInfo";
 
-  getChartInfo(): any {
+  getChartInfo(): ScatterChartInfoStorageObject {
+    if (localStorage.getItem(ScatterStorage.chartInfoKey)) {
+      return JSON.parse(localStorage.getItem(ScatterStorage.chartInfoKey) as string);
+    } else {
+      return ScatterChartInfo.getDefaultStorageObject();
+    }
   }
 
   getData(): ScatterDataDict[] {
@@ -90,6 +180,7 @@ export class ScatterStorage implements MyStorage {
   }
 
   resetChartInfo(): void {
+    localStorage.setItem(ScatterStorage.chartInfoKey, JSON.stringify(ScatterChartInfo.getDefaultStorageObject()));
   }
 
   resetData(): void {
@@ -99,7 +190,8 @@ export class ScatterStorage implements MyStorage {
   resetInterface(): void {
   }
 
-  saveChartInfo(chartInfo: any): void {
+  saveChartInfo(chartInfo: ScatterChartInfoStorageObject): void {
+    localStorage.setItem(ScatterStorage.chartInfoKey, JSON.stringify(chartInfo));
   }
 
   saveData(data: ScatterDataDict[]): void {

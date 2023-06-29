@@ -1,5 +1,6 @@
 import {MyData} from "../shared/data/data.interface";
 import {MyStorage} from "../shared/storage/storage.interface";
+import {ChartInfo} from "../shared/charts/chart.interface";
 
 export interface DualDataDict {
   x1: number | null;
@@ -79,10 +80,105 @@ export class DualData implements MyData {
 }
 
 
+export interface DualChartInfoStorageObject {
+  chartTitle: string;
+  dataLabel: string[];
+  xAxisLabel: string;
+  yAxisLabel: string;
+}
+
+
+export class DualChartInfo implements ChartInfo {
+  private chartTitle: string;
+  private dataLabel: string[];
+  private xAxisLabel: string;
+  private yAxisLabel: string;
+
+  constructor() {
+    this.chartTitle = DualChartInfo.getDefaultChartInfo().chartTitle;
+    this.dataLabel = DualChartInfo.getDefaultChartInfo().dataLabel;
+    this.xAxisLabel = DualChartInfo.getDefaultChartInfo().xAxisLabel;
+    this.yAxisLabel = DualChartInfo.getDefaultChartInfo().yAxisLabel;
+  }
+
+  public static getDefaultChartInfo(): DualChartInfoStorageObject {
+    return {
+      chartTitle: "Title",
+      dataLabel: ["y1", "y2"],
+      xAxisLabel: "x",
+      yAxisLabel: "y"
+    }
+  }
+
+  getChartTitle(): string {
+    return this.chartTitle;
+  }
+
+  getDataLabel(): string {
+    return this.dataLabel.join(", ");
+  }
+
+  getStorageObject(): DualChartInfoStorageObject {
+    return {
+      chartTitle: this.chartTitle,
+      dataLabel: this.dataLabel,
+      xAxisLabel: this.xAxisLabel,
+      yAxisLabel: this.yAxisLabel
+    }
+  }
+
+  getXAxisLabel(): string {
+    return this.xAxisLabel;
+  }
+
+  getYAxisLabel(): string {
+    return this.yAxisLabel;
+  }
+
+  setChartTitle(title: string): void {
+    this.chartTitle = title;
+  }
+
+  setDataLabel(data: string): void {
+    const inputLabels = data.split(",").map((label: string) => {
+      return label.trim();
+    });
+    for (let i = 0; i < 2 && i < inputLabels.length; i++) {
+      this.dataLabel[i] = inputLabels[i];
+    }
+  }
+
+  setStorageObject(storageObject: DualChartInfoStorageObject): void {
+    this.chartTitle = storageObject.chartTitle;
+    this.dataLabel = storageObject.dataLabel;
+    this.xAxisLabel = storageObject.xAxisLabel;
+    this.yAxisLabel = storageObject.yAxisLabel;
+  }
+
+  setXAxisLabel(xAxis: string): void {
+    this.xAxisLabel = xAxis;
+  }
+
+  setYAxisLabel(yAxis: string): void {
+    this.yAxisLabel = yAxis;
+  }
+
+  getDataLabelArray() {
+    return ['x1', this.dataLabel[0], 'x2', this.dataLabel[1]];
+  }
+}
+
+
 export class DualStorage implements MyStorage {
   private dataKey: string = 'dualData';
+  private chartInfoKey: string = 'dualChartInfo';
 
-  getChartInfo(): any {
+  getChartInfo(): DualChartInfoStorageObject {
+    if (localStorage.getItem(this.chartInfoKey)) {
+      return JSON.parse(localStorage.getItem(this.chartInfoKey) as string);
+    } else {
+      return DualChartInfo.getDefaultChartInfo();
+    }
   }
 
   getData(): DualDataDict[] {
@@ -97,6 +193,7 @@ export class DualStorage implements MyStorage {
   }
 
   resetChartInfo(): void {
+    localStorage.setItem(this.chartInfoKey, JSON.stringify(DualChartInfo.getDefaultChartInfo()));
   }
 
   resetData(): void {
@@ -113,7 +210,8 @@ export class DualStorage implements MyStorage {
     localStorage.setItem(this.dataKey, JSON.stringify(data));
   }
 
-  saveInterface(interfaceInfo: any): void {
+  saveInterface(interfaceInfo: DualChartInfoStorageObject): void {
+    localStorage.setItem(this.chartInfoKey, JSON.stringify(interfaceInfo));
   }
 
 }

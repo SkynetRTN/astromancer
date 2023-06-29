@@ -14,7 +14,7 @@ import Handsontable from "handsontable";
 export class DualTableComponent {
   id: string = "moon-table";
   table: DualTable = new DualTable(this.id);
-  colNames: string[] = ["x1", "y1", "x2", "y2"];
+  colNames: string[] = this.service.getDataLabelArray();
   dataSet: DualDataDict[];
   private destroy$: Subject<void> = new Subject<void>();
 
@@ -28,6 +28,14 @@ export class DualTableComponent {
     ).subscribe(
       () => {
         this.dataSet = this.limitPrecision(this.service.getData(), 2);
+        this.table.renderTable();
+      }
+    );
+    this.service.chartInfo$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(
+      () => {
+        this.colNames = this.service.getDataLabelArray();
         this.table.renderTable();
       }
     )

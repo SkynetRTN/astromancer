@@ -28,8 +28,8 @@ export class VenusTableComponent implements AfterViewInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(
       () => {
-        this.dataSet = this.service.getData();
-        this.table.getTable().loadData(this.dataSet);
+        this.dataSet = this.limitPrecision(this.service.getData(), 3);
+        this.table.renderTable();
       }
     )
   }
@@ -51,8 +51,18 @@ export class VenusTableComponent implements AfterViewInit, OnDestroy {
   }
 
   public onInsert = (index: number, amount: number) => {
-    // this.service.addRow(index, amount);
-    this.service.setData(this.table.getData());
+    this.service.addRow(index, amount);
+  }
+
+  private limitPrecision(data: VenusDataDict[], precision: number): VenusDataDict[] {
+    return data.map(
+      (row: VenusDataDict) => {
+        return {
+          diameter: row.diameter ? parseFloat(row.diameter.toFixed(precision)) : row.diameter,
+          phase: row.phase ? parseFloat(row.phase.toFixed(precision)) : row.phase
+        }
+      }
+    );
   }
 }
 

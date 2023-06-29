@@ -38,7 +38,7 @@
   <li class="breadcrumb-item">Components</li>
   <li class="breadcrumb-item"
   >
-  CurveChartFormComponent</li>
+  DualChartFormComponent</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">
@@ -69,18 +69,12 @@
     <h3>File</h3>
 </p>
 <p class="comment">
-    <code>src/app/tools/curve/curve-chart-form/curve-chart-form.component.ts</code>
+    <code>src/app/tools/dual/dual-chart-form/dual-chart-form.component.ts</code>
 </p>
 
 
 
 
-    <p class="comment">
-        <h3>Implements</h3>
-    </p>
-    <p class="comment">
-                <code>OnDestroy</code>
-    </p>
 
 
 <section data-compodoc="block-metadata">
@@ -101,21 +95,21 @@
 
             <tr>
                 <td class="col-md-3">selector</td>
-                <td class="col-md-9"><code>app-curve-chart-form</code></td>
+                <td class="col-md-9"><code>app-dual-chart-form</code></td>
             </tr>
 
 
 
             <tr>
                 <td class="col-md-3">styleUrls</td>
-                <td class="col-md-9"><code>./curve-chart-form.component.scss</code></td>
+                <td class="col-md-9"><code>./dual-chart-form.component.scss</code></td>
             </tr>
 
 
 
             <tr>
                 <td class="col-md-3">templateUrl</td>
-                <td class="col-md-9"><code>./curve-chart-form.component.html</code></td>
+                <td class="col-md-9"><code>./dual-chart-form.component.html</code></td>
             </tr>
 
 
@@ -182,12 +176,12 @@
             <tbody>
                 <tr>
                     <td class="col-md-4">
-<code>constructor(service: <a href="../injectables/CurveService.html" target="_self">CurveService</a>)</code>
+<code>constructor(service: <a href="../injectables/DualService.html" target="_self">DualService</a>)</code>
                     </td>
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="13" class="link-to-prism">src/app/tools/curve/curve-chart-form/curve-chart-form.component.ts:13</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="13" class="link-to-prism">src/app/tools/dual/dual-chart-form/dual-chart-form.component.ts:13</a></div>
                             </td>
                         </tr>
 
@@ -208,7 +202,7 @@
                                                         <td>service</td>
                                                   
                                                         <td>
-                                                                        <code><a href="../injectables/CurveService.html" target="_self" >CurveService</a></code>
+                                                                        <code><a href="../injectables/DualService.html" target="_self" >DualService</a></code>
                                                         </td>
                                                   
                                                     <td>
@@ -255,7 +249,7 @@
             <tr>
                 <td class="col-md-4">
                     <div class="io-line">Defined in <a href="" data-line="48"
-                            class="link-to-prism">src/app/tools/curve/curve-chart-form/curve-chart-form.component.ts:48</a></div>
+                            class="link-to-prism">src/app/tools/dual/dual-chart-form/dual-chart-form.component.ts:48</a></div>
                 </td>
             </tr>
 
@@ -302,7 +296,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="13" class="link-to-prism">src/app/tools/curve/curve-chart-form/curve-chart-form.component.ts:13</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="13" class="link-to-prism">src/app/tools/dual/dual-chart-form/dual-chart-form.component.ts:13</a></div>
                         </td>
                     </tr>
 
@@ -329,7 +323,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="12" class="link-to-prism">src/app/tools/curve/curve-chart-form/curve-chart-form.component.ts:12</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="12" class="link-to-prism">src/app/tools/dual/dual-chart-form/dual-chart-form.component.ts:12</a></div>
                         </td>
                     </tr>
 
@@ -342,21 +336,21 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {Component, OnDestroy} from &#x27;@angular/core&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {Component} from &#x27;@angular/core&#x27;;
 import {FormControl, FormGroup} from &quot;@angular/forms&quot;;
-import {CurveService} from &quot;../curve.service&quot;;
 import {debounceTime, Subject, takeUntil} from &quot;rxjs&quot;;
+import {DualService} from &quot;../dual.service&quot;;
 
 @Component({
-  selector: &#x27;app-curve-chart-form&#x27;,
-  templateUrl: &#x27;./curve-chart-form.component.html&#x27;,
-  styleUrls: [&#x27;./curve-chart-form.component.scss&#x27;]
+  selector: &#x27;app-dual-chart-form&#x27;,
+  templateUrl: &#x27;./dual-chart-form.component.html&#x27;,
+  styleUrls: [&#x27;./dual-chart-form.component.scss&#x27;]
 })
-export class CurveChartFormComponent implements OnDestroy {
+export class DualChartFormComponent {
   public formGroup!: FormGroup;
   private destroy$: Subject&lt;any&gt; &#x3D; new Subject&lt;any&gt;();
 
-  constructor(private service: CurveService) {
+  constructor(private service: DualService) {
     this.service.chartInfo$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(info &#x3D;&gt; {
@@ -395,7 +389,6 @@ export class CurveChartFormComponent implements OnDestroy {
   }
 
 }
-
 </code></pre>
     </div>
 
@@ -437,7 +430,7 @@ export class CurveChartFormComponent implements OnDestroy {
 
     <div class="tab-pane fade " id="styleData">
                 <p class="comment">
-                    <code>./curve-chart-form.component.scss</code>
+                    <code>./dual-chart-form.component.scss</code>
                 </p>
                 <pre class="line-numbers"><code class="language-scss">mat-form-field {
   width: 100%;
@@ -473,7 +466,7 @@ export class CurveChartFormComponent implements OnDestroy {
         var COMPONENT_TEMPLATE = '<div><form [formGroup]="formGroup">  <div class="row">    <div class="col">      <mat-form-field>        <mat-label>Title</mat-label>        <input [formControlName]="\'chartTitle\'" matInput>      </mat-form-field>    </div>    <div class="col">      <mat-form-field>        <mat-label>Data</mat-label>        <input [formControlName]="\'dataLabel\'" matInput               placeholder="Labels for different curves are separated by comma.">      </mat-form-field>    </div>  </div>  <div class="row">    <div class="col">      <mat-form-field>        <mat-label>X Axis</mat-label>        <input [formControlName]="\'xAxisLabel\'" matInput>      </mat-form-field>    </div>    <div class="col">      <mat-form-field>        <mat-label>Y Axis</mat-label>        <input [formControlName]="\'yAxisLabel\'" matInput>      </mat-form-field>    </div>  </div></form></div>'
     var COMPONENTS = [{'name': 'AboutComponent', 'selector': 'app-about'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'AppearanceComponent', 'selector': 'app-appearance'},{'name': 'CurveChartComponent', 'selector': 'app-curve-chart'},{'name': 'CurveChartFormComponent', 'selector': 'app-curve-chart-form'},{'name': 'CurveComponent', 'selector': 'app-curve'},{'name': 'CurveHighChartComponent', 'selector': 'app-curve-highchart'},{'name': 'CurveTableComponent', 'selector': 'app-curve-table'},{'name': 'DualChartFormComponent', 'selector': 'app-dual-chart-form'},{'name': 'DualComponent', 'selector': 'app-dual'},{'name': 'DualHighchartComponent', 'selector': 'app-dual-highchart'},{'name': 'DualTableComponent', 'selector': 'app-dual-table'},{'name': 'HomeComponent', 'selector': 'app-home'},{'name': 'HonorCodePopupComponent', 'selector': 'app-honor-code-popup'},{'name': 'InputSliderComponent', 'selector': 'my-input-slider'},{'name': 'LineFormComponent', 'selector': 'app-line-form'},{'name': 'MenubarComponent', 'selector': 'app-menubar'},{'name': 'MoonChartFormComponent', 'selector': 'app-moon-chart-form'},{'name': 'MoonComponent', 'selector': 'app-moon'},{'name': 'MoonFormComponent', 'selector': 'app-moon-form'},{'name': 'MoonHighchartComponent', 'selector': 'app-moon-highchart'},{'name': 'MoonTableComponent', 'selector': 'app-moon-table'},{'name': 'PageNotFoundComponent', 'selector': 'app-page-not-found'},{'name': 'ScatterChartFormComponent', 'selector': 'app-scatter-chart-form'},{'name': 'ScatterComponent', 'selector': 'app-scatter'},{'name': 'ScatterFormComponent', 'selector': 'app-scatter-form'},{'name': 'ScatterHighchartComponent', 'selector': 'app-scatter-highchart'},{'name': 'ScatterTableComponent', 'selector': 'app-scatter-table'},{'name': 'SettingsComponent', 'selector': 'app-settings'},{'name': 'SimpleDataButtonComponent', 'selector': 'app-simple-data-button'},{'name': 'SimpleGraphButtonComponent', 'selector': 'app-simple-graph-button'},{'name': 'ToolsNavbarComponent', 'selector': 'app-tools-navbar'},{'name': 'VenusChartFormComponent', 'selector': 'app-venus-chart-form'},{'name': 'VenusComponent', 'selector': 'app-venus'},{'name': 'VenusHighchartComponent', 'selector': 'app-venus-highchart'},{'name': 'VenusTableComponent', 'selector': 'app-venus-table'}];
     var DIRECTIVES = [];
-    var ACTUAL_COMPONENT = {'name': 'CurveChartFormComponent'};
+    var ACTUAL_COMPONENT = {'name': 'DualChartFormComponent'};
 </script>
 <script src="../js/tree.js"></script>
 
@@ -519,7 +512,7 @@ export class CurveChartFormComponent implements OnDestroy {
        <script>
             var COMPODOC_CURRENT_PAGE_DEPTH = 1;
             var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
-            var COMPODOC_CURRENT_PAGE_URL = 'CurveChartFormComponent.html';
+            var COMPODOC_CURRENT_PAGE_URL = 'DualChartFormComponent.html';
             var MAX_SEARCH_RESULTS = 15;
        </script>
 

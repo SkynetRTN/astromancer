@@ -28,13 +28,13 @@
 <title>cluster_VenusModule_declarations</title>
 <polygon fill="none" stroke="black" points="548,-78 548,-130 1235,-130 1235,-78 548,-78"/>
 </g>
-<g id="clust7" class="cluster">
-<title>cluster_VenusModule_imports</title>
-<polygon fill="none" stroke="black" points="170,-78 170,-130 540,-130 540,-78 170,-78"/>
-</g>
 <g id="clust10" class="cluster">
 <title>cluster_VenusModule_providers</title>
-<polygon fill="none" stroke="black" points="16,-78 16,-130 162,-130 162,-78 16,-78"/>
+<polygon fill="none" stroke="black" points="394,-78 394,-130 540,-130 540,-78 394,-78"/>
+</g>
+<g id="clust7" class="cluster">
+<title>cluster_VenusModule_imports</title>
+<polygon fill="none" stroke="black" points="16,-78 16,-130 386,-130 386,-78 16,-78"/>
 </g>
 <!-- VenusChartFormComponent -->
 <g id="node1" class="node">
@@ -93,38 +93,38 @@
 <!-- SimpleDataButtonModule -->
 <g id="node6" class="node">
 <title>SimpleDataButtonModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="531.76,-122 528.76,-126 507.76,-126 504.76,-122 368.24,-122 368.24,-86 531.76,-86 531.76,-122"/>
-<text text-anchor="middle" x="450" y="-99.8" font-family="Times,serif" font-size="14.00">SimpleDataButtonModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="377.76,-122 374.76,-126 353.76,-126 350.76,-122 214.24,-122 214.24,-86 377.76,-86 377.76,-122"/>
+<text text-anchor="middle" x="296" y="-99.8" font-family="Times,serif" font-size="14.00">SimpleDataButtonModule</text>
 </g>
 <!-- SimpleDataButtonModule&#45;&gt;VenusModule -->
 <g id="edge5" class="edge">
 <title>SimpleDataButtonModule&#45;&gt;VenusModule</title>
-<path fill="none" stroke="black" d="M450,-122.03C450,-138.4 450,-160 450,-160 450,-160 572.24,-160 572.24,-160"/>
-<polygon fill="black" stroke="black" points="572.24,-163.5 582.24,-160 572.24,-156.5 572.24,-163.5"/>
+<path fill="none" stroke="black" d="M296,-122.11C296,-141.34 296,-169 296,-169 296,-169 572.15,-169 572.15,-169"/>
+<polygon fill="black" stroke="black" points="572.15,-172.5 582.15,-169 572.15,-165.5 572.15,-172.5"/>
 </g>
 <!-- SimpleGraphButtonModule -->
 <g id="node7" class="node">
 <title>SimpleGraphButtonModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="350.32,-122 347.32,-126 326.32,-126 323.32,-122 177.68,-122 177.68,-86 350.32,-86 350.32,-122"/>
-<text text-anchor="middle" x="264" y="-99.8" font-family="Times,serif" font-size="14.00">SimpleGraphButtonModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="196.32,-122 193.32,-126 172.32,-126 169.32,-122 23.68,-122 23.68,-86 196.32,-86 196.32,-122"/>
+<text text-anchor="middle" x="110" y="-99.8" font-family="Times,serif" font-size="14.00">SimpleGraphButtonModule</text>
 </g>
 <!-- SimpleGraphButtonModule&#45;&gt;VenusModule -->
 <g id="edge6" class="edge">
 <title>SimpleGraphButtonModule&#45;&gt;VenusModule</title>
-<path fill="none" stroke="black" d="M264,-122.11C264,-141.34 264,-169 264,-169 264,-169 572.15,-169 572.15,-169"/>
-<polygon fill="black" stroke="black" points="572.15,-172.5 582.15,-169 572.15,-165.5 572.15,-172.5"/>
+<path fill="none" stroke="black" d="M110,-122.29C110,-144.21 110,-178 110,-178 110,-178 572.01,-178 572.01,-178"/>
+<polygon fill="black" stroke="black" points="572.01,-181.5 582.01,-178 572.01,-174.5 572.01,-181.5"/>
 </g>
 <!-- VenusService -->
 <g id="node8" class="node">
 <title>VenusService</title>
-<ellipse fill="#fdb462" stroke="black" cx="89" cy="-104" rx="64.83" ry="18"/>
-<text text-anchor="middle" x="89" y="-99.8" font-family="Times,serif" font-size="14.00">VenusService</text>
+<ellipse fill="#fdb462" stroke="black" cx="467" cy="-104" rx="64.83" ry="18"/>
+<text text-anchor="middle" x="467" y="-99.8" font-family="Times,serif" font-size="14.00">VenusService</text>
 </g>
 <!-- VenusService&#45;&gt;VenusModule -->
 <g id="edge7" class="edge">
 <title>VenusService&#45;&gt;VenusModule</title>
-<path fill="none" stroke="black" d="M89,-122.29C89,-144.21 89,-178 89,-178 89,-178 571.99,-178 571.99,-178"/>
-<polygon fill="black" stroke="black" points="571.99,-181.5 581.99,-178 571.99,-174.5 571.99,-181.5"/>
+<path fill="none" stroke="black" d="M467,-122.03C467,-138.4 467,-160 467,-160 467,-160 571.98,-160 571.98,-160"/>
+<polygon fill="black" stroke="black" points="571.98,-163.5 581.98,-160 571.98,-156.5 571.98,-163.5"/>
 </g>
 </g>
 </svg>

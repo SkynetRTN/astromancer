@@ -159,6 +159,46 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 </li>
                             </li>
                             <li class="link">
+                                <a href="modules/DualModule.html" data-type="entity-link" >DualModule</a>
+                                    <li class="chapter inner">
+                                        <div class="simple menu-toggler" data-bs-toggle="collapse" ${ isNormalMode ?
+                                            'data-bs-target="#components-links-module-DualModule-92b339f98518dd39bfce9f0cd91e719477069142ff21bc93a8ef1cd3e265f01dbfc84007b0b8998bed908877e1d5c9176942d8b4660727c93b9388acf0e85e2a"' : 'data-bs-target="#xs-components-links-module-DualModule-92b339f98518dd39bfce9f0cd91e719477069142ff21bc93a8ef1cd3e265f01dbfc84007b0b8998bed908877e1d5c9176942d8b4660727c93b9388acf0e85e2a"' }>
+                                            <span class="icon ion-md-cog"></span>
+                                            <span>Components</span>
+                                            <span class="icon ion-ios-arrow-down"></span>
+                                        </div>
+                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-DualModule-92b339f98518dd39bfce9f0cd91e719477069142ff21bc93a8ef1cd3e265f01dbfc84007b0b8998bed908877e1d5c9176942d8b4660727c93b9388acf0e85e2a"' :
+                                            'id="xs-components-links-module-DualModule-92b339f98518dd39bfce9f0cd91e719477069142ff21bc93a8ef1cd3e265f01dbfc84007b0b8998bed908877e1d5c9176942d8b4660727c93b9388acf0e85e2a"' }>
+                                            <li class="link">
+                                                <a href="components/DualChartFormComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >DualChartFormComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/DualComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >DualComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/DualHighchartComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >DualHighchartComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/DualTableComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >DualTableComponent</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                <li class="chapter inner">
+                                    <div class="simple menu-toggler" data-bs-toggle="collapse" ${ isNormalMode ?
+                                        'data-bs-target="#injectables-links-module-DualModule-92b339f98518dd39bfce9f0cd91e719477069142ff21bc93a8ef1cd3e265f01dbfc84007b0b8998bed908877e1d5c9176942d8b4660727c93b9388acf0e85e2a"' : 'data-bs-target="#xs-injectables-links-module-DualModule-92b339f98518dd39bfce9f0cd91e719477069142ff21bc93a8ef1cd3e265f01dbfc84007b0b8998bed908877e1d5c9176942d8b4660727c93b9388acf0e85e2a"' }>
+                                        <span class="icon ion-md-arrow-round-down"></span>
+                                        <span>Injectables</span>
+                                        <span class="icon ion-ios-arrow-down"></span>
+                                    </div>
+                                    <ul class="links collapse" ${ isNormalMode ? 'id="injectables-links-module-DualModule-92b339f98518dd39bfce9f0cd91e719477069142ff21bc93a8ef1cd3e265f01dbfc84007b0b8998bed908877e1d5c9176942d8b4660727c93b9388acf0e85e2a"' :
+                                        'id="xs-injectables-links-module-DualModule-92b339f98518dd39bfce9f0cd91e719477069142ff21bc93a8ef1cd3e265f01dbfc84007b0b8998bed908877e1d5c9176942d8b4660727c93b9388acf0e85e2a"' }>
+                                        <li class="link">
+                                            <a href="injectables/DualService.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >DualService</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </li>
+                            <li class="link">
                                 <a href="modules/HonorCodePopupModule.html" data-type="entity-link" >HonorCodePopupModule</a>
                                     <li class="chapter inner">
                                         <div class="simple menu-toggler" data-bs-toggle="collapse" ${ isNormalMode ?
@@ -353,13 +393,13 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 <a href="modules/ToolsNavbarModule.html" data-type="entity-link" >ToolsNavbarModule</a>
                                     <li class="chapter inner">
                                         <div class="simple menu-toggler" data-bs-toggle="collapse" ${ isNormalMode ?
-                                            'data-bs-target="#components-links-module-ToolsNavbarModule-e6917293430f396cd668fc5544dc228544834ef8ee8448e8ec1d9782eb0b76fa1945d96eb34c5f758ffdaf8578abb70f1b2760d374f16ace68990017e2bbcc40"' : 'data-bs-target="#xs-components-links-module-ToolsNavbarModule-e6917293430f396cd668fc5544dc228544834ef8ee8448e8ec1d9782eb0b76fa1945d96eb34c5f758ffdaf8578abb70f1b2760d374f16ace68990017e2bbcc40"' }>
+                                            'data-bs-target="#components-links-module-ToolsNavbarModule-7545d915670a09e30458ae2ad60a860e772cdd3386e2e42eadca6c3e5c14303ace69c1b80c32e88018f98fd367e616c6b6fd3336892b5746f48c35db3d1d9ba7"' : 'data-bs-target="#xs-components-links-module-ToolsNavbarModule-7545d915670a09e30458ae2ad60a860e772cdd3386e2e42eadca6c3e5c14303ace69c1b80c32e88018f98fd367e616c6b6fd3336892b5746f48c35db3d1d9ba7"' }>
                                             <span class="icon ion-md-cog"></span>
                                             <span>Components</span>
                                             <span class="icon ion-ios-arrow-down"></span>
                                         </div>
-                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-ToolsNavbarModule-e6917293430f396cd668fc5544dc228544834ef8ee8448e8ec1d9782eb0b76fa1945d96eb34c5f758ffdaf8578abb70f1b2760d374f16ace68990017e2bbcc40"' :
-                                            'id="xs-components-links-module-ToolsNavbarModule-e6917293430f396cd668fc5544dc228544834ef8ee8448e8ec1d9782eb0b76fa1945d96eb34c5f758ffdaf8578abb70f1b2760d374f16ace68990017e2bbcc40"' }>
+                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-ToolsNavbarModule-7545d915670a09e30458ae2ad60a860e772cdd3386e2e42eadca6c3e5c14303ace69c1b80c32e88018f98fd367e616c6b6fd3336892b5746f48c35db3d1d9ba7"' :
+                                            'id="xs-components-links-module-ToolsNavbarModule-7545d915670a09e30458ae2ad60a860e772cdd3386e2e42eadca6c3e5c14303ace69c1b80c32e88018f98fd367e616c6b6fd3336892b5746f48c35db3d1d9ba7"' }>
                                             <li class="link">
                                                 <a href="components/ToolsNavbarComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >ToolsNavbarComponent</a>
                                             </li>
@@ -442,6 +482,18 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             </li>
                             <li class="link">
                                 <a href="classes/DefaultAppearanceSettings.html" data-type="entity-link" >DefaultAppearanceSettings</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/DualChartInfo.html" data-type="entity-link" >DualChartInfo</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/DualData.html" data-type="entity-link" >DualData</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/DualStorage.html" data-type="entity-link" >DualStorage</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/DualTable.html" data-type="entity-link" >DualTable</a>
                             </li>
                             <li class="link">
                                 <a href="classes/MoonChartInfo.html" data-type="entity-link" >MoonChartInfo</a>
@@ -528,6 +580,12 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             </li>
                             <li class="link">
                                 <a href="interfaces/CurveInterfaceStorageObject.html" data-type="entity-link" >CurveInterfaceStorageObject</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/DualChartInfoStorageObject.html" data-type="entity-link" >DualChartInfoStorageObject</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/DualDataDict.html" data-type="entity-link" >DualDataDict</a>
                             </li>
                             <li class="link">
                                 <a href="interfaces/InputSliderValue.html" data-type="entity-link" >InputSliderValue</a>

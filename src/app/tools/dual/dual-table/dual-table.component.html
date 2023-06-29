@@ -1,0 +1,30 @@
+<div class="container">
+  <hot-table #table
+             [afterChange]="onChange"
+             [afterCreateRow]="onInsert"
+             [allowInsertColumn]="false"
+             [allowInsertRow]="true"
+             [beforeRemoveRow]="onRemove"
+             [colHeaders]="colNames"
+             [contextMenu]="[
+                'undo',
+                'redo',
+                'copy',
+                '---------',
+                'row_above',
+                'row_below',
+                '---------',
+                'remove_row']"
+             [data]="dataSet"
+             [hiddenColumns]="true"
+             [hotId]="id"
+             [preventOverflow]="'horizontal'"
+             [renderAllRows]="false"
+             [rowHeaders]="true"
+             [stretchH]="'all'"
+             [type]="'numeric'"
+             id="table"
+             licenseKey="non-commercial-and-evaluation">
+  </hot-table>
+</div>
+

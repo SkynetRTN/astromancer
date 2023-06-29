@@ -30,7 +30,7 @@ export class HonorCodePopupComponent implements OnInit {
 
   public submit() {
     if (this.form.valid) {
-      this.matDialogRef.close();
+      this.matDialogRef.close(this.form.value.signature);
     }
   }
 

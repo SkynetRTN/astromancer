@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import {ChartAction, TableAction} from "../../shared/types/actions";
+import {Component} from '@angular/core';
+import {ChartAction} from "../../shared/types/actions";
 import {HonorCodePopupService} from "../../shared/honor-code-popup/honor-code-popup.service";
 import {HonorCodeChartService} from "../../shared/honor-code-popup/honor-code-chart.service";
 

@@ -10,13 +10,16 @@ import {DualChartFormComponent} from './dual-chart-form/dual-chart-form.componen
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatLegacyFormFieldModule} from "@angular/material/legacy-form-field";
 import {MatLegacyInputModule} from "@angular/material/legacy-input";
+import {DualHighchartComponent} from './dual-highchart/dual-highchart.component';
+import {HighchartsChartModule} from "highcharts-angular";
 
 
 @NgModule({
   declarations: [
     DualComponent,
     DualTableComponent,
-    DualChartFormComponent
+    DualChartFormComponent,
+    DualHighchartComponent
   ],
   imports: [
     CommonModule,
@@ -26,7 +29,8 @@ import {MatLegacyInputModule} from "@angular/material/legacy-input";
     FormsModule,
     MatLegacyFormFieldModule,
     MatLegacyInputModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HighchartsChartModule
   ],
   providers: [DualService]
 })

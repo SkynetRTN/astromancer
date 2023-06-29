@@ -3,6 +3,7 @@ import {DualChartInfo, DualChartInfoStorageObject, DualData, DualDataDict, DualS
 import {BehaviorSubject, Observable} from "rxjs";
 import {MyData} from "../shared/data/data.interface";
 import {ChartInfo} from "../shared/charts/chart.interface";
+import * as Highcharts from "highcharts";
 
 @Injectable()
 export class DualService implements MyData, ChartInfo {
@@ -16,6 +17,8 @@ export class DualService implements MyData, ChartInfo {
   public data$: Observable<DualData> = this.dataSubject.asObservable();
   private chartInfoSubject: BehaviorSubject<DualChartInfo> = new BehaviorSubject<DualChartInfo>(this.dualChartInfo);
   public chartInfo$: Observable<DualChartInfo> = this.chartInfoSubject.asObservable();
+
+  private highChart!: Highcharts.Chart;
 
   constructor() {
     this.dualData.setData(this.dualStorage.getData());
@@ -119,4 +122,13 @@ export class DualService implements MyData, ChartInfo {
     this.dualStorage.saveData(this.dualData.getData());
     this.dataSubject.next(this.dualData);
   }
+
+  setHighChart(highChart: Highcharts.Chart) {
+    this.highChart = highChart;
+  }
+
+  getHighChart(): Highcharts.Chart {
+    return this.highChart;
+  }
+
 }

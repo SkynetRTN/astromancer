@@ -21,7 +21,7 @@ export class DualComponent {
         this.service.addRow(-1, 1);
       } else if (action.action === "saveGraph") {
         this.honorCodeService.honored().subscribe((name: string) => {
-          // this.chartService.saveImageHighChartOffline(this.service.getHighChart(), "venus", name);
+          this.chartService.saveImageHighChartOffline(this.service.getHighChart(), "dual", name);
         })
       } else if (action.action === "resetData") {
         this.service.resetData();

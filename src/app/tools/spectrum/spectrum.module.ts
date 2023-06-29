@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SpectrumComponent } from './spectrum/spectrum.component';
+import {SimpleDataButtonModule} from "../shared/simple-data-button/simple-data-button.component";
+import {SimpleGraphButtonModule} from "../shared/simple-graph-button/simple-graph-button.component";
 
 
 
@@ -9,7 +11,9 @@ import { SpectrumComponent } from './spectrum/spectrum.component';
     SpectrumComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    SimpleDataButtonModule,
+    SimpleGraphButtonModule
   ]
 })
 export class SpectrumModule { }

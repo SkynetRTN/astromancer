@@ -4,17 +4,21 @@ import { DualComponent } from './dual/dual.component';
 import {SimpleDataButtonModule} from "../shared/simple-data-button/simple-data-button.component";
 import {SimpleGraphButtonModule} from "../shared/simple-graph-button/simple-graph-button.component";
 import {DualService} from "./dual.service";
+import { DualTableComponent } from './dual-table/dual-table.component';
+import {HotTableModule} from "@handsontable/angular";
 
 
 
 @NgModule({
   declarations: [
-    DualComponent
+    DualComponent,
+    DualTableComponent
   ],
   imports: [
     CommonModule,
     SimpleDataButtonModule,
-    SimpleGraphButtonModule
+    SimpleGraphButtonModule,
+    HotTableModule
   ],
   providers: [DualService]
 })

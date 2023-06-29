@@ -44,4 +44,10 @@ export class DualService implements MyData{
     this.dualStorage.saveData(this.dualData.getData());
     this.dataSubject.next(this.dualData);
   }
+
+  resetData() {
+    this.dualData.setData(DualData.getDefaultData());
+    this.dualStorage.saveData(this.dualData.getData());
+    this.dataSubject.next(this.dualData);
+  }
 }

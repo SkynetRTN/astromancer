@@ -6,18 +6,31 @@ import {SimpleGraphButtonModule} from "../shared/simple-graph-button/simple-grap
 import {SpectrumTableComponent} from './spectrum-table/spectrum-table.component';
 import {HotTableModule} from "@handsontable/angular";
 import {SpectrumService} from "./spectrum.service";
+import {SpectrumFormComponent} from './spectrum-form/spectrum-form.component';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {MatLegacyFormFieldModule} from "@angular/material/legacy-form-field";
+import {MatLegacyOptionModule} from "@angular/material/legacy-core";
+import {MatLegacySelectModule} from "@angular/material/legacy-select";
+import {MatLegacySlideToggleModule} from "@angular/material/legacy-slide-toggle";
 
 
 @NgModule({
   declarations: [
     SpectrumComponent,
-    SpectrumTableComponent
+    SpectrumTableComponent,
+    SpectrumFormComponent
   ],
   imports: [
     CommonModule,
     SimpleDataButtonModule,
     SimpleGraphButtonModule,
-    HotTableModule
+    HotTableModule,
+    FormsModule,
+    MatLegacyFormFieldModule,
+    MatLegacyOptionModule,
+    MatLegacySelectModule,
+    MatLegacySlideToggleModule,
+    ReactiveFormsModule
   ],
   providers: [SpectrumService]
 })

@@ -72,8 +72,41 @@ export class SpectrumData implements MyData {
 }
 
 
+export enum SpectrumOptions {
+  ONE = "Channel 1",
+  TWO = "Channel 2",
+}
+
+export interface SpectrumInterface {
+  getChannel(): SpectrumOptions;
+
+  setChannel(channel: SpectrumOptions): void;
+}
+
+export class SpectrumInterfaceImpl implements SpectrumInterface {
+  private channel: SpectrumOptions;
+
+  constructor() {
+    this.channel = SpectrumOptions.ONE;
+  }
+
+  public static getDefaultChannel(): SpectrumOptions {
+    return SpectrumOptions.ONE;
+  }
+
+  getChannel(): SpectrumOptions {
+    return this.channel;
+  }
+
+  setChannel(channel: SpectrumOptions): void {
+    this.channel = channel;
+  }
+}
+
+
 export class SpectrumStorage implements MyStorage {
   private static readonly dataKey: string = 'spectrumData';
+  private static readonly interfaceKey: string = 'spectrumInterface';
 
   getChartInfo(): any {
   }
@@ -86,7 +119,12 @@ export class SpectrumStorage implements MyStorage {
     }
   }
 
-  getInterface(): any {
+  getInterface(): SpectrumOptions {
+    if (localStorage.getItem(SpectrumStorage.interfaceKey)) {
+      return JSON.parse(localStorage.getItem(SpectrumStorage.interfaceKey)!) as SpectrumOptions;
+    } else {
+      return SpectrumInterfaceImpl.getDefaultChannel();
+    }
   }
 
   resetChartInfo(): void {
@@ -97,6 +135,7 @@ export class SpectrumStorage implements MyStorage {
   }
 
   resetInterface(): void {
+    localStorage.setItem(SpectrumStorage.interfaceKey, JSON.stringify(SpectrumInterfaceImpl.getDefaultChannel()));
   }
 
   saveChartInfo(chartInfo: any): void {
@@ -106,7 +145,8 @@ export class SpectrumStorage implements MyStorage {
     localStorage.setItem(SpectrumStorage.dataKey, JSON.stringify(data));
   }
 
-  saveInterface(interfaceInfo: any): void {
+  saveInterface(interfaceInfo: SpectrumOptions): void {
+    localStorage.setItem(SpectrumStorage.interfaceKey, JSON.stringify(interfaceInfo));
   }
 
 }

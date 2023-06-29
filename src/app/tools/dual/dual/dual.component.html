@@ -1,1 +1,22 @@
-<p>dual works!</p>
+<div class="row container-row">
+  <div class="col-4">
+    <div class="row data-table-row">
+<!--      <app-venus-table></app-venus-table>-->
+    </div>
+    <div class="row data-button-row">
+      <app-simple-data-button (tableUserActionObs$)="actionHandler($event)">
+      </app-simple-data-button>
+    </div>
+  </div>
+  <div class="col-8">
+    <div class="row chart-row">
+<!--      <app-venus-highchart></app-venus-highchart>-->
+    </div>
+    <div class="row chart-form-row">
+<!--      <app-venus-chart-form></app-venus-chart-form>-->
+    </div>
+    <div class="row chart-button-row">
+      <app-simple-graph-button (chartUserActionObs$)="actionHandler($event)"></app-simple-graph-button>
+    </div>
+  </div>
+</div>

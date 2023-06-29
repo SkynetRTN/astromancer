@@ -53,6 +53,7 @@ export class ScatterHighchartComponent implements AfterViewInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(() => {
       this.updateData();
+      this.adjustScale();
     });
     this.service.chartInfo$.pipe(
       takeUntil(this.destroy$)
@@ -67,6 +68,7 @@ export class ScatterHighchartComponent implements AfterViewInit, OnDestroy {
     ).subscribe(() => {
       this.updateModel();
       this.updateCross();
+      this.adjustScale();
     })
   }
 
@@ -167,6 +169,41 @@ export class ScatterHighchartComponent implements AfterViewInit, OnDestroy {
     this.chartOptions.yAxis = {
       title: {text: this.service.getYAxisLabel()}
     };
+  }
+
+  private adjustScale(): void {
+    const data: (number | null)[][] = this.service.getDataArray().filter(d => d[0] !== null && d[1] !== null);
+    let minX: number = Math.min(...data.map(d => d[0]!));
+    let maxX: number = Math.max(...data.map(d => d[0]!));
+    let minY: number = Math.min(...data.map(d => d[1]!));
+    let maxY: number = Math.max(...data.map(d => d[1]!));
+
+    // Adjusting the min/max values to avoid having data points on the very edge
+    minX -= 3;
+    maxX += 3;
+    minY -= 3;
+    maxY += 3;
+
+    // This is the ratio of the length of X axis over the length of Y axis
+    const screenRatio = this.chartObject.plotWidth / this.chartObject.plotHeight;
+    let dataRatio = (maxX - minX) / (maxY - minY);
+
+    if (dataRatio < screenRatio) {
+      let m = (maxX + minX) / 2;
+      let d = (maxX - minX) / 2;
+      maxX = m + d / dataRatio * screenRatio;
+      minX = m - d / dataRatio * screenRatio;
+    } else {
+      let m = (maxY + minY) / 2;
+      let d = (maxY - minY) / 2;
+      maxY = m + d * dataRatio / screenRatio;
+      minY = m - d * dataRatio / screenRatio;
+    }
+
+    this.chartObject.xAxis[0].setExtremes(Math.floor(minX), Math.ceil(maxX));
+    this.chartObject.yAxis[0].setExtremes(Math.floor(minY), Math.ceil(maxY));
+
+
   }
 
 }

@@ -28,7 +28,7 @@ export class ScatterComponent {
       } else if (action.action === "resetChartInfo") {
         this.service.resetChartInfo();
       } else if (action.action === "resetModel") {
-        // this.service.resetInterface();
+        this.service.resetModel();
       }
     })
   }

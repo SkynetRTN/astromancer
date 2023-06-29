@@ -1,0 +1,12 @@
+<div class="container">
+  <my-input-slider [name]="'distance'" [label]="'Distance (kpc)'"
+                   [minValue]="0" [maxValue]="20" [stepValue]="0.01"
+                   [defaultValue]="0" [numOverride]="true"
+                   [value$]="distanceSubject" (value)="onChange($event)"
+  ></my-input-slider>
+  <my-input-slider [name]="'diameter'" [label]="'Diameter (kpc)'"
+                   [minValue]="0" [maxValue]="50" [stepValue]="0.01"
+                   [defaultValue]="10" [numOverride]="true"
+                    [value$]="diameterSubject" (value)="onChange($event)"
+  ></my-input-slider>
+</div>

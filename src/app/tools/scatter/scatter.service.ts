@@ -4,18 +4,23 @@ import {
   ScatterChartInfoStorageObject,
   ScatterData,
   ScatterDataDict,
+  ScatterInterfaceStorageObject,
+  ScatterModel,
+  ScatterModelInterface,
   ScatterStorage
 } from "./scatter.service.util";
 import {MyData} from "../shared/data/data.interface";
 import {BehaviorSubject} from "rxjs";
 import * as Highcharts from "highcharts";
 import {ChartInfo} from "../shared/charts/chart.interface";
+import {UpdateSource} from "../moon/moon.service.util";
 
 @Injectable()
-export class ScatterService implements MyData, ChartInfo {
+export class ScatterService implements MyData, ChartInfo, ScatterModel {
 
   private scatterData: ScatterData = new ScatterData();
   private scatterChartInfo: ScatterChartInfo = new ScatterChartInfo();
+  private scatterInterface: ScatterModelInterface = new ScatterModelInterface();
 
   private scatterStorage: ScatterStorage = new ScatterStorage();
 
@@ -25,10 +30,54 @@ export class ScatterService implements MyData, ChartInfo {
   public data$ = this.dataSubject.asObservable();
   private chartInfoSubject: BehaviorSubject<ScatterChartInfo> = new BehaviorSubject<ScatterChartInfo>(this.scatterChartInfo);
   public chartInfo$ = this.chartInfoSubject.asObservable();
+  private interfaceSubject: BehaviorSubject<UpdateSource> = new BehaviorSubject<UpdateSource>(UpdateSource.INIT);
+  public interface$ = this.interfaceSubject.asObservable();
 
   constructor() {
     this.scatterData.setData(this.scatterStorage.getData());
     this.scatterChartInfo.setStorageObject(this.scatterStorage.getChartInfo());
+    this.scatterInterface.setModelStorageObject(this.scatterStorage.getInterface());
+  }
+
+  /** ScatterModel Methods**/
+
+  getDiameter(): number {
+    return this.scatterInterface.getDiameter();
+  }
+
+  getDistance(): number {
+    return this.scatterInterface.getDistance();
+  }
+
+  getModel(): number[][] {
+    return this.scatterInterface.getModel();
+  }
+
+  getModelStorageObject(): ScatterInterfaceStorageObject {
+    return this.scatterInterface.getModelStorageObject();
+  }
+
+  setDiameter(diameter: number): void {
+    this.scatterInterface.setDiameter(diameter);
+    this.scatterStorage.saveInterface(this.scatterInterface.getModelStorageObject());
+    this.interfaceSubject.next(UpdateSource.INTERFACE);
+  }
+
+  setDistance(distance: number): void {
+    this.scatterInterface.setDistance(distance);
+    this.scatterStorage.saveInterface(this.scatterInterface.getModelStorageObject());
+    this.interfaceSubject.next(UpdateSource.INTERFACE);
+  }
+
+  setModelStorageObject(storageObject: ScatterInterfaceStorageObject): void {
+    this.scatterInterface.setModelStorageObject(storageObject);
+    this.interfaceSubject.next(UpdateSource.INTERFACE);
+  }
+
+  resetModel(): void {
+    this.scatterInterface.setModelStorageObject(ScatterModelInterface.getDefaultStorageObject());
+    this.scatterStorage.saveInterface(this.scatterInterface.getModelStorageObject());
+    this.interfaceSubject.next(UpdateSource.RESET);
   }
 
 

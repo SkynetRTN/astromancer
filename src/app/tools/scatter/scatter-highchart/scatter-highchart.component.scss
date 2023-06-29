@@ -9,11 +9,31 @@
     stroke: orange;
     fill: orange;
   }
+
+  :host ::ng-deep .highcharts-color-2 {
+    stroke: black;
+    fill: black;
+  }
+
+  :host ::ng-deep .highcharts-color-3 {
+    stroke: grey;
+    fill: grey;
+  }
 }
 
 .DARK_THEME {
   :host ::ng-deep .highcharts-color-0 {
     stroke: yellow;
     fill: yellow;
+  }
+
+  :host ::ng-deep .highcharts-color-2 {
+    stroke: white;
+    fill: white;
+  }
+
+  :host ::ng-deep .highcharts-color-3 {
+    stroke: lightgray;
+    fill: lightgray;
   }
 }

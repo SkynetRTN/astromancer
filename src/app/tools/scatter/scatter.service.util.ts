@@ -1,6 +1,5 @@
 import {MyData} from "../shared/data/data.interface";
 import {MyStorage} from "../shared/storage/storage.interface";
-import {parse} from "@babel/core";
 import {ChartInfo} from "../shared/charts/chart.interface";
 
 export interface ScatterDataDict {
@@ -156,9 +155,106 @@ export class ScatterChartInfo implements ChartInfo {
 }
 
 
+export interface ScatterInterfaceStorageObject {
+  distance: number;
+  diameter: number;
+}
+
+
+export interface ScatterModel {
+  getDistance(): number;
+
+  getDiameter(): number;
+
+  setDistance(distance: number): void;
+
+  setDiameter(diameter: number): void;
+
+  getModelStorageObject(): ScatterInterfaceStorageObject;
+
+  setModelStorageObject(storageObject: ScatterInterfaceStorageObject): void;
+
+  getModel(): number[][];
+}
+
+
+export class ScatterModelInterface implements ScatterModel {
+  private distance: number;
+  private diameter: number;
+
+  constructor() {
+    this.distance = ScatterModelInterface.getDefaultStorageObject().distance;
+    this.diameter = ScatterModelInterface.getDefaultStorageObject().diameter;
+  }
+
+  public static getDefaultStorageObject(): ScatterInterfaceStorageObject {
+    return {
+      distance: 0,
+      diameter: 10,
+    }
+  }
+
+  getDiameter(): number {
+    return this.diameter
+  }
+
+  getDistance(): number {
+    return this.distance;
+  }
+
+  /**
+   * A circle with x of this.distance, y of 0, and diameter of this.diameter
+   */
+  getModel(): number[][] {
+    let modelData: number[][] = [];
+    const x = this.getDistance();
+    const y = 0;
+    const diameter = this.getDiameter();
+    const steps = 500;
+
+    let step = 2 * Math.PI / steps;
+    for (let i = 0; i < steps; i++) {
+      modelData.push([
+        this.formatNumber(x + Math.cos(step * i) * (diameter / 2)),
+        this.formatNumber(y + Math.sin(step * i) * (diameter / 2))
+      ]);
+    }
+    // Add a redundant point to complete the circle.
+    modelData.push([this.formatNumber(x + (diameter / 2)), this.formatNumber(y)])
+    return modelData;
+  }
+
+  getModelStorageObject(): ScatterInterfaceStorageObject {
+    return {
+      distance: this.distance,
+      diameter: this.diameter,
+    }
+  }
+
+  setDiameter(diameter: number): void {
+    this.diameter = diameter;
+  }
+
+  setDistance(distance: number): void {
+    this.distance = distance;
+  }
+
+  setModelStorageObject(storageObject: ScatterInterfaceStorageObject): void {
+    this.distance = storageObject.distance;
+    this.diameter = storageObject.diameter;
+  }
+
+  private formatNumber(input: number): number {
+    return parseFloat(input.toFixed(3));
+  }
+
+}
+
+
 export class ScatterStorage implements MyStorage {
   private static readonly dataKey: string = "scatterData";
   private static readonly chartInfoKey: string = "scatterChartInfo";
+  private static readonly interfaceKey: string = "scatterInterface";
 
   getChartInfo(): ScatterChartInfoStorageObject {
     if (localStorage.getItem(ScatterStorage.chartInfoKey)) {
@@ -176,7 +272,12 @@ export class ScatterStorage implements MyStorage {
     }
   }
 
-  getInterface(): any {
+  getInterface(): ScatterInterfaceStorageObject {
+    if (localStorage.getItem(ScatterStorage.interfaceKey)) {
+      return JSON.parse(localStorage.getItem(ScatterStorage.interfaceKey) as string);
+    } else {
+      return ScatterModelInterface.getDefaultStorageObject();
+    }
   }
 
   resetChartInfo(): void {
@@ -188,6 +289,7 @@ export class ScatterStorage implements MyStorage {
   }
 
   resetInterface(): void {
+    localStorage.setItem(ScatterStorage.interfaceKey, JSON.stringify(ScatterModelInterface.getDefaultStorageObject()));
   }
 
   saveChartInfo(chartInfo: ScatterChartInfoStorageObject): void {
@@ -198,7 +300,8 @@ export class ScatterStorage implements MyStorage {
     localStorage.setItem(ScatterStorage.dataKey, JSON.stringify(data));
   }
 
-  saveInterface(interfaceInfo: any): void {
+  saveInterface(interfaceInfo: ScatterInterfaceStorageObject): void {
+    localStorage.setItem(ScatterStorage.interfaceKey, JSON.stringify(interfaceInfo));
   }
 
 }

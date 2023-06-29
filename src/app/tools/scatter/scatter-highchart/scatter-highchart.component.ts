@@ -31,7 +31,7 @@ export class ScatterHighchartComponent implements AfterViewInit, OnDestroy {
           enabled: false,
         }
       }
-    }
+    },
   };
   private destroy$: Subject<void> = new Subject<void>();
 
@@ -62,6 +62,12 @@ export class ScatterHighchartComponent implements AfterViewInit, OnDestroy {
       this.setChartYAxis();
       this.updateChart();
     });
+    this.service.interface$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      this.updateModel();
+      this.updateCross();
+    })
   }
 
   ngOnDestroy(): void {
@@ -72,6 +78,8 @@ export class ScatterHighchartComponent implements AfterViewInit, OnDestroy {
   private initChartSeries() {
     this.setSun();
     this.setData();
+    this.setModel();
+    this.setCross();
   }
 
   private setSun() {
@@ -80,7 +88,7 @@ export class ScatterHighchartComponent implements AfterViewInit, OnDestroy {
       data: [[0, 0]],
       type: 'scatter',
       marker: {
-        radius: 10,
+        radius: 5,
       }
     })
   }
@@ -101,7 +109,44 @@ export class ScatterHighchartComponent implements AfterViewInit, OnDestroy {
       name: this.service.getDataLabel(),
       data: this.service.getDataArray(),
       type: 'scatter',
+      marker: {
+        symbol: 'circle',
+      }
     });
+  }
+
+  private setModel(): void {
+    this.chartObject.addSeries({
+      name: "Model",
+      data: this.service.getModel(),
+      type: 'scatter',
+      marker: {
+        symbol: 'circle',
+        radius: 0.7,
+      }
+    })
+  }
+
+  private updateModel(): void {
+    this.chartObject.series[2].setData(this.service.getModel());
+  }
+
+  private setCross(): void {
+    this.chartObject.addSeries({
+      name: "Cross",
+      data: ([[this.service.getDistance(), 0]] as any),
+      type: "scatter",
+      marker: {
+        symbol: 'diamond',
+        radius: 5,
+      },
+      enableMouseTracking: false,
+      showInLegend: false,
+    })
+  }
+
+  private updateCross(): void {
+    this.chartObject.series[3].setData([[this.service.getDistance(), 0]] as any);
   }
 
   private updateChart(): void {

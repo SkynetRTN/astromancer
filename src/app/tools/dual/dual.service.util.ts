@@ -115,7 +115,11 @@ export class DualChartInfo implements ChartInfo {
   }
 
   getDataLabel(): string {
-    return this.dataLabel.join(", ");
+    if (this.dataLabel[0] === "" && this.dataLabel[1] === "") {
+      return "";
+    } else {
+      return this.dataLabel.join(", ");
+    }
   }
 
   getStorageObject(): DualChartInfoStorageObject {
@@ -140,6 +144,10 @@ export class DualChartInfo implements ChartInfo {
   }
 
   setDataLabel(data: string): void {
+    if (data.trim() === "") {
+      this.dataLabel = ["", ""];
+      return;
+    }
     const inputLabels = data.split(",").map((label: string) => {
       return label.trim();
     });
@@ -203,15 +211,15 @@ export class DualStorage implements MyStorage {
   resetInterface(): void {
   }
 
-  saveChartInfo(chartInfo: any): void {
+  saveChartInfo(chartInfo: DualChartInfoStorageObject): void {
+    localStorage.setItem(this.chartInfoKey, JSON.stringify(chartInfo));
   }
 
   saveData(data: DualDataDict[]): void {
     localStorage.setItem(this.dataKey, JSON.stringify(data));
   }
 
-  saveInterface(interfaceInfo: DualChartInfoStorageObject): void {
-    localStorage.setItem(this.chartInfoKey, JSON.stringify(interfaceInfo));
+  saveInterface(interfaceInfo: any): void {
   }
 
 }

@@ -79,6 +79,12 @@ export class DualService implements MyData, ChartInfo {
     this.chartInfoSubject.next(this.dualChartInfo);
   }
 
+  resetChartInfo() {
+    this.dualChartInfo.setStorageObject(DualChartInfo.getDefaultChartInfo());
+    this.dualStorage.saveChartInfo(this.dualChartInfo.getStorageObject());
+    this.chartInfoSubject.next(this.dualChartInfo);
+  }
+
 
   /**MyData interface implementation**/
 

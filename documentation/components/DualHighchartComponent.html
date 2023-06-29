@@ -38,7 +38,7 @@
   <li class="breadcrumb-item">Components</li>
   <li class="breadcrumb-item"
   >
-  CurveHighChartComponent</li>
+  DualHighchartComponent</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">
@@ -69,19 +69,12 @@
     <h3>File</h3>
 </p>
 <p class="comment">
-    <code>src/app/tools/curve/curve-highchart/curve-high-chart.component.ts</code>
+    <code>src/app/tools/dual/dual-highchart/dual-highchart.component.ts</code>
 </p>
 
 
 
 
-    <p class="comment">
-        <h3>Implements</h3>
-    </p>
-    <p class="comment">
-                <code>AfterViewInit</code>
-                <code>OnDestroy</code>
-    </p>
 
 
 <section data-compodoc="block-metadata">
@@ -102,21 +95,21 @@
 
             <tr>
                 <td class="col-md-3">selector</td>
-                <td class="col-md-9"><code>app-curve-highchart</code></td>
+                <td class="col-md-9"><code>app-dual-highchart</code></td>
             </tr>
 
 
 
             <tr>
                 <td class="col-md-3">styleUrls</td>
-                <td class="col-md-9"><code>./curve-high-chart.component.scss</code></td>
+                <td class="col-md-9"><code>./dual-highchart.component.scss</code></td>
             </tr>
 
 
 
             <tr>
                 <td class="col-md-3">templateUrl</td>
-                <td class="col-md-9"><code>./curve-high-chart.component.html</code></td>
+                <td class="col-md-9"><code>./dual-highchart.component.html</code></td>
             </tr>
 
 
@@ -177,22 +170,13 @@
                                 <a href="#chartInitialized" >chartInitialized</a>
                             </li>
                             <li>
+                                <a href="#initChartSeries" >initChartSeries</a>
+                            </li>
+                            <li>
                                 <a href="#ngAfterViewInit" >ngAfterViewInit</a>
                             </li>
                             <li>
                                 <a href="#ngOnDestroy" >ngOnDestroy</a>
-                            </li>
-                            <li>
-                                    <span class="modifier">Private</span>
-                                <a href="#processData" >processData</a>
-                            </li>
-                            <li>
-                                    <span class="modifier">Private</span>
-                                <a href="#reverseYAxis" >reverseYAxis</a>
-                            </li>
-                            <li>
-                                    <span class="modifier">Private</span>
-                                <a href="#setChartSeries" >setChartSeries</a>
                             </li>
                             <li>
                                     <span class="modifier">Private</span>
@@ -207,12 +191,14 @@
                                 <a href="#setChartYAxis" >setChartYAxis</a>
                             </li>
                             <li>
+                                <a href="#setData" >setData</a>
+                            </li>
+                            <li>
                                     <span class="modifier">Private</span>
                                 <a href="#updateChart" >updateChart</a>
                             </li>
                             <li>
-                                    <span class="modifier">Private</span>
-                                <a href="#updateChartSeries" >updateChartSeries</a>
+                                <a href="#updateData" >updateData</a>
                             </li>
                         </ul>
                     </td>
@@ -232,12 +218,12 @@
             <tbody>
                 <tr>
                     <td class="col-md-4">
-<code>constructor(service: <a href="../injectables/CurveService.html" target="_self">CurveService</a>)</code>
+<code>constructor(service: <a href="../injectables/DualService.html" target="_self">DualService</a>)</code>
                     </td>
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="37" class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:37</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="36" class="link-to-prism">src/app/tools/dual/dual-highchart/dual-highchart.component.ts:36</a></div>
                             </td>
                         </tr>
 
@@ -258,7 +244,7 @@
                                                         <td>service</td>
                                                   
                                                         <td>
-                                                                        <code><a href="../injectables/CurveService.html" target="_self" >CurveService</a></code>
+                                                                        <code><a href="../injectables/DualService.html" target="_self" >DualService</a></code>
                                                         </td>
                                                   
                                                     <td>
@@ -304,8 +290,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="45"
-                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:45</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="44"
+                            class="link-to-prism">src/app/tools/dual/dual-highchart/dual-highchart.component.ts:44</a></div>
                 </td>
             </tr>
 
@@ -357,6 +343,43 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
+                    <a name="initChartSeries"></a>
+                    <span class="name">
+                        <span ><b>initChartSeries</b></span>
+                        <a href="#initChartSeries"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>initChartSeries()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="73"
+                            class="link-to-prism">src/app/tools/dual/dual-highchart/dual-highchart.component.ts:73</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
                     <a name="ngAfterViewInit"></a>
                     <span class="name">
                         <span ><b>ngAfterViewInit</b></span>
@@ -374,7 +397,7 @@
             <tr>
                 <td class="col-md-4">
                     <div class="io-line">Defined in <a href="" data-line="50"
-                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:50</a></div>
+                            class="link-to-prism">src/app/tools/dual/dual-highchart/dual-highchart.component.ts:50</a></div>
                 </td>
             </tr>
 
@@ -410,157 +433,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="81"
-                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:81</a></div>
-                </td>
-            </tr>
-
-
-            <tr>
-                <td class="col-md-4">
-
-                    <div class="io-description">
-                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
-
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <table class="table table-sm table-bordered">
-        <tbody>
-            <tr>
-                <td class="col-md-4">
-                    <a name="processData"></a>
-                    <span class="name">
-                        <span class="modifier">Private</span>
-                        <span ><b>processData</b></span>
-                        <a href="#processData"><span class="icon ion-ios-link"></span></a>
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-md-4">
-                    <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>processData(data: number[][])</code>
-                </td>
-            </tr>
-
-
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="134"
-                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:134</a></div>
-                </td>
-            </tr>
-
-
-            <tr>
-                <td class="col-md-4">
-
-                    <div class="io-description">
-                        <b>Parameters :</b>
-                        
-                        <table class="params">
-                            <thead>
-                                <tr>
-                                    <td>Name</td>
-                                    <td>Type</td>
-                                    <td>Optional</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>data</td>
-                                    <td>
-                                            <code>number[][]</code>
-                                    </td>
-
-                                    <td>
-                                        No
-                                    </td>
-
-
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div>
-                    </div>
-                    <div class="io-description">
-                        <b>Returns : </b>    <code>[][]</code>
-
-                    </div>
-                    <div class="io-description">
-                        
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <table class="table table-sm table-bordered">
-        <tbody>
-            <tr>
-                <td class="col-md-4">
-                    <a name="reverseYAxis"></a>
-                    <span class="name">
-                        <span class="modifier">Private</span>
-                        <span ><b>reverseYAxis</b></span>
-                        <a href="#reverseYAxis"><span class="icon ion-ios-link"></span></a>
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-md-4">
-                    <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>reverseYAxis()</code>
-                </td>
-            </tr>
-
-
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="130"
-                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:130</a></div>
-                </td>
-            </tr>
-
-
-            <tr>
-                <td class="col-md-4">
-
-                    <div class="io-description">
-                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
-
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <table class="table table-sm table-bordered">
-        <tbody>
-            <tr>
-                <td class="col-md-4">
-                    <a name="setChartSeries"></a>
-                    <span class="name">
-                        <span class="modifier">Private</span>
-                        <span ><b>setChartSeries</b></span>
-                        <a href="#setChartSeries"><span class="icon ion-ios-link"></span></a>
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-md-4">
-                    <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>setChartSeries()</code>
-                </td>
-            </tr>
-
-
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="94"
-                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:94</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="68"
+                            class="link-to-prism">src/app/tools/dual/dual-highchart/dual-highchart.component.ts:68</a></div>
                 </td>
             </tr>
 
@@ -598,8 +472,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="90"
-                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:90</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="105"
+                            class="link-to-prism">src/app/tools/dual/dual-highchart/dual-highchart.component.ts:105</a></div>
                 </td>
             </tr>
 
@@ -637,8 +511,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="118"
-                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:118</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="109"
+                            class="link-to-prism">src/app/tools/dual/dual-highchart/dual-highchart.component.ts:109</a></div>
                 </td>
             </tr>
 
@@ -676,8 +550,45 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="124"
-                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:124</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="115"
+                            class="link-to-prism">src/app/tools/dual/dual-highchart/dual-highchart.component.ts:115</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="setData"></a>
+                    <span class="name">
+                        <span ><b>setData</b></span>
+                        <a href="#setData"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>setData()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="77"
+                            class="link-to-prism">src/app/tools/dual/dual-highchart/dual-highchart.component.ts:77</a></div>
                 </td>
             </tr>
 
@@ -715,8 +626,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="86"
-                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:86</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="101"
+                            class="link-to-prism">src/app/tools/dual/dual-highchart/dual-highchart.component.ts:101</a></div>
                 </td>
             </tr>
 
@@ -736,26 +647,24 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
-                    <a name="updateChartSeries"></a>
+                    <a name="updateData"></a>
                     <span class="name">
-                        <span class="modifier">Private</span>
-                        <span ><b>updateChartSeries</b></span>
-                        <a href="#updateChartSeries"><span class="icon ion-ios-link"></span></a>
+                        <span ><b>updateData</b></span>
+                        <a href="#updateData"><span class="icon ion-ios-link"></span></a>
                     </span>
                 </td>
             </tr>
             <tr>
                 <td class="col-md-4">
-                    <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>updateChartSeries()</code>
+<code>updateData()</code>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="104"
-                            class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:104</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="89"
+                            class="link-to-prism">src/app/tools/dual/dual-highchart/dual-highchart.component.ts:89</a></div>
                 </td>
             </tr>
 
@@ -801,7 +710,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="15" class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:15</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="14" class="link-to-prism">src/app/tools/dual/dual-highchart/dual-highchart.component.ts:14</a></div>
                         </td>
                     </tr>
 
@@ -827,7 +736,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="16" class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:16</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="15" class="link-to-prism">src/app/tools/dual/dual-highchart/dual-highchart.component.ts:15</a></div>
                         </td>
                     </tr>
 
@@ -863,7 +772,7 @@
     },
     tooltip: {
       enabled: true,
-      shared: true,
+      shared: false,
     },
     exporting: {
       buttons: {
@@ -877,7 +786,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="17" class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:17</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="16" class="link-to-prism">src/app/tools/dual/dual-highchart/dual-highchart.component.ts:16</a></div>
                         </td>
                     </tr>
 
@@ -909,7 +818,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="37" class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:37</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="36" class="link-to-prism">src/app/tools/dual/dual-highchart/dual-highchart.component.ts:36</a></div>
                         </td>
                     </tr>
 
@@ -934,7 +843,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="13" class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:13</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="12" class="link-to-prism">src/app/tools/dual/dual-highchart/dual-highchart.component.ts:12</a></div>
                         </td>
                     </tr>
 
@@ -965,7 +874,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="14" class="link-to-prism">src/app/tools/curve/curve-highchart/curve-high-chart.component.ts:14</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="13" class="link-to-prism">src/app/tools/dual/dual-highchart/dual-highchart.component.ts:13</a></div>
                         </td>
                     </tr>
 
@@ -978,18 +887,17 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {AfterViewInit, Component, OnDestroy} from &#x27;@angular/core&#x27;;
-import * as Highcharts from &#x27;highcharts&#x27;;
-import {CurveService} from &quot;../curve.service&quot;;
-import {ChartInfo} from &quot;../../shared/charts/chart.interface&quot;;
-import {Subject, takeUntil} from &#x27;rxjs&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component } from &#x27;@angular/core&#x27;;
+import {Subject, takeUntil} from &quot;rxjs&quot;;
+import * as Highcharts from &quot;highcharts&quot;;
+import {DualService} from &quot;../dual.service&quot;;
 
 @Component({
-  selector: &#x27;app-curve-highchart&#x27;,
-  templateUrl: &#x27;./curve-high-chart.component.html&#x27;,
-  styleUrls: [&#x27;./curve-high-chart.component.scss&#x27;]
+  selector: &#x27;app-dual-highchart&#x27;,
+  templateUrl: &#x27;./dual-highchart.component.html&#x27;,
+  styleUrls: [&#x27;./dual-highchart.component.scss&#x27;]
 })
-export class CurveHighChartComponent implements AfterViewInit, OnDestroy {
+export class DualHighchartComponent {
   Highcharts: typeof Highcharts &#x3D; Highcharts;
   updateFlag: boolean &#x3D; true;
   chartConstructor: any &#x3D; &quot;chart&quot;;
@@ -1004,7 +912,7 @@ export class CurveHighChartComponent implements AfterViewInit, OnDestroy {
     },
     tooltip: {
       enabled: true,
-      shared: true,
+      shared: false,
     },
     exporting: {
       buttons: {
@@ -1016,7 +924,7 @@ export class CurveHighChartComponent implements AfterViewInit, OnDestroy {
   };
   private destroy$: Subject&lt;any&gt; &#x3D; new Subject&lt;any&gt;();
 
-  constructor(private service: CurveService) {
+  constructor(private service: DualService) {
     this.setChartTitle();
     this.setChartXAxis();
     this.setChartYAxis();
@@ -1024,43 +932,59 @@ export class CurveHighChartComponent implements AfterViewInit, OnDestroy {
 
   chartInitialized($event: Highcharts.Chart) {
     this.chartObject &#x3D; $event;
+    this.service.setHighChart(this.chartObject);
 
   }
 
   ngAfterViewInit(): void {
-    this.setChartSeries();
-    this.service.setHighChart(this.chartObject);
-    this.service.chartInfo$.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe((info: ChartInfo) &#x3D;&gt; {
-      this.setChartYAxis();
-      this.setChartXAxis();
-      this.setChartTitle();
-      this.updateChart();
-    });
+    this.initChartSeries();
     this.service.data$.pipe(
       takeUntil(this.destroy$)
-    ).subscribe((data) &#x3D;&gt; {
-      this.updateChartSeries();
+    ).subscribe(() &#x3D;&gt; {
+      this.updateData();
       this.updateChart();
     });
-    this.service.interface$.pipe(
+    this.service.chartInfo$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(() &#x3D;&gt; {
-      this.reverseYAxis();
+      this.setChartTitle();
+      this.setChartXAxis();
+      this.setChartYAxis();
       this.updateChart();
     });
-    this.service.dataKeys$.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(() &#x3D;&gt; {
-      this.updateChartSeries();
-      this.updateChart();
-    })
   }
 
   ngOnDestroy(): void {
     this.destroy$.next(null);
     this.destroy$.complete();
+  }
+
+  initChartSeries() {
+    this.setData();
+  }
+
+  setData() {
+    const labels: string[] &#x3D; this.service.getDataLabelArray();
+    const data: number[][][] &#x3D; this.service.getDataArray();
+    for (let i &#x3D; 0; i &lt; 2; i++) {
+      this.chartObject.addSeries({
+        name: labels[2*i+1],
+        data: data[i],
+        type: &#x27;line&#x27;,
+      });
+    }
+  }
+
+  updateData() {
+    const labels: string[] &#x3D; this.service.getDataLabelArray();
+    const data: number[][][] &#x3D; this.service.getDataArray();
+    for (let i &#x3D; 0; i &lt; 2; i++) {
+      this.chartObject.series[i].update({
+        name: labels[2*i+1],
+        data: data[i],
+        type: &#x27;line&#x27;,
+      });
+    }
   }
 
   private updateChart(): void {
@@ -1069,30 +993,6 @@ export class CurveHighChartComponent implements AfterViewInit, OnDestroy {
 
   private setChartTitle(): void {
     this.chartOptions.title &#x3D; {text: this.service.getChartTitle()};
-  }
-
-  private setChartSeries(): void {
-    for (let count &#x3D; 0; count &lt; 4; count++) {
-      this.chartObject.addSeries({
-        name: this.service.getDataLabelArray()[count + 1],
-        type: &#x27;line&#x27;,
-        data: this.processData(this.service.getDataArray()[count]),
-      });
-    }
-  }
-
-  private updateChartSeries(): void {
-    const name &#x3D; this.service.getDataLabelArray();
-    const data &#x3D; this.service.getDataArray();
-    for (let count &#x3D; 0; count &lt; 4; count++) {
-      const processedData &#x3D; this.processData(data[count]);
-      this.chartObject.series[count].update({
-        name: name[count + 1],
-        data: processedData,
-        type: &#x27;line&#x27;,
-        visible: count &lt; this.service.getCurveCount(),
-      })
-    }
   }
 
   private setChartXAxis(): void {
@@ -1105,19 +1005,6 @@ export class CurveHighChartComponent implements AfterViewInit, OnDestroy {
     this.chartOptions.yAxis &#x3D; {
       title: {text: this.service.getYAxisLabel()}
     };
-  }
-
-  private reverseYAxis(): void {
-    this.chartObject.yAxis[0].update({reversed: this.service.getIsMagnitudeOn()});
-  }
-
-  private processData(data: number[][]): number[][] {
-    return data.filter((value: number[]) &#x3D;&gt; {
-      // return true;
-      return (value[0] !&#x3D;&#x3D; null);
-    }).sort((a: number[], b: number[]) &#x3D;&gt; {
-      return a[0] - b[0];
-    });
   }
 
 }
@@ -1142,7 +1029,7 @@ export class CurveHighChartComponent implements AfterViewInit, OnDestroy {
 
     <div class="tab-pane fade " id="styleData">
                 <p class="comment">
-                    <code>./curve-high-chart.component.scss</code>
+                    <code>./dual-highchart.component.scss</code>
                 </p>
                 <pre class="line-numbers"><code class="language-scss">.chart-container {
   width: 100%;
@@ -1180,7 +1067,7 @@ export class CurveHighChartComponent implements AfterViewInit, OnDestroy {
         var COMPONENT_TEMPLATE = '<div><div class="chart-container" id="chart-container">  <highcharts-chart    (chartInstance)="chartInitialized($event)"    [(update)]="updateFlag"    [Highcharts]="Highcharts"    [constructorType]="chartConstructor"    [options]="chartOptions"    style="width: 100%; height: 100%; display: block;"  ></highcharts-chart></div></div>'
     var COMPONENTS = [{'name': 'AboutComponent', 'selector': 'app-about'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'AppearanceComponent', 'selector': 'app-appearance'},{'name': 'CurveChartComponent', 'selector': 'app-curve-chart'},{'name': 'CurveChartFormComponent', 'selector': 'app-curve-chart-form'},{'name': 'CurveComponent', 'selector': 'app-curve'},{'name': 'CurveHighChartComponent', 'selector': 'app-curve-highchart'},{'name': 'CurveTableComponent', 'selector': 'app-curve-table'},{'name': 'DualChartFormComponent', 'selector': 'app-dual-chart-form'},{'name': 'DualComponent', 'selector': 'app-dual'},{'name': 'DualHighchartComponent', 'selector': 'app-dual-highchart'},{'name': 'DualTableComponent', 'selector': 'app-dual-table'},{'name': 'HomeComponent', 'selector': 'app-home'},{'name': 'HonorCodePopupComponent', 'selector': 'app-honor-code-popup'},{'name': 'InputSliderComponent', 'selector': 'my-input-slider'},{'name': 'LineFormComponent', 'selector': 'app-line-form'},{'name': 'MenubarComponent', 'selector': 'app-menubar'},{'name': 'MoonChartFormComponent', 'selector': 'app-moon-chart-form'},{'name': 'MoonComponent', 'selector': 'app-moon'},{'name': 'MoonFormComponent', 'selector': 'app-moon-form'},{'name': 'MoonHighchartComponent', 'selector': 'app-moon-highchart'},{'name': 'MoonTableComponent', 'selector': 'app-moon-table'},{'name': 'PageNotFoundComponent', 'selector': 'app-page-not-found'},{'name': 'ScatterChartFormComponent', 'selector': 'app-scatter-chart-form'},{'name': 'ScatterComponent', 'selector': 'app-scatter'},{'name': 'ScatterFormComponent', 'selector': 'app-scatter-form'},{'name': 'ScatterHighchartComponent', 'selector': 'app-scatter-highchart'},{'name': 'ScatterTableComponent', 'selector': 'app-scatter-table'},{'name': 'SettingsComponent', 'selector': 'app-settings'},{'name': 'SimpleDataButtonComponent', 'selector': 'app-simple-data-button'},{'name': 'SimpleGraphButtonComponent', 'selector': 'app-simple-graph-button'},{'name': 'ToolsNavbarComponent', 'selector': 'app-tools-navbar'},{'name': 'VenusChartFormComponent', 'selector': 'app-venus-chart-form'},{'name': 'VenusComponent', 'selector': 'app-venus'},{'name': 'VenusHighchartComponent', 'selector': 'app-venus-highchart'},{'name': 'VenusTableComponent', 'selector': 'app-venus-table'}];
     var DIRECTIVES = [];
-    var ACTUAL_COMPONENT = {'name': 'CurveHighChartComponent'};
+    var ACTUAL_COMPONENT = {'name': 'DualHighchartComponent'};
 </script>
 <script src="../js/tree.js"></script>
 
@@ -1226,7 +1113,7 @@ export class CurveHighChartComponent implements AfterViewInit, OnDestroy {
        <script>
             var COMPODOC_CURRENT_PAGE_DEPTH = 1;
             var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
-            var COMPODOC_CURRENT_PAGE_URL = 'CurveHighChartComponent.html';
+            var COMPODOC_CURRENT_PAGE_URL = 'DualHighchartComponent.html';
             var MAX_SEARCH_RESULTS = 15;
        </script>
 

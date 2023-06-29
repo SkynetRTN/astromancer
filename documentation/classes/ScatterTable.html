@@ -44,7 +44,7 @@
 
 <ol class="breadcrumb">
   <li class="breadcrumb-item">Classes</li>
-  <li class="breadcrumb-item" >VenusTable</li>
+  <li class="breadcrumb-item" >ScatterTable</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">
@@ -68,7 +68,7 @@
             <h3>File</h3>
         </p>
         <p class="comment">
-            <code>src/app/tools/venus/venus-table/venus-table.component.ts</code>
+            <code>src/app/tools/scatter/scatter-table/scatter-table.component.ts</code>
         </p>
 
 
@@ -147,7 +147,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="71" class="link-to-prism">src/app/tools/venus/venus-table/venus-table.component.ts:71</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="70" class="link-to-prism">src/app/tools/scatter/scatter-table/scatter-table.component.ts:70</a></div>
                             </td>
                         </tr>
 
@@ -209,7 +209,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="71" class="link-to-prism">src/app/tools/venus/venus-table/venus-table.component.ts:71</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="70" class="link-to-prism">src/app/tools/scatter/scatter-table/scatter-table.component.ts:70</a></div>
                         </td>
                     </tr>
 
@@ -237,7 +237,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="70" class="link-to-prism">src/app/tools/venus/venus-table/venus-table.component.ts:70</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="69" class="link-to-prism">src/app/tools/scatter/scatter-table/scatter-table.component.ts:69</a></div>
                         </td>
                     </tr>
 
@@ -271,8 +271,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="85"
-                            class="link-to-prism">src/app/tools/venus/venus-table/venus-table.component.ts:85</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="84"
+                            class="link-to-prism">src/app/tools/scatter/scatter-table/scatter-table.component.ts:84</a></div>
                 </td>
             </tr>
 
@@ -308,8 +308,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="77"
-                            class="link-to-prism">src/app/tools/venus/venus-table/venus-table.component.ts:77</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="76"
+                            class="link-to-prism">src/app/tools/scatter/scatter-table/scatter-table.component.ts:76</a></div>
                 </td>
             </tr>
 
@@ -345,8 +345,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="81"
-                            class="link-to-prism">src/app/tools/venus/venus-table/venus-table.component.ts:81</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="80"
+                            class="link-to-prism">src/app/tools/scatter/scatter-table/scatter-table.component.ts:80</a></div>
                 </td>
             </tr>
 
@@ -373,39 +373,38 @@
 
     <div class="tab-pane fade  tab-source-code" id="source">
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {AfterViewInit, Component, OnDestroy} from &#x27;@angular/core&#x27;;
-import {VenusService} from &quot;../venus.service&quot;;
+import {ScatterService} from &quot;../scatter.service&quot;;
 import {Subject, takeUntil} from &quot;rxjs&quot;;
-import {VenusDataDict} from &quot;../venus.service.util&quot;;
 import {MyTable} from &quot;../../shared/tables/table-interface&quot;;
 import {HotTableRegisterer} from &quot;@handsontable/angular&quot;;
 import Handsontable from &quot;handsontable&quot;;
+import {ScatterDataDict} from &quot;../scatter.service.util&quot;;
+import {MoonDataDict} from &quot;../../moon/moon.service.util&quot;;
+import {MyData} from &quot;../../shared/data/data.interface&quot;;
 
 @Component({
-  selector: &#x27;app-venus-table&#x27;,
-  templateUrl: &#x27;./venus-table.component.html&#x27;,
-  styleUrls: [&#x27;./venus-table.component.scss&#x27;]
+  selector: &#x27;app-scatter-table&#x27;,
+  templateUrl: &#x27;./scatter-table.component.html&#x27;,
+  styleUrls: [&#x27;./scatter-table.component.scss&#x27;]
 })
-export class VenusTableComponent implements AfterViewInit, OnDestroy {
+export class ScatterTableComponent implements AfterViewInit, OnDestroy{
+  static FLOAT_PRECISION: number &#x3D; 2;
+  id: string &#x3D; &quot;scatter-table&quot;;
+  table: MyTable &#x3D; new ScatterTable(this.id);
+  colNames: string[] &#x3D; [&quot;Longitude&quot;, &quot;Latitude&quot;, &quot;Distance&quot;];
+  dataSet: ScatterDataDict[];
   private destroy$: Subject&lt;void&gt; &#x3D; new Subject&lt;void&gt;();
-  id: string &#x3D; &quot;moon-table&quot;;
-  table: VenusTable &#x3D; new VenusTable(this.id);
-  colNames: string[] &#x3D; [&quot;Angular Diameter&quot;, &quot;Phase of Venus&quot;];
-  dataSet: VenusDataDict[];
-
-
-  constructor(private service: VenusService) {
+  constructor(private service: ScatterService) {
     this.dataSet &#x3D; this.service.getData();
   }
 
   ngAfterViewInit(): void {
     this.service.data$.pipe(
       takeUntil(this.destroy$)
-    ).subscribe(
-      () &#x3D;&gt; {
-        this.dataSet &#x3D; this.limitPrecision(this.service.getData(), 3);
-        this.table.renderTable();
-      }
-    )
+    ).subscribe((data: MyData) &#x3D;&gt; {
+      this.dataSet &#x3D; this.limitPrecision(this.service.getData(), ScatterTableComponent.FLOAT_PRECISION);
+      this.table.renderTable();
+    })
   }
 
   ngOnDestroy(): void {
@@ -421,26 +420,26 @@ export class VenusTableComponent implements AfterViewInit, OnDestroy {
 
   public onRemove &#x3D; (index: number, amount: number) &#x3D;&gt; {
     this.service.removeRow(index, amount);
-    // this.service.setData(this.table.getData());
   }
 
   public onInsert &#x3D; (index: number, amount: number) &#x3D;&gt; {
     this.service.addRow(index, amount);
   }
 
-  private limitPrecision(data: VenusDataDict[], precision: number): VenusDataDict[] {
+  private limitPrecision(data: ScatterDataDict[], precision: number): ScatterDataDict[] {
     return data.map(
-      (row: VenusDataDict) &#x3D;&gt; {
+      (row: ScatterDataDict) &#x3D;&gt; {
         return {
-          diameter: row.diameter ? parseFloat(row.diameter.toFixed(precision)) : row.diameter,
-          phase: row.phase ? parseFloat(row.phase.toFixed(precision)) : row.phase
+          longitude: row.longitude ? parseFloat(row.longitude.toFixed(precision)) : row.longitude,
+          latitude: row.latitude ? parseFloat(row.latitude.toFixed(precision)) : row.latitude,
+          distance: row.distance ? parseFloat(row.distance.toFixed(precision)) : row.distance,
         }
       }
     );
   }
 }
 
-class VenusTable implements MyTable {
+class ScatterTable implements MyTable {
   private readonly id: string;
   private hotRegisterer &#x3D; new HotTableRegisterer();
 
@@ -461,7 +460,6 @@ class VenusTable implements MyTable {
   }
 
 }
-
 </code></pre>
     </div>
 </div>
@@ -500,7 +498,7 @@ class VenusTable implements MyTable {
        <script>
             var COMPODOC_CURRENT_PAGE_DEPTH = 1;
             var COMPODOC_CURRENT_PAGE_CONTEXT = 'class';
-            var COMPODOC_CURRENT_PAGE_URL = 'VenusTable.html';
+            var COMPODOC_CURRENT_PAGE_URL = 'ScatterTable.html';
             var MAX_SEARCH_RESULTS = 15;
        </script>
 

@@ -28,13 +28,13 @@
 <title>cluster_CurveModule_declarations</title>
 <polygon fill="none" stroke="black" points="783,-78 783,-130 1787,-130 1787,-78 783,-78"/>
 </g>
-<g id="clust10" class="cluster">
-<title>cluster_CurveModule_exports</title>
-<polygon fill="none" stroke="black" points="872,-208 872,-260 1008,-260 1008,-208 872,-208"/>
-</g>
 <g id="clust12" class="cluster">
 <title>cluster_CurveModule_providers</title>
 <polygon fill="none" stroke="black" points="394,-78 394,-130 775,-130 775,-78 394,-78"/>
+</g>
+<g id="clust10" class="cluster">
+<title>cluster_CurveModule_exports</title>
+<polygon fill="none" stroke="black" points="872,-208 872,-260 1008,-260 1008,-208 872,-208"/>
 </g>
 <g id="clust9" class="cluster">
 <title>cluster_CurveModule_imports</title>

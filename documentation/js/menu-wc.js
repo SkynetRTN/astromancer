@@ -256,6 +256,49 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 </li>
                             </li>
                             <li class="link">
+                                <a href="modules/ScatterModule.html" data-type="entity-link" >ScatterModule</a>
+                                    <li class="chapter inner">
+                                        <div class="simple menu-toggler" data-bs-toggle="collapse" ${ isNormalMode ?
+                                            'data-bs-target="#components-links-module-ScatterModule-b3625fa8bf6707937435a6f021caf717ff9b4d7fb07a2a41ccd89af652b19871242666e4ddc1d23cab6daa7353050f41dd4e5ce8be2d996f73aaed6b99eb0592"' : 'data-bs-target="#xs-components-links-module-ScatterModule-b3625fa8bf6707937435a6f021caf717ff9b4d7fb07a2a41ccd89af652b19871242666e4ddc1d23cab6daa7353050f41dd4e5ce8be2d996f73aaed6b99eb0592"' }>
+                                            <span class="icon ion-md-cog"></span>
+                                            <span>Components</span>
+                                            <span class="icon ion-ios-arrow-down"></span>
+                                        </div>
+                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-ScatterModule-b3625fa8bf6707937435a6f021caf717ff9b4d7fb07a2a41ccd89af652b19871242666e4ddc1d23cab6daa7353050f41dd4e5ce8be2d996f73aaed6b99eb0592"' :
+                                            'id="xs-components-links-module-ScatterModule-b3625fa8bf6707937435a6f021caf717ff9b4d7fb07a2a41ccd89af652b19871242666e4ddc1d23cab6daa7353050f41dd4e5ce8be2d996f73aaed6b99eb0592"' }>
+                                            <li class="link">
+                                                <a href="components/ScatterChartFormComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >ScatterChartFormComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/ScatterComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >ScatterComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/ScatterFormComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >ScatterFormComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/ScatterHighchartComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >ScatterHighchartComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/ScatterTableComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >ScatterTableComponent</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                <li class="chapter inner">
+                                    <div class="simple menu-toggler" data-bs-toggle="collapse" ${ isNormalMode ?
+                                        'data-bs-target="#injectables-links-module-ScatterModule-b3625fa8bf6707937435a6f021caf717ff9b4d7fb07a2a41ccd89af652b19871242666e4ddc1d23cab6daa7353050f41dd4e5ce8be2d996f73aaed6b99eb0592"' : 'data-bs-target="#xs-injectables-links-module-ScatterModule-b3625fa8bf6707937435a6f021caf717ff9b4d7fb07a2a41ccd89af652b19871242666e4ddc1d23cab6daa7353050f41dd4e5ce8be2d996f73aaed6b99eb0592"' }>
+                                        <span class="icon ion-md-arrow-round-down"></span>
+                                        <span>Injectables</span>
+                                        <span class="icon ion-ios-arrow-down"></span>
+                                    </div>
+                                    <ul class="links collapse" ${ isNormalMode ? 'id="injectables-links-module-ScatterModule-b3625fa8bf6707937435a6f021caf717ff9b4d7fb07a2a41ccd89af652b19871242666e4ddc1d23cab6daa7353050f41dd4e5ce8be2d996f73aaed6b99eb0592"' :
+                                        'id="xs-injectables-links-module-ScatterModule-b3625fa8bf6707937435a6f021caf717ff9b4d7fb07a2a41ccd89af652b19871242666e4ddc1d23cab6daa7353050f41dd4e5ce8be2d996f73aaed6b99eb0592"' }>
+                                        <li class="link">
+                                            <a href="injectables/ScatterService.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >ScatterService</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </li>
+                            <li class="link">
                                 <a href="modules/SettingsModule.html" data-type="entity-link" >SettingsModule</a>
                                     <li class="chapter inner">
                                         <div class="simple menu-toggler" data-bs-toggle="collapse" ${ isNormalMode ?
@@ -310,13 +353,13 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 <a href="modules/ToolsNavbarModule.html" data-type="entity-link" >ToolsNavbarModule</a>
                                     <li class="chapter inner">
                                         <div class="simple menu-toggler" data-bs-toggle="collapse" ${ isNormalMode ?
-                                            'data-bs-target="#components-links-module-ToolsNavbarModule-86e2f3a9c071c4a32efe8a7c70687176713e1de9212ed2b1705e87d62af6999da638734c526c6dc93f1796159db2a106222b47a116aa300bfd36420af7327168"' : 'data-bs-target="#xs-components-links-module-ToolsNavbarModule-86e2f3a9c071c4a32efe8a7c70687176713e1de9212ed2b1705e87d62af6999da638734c526c6dc93f1796159db2a106222b47a116aa300bfd36420af7327168"' }>
+                                            'data-bs-target="#components-links-module-ToolsNavbarModule-e6917293430f396cd668fc5544dc228544834ef8ee8448e8ec1d9782eb0b76fa1945d96eb34c5f758ffdaf8578abb70f1b2760d374f16ace68990017e2bbcc40"' : 'data-bs-target="#xs-components-links-module-ToolsNavbarModule-e6917293430f396cd668fc5544dc228544834ef8ee8448e8ec1d9782eb0b76fa1945d96eb34c5f758ffdaf8578abb70f1b2760d374f16ace68990017e2bbcc40"' }>
                                             <span class="icon ion-md-cog"></span>
                                             <span>Components</span>
                                             <span class="icon ion-ios-arrow-down"></span>
                                         </div>
-                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-ToolsNavbarModule-86e2f3a9c071c4a32efe8a7c70687176713e1de9212ed2b1705e87d62af6999da638734c526c6dc93f1796159db2a106222b47a116aa300bfd36420af7327168"' :
-                                            'id="xs-components-links-module-ToolsNavbarModule-86e2f3a9c071c4a32efe8a7c70687176713e1de9212ed2b1705e87d62af6999da638734c526c6dc93f1796159db2a106222b47a116aa300bfd36420af7327168"' }>
+                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-ToolsNavbarModule-e6917293430f396cd668fc5544dc228544834ef8ee8448e8ec1d9782eb0b76fa1945d96eb34c5f758ffdaf8578abb70f1b2760d374f16ace68990017e2bbcc40"' :
+                                            'id="xs-components-links-module-ToolsNavbarModule-e6917293430f396cd668fc5544dc228544834ef8ee8448e8ec1d9782eb0b76fa1945d96eb34c5f758ffdaf8578abb70f1b2760d374f16ace68990017e2bbcc40"' }>
                                             <li class="link">
                                                 <a href="components/ToolsNavbarComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >ToolsNavbarComponent</a>
                                             </li>
@@ -416,6 +459,21 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 <a href="classes/MoonTable.html" data-type="entity-link" >MoonTable</a>
                             </li>
                             <li class="link">
+                                <a href="classes/ScatterChartInfo.html" data-type="entity-link" >ScatterChartInfo</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/ScatterData.html" data-type="entity-link" >ScatterData</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/ScatterModelInterface.html" data-type="entity-link" >ScatterModelInterface</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/ScatterStorage.html" data-type="entity-link" >ScatterStorage</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/ScatterTable.html" data-type="entity-link" >ScatterTable</a>
+                            </li>
+                            <li class="link">
                                 <a href="classes/SliderUtil.html" data-type="entity-link" >SliderUtil</a>
                             </li>
                             <li class="link">
@@ -512,6 +570,18 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             </li>
                             <li class="link">
                                 <a href="interfaces/MyTable.html" data-type="entity-link" >MyTable</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/ScatterChartInfoStorageObject.html" data-type="entity-link" >ScatterChartInfoStorageObject</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/ScatterDataDict.html" data-type="entity-link" >ScatterDataDict</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/ScatterInterfaceStorageObject.html" data-type="entity-link" >ScatterInterfaceStorageObject</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/ScatterModel.html" data-type="entity-link" >ScatterModel</a>
                             </li>
                             <li class="link">
                                 <a href="interfaces/VenusChartInfoStorageObject.html" data-type="entity-link" >VenusChartInfoStorageObject</a>

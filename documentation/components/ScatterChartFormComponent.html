@@ -38,7 +38,7 @@
   <li class="breadcrumb-item">Components</li>
   <li class="breadcrumb-item"
   >
-  CurveChartComponent</li>
+  ScatterChartFormComponent</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">
@@ -69,24 +69,16 @@
     <h3>File</h3>
 </p>
 <p class="comment">
-    <code>src/app/tools/curve/curve-chart/curve-chart.component.ts</code>
+    <code>src/app/tools/scatter/scatter-chart-form/scatter-chart-form.component.ts</code>
 </p>
 
 
-    <p class="comment">
-        <h3>Description</h3>
-    </p>
-    <p class="comment">
-        <p>Chart for the curve graphing tools.</p>
-
-    </p>
 
 
     <p class="comment">
         <h3>Implements</h3>
     </p>
     <p class="comment">
-                <code>AfterViewInit</code>
                 <code>OnDestroy</code>
     </p>
 
@@ -109,21 +101,21 @@
 
             <tr>
                 <td class="col-md-3">selector</td>
-                <td class="col-md-9"><code>app-curve-chart</code></td>
+                <td class="col-md-9"><code>app-scatter-chart-form</code></td>
             </tr>
 
 
 
             <tr>
                 <td class="col-md-3">styleUrls</td>
-                <td class="col-md-9"><code>./curve-chart.component.scss</code></td>
+                <td class="col-md-9"><code>./scatter-chart-form.component.scss</code></td>
             </tr>
 
 
 
             <tr>
                 <td class="col-md-3">templateUrl</td>
-                <td class="col-md-9"><code>./curve-chart.component.html</code></td>
+                <td class="col-md-9"><code>./scatter-chart-form.component.html</code></td>
             </tr>
 
 
@@ -150,20 +142,11 @@
                     <td class="col-md-4">
                         <ul class="index-list">
                             <li>
-                                <a href="#chart" >chart</a>
-                            </li>
-                            <li>
                                     <span class="modifier">Private</span>
                                 <a href="#destroy$" >destroy$</a>
                             </li>
                             <li>
-                                <a href="#id" >id</a>
-                            </li>
-                            <li>
-                                <a href="#lineChartData" >lineChartData</a>
-                            </li>
-                            <li>
-                                <a href="#lineChartOptions" >lineChartOptions</a>
+                                <a href="#formGroup" >formGroup</a>
                             </li>
                         </ul>
                     </td>
@@ -177,9 +160,6 @@
                 <tr>
                     <td class="col-md-4">
                         <ul class="index-list">
-                            <li>
-                                <a href="#ngAfterViewInit" >ngAfterViewInit</a>
-                            </li>
                             <li>
                                 <a href="#ngOnDestroy" >ngOnDestroy</a>
                             </li>
@@ -201,12 +181,12 @@
             <tbody>
                 <tr>
                     <td class="col-md-4">
-<code>constructor(service: <a href="../injectables/CurveService.html" target="_self">CurveService</a>, appearanceService: <a href="../injectables/AppearanceService.html" target="_self">AppearanceService</a>)</code>
+<code>constructor(service: <a href="../injectables/ScatterService.html" target="_self">ScatterService</a>)</code>
                     </td>
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="38" class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:38</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="13" class="link-to-prism">src/app/tools/scatter/scatter-chart-form/scatter-chart-form.component.ts:13</a></div>
                             </td>
                         </tr>
 
@@ -227,19 +207,7 @@
                                                         <td>service</td>
                                                   
                                                         <td>
-                                                                        <code><a href="../injectables/CurveService.html" target="_self" >CurveService</a></code>
-                                                        </td>
-                                                  
-                                                    <td>
-                                                            No
-                                                    </td>
-                                                    
-                                                </tr>
-                                                <tr>
-                                                        <td>appearanceService</td>
-                                                  
-                                                        <td>
-                                                                        <code><a href="../injectables/AppearanceService.html" target="_self" >AppearanceService</a></code>
+                                                                        <code><a href="../injectables/ScatterService.html" target="_self" >ScatterService</a></code>
                                                         </td>
                                                   
                                                     <td>
@@ -269,43 +237,6 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
-                    <a name="ngAfterViewInit"></a>
-                    <span class="name">
-                        <span ><b>ngAfterViewInit</b></span>
-                        <a href="#ngAfterViewInit"><span class="icon ion-ios-link"></span></a>
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-md-4">
-<code>ngAfterViewInit()</code>
-                </td>
-            </tr>
-
-
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="56"
-                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:56</a></div>
-                </td>
-            </tr>
-
-
-            <tr>
-                <td class="col-md-4">
-
-                    <div class="io-description">
-                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
-
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <table class="table table-sm table-bordered">
-        <tbody>
-            <tr>
-                <td class="col-md-4">
                     <a name="ngOnDestroy"></a>
                     <span class="name">
                         <span ><b>ngOnDestroy</b></span>
@@ -322,8 +253,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="81"
-                            class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:81</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="48"
+                            class="link-to-prism">src/app/tools/scatter/scatter-chart-form/scatter-chart-form.component.ts:48</a></div>
                 </td>
             </tr>
 
@@ -349,38 +280,6 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
-                    <a name="chart"></a>
-                    <span class="name">
-                        <span ><b>chart</b></span>
-                        <a href="#chart"><span class="icon ion-ios-link"></span></a>
-                    </span>
-                </td>
-            </tr>
-                <tr>
-                    <td class="col-md-4">
-                        <i>Type : </i>        <code><a href="../classes/CurveChart.html" target="_self" >CurveChart</a></code>
-
-                    </td>
-                </tr>
-                    <tr>
-                        <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="29" class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:29</a></div>
-                        </td>
-                    </tr>
-
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-description"><p>Custom Chart object</p>
-</div>
-                </td>
-            </tr>
-
-        </tbody>
-    </table>
-    <table class="table table-sm table-bordered">
-        <tbody>
-            <tr>
-                <td class="col-md-4">
                     <a name="destroy$"></a>
                     <span class="name">
                             <span class="modifier">Private</span>
@@ -402,7 +301,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="38" class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:38</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="13" class="link-to-prism">src/app/tools/scatter/scatter-chart-form/scatter-chart-form.component.ts:13</a></div>
                         </td>
                     </tr>
 
@@ -413,89 +312,25 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
-                    <a name="id"></a>
+                    <a name="formGroup"></a>
                     <span class="name">
-                        <span ><b>id</b></span>
-                        <a href="#id"><span class="icon ion-ios-link"></span></a>
+                        <span ><b>formGroup</b></span>
+                        <a href="#formGroup"><span class="icon ion-ios-link"></span></a>
                     </span>
                 </td>
             </tr>
                 <tr>
                     <td class="col-md-4">
-                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                        <i>Type : </i>    <code>FormGroup</code>
 
                     </td>
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="25" class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:25</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="12" class="link-to-prism">src/app/tools/scatter/scatter-chart-form/scatter-chart-form.component.ts:12</a></div>
                         </td>
                     </tr>
 
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-description"><p>Chart.js object id</p>
-</div>
-                </td>
-            </tr>
-
-        </tbody>
-    </table>
-    <table class="table table-sm table-bordered">
-        <tbody>
-            <tr>
-                <td class="col-md-4">
-                    <a name="lineChartData"></a>
-                    <span class="name">
-                        <span ><b>lineChartData</b></span>
-                        <a href="#lineChartData"><span class="icon ion-ios-link"></span></a>
-                    </span>
-                </td>
-            </tr>
-                    <tr>
-                        <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="33" class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:33</a></div>
-                        </td>
-                    </tr>
-
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-description"><p>Chart.js object data configuration</p>
-</div>
-                </td>
-            </tr>
-
-        </tbody>
-    </table>
-    <table class="table table-sm table-bordered">
-        <tbody>
-            <tr>
-                <td class="col-md-4">
-                    <a name="lineChartOptions"></a>
-                    <span class="name">
-                        <span ><b>lineChartOptions</b></span>
-                        <a href="#lineChartOptions"><span class="icon ion-ios-link"></span></a>
-                    </span>
-                </td>
-            </tr>
-                <tr>
-                    <td class="col-md-4">
-                        <i>Type : </i>    <code>ChartOptions&lt;line&gt;</code>
-
-                    </td>
-                </tr>
-                    <tr>
-                        <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="37" class="link-to-prism">src/app/tools/curve/curve-chart/curve-chart.component.ts:37</a></div>
-                        </td>
-                    </tr>
-
-            <tr>
-                <td class="col-md-4">
-                    <div class="io-description"><p>Chart.js object options configuration</p>
-</div>
-                </td>
-            </tr>
 
         </tbody>
     </table>
@@ -505,177 +340,56 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {AfterViewInit, Component, OnDestroy} from &#x27;@angular/core&#x27;;
-import {Chart} from &quot;chart.js&quot;;
-import {ChartConfiguration, ChartOptions} from &quot;chart.js/dist/types&quot;;
-import {CurveService} from &quot;../curve.service&quot;;
-import {ChartInfo, MyChart} from &quot;../../shared/charts/chart.interface&quot;;
-import {MyData} from &quot;../../shared/data/data.interface&quot;;
-import {CurveChartInfo, CurveCounts, CurveDataDict, CurveInterface} from &quot;../curve.service.util&quot;;
-import {AppearanceService} from &quot;../../../shared/settings/appearance/service/appearance.service&quot;;
-import {ChartColor} from &quot;../../../shared/settings/appearance/service/appearance.utils&quot;;
-import {Subject, takeUntil} from &#x27;rxjs&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {Component, OnDestroy} from &#x27;@angular/core&#x27;;
+import {FormControl, FormGroup} from &quot;@angular/forms&quot;;
+import {debounceTime, Subject, takeUntil} from &quot;rxjs&quot;;
+import {ScatterService} from &quot;../scatter.service&quot;;
 
-/**
- * Chart for the curve graphing tools.
- *
- */
 @Component({
-  selector: &#x27;app-curve-chart&#x27;,
-  templateUrl: &#x27;./curve-chart.component.html&#x27;,
-  styleUrls: [&#x27;./curve-chart.component.scss&#x27;],
+  selector: &#x27;app-scatter-chart-form&#x27;,
+  templateUrl: &#x27;./scatter-chart-form.component.html&#x27;,
+  styleUrls: [&#x27;./scatter-chart-form.component.scss&#x27;]
 })
-export class CurveChartComponent implements AfterViewInit, OnDestroy {
-  /**
-   * Chart.js object id
-   */
-  id!: string;
-  /**
-   * Custom Chart object
-   */
-  chart!: CurveChart;
-  /**
-   * Chart.js object data configuration
-   */
-  lineChartData!: ChartConfiguration&lt;&#x27;line&#x27;&gt;[&#x27;data&#x27;];
-  /**
-   * Chart.js object options configuration
-   */
-  lineChartOptions!: ChartOptions&lt;&#x27;line&#x27;&gt;;
+export class ScatterChartFormComponent implements OnDestroy {
+  formGroup!: FormGroup;
   private destroy$: Subject&lt;any&gt; &#x3D; new Subject&lt;any&gt;();
 
-  constructor(private service: CurveService, private appearanceService: AppearanceService) {
-    this.id &#x3D; &quot;curve-chart&quot;;
-    Chart.defaults.color &#x3D; this.appearanceService.getChartFontColor();
-    Chart.defaults.borderColor &#x3D; this.appearanceService.getChartBackgroundColor();
-    this.chart &#x3D; new CurveChart(this.id);
-    this.lineChartData &#x3D; this.chart.generateChartConfig(
-      this.service.getDataObject(),
-      this.service.getChartInfoObject(),
-      this.service.getInterfaceObject());
-    this.lineChartOptions &#x3D; this.chart.generateChartOptions(
-      this.service.getChartInfoObject(),
-      this.service.getInterfaceObject()
-    );
-  }
-
-
-  ngAfterViewInit(): void {
-    this.service.data$.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(
-      () &#x3D;&gt; {
-        this.lineChartData &#x3D; this.chart.generateChartConfig(
-          this.service.getDataObject(),
-          this.service.getChartInfoObject(),
-          this.service.getInterfaceObject());
-        this.chart.renderChart();
-      }
-    )
+  constructor(private service: ScatterService) {
     this.service.chartInfo$.pipe(
       takeUntil(this.destroy$)
-    ).subscribe(
-      () &#x3D;&gt; {
-        this.lineChartOptions &#x3D; this.chart.generateChartOptions(
-          this.service.getChartInfoObject(),
-          this.service.getInterfaceObject()
-        );
-        this.chart.renderChart();
-      }
-    )
+    ).subscribe(info &#x3D;&gt; {
+      this.formGroup &#x3D; new FormGroup({
+        chartTitle: new FormControl(this.service.getChartTitle()),
+        dataLabel: new FormControl(this.service.getDataLabel()),
+        xAxisLabel: new FormControl(this.service.getXAxisLabel()),
+        yAxisLabel: new FormControl(this.service.getYAxisLabel()),
+      })
+      this.formGroup.controls[&#x27;chartTitle&#x27;].valueChanges.pipe(
+        debounceTime(200),
+      ).subscribe(title &#x3D;&gt; {
+        this.service.setChartTitle(title);
+      });
+      this.formGroup.controls[&#x27;dataLabel&#x27;].valueChanges.pipe(
+        debounceTime(200),
+      ).subscribe(labels &#x3D;&gt; {
+        this.service.setDataLabel(labels);
+      });
+      this.formGroup.controls[&#x27;xAxisLabel&#x27;].valueChanges.pipe(
+        debounceTime(200),
+      ).subscribe(label &#x3D;&gt; {
+        this.service.setXAxisLabel(label);
+      });
+      this.formGroup.controls[&#x27;yAxisLabel&#x27;].valueChanges.pipe(
+        debounceTime(200),
+      ).subscribe(label &#x3D;&gt; {
+        this.service.setYAxisLabel(label);
+      });
+    })
   }
 
   ngOnDestroy(): void {
     this.destroy$.next(null);
     this.destroy$.complete();
-  }
-}
-
-class CurveChart implements MyChart {
-  private readonly id: string;
-
-  constructor(id: string) {
-    this.id &#x3D; id;
-  }
-
-  public generateChartConfig(data: MyData, chartInfo: ChartInfo, toolInterface: any): ChartConfiguration&lt;&#x27;line&#x27;&gt;[&#x27;data&#x27;] {
-    return this.generateCurveChartConfig(
-      data.getData(),
-      (toolInterface as CurveInterface).getCurveCount(),
-      (chartInfo as CurveChartInfo).getTableLabels());
-  }
-
-  public generateChartOptions(chartInfo: ChartInfo, toolInterface: any): ChartOptions {
-    return {
-      responsive: true,
-      maintainAspectRatio: false,
-      hover: {mode: &#x27;nearest&#x27;},
-      scales: {
-        x: {
-          title: {text: (chartInfo as CurveChartInfo).getXAxisLabel(), display: true},
-          type: &#x27;linear&#x27;,
-          position: &#x27;bottom&#x27;,
-        },
-        y: {
-          title: {text: (chartInfo as CurveChartInfo).getYAxisLabel(), display: true},
-          reverse: (toolInterface as CurveInterface).getIsMagnitudeOn(),
-        }
-      },
-      plugins: {
-        title: {
-          text: (chartInfo as CurveChartInfo).getChartTitle(),
-          display: true,
-        },
-        colors: {
-          forceOverride: true,
-        }
-      },
-      animation: {
-        duration: 0,
-      }
-    };
-  }
-
-  public renderChart(): void {
-    Chart.getChart(this.id)?.update(&#x27;none&#x27;);
-  }
-
-  private generateCurveChartConfig(chartData: CurveDataDict[], curveCount: number, labels: string[]): ChartConfiguration&lt;&#x27;line&#x27;&gt;[&#x27;data&#x27;] {
-    let result: any &#x3D; {datasets: []};
-    const data &#x3D; this.makeRawData(chartData, curveCount);
-    for (let i &#x3D; 0; i &lt; curveCount; i++) {
-      result[&#x27;datasets&#x27;].push({
-        label: labels[i + 1],
-        data: data[i],
-        borderWidth: 2,
-        tension: 0.1,
-        fill: false,
-        color: ChartColor.getLineColor(i),
-        backgroundColor: ChartColor.getLineColor(i),
-        borderColor: ChartColor.getLineColor(i),
-        pointBackgroundColor: ChartColor.getLineColor(i),
-        pointBorderColor: ChartColor.getLineColor(i),
-      })
-    }
-    return result;
-  }
-
-  private makeRawData(dataDict: CurveDataDict[], curveCount: number): any[][] {
-    const data &#x3D; dataDict;
-    let result: any[][] &#x3D; [[], [], [], []];
-    if (data.length &#x3D;&#x3D; 0)
-      return result;
-    for (let i &#x3D; 0; i &lt; data.length; i++) {
-      if (curveCount &gt;&#x3D; CurveCounts.ONE &amp;&amp; data[i].y1 !&#x3D; null)
-        result[0].push({x: data[i].x, y: data[i].y1});
-      if (curveCount &gt;&#x3D; CurveCounts.TWO &amp;&amp; data[i].y2 !&#x3D; null)
-        result[1].push({x: data[i].x, y: data[i].y2});
-      if (curveCount &gt;&#x3D; CurveCounts.THREE &amp;&amp; data[i].y3 !&#x3D; null)
-        result[2].push({x: data[i].x, y: data[i].y3});
-      if (curveCount &gt;&#x3D; CurveCounts.FOUR &amp;&amp; data[i].y4 !&#x3D; null)
-        result[3].push({x: data[i].x, y: data[i].y4});
-    }
-    return result;
   }
 
 }
@@ -683,19 +397,49 @@ class CurveChart implements MyChart {
     </div>
 
     <div class="tab-pane fade " id="templateData">
-        <pre class="line-numbers"><code class="language-html">&lt;canvas [data]&#x3D;&quot;lineChartData&quot; [id]&#x3D;&quot;id&quot;
-        [options]&#x3D;&quot;lineChartOptions&quot;
-        [type]&#x3D;&quot;&#x27;line&#x27;&quot;
-        baseChart&gt;
-&lt;/canvas&gt;
+        <pre class="line-numbers"><code class="language-html">&lt;form [formGroup]&#x3D;&quot;formGroup&quot;&gt;
+  &lt;div class&#x3D;&quot;row&quot;&gt;
+    &lt;div class&#x3D;&quot;col&quot;&gt;
+      &lt;mat-form-field&gt;
+        &lt;mat-label&gt;Title&lt;/mat-label&gt;
+        &lt;input [formControlName]&#x3D;&quot;&#x27;chartTitle&#x27;&quot; matInput&gt;
+      &lt;/mat-form-field&gt;
+    &lt;/div&gt;
+    &lt;div class&#x3D;&quot;col&quot;&gt;
+      &lt;mat-form-field&gt;
+        &lt;mat-label&gt;Data&lt;/mat-label&gt;
+        &lt;input [formControlName]&#x3D;&quot;&#x27;dataLabel&#x27;&quot; matInput
+               placeholder&#x3D;&quot;Labels for different curves are separated by comma.&quot;&gt;
+      &lt;/mat-form-field&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class&#x3D;&quot;row&quot;&gt;
+    &lt;div class&#x3D;&quot;col&quot;&gt;
+      &lt;mat-form-field&gt;
+        &lt;mat-label&gt;X Axis&lt;/mat-label&gt;
+        &lt;input [formControlName]&#x3D;&quot;&#x27;xAxisLabel&#x27;&quot; matInput&gt;
+      &lt;/mat-form-field&gt;
+    &lt;/div&gt;
+    &lt;div class&#x3D;&quot;col&quot;&gt;
+      &lt;mat-form-field&gt;
+        &lt;mat-label&gt;Y Axis&lt;/mat-label&gt;
+        &lt;input [formControlName]&#x3D;&quot;&#x27;yAxisLabel&#x27;&quot; matInput&gt;
+      &lt;/mat-form-field&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/form&gt;
+
 </code></pre>
     </div>
 
     <div class="tab-pane fade " id="styleData">
                 <p class="comment">
-                    <code>./curve-chart.component.scss</code>
+                    <code>./scatter-chart-form.component.scss</code>
                 </p>
-                <pre class="line-numbers"><code class="language-scss"></code></pre>
+                <pre class="line-numbers"><code class="language-scss">mat-form-field {
+  width: 100%;
+}
+</code></pre>
     </div>
 
     <div class="tab-pane fade " id="tree">
@@ -723,10 +467,10 @@ class CurveChart implements MyChart {
 <script src="../js/libs/htmlparser.js"></script>
 <script src="../js/libs/deep-iterator.js"></script>
 <script>
-        var COMPONENT_TEMPLATE = '<div><canvas [data]="lineChartData" [id]="id"        [options]="lineChartOptions"        [type]="\'line\'"        baseChart></canvas></div>'
+        var COMPONENT_TEMPLATE = '<div><form [formGroup]="formGroup">  <div class="row">    <div class="col">      <mat-form-field>        <mat-label>Title</mat-label>        <input [formControlName]="\'chartTitle\'" matInput>      </mat-form-field>    </div>    <div class="col">      <mat-form-field>        <mat-label>Data</mat-label>        <input [formControlName]="\'dataLabel\'" matInput               placeholder="Labels for different curves are separated by comma.">      </mat-form-field>    </div>  </div>  <div class="row">    <div class="col">      <mat-form-field>        <mat-label>X Axis</mat-label>        <input [formControlName]="\'xAxisLabel\'" matInput>      </mat-form-field>    </div>    <div class="col">      <mat-form-field>        <mat-label>Y Axis</mat-label>        <input [formControlName]="\'yAxisLabel\'" matInput>      </mat-form-field>    </div>  </div></form></div>'
     var COMPONENTS = [{'name': 'AboutComponent', 'selector': 'app-about'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'AppearanceComponent', 'selector': 'app-appearance'},{'name': 'CurveChartComponent', 'selector': 'app-curve-chart'},{'name': 'CurveChartFormComponent', 'selector': 'app-curve-chart-form'},{'name': 'CurveComponent', 'selector': 'app-curve'},{'name': 'CurveHighChartComponent', 'selector': 'app-curve-highchart'},{'name': 'CurveTableComponent', 'selector': 'app-curve-table'},{'name': 'HomeComponent', 'selector': 'app-home'},{'name': 'HonorCodePopupComponent', 'selector': 'app-honor-code-popup'},{'name': 'InputSliderComponent', 'selector': 'my-input-slider'},{'name': 'LineFormComponent', 'selector': 'app-line-form'},{'name': 'MenubarComponent', 'selector': 'app-menubar'},{'name': 'MoonChartFormComponent', 'selector': 'app-moon-chart-form'},{'name': 'MoonComponent', 'selector': 'app-moon'},{'name': 'MoonFormComponent', 'selector': 'app-moon-form'},{'name': 'MoonHighchartComponent', 'selector': 'app-moon-highchart'},{'name': 'MoonTableComponent', 'selector': 'app-moon-table'},{'name': 'PageNotFoundComponent', 'selector': 'app-page-not-found'},{'name': 'ScatterChartFormComponent', 'selector': 'app-scatter-chart-form'},{'name': 'ScatterComponent', 'selector': 'app-scatter'},{'name': 'ScatterFormComponent', 'selector': 'app-scatter-form'},{'name': 'ScatterHighchartComponent', 'selector': 'app-scatter-highchart'},{'name': 'ScatterTableComponent', 'selector': 'app-scatter-table'},{'name': 'SettingsComponent', 'selector': 'app-settings'},{'name': 'SimpleDataButtonComponent', 'selector': 'app-simple-data-button'},{'name': 'SimpleGraphButtonComponent', 'selector': 'app-simple-graph-button'},{'name': 'ToolsNavbarComponent', 'selector': 'app-tools-navbar'},{'name': 'VenusChartFormComponent', 'selector': 'app-venus-chart-form'},{'name': 'VenusComponent', 'selector': 'app-venus'},{'name': 'VenusHighchartComponent', 'selector': 'app-venus-highchart'},{'name': 'VenusTableComponent', 'selector': 'app-venus-table'}];
     var DIRECTIVES = [];
-    var ACTUAL_COMPONENT = {'name': 'CurveChartComponent'};
+    var ACTUAL_COMPONENT = {'name': 'ScatterChartFormComponent'};
 </script>
 <script src="../js/tree.js"></script>
 
@@ -772,7 +516,7 @@ class CurveChart implements MyChart {
        <script>
             var COMPODOC_CURRENT_PAGE_DEPTH = 1;
             var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
-            var COMPODOC_CURRENT_PAGE_URL = 'CurveChartComponent.html';
+            var COMPODOC_CURRENT_PAGE_URL = 'ScatterChartFormComponent.html';
             var MAX_SEARCH_RESULTS = 15;
        </script>
 

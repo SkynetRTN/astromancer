@@ -183,6 +183,10 @@
                     <td class="col-md-4">
                         <ul class="index-list">
                             <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#limitPrecision" >limitPrecision</a>
+                            </li>
+                            <li>
                                 <a href="#ngAfterViewInit" >ngAfterViewInit</a>
                             </li>
                             <li>
@@ -258,6 +262,89 @@
     <h3 id="methods">
         Methods
     </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="limitPrecision"></a>
+                    <span class="name">
+                        <span class="modifier">Private</span>
+                        <span ><b>limitPrecision</b></span>
+                        <a href="#limitPrecision"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>limitPrecision(data: <a href="../interfaces/VenusDataDict.html" target="_self">VenusDataDict[]</a>, precision: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="57"
+                            class="link-to-prism">src/app/tools/venus/venus-table/venus-table.component.ts:57</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>data</td>
+                                    <td>
+                                                <code><a href="../interfaces/VenusDataDict.html" target="_self" >VenusDataDict[]</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>precision</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../interfaces/VenusDataDict.html" target="_self" >VenusDataDict[]</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
     <table class="table table-sm table-bordered">
         <tbody>
             <tr>
@@ -603,8 +690,8 @@ export class VenusTableComponent implements AfterViewInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(
       () &#x3D;&gt; {
-        this.dataSet &#x3D; this.service.getData();
-        this.table.getTable().loadData(this.dataSet);
+        this.dataSet &#x3D; this.limitPrecision(this.service.getData(), 3);
+        this.table.renderTable();
       }
     )
   }
@@ -626,8 +713,18 @@ export class VenusTableComponent implements AfterViewInit, OnDestroy {
   }
 
   public onInsert &#x3D; (index: number, amount: number) &#x3D;&gt; {
-    // this.service.addRow(index, amount);
-    this.service.setData(this.table.getData());
+    this.service.addRow(index, amount);
+  }
+
+  private limitPrecision(data: VenusDataDict[], precision: number): VenusDataDict[] {
+    return data.map(
+      (row: VenusDataDict) &#x3D;&gt; {
+        return {
+          diameter: row.diameter ? parseFloat(row.diameter.toFixed(precision)) : row.diameter,
+          phase: row.phase ? parseFloat(row.phase.toFixed(precision)) : row.phase
+        }
+      }
+    );
   }
 }
 
@@ -728,7 +825,7 @@ class VenusTable implements MyTable {
 <script src="../js/libs/deep-iterator.js"></script>
 <script>
         var COMPONENT_TEMPLATE = '<div><div class="container">  <hot-table #table             [afterChange]="onChange"             [afterCreateRow]="onInsert"             [allowInsertColumn]="false"             [allowInsertRow]="true"             [beforeRemoveRow]="onRemove"             [colHeaders]="colNames"             [contextMenu]="[                \'undo\',                \'redo\',                \'copy\',                \'---------\',                \'row_above\',                \'row_below\',                \'---------\',                \'remove_row\']"             [data]="dataSet"             [hiddenColumns]="true"             [hotId]="id"             [preventOverflow]="\'horizontal\'"             [renderAllRows]="false"             [rowHeaders]="true"             [stretchH]="\'all\'"             [type]="\'numeric\'"             id="table"             licenseKey="non-commercial-and-evaluation">  </hot-table></div></div>'
-    var COMPONENTS = [{'name': 'AboutComponent', 'selector': 'app-about'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'AppearanceComponent', 'selector': 'app-appearance'},{'name': 'CurveChartComponent', 'selector': 'app-curve-chart'},{'name': 'CurveChartFormComponent', 'selector': 'app-curve-chart-form'},{'name': 'CurveComponent', 'selector': 'app-curve'},{'name': 'CurveHighChartComponent', 'selector': 'app-curve-highchart'},{'name': 'CurveTableComponent', 'selector': 'app-curve-table'},{'name': 'HomeComponent', 'selector': 'app-home'},{'name': 'HonorCodePopupComponent', 'selector': 'app-honor-code-popup'},{'name': 'InputSliderComponent', 'selector': 'my-input-slider'},{'name': 'LineFormComponent', 'selector': 'app-line-form'},{'name': 'MenubarComponent', 'selector': 'app-menubar'},{'name': 'MoonChartFormComponent', 'selector': 'app-moon-chart-form'},{'name': 'MoonComponent', 'selector': 'app-moon'},{'name': 'MoonFormComponent', 'selector': 'app-moon-form'},{'name': 'MoonHighchartComponent', 'selector': 'app-moon-highchart'},{'name': 'MoonTableComponent', 'selector': 'app-moon-table'},{'name': 'PageNotFoundComponent', 'selector': 'app-page-not-found'},{'name': 'SettingsComponent', 'selector': 'app-settings'},{'name': 'SimpleDataButtonComponent', 'selector': 'app-simple-data-button'},{'name': 'SimpleGraphButtonComponent', 'selector': 'app-simple-graph-button'},{'name': 'ToolsNavbarComponent', 'selector': 'app-tools-navbar'},{'name': 'VenusChartFormComponent', 'selector': 'app-venus-chart-form'},{'name': 'VenusComponent', 'selector': 'app-venus'},{'name': 'VenusHighchartComponent', 'selector': 'app-venus-highchart'},{'name': 'VenusTableComponent', 'selector': 'app-venus-table'}];
+    var COMPONENTS = [{'name': 'AboutComponent', 'selector': 'app-about'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'AppearanceComponent', 'selector': 'app-appearance'},{'name': 'CurveChartComponent', 'selector': 'app-curve-chart'},{'name': 'CurveChartFormComponent', 'selector': 'app-curve-chart-form'},{'name': 'CurveComponent', 'selector': 'app-curve'},{'name': 'CurveHighChartComponent', 'selector': 'app-curve-highchart'},{'name': 'CurveTableComponent', 'selector': 'app-curve-table'},{'name': 'HomeComponent', 'selector': 'app-home'},{'name': 'HonorCodePopupComponent', 'selector': 'app-honor-code-popup'},{'name': 'InputSliderComponent', 'selector': 'my-input-slider'},{'name': 'LineFormComponent', 'selector': 'app-line-form'},{'name': 'MenubarComponent', 'selector': 'app-menubar'},{'name': 'MoonChartFormComponent', 'selector': 'app-moon-chart-form'},{'name': 'MoonComponent', 'selector': 'app-moon'},{'name': 'MoonFormComponent', 'selector': 'app-moon-form'},{'name': 'MoonHighchartComponent', 'selector': 'app-moon-highchart'},{'name': 'MoonTableComponent', 'selector': 'app-moon-table'},{'name': 'PageNotFoundComponent', 'selector': 'app-page-not-found'},{'name': 'ScatterChartFormComponent', 'selector': 'app-scatter-chart-form'},{'name': 'ScatterComponent', 'selector': 'app-scatter'},{'name': 'ScatterFormComponent', 'selector': 'app-scatter-form'},{'name': 'ScatterHighchartComponent', 'selector': 'app-scatter-highchart'},{'name': 'ScatterTableComponent', 'selector': 'app-scatter-table'},{'name': 'SettingsComponent', 'selector': 'app-settings'},{'name': 'SimpleDataButtonComponent', 'selector': 'app-simple-data-button'},{'name': 'SimpleGraphButtonComponent', 'selector': 'app-simple-graph-button'},{'name': 'ToolsNavbarComponent', 'selector': 'app-tools-navbar'},{'name': 'VenusChartFormComponent', 'selector': 'app-venus-chart-form'},{'name': 'VenusComponent', 'selector': 'app-venus'},{'name': 'VenusHighchartComponent', 'selector': 'app-venus-highchart'},{'name': 'VenusTableComponent', 'selector': 'app-venus-table'}];
     var DIRECTIVES = [];
     var ACTUAL_COMPONENT = {'name': 'VenusTableComponent'};
 </script>

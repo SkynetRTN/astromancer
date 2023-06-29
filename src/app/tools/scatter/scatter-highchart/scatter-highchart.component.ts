@@ -90,7 +90,7 @@ export class ScatterHighchartComponent implements AfterViewInit, OnDestroy {
       data: [[0, 0]],
       type: 'scatter',
       marker: {
-        radius: 5,
+        radius: 10,
       }
     })
   }

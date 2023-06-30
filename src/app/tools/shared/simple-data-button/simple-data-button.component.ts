@@ -13,6 +13,7 @@ export class SimpleDataButtonComponent implements OnInit {
   @Input() isDataRandom: boolean = false;
   @Input() isUploadData: boolean = false;
   @Output() tableUserActionObs$: EventEmitter<TableAction[]>;
+  @Output() fileUpload$: EventEmitter<File> = new EventEmitter<File>();
 
 
   constructor() {
@@ -36,6 +37,10 @@ export class SimpleDataButtonComponent implements OnInit {
 
   uploadData() {
     this.tableUserActionObs$.emit([{action: "uploadData"}]);
+  }
+
+  fileChanged($event: Event) {
+    this.fileUpload$.emit(($event.target as HTMLInputElement).files![0]);
   }
 }
 

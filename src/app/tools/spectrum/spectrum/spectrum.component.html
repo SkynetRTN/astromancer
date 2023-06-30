@@ -8,6 +8,7 @@
     </div>
     <div class="row data-button-row">
       <app-simple-data-button (tableUserActionObs$)="actionHandler($event)"
+                              (fileUpload$)="uploadHandler($event)"
                               [isDataRandom]="true" [isUploadData]="true">
       </app-simple-data-button>
     </div>

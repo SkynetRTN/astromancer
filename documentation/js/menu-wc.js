@@ -359,13 +359,13 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 <a href="modules/SimpleDataButtonModule.html" data-type="entity-link" >SimpleDataButtonModule</a>
                                     <li class="chapter inner">
                                         <div class="simple menu-toggler" data-bs-toggle="collapse" ${ isNormalMode ?
-                                            'data-bs-target="#components-links-module-SimpleDataButtonModule-02b276d7965af22632e0c4fbf50dc09575d03d9a3f92f1458a617a6ef293deb3ecfb16ef42ae0e65a43ccbd39e9fa7d42dc7be9a49ae96c7cebefbefdb67f7c6"' : 'data-bs-target="#xs-components-links-module-SimpleDataButtonModule-02b276d7965af22632e0c4fbf50dc09575d03d9a3f92f1458a617a6ef293deb3ecfb16ef42ae0e65a43ccbd39e9fa7d42dc7be9a49ae96c7cebefbefdb67f7c6"' }>
+                                            'data-bs-target="#components-links-module-SimpleDataButtonModule-929d350aa9e8b3a97c045c7cb9ca10a5d5a5d657a5ef50fe0ec8280795b785ebba1507cd2944734c8acfdc4b3097b2b0cf58c9162ae15e505b2be64ffbf942ee"' : 'data-bs-target="#xs-components-links-module-SimpleDataButtonModule-929d350aa9e8b3a97c045c7cb9ca10a5d5a5d657a5ef50fe0ec8280795b785ebba1507cd2944734c8acfdc4b3097b2b0cf58c9162ae15e505b2be64ffbf942ee"' }>
                                             <span class="icon ion-md-cog"></span>
                                             <span>Components</span>
                                             <span class="icon ion-ios-arrow-down"></span>
                                         </div>
-                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-SimpleDataButtonModule-02b276d7965af22632e0c4fbf50dc09575d03d9a3f92f1458a617a6ef293deb3ecfb16ef42ae0e65a43ccbd39e9fa7d42dc7be9a49ae96c7cebefbefdb67f7c6"' :
-                                            'id="xs-components-links-module-SimpleDataButtonModule-02b276d7965af22632e0c4fbf50dc09575d03d9a3f92f1458a617a6ef293deb3ecfb16ef42ae0e65a43ccbd39e9fa7d42dc7be9a49ae96c7cebefbefdb67f7c6"' }>
+                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-SimpleDataButtonModule-929d350aa9e8b3a97c045c7cb9ca10a5d5a5d657a5ef50fe0ec8280795b785ebba1507cd2944734c8acfdc4b3097b2b0cf58c9162ae15e505b2be64ffbf942ee"' :
+                                            'id="xs-components-links-module-SimpleDataButtonModule-929d350aa9e8b3a97c045c7cb9ca10a5d5a5d657a5ef50fe0ec8280795b785ebba1507cd2944734c8acfdc4b3097b2b0cf58c9162ae15e505b2be64ffbf942ee"' }>
                                             <li class="link">
                                                 <a href="components/SimpleDataButtonComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >SimpleDataButtonComponent</a>
                                             </li>
@@ -390,16 +390,59 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                     </li>
                             </li>
                             <li class="link">
-                                <a href="modules/ToolsNavbarModule.html" data-type="entity-link" >ToolsNavbarModule</a>
+                                <a href="modules/SpectrumModule.html" data-type="entity-link" >SpectrumModule</a>
                                     <li class="chapter inner">
                                         <div class="simple menu-toggler" data-bs-toggle="collapse" ${ isNormalMode ?
-                                            'data-bs-target="#components-links-module-ToolsNavbarModule-7545d915670a09e30458ae2ad60a860e772cdd3386e2e42eadca6c3e5c14303ace69c1b80c32e88018f98fd367e616c6b6fd3336892b5746f48c35db3d1d9ba7"' : 'data-bs-target="#xs-components-links-module-ToolsNavbarModule-7545d915670a09e30458ae2ad60a860e772cdd3386e2e42eadca6c3e5c14303ace69c1b80c32e88018f98fd367e616c6b6fd3336892b5746f48c35db3d1d9ba7"' }>
+                                            'data-bs-target="#components-links-module-SpectrumModule-a2a4553f6684f720b156a598901fe2caed8623bbd2007cf8991c9633158e95445be2769192ea526de936fc41f7e1624d71ca02c808cfb72e5c8ad2e124e71bf0"' : 'data-bs-target="#xs-components-links-module-SpectrumModule-a2a4553f6684f720b156a598901fe2caed8623bbd2007cf8991c9633158e95445be2769192ea526de936fc41f7e1624d71ca02c808cfb72e5c8ad2e124e71bf0"' }>
                                             <span class="icon ion-md-cog"></span>
                                             <span>Components</span>
                                             <span class="icon ion-ios-arrow-down"></span>
                                         </div>
-                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-ToolsNavbarModule-7545d915670a09e30458ae2ad60a860e772cdd3386e2e42eadca6c3e5c14303ace69c1b80c32e88018f98fd367e616c6b6fd3336892b5746f48c35db3d1d9ba7"' :
-                                            'id="xs-components-links-module-ToolsNavbarModule-7545d915670a09e30458ae2ad60a860e772cdd3386e2e42eadca6c3e5c14303ace69c1b80c32e88018f98fd367e616c6b6fd3336892b5746f48c35db3d1d9ba7"' }>
+                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-SpectrumModule-a2a4553f6684f720b156a598901fe2caed8623bbd2007cf8991c9633158e95445be2769192ea526de936fc41f7e1624d71ca02c808cfb72e5c8ad2e124e71bf0"' :
+                                            'id="xs-components-links-module-SpectrumModule-a2a4553f6684f720b156a598901fe2caed8623bbd2007cf8991c9633158e95445be2769192ea526de936fc41f7e1624d71ca02c808cfb72e5c8ad2e124e71bf0"' }>
+                                            <li class="link">
+                                                <a href="components/SpectrumChartFormComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >SpectrumChartFormComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/SpectrumComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >SpectrumComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/SpectrumFormComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >SpectrumFormComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/SpectrumHighchartComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >SpectrumHighchartComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/SpectrumTableComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >SpectrumTableComponent</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                <li class="chapter inner">
+                                    <div class="simple menu-toggler" data-bs-toggle="collapse" ${ isNormalMode ?
+                                        'data-bs-target="#injectables-links-module-SpectrumModule-a2a4553f6684f720b156a598901fe2caed8623bbd2007cf8991c9633158e95445be2769192ea526de936fc41f7e1624d71ca02c808cfb72e5c8ad2e124e71bf0"' : 'data-bs-target="#xs-injectables-links-module-SpectrumModule-a2a4553f6684f720b156a598901fe2caed8623bbd2007cf8991c9633158e95445be2769192ea526de936fc41f7e1624d71ca02c808cfb72e5c8ad2e124e71bf0"' }>
+                                        <span class="icon ion-md-arrow-round-down"></span>
+                                        <span>Injectables</span>
+                                        <span class="icon ion-ios-arrow-down"></span>
+                                    </div>
+                                    <ul class="links collapse" ${ isNormalMode ? 'id="injectables-links-module-SpectrumModule-a2a4553f6684f720b156a598901fe2caed8623bbd2007cf8991c9633158e95445be2769192ea526de936fc41f7e1624d71ca02c808cfb72e5c8ad2e124e71bf0"' :
+                                        'id="xs-injectables-links-module-SpectrumModule-a2a4553f6684f720b156a598901fe2caed8623bbd2007cf8991c9633158e95445be2769192ea526de936fc41f7e1624d71ca02c808cfb72e5c8ad2e124e71bf0"' }>
+                                        <li class="link">
+                                            <a href="injectables/SpectrumService.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >SpectrumService</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </li>
+                            <li class="link">
+                                <a href="modules/ToolsNavbarModule.html" data-type="entity-link" >ToolsNavbarModule</a>
+                                    <li class="chapter inner">
+                                        <div class="simple menu-toggler" data-bs-toggle="collapse" ${ isNormalMode ?
+                                            'data-bs-target="#components-links-module-ToolsNavbarModule-eb753068e8c56788285e11a227a2b36e618626beee2adc0f39291a80fa6dcf392db0bc0e4ef0c120090abb954be5879f27b6296aa4fb1f295398b5b476fe3643"' : 'data-bs-target="#xs-components-links-module-ToolsNavbarModule-eb753068e8c56788285e11a227a2b36e618626beee2adc0f39291a80fa6dcf392db0bc0e4ef0c120090abb954be5879f27b6296aa4fb1f295398b5b476fe3643"' }>
+                                            <span class="icon ion-md-cog"></span>
+                                            <span>Components</span>
+                                            <span class="icon ion-ios-arrow-down"></span>
+                                        </div>
+                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-ToolsNavbarModule-eb753068e8c56788285e11a227a2b36e618626beee2adc0f39291a80fa6dcf392db0bc0e4ef0c120090abb954be5879f27b6296aa4fb1f295398b5b476fe3643"' :
+                                            'id="xs-components-links-module-ToolsNavbarModule-eb753068e8c56788285e11a227a2b36e618626beee2adc0f39291a80fa6dcf392db0bc0e4ef0c120090abb954be5879f27b6296aa4fb1f295398b5b476fe3643"' }>
                                             <li class="link">
                                                 <a href="components/ToolsNavbarComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >ToolsNavbarComponent</a>
                                             </li>
@@ -511,6 +554,15 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 <a href="classes/MoonTable.html" data-type="entity-link" >MoonTable</a>
                             </li>
                             <li class="link">
+                                <a href="classes/MyFileParser.html" data-type="entity-link" >MyFileParser</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/MyFileParserDefault.html" data-type="entity-link" >MyFileParserDefault</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/MyFileParserTXT.html" data-type="entity-link" >MyFileParserTXT</a>
+                            </li>
+                            <li class="link">
                                 <a href="classes/ScatterChartInfo.html" data-type="entity-link" >ScatterChartInfo</a>
                             </li>
                             <li class="link">
@@ -527,6 +579,21 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             </li>
                             <li class="link">
                                 <a href="classes/SliderUtil.html" data-type="entity-link" >SliderUtil</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/SpectrumChartInfo.html" data-type="entity-link" >SpectrumChartInfo</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/SpectrumData.html" data-type="entity-link" >SpectrumData</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/SpectrumInterfaceImpl.html" data-type="entity-link" >SpectrumInterfaceImpl</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/SpectrumStorage.html" data-type="entity-link" >SpectrumStorage</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/SpectrumTable.html" data-type="entity-link" >SpectrumTable</a>
                             </li>
                             <li class="link">
                                 <a href="classes/VenusChartInfo.html" data-type="entity-link" >VenusChartInfo</a>
@@ -588,6 +655,9 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 <a href="interfaces/DualDataDict.html" data-type="entity-link" >DualDataDict</a>
                             </li>
                             <li class="link">
+                                <a href="interfaces/HeaderRequirement.html" data-type="entity-link" >HeaderRequirement</a>
+                            </li>
+                            <li class="link">
                                 <a href="interfaces/InputSliderValue.html" data-type="entity-link" >InputSliderValue</a>
                             </li>
                             <li class="link">
@@ -615,6 +685,9 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 <a href="interfaces/MyData.html" data-type="entity-link" >MyData</a>
                             </li>
                             <li class="link">
+                                <a href="interfaces/MyFileParserStrategy.html" data-type="entity-link" >MyFileParserStrategy</a>
+                            </li>
+                            <li class="link">
                                 <a href="interfaces/MyFontFamily.html" data-type="entity-link" >MyFontFamily</a>
                             </li>
                             <li class="link">
@@ -640,6 +713,15 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             </li>
                             <li class="link">
                                 <a href="interfaces/ScatterModel.html" data-type="entity-link" >ScatterModel</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/SpectrumChartInfoStorageObject.html" data-type="entity-link" >SpectrumChartInfoStorageObject</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/SpectrumDataDict.html" data-type="entity-link" >SpectrumDataDict</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/SpectrumInterface.html" data-type="entity-link" >SpectrumInterface</a>
                             </li>
                             <li class="link">
                                 <a href="interfaces/VenusChartInfoStorageObject.html" data-type="entity-link" >VenusChartInfoStorageObject</a>

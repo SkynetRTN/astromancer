@@ -20,7 +20,10 @@
       <app-spectrum-chart-form></app-spectrum-chart-form>
     </div>
     <div class="row chart-button-row">
-      <app-simple-graph-button (chartUserActionObs$)="actionHandler($event)"></app-simple-graph-button>
+      <div class="col-6">
+        <app-simple-graph-button (chartUserActionObs$)="actionHandler($event)"></app-simple-graph-button>
+      </div>
+      <div class="col-6">Click and drag to zoom. Hold down the shift key to drag and pan.</div>
     </div>
   </div>
 </div>

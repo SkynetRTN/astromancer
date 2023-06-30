@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import {Subject, takeUntil} from "rxjs";
-import {DualService} from "../../dual/dual.service";
 import * as Highcharts from "highcharts";
+
 import {SpectrumService} from "../spectrum.service";
 import {SpectrumOptions} from "../spectrum.service.util";
 
@@ -19,6 +19,14 @@ export class SpectrumHighchartComponent implements AfterViewInit, OnDestroy {
     chart: {
       animation: false,
       styledMode: true,
+      panning: {
+        enabled: true,
+        type: 'x',
+      },
+      panKey: 'shift',
+      zooming: {
+        type: 'x',
+      },
     },
     legend: {
       align: 'center',

@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {ChartAction} from "../../shared/types/actions";
 import {HonorCodePopupService} from "../../shared/honor-code-popup/honor-code-popup.service";
 import {SpectrumService} from "../spectrum.service";
+import {HonorCodeChartService} from "../../shared/honor-code-popup/honor-code-chart.service";
 
 @Component({
   selector: 'app-spectrum',
@@ -11,7 +12,8 @@ import {SpectrumService} from "../spectrum.service";
 export class SpectrumComponent {
   constructor(
     private service: SpectrumService,
-    private honorCodeService: HonorCodePopupService,) {
+    private honorCodeService: HonorCodePopupService,
+    private chartService: HonorCodeChartService) {
   }
 
   actionHandler(actions: ChartAction[]) {
@@ -20,7 +22,7 @@ export class SpectrumComponent {
         this.service.addRow(-1, 1);
       } else if (action.action === "saveGraph") {
         this.honorCodeService.honored().subscribe((name: string) => {
-          // this.chartService.saveImageHighChartOffline(this.service.getHighChart(), "scatter", name);
+          this.chartService.saveImageHighChartOffline(this.service.getHighChart(), "spectrum", name);
         })
       } else if (action.action === "resetData") {
         this.service.resetData();

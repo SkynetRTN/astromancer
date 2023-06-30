@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {
-  SpectrumChartInfo, SpectrumChartInfoStorageObject,
+  SpectrumChartInfo,
+  SpectrumChartInfoStorageObject,
   SpectrumData,
   SpectrumDataDict,
   SpectrumInterface,
@@ -11,6 +12,7 @@ import {
 import {BehaviorSubject} from "rxjs";
 import {MyData} from "../shared/data/data.interface";
 import {ChartInfo} from "../shared/charts/chart.interface";
+import * as Highcharts from "highcharts";
 
 @Injectable()
 export class SpectrumService implements MyData, SpectrumInterface, ChartInfo {
@@ -26,6 +28,8 @@ export class SpectrumService implements MyData, SpectrumInterface, ChartInfo {
   public interface$ = this.interfaceSubject.asObservable();
   private chartInfoSubject: BehaviorSubject<SpectrumChartInfo> = new BehaviorSubject<SpectrumChartInfo>(this.spectrumChartInfo);
   public chartInfo$ = this.chartInfoSubject.asObservable();
+
+  private highChart!: Highcharts.Chart;
 
   constructor() {
     this.spectrumData.setData(this.spectrumStorage.getData());
@@ -143,4 +147,13 @@ export class SpectrumService implements MyData, SpectrumInterface, ChartInfo {
     this.spectrumStorage.saveData(this.spectrumData.getData());
     this.dataSubject.next(this.spectrumData);
   }
+
+  setHighChart(chart: Highcharts.Chart): void {
+    this.highChart = chart;
+  }
+
+  getHighChart(): Highcharts.Chart {
+    return this.highChart;
+  }
+
 }

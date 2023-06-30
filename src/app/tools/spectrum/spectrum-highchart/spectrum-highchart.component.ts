@@ -1,14 +1,16 @@
 import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import {Subject, takeUntil} from "rxjs";
+import {DualService} from "../../dual/dual.service";
 import * as Highcharts from "highcharts";
-import {DualService} from "../dual.service";
+import {SpectrumService} from "../spectrum.service";
+import {SpectrumOptions} from "../spectrum.service.util";
 
 @Component({
-  selector: 'app-dual-highchart',
-  templateUrl: './dual-highchart.component.html',
-  styleUrls: ['./dual-highchart.component.scss']
+  selector: 'app-spectrum-highchart',
+  templateUrl: './spectrum-highchart.component.html',
+  styleUrls: ['./spectrum-highchart.component.scss']
 })
-export class DualHighchartComponent implements AfterViewInit, OnDestroy {
+export class SpectrumHighchartComponent implements AfterViewInit, OnDestroy {
   Highcharts: typeof Highcharts = Highcharts;
   updateFlag: boolean = true;
   chartConstructor: any = "chart";
@@ -35,7 +37,7 @@ export class DualHighchartComponent implements AfterViewInit, OnDestroy {
   };
   private destroy$: Subject<any> = new Subject<any>();
 
-  constructor(private service: DualService) {
+  constructor(private service: SpectrumService) {
     this.setChartTitle();
     this.setChartXAxis();
     this.setChartYAxis();
@@ -75,27 +77,47 @@ export class DualHighchartComponent implements AfterViewInit, OnDestroy {
   }
 
   setData() {
-    const labels: string[] = this.service.getDataLabelArray();
-    const data: number[][][] = this.service.getDataArray();
-    for (let i = 0; i < 2; i++) {
-      this.chartObject.addSeries({
-        name: labels[2*i+1],
-        data: data[i],
-        type: 'line',
-      });
-    }
+    this.chartObject.addSeries({
+      name: SpectrumOptions.ONE,
+      data: this.service.getDataArray()[0],
+      type: 'line',
+      visible: SpectrumOptions.ONE === this.service.getChannel(),
+      showInLegend: SpectrumOptions.ONE === this.service.getChannel(),
+      marker: {
+        enabled: true,
+        symbol: 'circle',
+        radius: 3,
+      },
+    });
+    this.chartObject.addSeries({
+      name: SpectrumOptions.TWO,
+      data: this.service.getDataArray()[1],
+      type: 'line',
+      visible: SpectrumOptions.TWO === this.service.getChannel(),
+      showInLegend: SpectrumOptions.TWO === this.service.getChannel(),
+      marker: {
+        enabled: true,
+        symbol: 'circle',
+        radius: 3,
+      },
+    });
   }
 
   updateData() {
-    const labels: string[] = this.service.getDataLabelArray();
-    const data: number[][][] = this.service.getDataArray();
-    for (let i = 0; i < 2; i++) {
-      this.chartObject.series[i].update({
-        name: labels[2*i+1],
-        data: data[i],
-        type: 'line',
-      });
-    }
+    this.chartObject.series[0].update({
+      name: SpectrumOptions.ONE,
+      data: this.service.getDataArray()[0],
+      type: 'line',
+      visible: SpectrumOptions.ONE === this.service.getChannel(),
+      showInLegend: SpectrumOptions.ONE === this.service.getChannel(),
+    });
+    this.chartObject.series[1].update({
+      name: SpectrumOptions.TWO,
+      data: this.service.getDataArray()[1],
+      type: 'line',
+      visible: SpectrumOptions.TWO === this.service.getChannel(),
+      showInLegend: SpectrumOptions.TWO === this.service.getChannel(),
+    });
   }
 
   private updateChart(): void {

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component} from '@angular/core';
+import {Component} from '@angular/core';
 import {SpectrumOptions} from "../spectrum.service.util";
 import {FormControl} from "@angular/forms";
 import {SpectrumService} from "../spectrum.service";

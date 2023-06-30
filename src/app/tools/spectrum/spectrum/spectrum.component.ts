@@ -25,7 +25,7 @@ export class SpectrumComponent {
       } else if (action.action === "resetData") {
         this.service.resetData();
       } else if (action.action === "resetChartInfo") {
-        // this.service.resetChartInfo();
+        this.service.resetChartInfo();
       }
     })
   }

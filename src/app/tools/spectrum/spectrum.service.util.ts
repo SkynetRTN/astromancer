@@ -1,5 +1,6 @@
 import {MyData} from "../shared/data/data.interface";
 import {MyStorage} from "../shared/storage/storage.interface";
+import {ChartInfo} from "../shared/charts/chart.interface";
 
 export interface SpectrumDataDict {
   wavelength: number | null;
@@ -83,6 +84,7 @@ export interface SpectrumInterface {
   setChannel(channel: SpectrumOptions): void;
 }
 
+
 export class SpectrumInterfaceImpl implements SpectrumInterface {
   private channel: SpectrumOptions;
 
@@ -104,11 +106,97 @@ export class SpectrumInterfaceImpl implements SpectrumInterface {
 }
 
 
+export interface SpectrumChartInfoStorageObject {
+  title: string;
+  xAxis: string;
+  yAxis: string;
+  data: string;
+}
+
+export class SpectrumChartInfo implements ChartInfo {
+  private chartTitle: string;
+  private xAxisLabel: string;
+  private yAxisLabel: string;
+  private dataLabel: string;
+
+  constructor() {
+    this.chartTitle = SpectrumChartInfo.getDefaultStorageObject().title;
+    this.xAxisLabel = SpectrumChartInfo.getDefaultStorageObject().xAxis;
+    this.yAxisLabel = SpectrumChartInfo.getDefaultStorageObject().yAxis;
+    this.dataLabel = SpectrumChartInfo.getDefaultStorageObject().data;
+  }
+
+  public static getDefaultStorageObject(): SpectrumChartInfoStorageObject {
+    return {
+      title: "Title",
+      xAxis: "",
+      yAxis: "",
+      data: "Channel 1",
+    }
+  }
+
+  getChartTitle(): string {
+    return this.chartTitle;
+  }
+
+  getDataLabel(): string {
+    return this.dataLabel;
+  }
+
+  getStorageObject(): SpectrumChartInfoStorageObject {
+    return {
+      title: this.chartTitle,
+      xAxis: this.xAxisLabel,
+      yAxis: this.yAxisLabel,
+      data: this.dataLabel,
+    }
+  }
+
+  getXAxisLabel(): string {
+    return this.xAxisLabel;
+  }
+
+  getYAxisLabel(): string {
+    return this.yAxisLabel;
+  }
+
+  setChartTitle(title: string): void {
+    this.chartTitle = title;
+  }
+
+  setDataLabel(data: string): void {
+    this.dataLabel = data;
+  }
+
+  setStorageObject(storageObject: SpectrumChartInfoStorageObject): void {
+    this.chartTitle = storageObject.title;
+    this.xAxisLabel = storageObject.xAxis;
+    this.yAxisLabel = storageObject.yAxis;
+    this.dataLabel = storageObject.data;
+  }
+
+  setXAxisLabel(xAxis: string): void {
+    this.xAxisLabel = xAxis;
+  }
+
+  setYAxisLabel(yAxis: string): void {
+    this.yAxisLabel = yAxis;
+  }
+
+}
+
+
 export class SpectrumStorage implements MyStorage {
   private static readonly dataKey: string = 'spectrumData';
   private static readonly interfaceKey: string = 'spectrumInterface';
+  private static readonly chartInfoKey: string = 'spectrumChartInfo';
 
-  getChartInfo(): any {
+  getChartInfo(): SpectrumChartInfoStorageObject {
+    if (localStorage.getItem(SpectrumStorage.chartInfoKey)) {
+      return JSON.parse(localStorage.getItem(SpectrumStorage.chartInfoKey)!) as SpectrumChartInfoStorageObject;
+    } else {
+      return SpectrumChartInfo.getDefaultStorageObject();
+    }
   }
 
   getData(): SpectrumDataDict[] {
@@ -128,6 +216,7 @@ export class SpectrumStorage implements MyStorage {
   }
 
   resetChartInfo(): void {
+    localStorage.setItem(SpectrumStorage.chartInfoKey, JSON.stringify(SpectrumChartInfo.getDefaultStorageObject()));
   }
 
   resetData(): void {
@@ -138,7 +227,8 @@ export class SpectrumStorage implements MyStorage {
     localStorage.setItem(SpectrumStorage.interfaceKey, JSON.stringify(SpectrumInterfaceImpl.getDefaultChannel()));
   }
 
-  saveChartInfo(chartInfo: any): void {
+  saveChartInfo(chartInfo: SpectrumChartInfoStorageObject): void {
+    localStorage.setItem(SpectrumStorage.chartInfoKey, JSON.stringify(chartInfo));
   }
 
   saveData(data: SpectrumDataDict[]): void {

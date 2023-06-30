@@ -12,13 +12,16 @@ import {MatLegacyFormFieldModule} from "@angular/material/legacy-form-field";
 import {MatLegacyOptionModule} from "@angular/material/legacy-core";
 import {MatLegacySelectModule} from "@angular/material/legacy-select";
 import {MatLegacySlideToggleModule} from "@angular/material/legacy-slide-toggle";
+import { SpectrumChartFormComponent } from './spectrum-chart-form/spectrum-chart-form.component';
+import {MatLegacyInputModule} from "@angular/material/legacy-input";
 
 
 @NgModule({
   declarations: [
     SpectrumComponent,
     SpectrumTableComponent,
-    SpectrumFormComponent
+    SpectrumFormComponent,
+    SpectrumChartFormComponent
   ],
   imports: [
     CommonModule,
@@ -30,7 +33,8 @@ import {MatLegacySlideToggleModule} from "@angular/material/legacy-slide-toggle"
     MatLegacyOptionModule,
     MatLegacySelectModule,
     MatLegacySlideToggleModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatLegacyInputModule
   ],
   providers: [SpectrumService]
 })

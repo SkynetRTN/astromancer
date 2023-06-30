@@ -14,6 +14,7 @@ import {SpectrumDataDict} from "../spectrum.service.util";
 })
 export class SpectrumComponent implements OnDestroy {
   private static readonly SPECTRUM_GBO_FIELDS: string[] = ["Freq1(MHz)", "XX1", "YY1"];
+  //TODO: add more file types?
   private fileParser: MyFileParser
     = new MyFileParser(FileType.GBO_SPECTRUM_TXT,
     SpectrumComponent.SPECTRUM_GBO_FIELDS,
@@ -28,6 +29,7 @@ export class SpectrumComponent implements OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(
       (error: any) => {
+        //TODO: better error handling/displaying
         alert("error " + error);
       }
     );

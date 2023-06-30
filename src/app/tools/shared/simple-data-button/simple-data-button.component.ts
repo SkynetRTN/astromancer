@@ -11,7 +11,10 @@ import {NgIf} from "@angular/common";
 export class SimpleDataButtonComponent implements OnInit {
   @Input() modelResetVisible: boolean = false;
   @Input() isDataRandom: boolean = false;
+  @Input() isUploadData: boolean = false;
   @Output() tableUserActionObs$: EventEmitter<TableAction[]>;
+  @Output() fileUpload$: EventEmitter<File> = new EventEmitter<File>();
+
 
   constructor() {
     this.tableUserActionObs$ = new EventEmitter<TableAction[]>();
@@ -30,6 +33,14 @@ export class SimpleDataButtonComponent implements OnInit {
 
   modelReset() {
     this.tableUserActionObs$.emit([{action: "resetModel"}]);
+  }
+
+  uploadData() {
+    this.tableUserActionObs$.emit([{action: "uploadData"}]);
+  }
+
+  fileChanged($event: Event) {
+    this.fileUpload$.emit(($event.target as HTMLInputElement).files![0]);
   }
 }
 

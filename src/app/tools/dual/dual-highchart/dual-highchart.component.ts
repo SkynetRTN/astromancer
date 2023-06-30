@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import {Subject, takeUntil} from "rxjs";
 import * as Highcharts from "highcharts";
 import {DualService} from "../dual.service";
@@ -8,7 +8,7 @@ import {DualService} from "../dual.service";
   templateUrl: './dual-highchart.component.html',
   styleUrls: ['./dual-highchart.component.scss']
 })
-export class DualHighchartComponent {
+export class DualHighchartComponent implements AfterViewInit, OnDestroy {
   Highcharts: typeof Highcharts = Highcharts;
   updateFlag: boolean = true;
   chartConstructor: any = "chart";

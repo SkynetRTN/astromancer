@@ -24,23 +24,23 @@
 <title>cluster_ScatterModule</title>
 <polygon fill="none" stroke="black" stroke-dasharray="1,5" points="8,-70 8,-195 1577,-195 1577,-70 8,-70"/>
 </g>
-<g id="clust2" class="cluster">
-<title>cluster_ScatterModule_declarations</title>
-<polygon fill="none" stroke="black" points="701,-78 701,-130 1569,-130 1569,-78 701,-78"/>
-</g>
 <g id="clust11" class="cluster">
 <title>cluster_ScatterModule_providers</title>
-<polygon fill="none" stroke="black" points="543,-78 543,-130 693,-130 693,-78 543,-78"/>
+<polygon fill="none" stroke="black" points="1419,-78 1419,-130 1569,-130 1569,-78 1419,-78"/>
 </g>
 <g id="clust8" class="cluster">
 <title>cluster_ScatterModule_imports</title>
-<polygon fill="none" stroke="black" points="16,-78 16,-130 535,-130 535,-78 16,-78"/>
+<polygon fill="none" stroke="black" points="892,-78 892,-130 1411,-130 1411,-78 892,-78"/>
+</g>
+<g id="clust2" class="cluster">
+<title>cluster_ScatterModule_declarations</title>
+<polygon fill="none" stroke="black" points="16,-78 16,-130 884,-130 884,-78 16,-78"/>
 </g>
 <!-- ScatterChartFormComponent -->
 <g id="node1" class="node">
 <title>ScatterChartFormComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="1560.64,-122 1379.36,-122 1379.36,-86 1560.64,-86 1560.64,-122"/>
-<text text-anchor="middle" x="1470" y="-99.8" font-family="Times,serif" font-size="14.00">ScatterChartFormComponent</text>
+<polygon fill="#ffffb3" stroke="black" points="875.64,-122 694.36,-122 694.36,-86 875.64,-86 875.64,-122"/>
+<text text-anchor="middle" x="785" y="-99.8" font-family="Times,serif" font-size="14.00">ScatterChartFormComponent</text>
 </g>
 <!-- ScatterModule -->
 <g id="node6" class="node">
@@ -51,104 +51,104 @@
 <!-- ScatterChartFormComponent&#45;&gt;ScatterModule -->
 <g id="edge1" class="edge">
 <title>ScatterChartFormComponent&#45;&gt;ScatterModule</title>
-<path fill="none" stroke="black" d="M1470,-122.01C1470,-144.49 1470,-180 1470,-180 1470,-180 844.26,-180 844.26,-180"/>
-<polygon fill="black" stroke="black" points="844.26,-176.5 834.26,-180 844.26,-183.5 844.26,-176.5"/>
+<path fill="none" stroke="black" d="M785,-122.11C785,-122.11 785,-140.99 785,-140.99"/>
+<polygon fill="black" stroke="black" points="781.5,-140.99 785,-150.99 788.5,-140.99 781.5,-140.99"/>
 </g>
 <!-- ScatterComponent -->
 <g id="node2" class="node">
 <title>ScatterComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="1361.2,-122 1240.8,-122 1240.8,-86 1361.2,-86 1361.2,-122"/>
-<text text-anchor="middle" x="1301" y="-99.8" font-family="Times,serif" font-size="14.00">ScatterComponent</text>
+<polygon fill="#ffffb3" stroke="black" points="676.2,-122 555.8,-122 555.8,-86 676.2,-86 676.2,-122"/>
+<text text-anchor="middle" x="616" y="-99.8" font-family="Times,serif" font-size="14.00">ScatterComponent</text>
 </g>
 <!-- ScatterComponent&#45;&gt;ScatterModule -->
 <g id="edge2" class="edge">
 <title>ScatterComponent&#45;&gt;ScatterModule</title>
-<path fill="none" stroke="black" d="M1301,-122.13C1301,-142.57 1301,-173 1301,-173 1301,-173 844.48,-173 844.48,-173"/>
-<polygon fill="black" stroke="black" points="844.48,-169.5 834.48,-173 844.48,-176.5 844.48,-169.5"/>
+<path fill="none" stroke="black" d="M616,-122.01C616,-138.05 616,-159 616,-159 616,-159 725.66,-159 725.66,-159"/>
+<polygon fill="black" stroke="black" points="725.66,-162.5 735.66,-159 725.66,-155.5 725.66,-162.5"/>
 </g>
 <!-- ScatterFormComponent -->
 <g id="node3" class="node">
 <title>ScatterFormComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="1223.04,-122 1072.96,-122 1072.96,-86 1223.04,-86 1223.04,-122"/>
-<text text-anchor="middle" x="1148" y="-99.8" font-family="Times,serif" font-size="14.00">ScatterFormComponent</text>
+<polygon fill="#ffffb3" stroke="black" points="538.04,-122 387.96,-122 387.96,-86 538.04,-86 538.04,-122"/>
+<text text-anchor="middle" x="463" y="-99.8" font-family="Times,serif" font-size="14.00">ScatterFormComponent</text>
 </g>
 <!-- ScatterFormComponent&#45;&gt;ScatterModule -->
 <g id="edge3" class="edge">
 <title>ScatterFormComponent&#45;&gt;ScatterModule</title>
-<path fill="none" stroke="black" d="M1148,-122.27C1148,-140.56 1148,-166 1148,-166 1148,-166 844.33,-166 844.33,-166"/>
-<polygon fill="black" stroke="black" points="844.33,-162.5 834.33,-166 844.33,-169.5 844.33,-162.5"/>
+<path fill="none" stroke="black" d="M463,-122.27C463,-140.56 463,-166 463,-166 463,-166 725.74,-166 725.74,-166"/>
+<polygon fill="black" stroke="black" points="725.74,-169.5 735.74,-166 725.74,-162.5 725.74,-169.5"/>
 </g>
 <!-- ScatterHighchartComponent -->
 <g id="node4" class="node">
 <title>ScatterHighchartComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="1055.18,-122 878.82,-122 878.82,-86 1055.18,-86 1055.18,-122"/>
-<text text-anchor="middle" x="967" y="-99.8" font-family="Times,serif" font-size="14.00">ScatterHighchartComponent</text>
+<polygon fill="#ffffb3" stroke="black" points="370.18,-122 193.82,-122 193.82,-86 370.18,-86 370.18,-122"/>
+<text text-anchor="middle" x="282" y="-99.8" font-family="Times,serif" font-size="14.00">ScatterHighchartComponent</text>
 </g>
 <!-- ScatterHighchartComponent&#45;&gt;ScatterModule -->
 <g id="edge4" class="edge">
 <title>ScatterHighchartComponent&#45;&gt;ScatterModule</title>
-<path fill="none" stroke="black" d="M967,-122.01C967,-138.05 967,-159 967,-159 967,-159 844.25,-159 844.25,-159"/>
-<polygon fill="black" stroke="black" points="844.25,-155.5 834.25,-159 844.25,-162.5 844.25,-155.5"/>
+<path fill="none" stroke="black" d="M282,-122.13C282,-142.57 282,-173 282,-173 282,-173 725.39,-173 725.39,-173"/>
+<polygon fill="black" stroke="black" points="725.39,-176.5 735.39,-173 725.39,-169.5 725.39,-176.5"/>
 </g>
 <!-- ScatterTableComponent -->
 <g id="node5" class="node">
 <title>ScatterTableComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="861.07,-122 708.93,-122 708.93,-86 861.07,-86 861.07,-122"/>
-<text text-anchor="middle" x="785" y="-99.8" font-family="Times,serif" font-size="14.00">ScatterTableComponent</text>
+<polygon fill="#ffffb3" stroke="black" points="176.07,-122 23.93,-122 23.93,-86 176.07,-86 176.07,-122"/>
+<text text-anchor="middle" x="100" y="-99.8" font-family="Times,serif" font-size="14.00">ScatterTableComponent</text>
 </g>
 <!-- ScatterTableComponent&#45;&gt;ScatterModule -->
 <g id="edge5" class="edge">
 <title>ScatterTableComponent&#45;&gt;ScatterModule</title>
-<path fill="none" stroke="black" d="M785,-122.11C785,-122.11 785,-140.99 785,-140.99"/>
-<polygon fill="black" stroke="black" points="781.5,-140.99 785,-150.99 788.5,-140.99 781.5,-140.99"/>
+<path fill="none" stroke="black" d="M100,-122.01C100,-144.49 100,-180 100,-180 100,-180 725.74,-180 725.74,-180"/>
+<polygon fill="black" stroke="black" points="725.74,-183.5 735.74,-180 725.74,-176.5 725.74,-183.5"/>
 </g>
 <!-- InterfaceUtilModule -->
 <g id="node7" class="node">
 <title>InterfaceUtilModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="526.56,-122 523.56,-126 502.56,-126 499.56,-122 395.44,-122 395.44,-86 526.56,-86 526.56,-122"/>
-<text text-anchor="middle" x="461" y="-99.8" font-family="Times,serif" font-size="14.00">InterfaceUtilModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="1402.56,-122 1399.56,-126 1378.56,-126 1375.56,-122 1271.44,-122 1271.44,-86 1402.56,-86 1402.56,-122"/>
+<text text-anchor="middle" x="1337" y="-99.8" font-family="Times,serif" font-size="14.00">InterfaceUtilModule</text>
 </g>
 <!-- InterfaceUtilModule&#45;&gt;ScatterModule -->
 <g id="edge6" class="edge">
 <title>InterfaceUtilModule&#45;&gt;ScatterModule</title>
-<path fill="none" stroke="black" d="M461,-122.27C461,-140.56 461,-166 461,-166 461,-166 725.44,-166 725.44,-166"/>
-<polygon fill="black" stroke="black" points="725.44,-169.5 735.44,-166 725.44,-162.5 725.44,-169.5"/>
+<path fill="none" stroke="black" d="M1337,-122.13C1337,-142.57 1337,-173 1337,-173 1337,-173 844.47,-173 844.47,-173"/>
+<polygon fill="black" stroke="black" points="844.47,-169.5 834.47,-173 844.47,-176.5 844.47,-169.5"/>
 </g>
 <!-- SimpleDataButtonModule -->
 <g id="node8" class="node">
 <title>SimpleDataButtonModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="377.76,-122 374.76,-126 353.76,-126 350.76,-122 214.24,-122 214.24,-86 377.76,-86 377.76,-122"/>
-<text text-anchor="middle" x="296" y="-99.8" font-family="Times,serif" font-size="14.00">SimpleDataButtonModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="1253.76,-122 1250.76,-126 1229.76,-126 1226.76,-122 1090.24,-122 1090.24,-86 1253.76,-86 1253.76,-122"/>
+<text text-anchor="middle" x="1172" y="-99.8" font-family="Times,serif" font-size="14.00">SimpleDataButtonModule</text>
 </g>
 <!-- SimpleDataButtonModule&#45;&gt;ScatterModule -->
 <g id="edge7" class="edge">
 <title>SimpleDataButtonModule&#45;&gt;ScatterModule</title>
-<path fill="none" stroke="black" d="M296,-122.13C296,-142.57 296,-173 296,-173 296,-173 725.42,-173 725.42,-173"/>
-<polygon fill="black" stroke="black" points="725.42,-176.5 735.42,-173 725.42,-169.5 725.42,-176.5"/>
+<path fill="none" stroke="black" d="M1172,-122.27C1172,-140.56 1172,-166 1172,-166 1172,-166 844.41,-166 844.41,-166"/>
+<polygon fill="black" stroke="black" points="844.41,-162.5 834.41,-166 844.41,-169.5 844.41,-162.5"/>
 </g>
 <!-- SimpleGraphButtonModule -->
 <g id="node9" class="node">
 <title>SimpleGraphButtonModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="196.32,-122 193.32,-126 172.32,-126 169.32,-122 23.68,-122 23.68,-86 196.32,-86 196.32,-122"/>
-<text text-anchor="middle" x="110" y="-99.8" font-family="Times,serif" font-size="14.00">SimpleGraphButtonModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="1072.32,-122 1069.32,-126 1048.32,-126 1045.32,-122 899.68,-122 899.68,-86 1072.32,-86 1072.32,-122"/>
+<text text-anchor="middle" x="986" y="-99.8" font-family="Times,serif" font-size="14.00">SimpleGraphButtonModule</text>
 </g>
 <!-- SimpleGraphButtonModule&#45;&gt;ScatterModule -->
 <g id="edge8" class="edge">
 <title>SimpleGraphButtonModule&#45;&gt;ScatterModule</title>
-<path fill="none" stroke="black" d="M110,-122.01C110,-144.49 110,-180 110,-180 110,-180 725.64,-180 725.64,-180"/>
-<polygon fill="black" stroke="black" points="725.64,-183.5 735.64,-180 725.64,-176.5 725.64,-183.5"/>
+<path fill="none" stroke="black" d="M986,-122.01C986,-138.05 986,-159 986,-159 986,-159 844.43,-159 844.43,-159"/>
+<polygon fill="black" stroke="black" points="844.43,-155.5 834.43,-159 844.43,-162.5 844.43,-155.5"/>
 </g>
 <!-- ScatterService -->
 <g id="node10" class="node">
 <title>ScatterService</title>
-<ellipse fill="#fdb462" stroke="black" cx="618" cy="-104" rx="66.61" ry="18"/>
-<text text-anchor="middle" x="618" y="-99.8" font-family="Times,serif" font-size="14.00">ScatterService</text>
+<ellipse fill="#fdb462" stroke="black" cx="1494" cy="-104" rx="66.61" ry="18"/>
+<text text-anchor="middle" x="1494" y="-99.8" font-family="Times,serif" font-size="14.00">ScatterService</text>
 </g>
 <!-- ScatterService&#45;&gt;ScatterModule -->
 <g id="edge9" class="edge">
 <title>ScatterService&#45;&gt;ScatterModule</title>
-<path fill="none" stroke="black" d="M618,-122.01C618,-138.05 618,-159 618,-159 618,-159 725.35,-159 725.35,-159"/>
-<polygon fill="black" stroke="black" points="725.35,-162.5 735.35,-159 725.35,-155.5 725.35,-162.5"/>
+<path fill="none" stroke="black" d="M1494,-122.01C1494,-144.49 1494,-180 1494,-180 1494,-180 844.29,-180 844.29,-180"/>
+<polygon fill="black" stroke="black" points="844.29,-176.5 834.29,-180 844.29,-183.5 844.29,-176.5"/>
 </g>
 </g>
 </svg>

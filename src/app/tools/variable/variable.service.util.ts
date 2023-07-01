@@ -60,8 +60,86 @@ export class VariableData implements MyData {
 }
 
 
+export enum VariableStarOptions {
+  NONE = "None",
+  SOURCE1 = "Source 1",
+  SOURCE2 = "Source 2",
+}
+
+export interface VariableInterface {
+  getVariableStar(): VariableStarOptions;
+
+  setVariableStar(variableStar: VariableStarOptions): void;
+
+  getReferenceStarMagnitude(): number;
+
+  setReferenceStarMagnitude(magnitude: number): void;
+
+  getIsLightCurveOptionValid(): boolean;
+}
+
+
+export interface VariableInterfaceStorageObject {
+  variableStar: VariableStarOptions;
+  referenceStarMagnitude: number;
+}
+
+
+export class VariableInterfaceImpl implements VariableInterface {
+  private variableStar: VariableStarOptions;
+  private referenceStarMagnitude: number;
+
+  constructor() {
+    this.variableStar = VariableInterfaceImpl.getDefaultInterface().variableStar;
+    this.referenceStarMagnitude = VariableInterfaceImpl.getDefaultInterface().referenceStarMagnitude;
+  }
+
+  public static getDefaultInterface(): VariableInterfaceStorageObject {
+    return {
+      variableStar: VariableStarOptions.NONE,
+      referenceStarMagnitude: 0,
+    };
+  }
+
+  getStorageObject(): VariableInterfaceStorageObject {
+    return {
+      variableStar: this.variableStar,
+      referenceStarMagnitude: this.referenceStarMagnitude,
+    };
+  }
+
+  setStorageObject(storageObject: VariableInterfaceStorageObject): void {
+    this.variableStar = storageObject.variableStar;
+    this.referenceStarMagnitude = storageObject.referenceStarMagnitude;
+  }
+
+  getVariableStar(): VariableStarOptions {
+    return this.variableStar;
+  }
+
+  setVariableStar(variableStar: VariableStarOptions): void {
+    this.variableStar = variableStar;
+  }
+
+  getReferenceStarMagnitude(): number {
+    return this.referenceStarMagnitude;
+  }
+
+  setReferenceStarMagnitude(magnitude: number): void {
+    this.referenceStarMagnitude = magnitude;
+  }
+
+  getIsLightCurveOptionValid(): boolean {
+    return this.variableStar !== VariableStarOptions.NONE
+      && !isNaN(this.referenceStarMagnitude);
+  }
+}
+
+
 export class VariableStorage implements MyStorage {
   private dataKey: string = "variableData";
+  private interfaceKey: string = "variableInterface";
+
   getChartInfo(): any {
   }
 
@@ -73,7 +151,12 @@ export class VariableStorage implements MyStorage {
     }
   }
 
-  getInterface(): any {
+  getInterface(): VariableInterfaceStorageObject {
+    if (localStorage.getItem(this.interfaceKey)) {
+      return JSON.parse(localStorage.getItem(this.interfaceKey) as string);
+    } else {
+      return VariableInterfaceImpl.getDefaultInterface();
+    }
   }
 
   resetChartInfo(): void {
@@ -84,6 +167,7 @@ export class VariableStorage implements MyStorage {
   }
 
   resetInterface(): void {
+    localStorage.setItem(this.interfaceKey, JSON.stringify(VariableInterfaceImpl.getDefaultInterface()));
   }
 
   saveChartInfo(chartInfo: any): void {
@@ -93,7 +177,8 @@ export class VariableStorage implements MyStorage {
     localStorage.setItem(this.dataKey, JSON.stringify(data));
   }
 
-  saveInterface(interfaceInfo: any): void {
+  saveInterface(interfaceInfo: VariableInterfaceStorageObject): void {
+    localStorage.setItem(this.interfaceKey, JSON.stringify(interfaceInfo));
   }
 
 }

@@ -6,14 +6,14 @@
     </ng-template>
     <app-variable-light-curve></app-variable-light-curve>
   </mat-tab>
-  <mat-tab>
+  <mat-tab [disabled]="!lightCurveFormValid">
     <ng-template mat-tab-label>
       <mat-icon>scatter_plot</mat-icon>
       Periodogram
     </ng-template>
     swagger
   </mat-tab>
-  <mat-tab>
+  <mat-tab [disabled]="!lightCurveFormValid">
     <ng-template mat-tab-label>
       <mat-icon>unfold_less</mat-icon>
       Period Folding

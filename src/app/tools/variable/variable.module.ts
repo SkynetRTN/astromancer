@@ -11,13 +11,23 @@ import {SimpleGraphButtonModule} from "../shared/simple-graph-button/simple-grap
 import {VariableService} from "./variable.service";
 import {VariableTableComponent} from './variable-table/variable-table.component';
 import {HotTableModule} from "@handsontable/angular";
+import { VariableLightCurveFormComponent } from './variable-light-curve-form/variable-light-curve-form.component';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {MatLegacyFormFieldModule} from "@angular/material/legacy-form-field";
+import {MatLegacyOptionModule} from "@angular/material/legacy-core";
+import {MatLegacySelectModule} from "@angular/material/legacy-select";
+import {MatLegacySlideToggleModule} from "@angular/material/legacy-slide-toggle";
+import {MatInputModule} from "@angular/material/input";
+import {MatOptionModule} from "@angular/material/core";
+import {MatSelectModule} from "@angular/material/select";
 
 
 @NgModule({
   declarations: [
     VariableComponent,
     VariableLightCurveComponent,
-    VariableTableComponent
+    VariableTableComponent,
+    VariableLightCurveFormComponent
   ],
   imports: [
     CommonModule,
@@ -27,7 +37,12 @@ import {HotTableModule} from "@handsontable/angular";
     MatTabsModule,
     SimpleDataButtonModule,
     SimpleGraphButtonModule,
-    HotTableModule
+    HotTableModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatOptionModule,
+    MatSelectModule
   ],
   providers: [VariableService],
 })

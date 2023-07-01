@@ -92,7 +92,7 @@ export class MyFileParser {
   constructor(fileType: FileType,
               dataKeys: string[],
               headerRequirements: HeaderRequirement[] = [],) {
-    if (fileType === FileType.GBO_SPECTRUM_TXT) {
+    if (fileType === FileType.SPECTRUM_TXT) {
       this.strategy = new MyFileParserTXT();
     } else {
       this.strategy = new MyFileParserDefault();
@@ -115,8 +115,12 @@ export class MyFileParser {
    * Emit the headers if the headers are found
    * @param file
    * @param isEmitError
+   * @param callBack
    */
-  public getHeaders(file: File, isEmitError: false): void {
+  public getHeaders(file: File, isEmitError: boolean = false,
+                    callBack?: (headers: { [key: string]: string },
+                                errorSubject: Subject<MyFileParserErrors>) => void)
+    : void {
     if (this.validateFormat(file)) {
       const fileReader = new FileReader();
       fileReader.onload = () => {
@@ -126,6 +130,9 @@ export class MyFileParser {
           this.errorSubject.next(MyFileParserErrors.HEADER);
         } else {
           this.headerSubject.next(headers);
+          if (callBack) {
+            callBack(headers as { [key: string]: string }, this.errorSubject);
+          }
         }
       }
       fileReader.readAsText(file);
@@ -148,7 +155,7 @@ export class MyFileParser {
 }
 
 export enum FileType {
-  GBO_SPECTRUM_TXT = "gbo-spectrum-txt",
+  SPECTRUM_TXT = "spectrum-txt",
 }
 
 

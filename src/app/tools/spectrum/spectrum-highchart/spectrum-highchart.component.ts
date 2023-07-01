@@ -92,7 +92,8 @@ export class SpectrumHighchartComponent implements AfterViewInit, OnDestroy {
       visible: SpectrumOptions.ONE === this.service.getChannel(),
       showInLegend: SpectrumOptions.ONE === this.service.getChannel(),
       marker: {
-        enabled: true,
+        // only enable marker when it iss radio spectrum aka the frequency is low enough
+        enabled: this.service.getDataArray()[0][0][0] < 1000,
         symbol: 'circle',
         radius: 3,
       },
@@ -104,7 +105,7 @@ export class SpectrumHighchartComponent implements AfterViewInit, OnDestroy {
       visible: SpectrumOptions.TWO === this.service.getChannel(),
       showInLegend: SpectrumOptions.TWO === this.service.getChannel(),
       marker: {
-        enabled: true,
+        enabled: this.service.getDataArray()[1][0][0] < 1000,
         symbol: 'circle',
         radius: 3,
       },
@@ -118,6 +119,11 @@ export class SpectrumHighchartComponent implements AfterViewInit, OnDestroy {
       type: 'line',
       visible: SpectrumOptions.ONE === this.service.getChannel(),
       showInLegend: SpectrumOptions.ONE === this.service.getChannel(),
+      marker: {
+        enabled: this.service.getDataArray()[0][0][0] < 1000,
+        symbol: 'circle',
+        radius: 3,
+      },
     });
     this.chartObject.series[1].update({
       name: SpectrumOptions.TWO,
@@ -125,6 +131,11 @@ export class SpectrumHighchartComponent implements AfterViewInit, OnDestroy {
       type: 'line',
       visible: SpectrumOptions.TWO === this.service.getChannel(),
       showInLegend: SpectrumOptions.TWO === this.service.getChannel(),
+      marker: {
+        enabled: this.service.getDataArray()[1][0][0] < 1000,
+        symbol: 'circle',
+        radius: 3,
+      },
     });
   }
 

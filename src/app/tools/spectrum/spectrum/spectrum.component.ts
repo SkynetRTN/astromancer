@@ -13,19 +13,22 @@ import {SpectrumDataDict} from "../spectrum.service.util";
   styleUrls: ['./spectrum.component.scss']
 })
 export class SpectrumComponent implements OnDestroy {
-  private static readonly SPECTRUM_GBO_FIELDS: string[] = ["Freq1(MHz)", "XX1", "YY1"];
-  //TODO: add more file types?
-  private fileParser: MyFileParser
-    = new MyFileParser(FileType.GBO_SPECTRUM_TXT,
-    SpectrumComponent.SPECTRUM_GBO_FIELDS,
+  private static readonly RadioTxtFields: string[] = ["Freq1(MHz)", "XX1", "YY1"];
+  private static readonly OpticalTxtFields: string[] = ["Freq1", "XX1", "YY1"];
+  private radioFileParser: MyFileParser
+    = new MyFileParser(FileType.SPECTRUM_TXT,
+    SpectrumComponent.RadioTxtFields,
     [{key: "Actual_FREQ1"}],);
+  private opticalFileParser: MyFileParser
+    = new MyFileParser(FileType.SPECTRUM_TXT,
+    SpectrumComponent.OpticalTxtFields);
   private destroy$: Subject<void> = new Subject<void>();
 
   constructor(
     private service: SpectrumService,
     private honorCodeService: HonorCodePopupService,
     private chartService: HonorCodeChartService,) {
-    this.fileParser.error$.pipe(
+    this.radioFileParser.error$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(
       (error: any) => {
@@ -33,29 +36,29 @@ export class SpectrumComponent implements OnDestroy {
         alert("error " + error);
       }
     );
-    this.fileParser.data$.pipe(
+    this.radioFileParser.data$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(
       (data: any[]) => {
-        const dataDictArray: SpectrumDataDict[] = [];
-        data.map((rawData: any) => {
-          const freq = parseFloat(rawData[SpectrumComponent.SPECTRUM_GBO_FIELDS[0]]);
-          const channel1 = parseFloat(rawData[SpectrumComponent.SPECTRUM_GBO_FIELDS[1]]);
-          const channel2 = parseFloat(rawData[SpectrumComponent.SPECTRUM_GBO_FIELDS[2]]);
-          if (!isNaN(freq) && !isNaN(channel1)) {
-            const wl = 299792458 / (freq * 1e4);
-            if (wl >= 21.085 && wl <= 21.125) {
-              dataDictArray.push({
-                wavelength: wl,
-                channel1: isNaN(channel1) ? null : channel1,
-                channel2: isNaN(channel2) ? null : channel2,
-              })
-            }
-          }
-        });
-        this.service.setData(dataDictArray);
+        this.service.setData(
+          rawDataToDataDict(data, SpectrumComponent.RadioTxtFields, [21.085, 21.125])
+        );
       }
     );
+    this.opticalFileParser.error$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(
+      (error: any) => {
+        alert("error " + error);
+      });
+    this.opticalFileParser.data$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(
+      (data: any[]) => {
+        this.service.setData(
+          rawDataToDataDict(data, SpectrumComponent.OpticalTxtFields, [4966, 6545.6])
+        );
+      });
   }
 
   actionHandler(actions: ChartAction[]) {
@@ -75,7 +78,14 @@ export class SpectrumComponent implements OnDestroy {
   }
 
   uploadHandler($event: File) {
-    this.fileParser.readFile($event, true);
+    this.radioFileParser.getHeaders($event, false,
+      (headers, errorSubject) => {
+        if (headers && Object.keys(headers).includes("Actual_FREQ1")) {
+          this.radioFileParser.readFile($event, true);
+        } else {
+          this.opticalFileParser.readFile($event, true);
+        }
+      });
   }
 
   ngOnDestroy(): void {
@@ -83,3 +93,24 @@ export class SpectrumComponent implements OnDestroy {
     this.destroy$.complete();
   }
 }
+
+function rawDataToDataDict(data: any[], fields: string[], wlRange: number[]): SpectrumDataDict[] {
+  const dataDictArray: SpectrumDataDict[] = [];
+  data.map((rawData: any) => {
+    const freq = parseFloat(rawData[fields[0]]);
+    const channel1 = parseFloat(rawData[fields[1]]);
+    const channel2 = parseFloat(rawData[fields[2]]);
+    if (!isNaN(freq) && !isNaN(channel1)) {
+      const wl = 299792458 / (freq * 1e4);
+      if (wl >= wlRange[0] && wl <= wlRange[1]) {
+        dataDictArray.push({
+          wavelength: wl,
+          channel1: isNaN(channel1) ? null : channel1,
+          channel2: isNaN(channel2) ? null : channel2,
+        })
+      }
+    }
+  });
+  return dataDictArray.length > 0 ? dataDictArray : [{wavelength: null, channel1: null, channel2: null}];
+}
+

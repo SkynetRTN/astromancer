@@ -1,5 +1,6 @@
 import {MyData} from "../shared/data/data.interface";
 import {MyStorage} from "../shared/storage/storage.interface";
+import {ChartInfo} from "../shared/charts/chart.interface";
 
 export interface VariableDataDict {
   jd: number | null;
@@ -136,11 +137,123 @@ export class VariableInterfaceImpl implements VariableInterface {
 }
 
 
+export interface VariableChartInfoStorageObject {
+  title: string;
+  xAxisLabel: string;
+  yAxisLabel: string;
+  dataLabels: string[];
+  dataLabel: string;
+}
+
+export class VariableChartInfo implements ChartInfo {
+  public static readonly defaultHash: string = "XQGeSlw7M6";
+  private title: string;
+  private xAxisLabel: string;
+  private yAxisLabel: string;
+  private dataLabels: string[];
+  private dataLabel: string;
+
+  constructor() {
+    this.title = VariableChartInfo.getDefaultChartInfo().title;
+    this.xAxisLabel = VariableChartInfo.getDefaultChartInfo().xAxisLabel;
+    this.yAxisLabel = VariableChartInfo.getDefaultChartInfo().yAxisLabel;
+    this.dataLabels = VariableChartInfo.getDefaultChartInfo().dataLabels;
+    this.dataLabel = VariableChartInfo.getDefaultChartInfo().dataLabel;
+  }
+
+  public static getDefaultChartInfo(): VariableChartInfoStorageObject {
+    return {
+      title: "Title",
+      xAxisLabel: "x",
+      yAxisLabel: "y",
+      dataLabels: ["Source 1", "Source 2"],
+      dataLabel: VariableChartInfo.defaultHash,
+    }
+  }
+
+  getChartTitle(): string {
+    return this.title;
+  }
+
+  getDataLabel(): string {
+    return this.dataLabel;
+  }
+
+  getDataLabels(): string {
+    if (this.dataLabels[0] === "" && this.dataLabels[1] === "") {
+      return "";
+    } else {
+      return this.dataLabels.join(", ");
+    }
+  }
+
+  setDataLabels(label: string): void {
+    if (label.trim() === "") {
+      this.dataLabels = ["", ""];
+      return;
+    }
+    const labelArray = label.split(",").map((label: string) => label.trim());
+    for (let i = 0; i < this.dataLabels.length && labelArray.length; i++) {
+      this.dataLabels[i] = labelArray[i];
+    }
+  }
+
+  getStorageObject(): VariableChartInfoStorageObject {
+    return {
+      title: this.title,
+      xAxisLabel: this.xAxisLabel,
+      yAxisLabel: this.yAxisLabel,
+      dataLabels: this.dataLabels,
+      dataLabel: this.dataLabel,
+    };
+  }
+
+  getXAxisLabel(): string {
+    return this.xAxisLabel;
+  }
+
+  getYAxisLabel(): string {
+    return this.yAxisLabel;
+  }
+
+  setChartTitle(title: string): void {
+    this.title = title;
+  }
+
+  setDataLabel(data: string): void {
+    this.dataLabel = data;
+  }
+
+  setStorageObject(storageObject: VariableChartInfoStorageObject): void {
+    this.title = storageObject.title;
+    this.xAxisLabel = storageObject.xAxisLabel;
+    this.yAxisLabel = storageObject.yAxisLabel;
+    this.dataLabels = storageObject.dataLabels;
+    this.dataLabel = storageObject.dataLabel;
+  }
+
+  setXAxisLabel(xAxis: string): void {
+    this.xAxisLabel = xAxis;
+  }
+
+  setYAxisLabel(yAxis: string): void {
+    this.yAxisLabel = yAxis;
+  }
+
+}
+
+
 export class VariableStorage implements MyStorage {
   private dataKey: string = "variableData";
   private interfaceKey: string = "variableInterface";
+  private chartInfoKey: string = "variableChartInfo";
 
-  getChartInfo(): any {
+  getChartInfo(): VariableChartInfoStorageObject {
+    if (localStorage.getItem(this.chartInfoKey)) {
+      return JSON.parse(localStorage.getItem(this.chartInfoKey) as string);
+    } else {
+      return VariableChartInfo.getDefaultChartInfo();
+    }
   }
 
   getData(): VariableDataDict[] {
@@ -160,6 +273,7 @@ export class VariableStorage implements MyStorage {
   }
 
   resetChartInfo(): void {
+    localStorage.setItem(this.chartInfoKey, JSON.stringify(VariableChartInfo.getDefaultChartInfo()));
   }
 
   resetData(): void {
@@ -170,7 +284,8 @@ export class VariableStorage implements MyStorage {
     localStorage.setItem(this.interfaceKey, JSON.stringify(VariableInterfaceImpl.getDefaultInterface()));
   }
 
-  saveChartInfo(chartInfo: any): void {
+  saveChartInfo(chartInfo: VariableChartInfoStorageObject): void {
+    localStorage.setItem(this.chartInfoKey, JSON.stringify(chartInfo));
   }
 
   saveData(data: VariableDataDict[]): void {

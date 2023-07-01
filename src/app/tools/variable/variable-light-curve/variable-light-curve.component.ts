@@ -1,9 +1,8 @@
-import {Component, OnDestroy} from '@angular/core';
+import {Component} from '@angular/core';
 import {TableAction} from "../../shared/types/actions";
 import {VariableService} from "../variable.service";
 import {HonorCodePopupService} from "../../shared/honor-code-popup/honor-code-popup.service";
 import {HonorCodeChartService} from "../../shared/honor-code-popup/honor-code-chart.service";
-import {Subject} from "rxjs";
 
 @Component({
   selector: 'app-variable-light-curve',
@@ -27,7 +26,7 @@ export class VariableLightCurveComponent {
       } else if (action.action === "resetData") {
         this.service.resetData();
       } else if (action.action === "resetChartInfo") {
-        // this.service.resetChartInfo();
+        this.service.resetChartInfo();
       }
     })
   }

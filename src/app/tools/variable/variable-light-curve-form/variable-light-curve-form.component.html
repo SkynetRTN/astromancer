@@ -14,7 +14,7 @@
     <div class="row input-container">
       <mat-form-field>
         <mat-label>Reference Star Actual Magnitude</mat-label>
-        <input matInput [formControlName]="'refStarMag'" type="number">
+        <input matInput [formControlName]="'refStarMag'" type="number" [step]="0.1">
         <mat-error>Magnitude is required</mat-error>
       </mat-form-field>
     </div>

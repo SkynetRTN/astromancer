@@ -8,12 +8,16 @@ import {MatTabsModule} from "@angular/material/tabs";
 import {VariableLightCurveComponent} from './variable-light-curve/variable-light-curve.component';
 import {SimpleDataButtonModule} from "../shared/simple-data-button/simple-data-button.component";
 import {SimpleGraphButtonModule} from "../shared/simple-graph-button/simple-graph-button.component";
+import {VariableService} from "./variable.service";
+import {VariableTableComponent} from './variable-table/variable-table.component';
+import {HotTableModule} from "@handsontable/angular";
 
 
 @NgModule({
   declarations: [
     VariableComponent,
-    VariableLightCurveComponent
+    VariableLightCurveComponent,
+    VariableTableComponent
   ],
   imports: [
     CommonModule,
@@ -22,7 +26,9 @@ import {SimpleGraphButtonModule} from "../shared/simple-graph-button/simple-grap
     MatIconModule,
     MatTabsModule,
     SimpleDataButtonModule,
-    SimpleGraphButtonModule
-  ]
+    SimpleGraphButtonModule,
+    HotTableModule
+  ],
+  providers: [VariableService],
 })
 export class VariableModule { }

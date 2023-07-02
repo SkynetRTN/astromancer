@@ -6,6 +6,9 @@ import {
   VariableDataDict,
   VariableInterface,
   VariableInterfaceImpl,
+  VariablePeriodogram,
+  VariablePeriodogramInterface,
+  VariablePeriodogramStorageObject,
   VariableStarOptions,
   VariableStorage
 } from "./variable.service.util";
@@ -13,12 +16,14 @@ import {BehaviorSubject} from "rxjs";
 import {MyData} from "../shared/data/data.interface";
 import {ChartInfo} from "../shared/charts/chart.interface";
 import * as Highcharts from "highcharts";
+import {lombScargleWithError} from "../shared/data/utils";
 
 @Injectable()
-export class VariableService implements MyData, VariableInterface, ChartInfo {
+export class VariableService implements MyData, VariableInterface, ChartInfo, VariablePeriodogramInterface {
   private variableData: VariableData = new VariableData();
   private variableInterface: VariableInterfaceImpl = new VariableInterfaceImpl();
   private variableChartInfo: VariableChartInfo = new VariableChartInfo();
+  private variablePeriodogram: VariablePeriodogram = new VariablePeriodogram();
 
   private variableStorage: VariableStorage = new VariableStorage();
 
@@ -31,14 +36,110 @@ export class VariableService implements MyData, VariableInterface, ChartInfo {
   private chartInfoSubject: BehaviorSubject<VariableChartInfo>
     = new BehaviorSubject<VariableChartInfo>(this.variableChartInfo);
   public chartInfo$ = this.chartInfoSubject.asObservable();
+  private periodogramSubject: BehaviorSubject<VariablePeriodogram>
+    = new BehaviorSubject<VariablePeriodogram>(this.variablePeriodogram);
+  public periodogram$ = this.periodogramSubject.asObservable();
 
   private highChart!: Highcharts.Chart;
 
   constructor() {
     this.variableData.setData(this.variableStorage.getData());
     this.variableInterface.setStorageObject(this.variableStorage.getInterface());
-    this.loadChartInfoStorage();
+    this.variableChartInfo.setStorageObject(this.variableStorage.getChartInfo());
+    this.variablePeriodogram.setPeriodogramStorageObject(this.variableStorage.getPeriodogram());
   }
+
+  tabChanged() {
+    this.dataSubject.next(this.variableData);
+    this.interfaceSubject.next(this.variableInterface);
+    this.chartInfoSubject.next(this.variableChartInfo);
+    this.periodogramSubject.next(this.variablePeriodogram);
+  }
+
+  /** Periodogram Interface */
+
+  getPeriodogramTitle(): string {
+    return this.variablePeriodogram.getPeriodogramTitle();
+  }
+
+  getPeriodogramXAxisLabel(): string {
+    return this.variablePeriodogram.getPeriodogramXAxisLabel();
+  }
+
+  getPeriodogramYAxisLabel(): string {
+    return this.variablePeriodogram.getPeriodogramYAxisLabel();
+  }
+
+  getPeriodogramDataLabel(): string {
+    if (this.variablePeriodogram.getPeriodogramDataLabel() === VariablePeriodogram.defaultHash) {
+      return this.getDefaultDataLabel();
+    } else {
+      return this.variablePeriodogram.getPeriodogramDataLabel();
+    }
+  }
+
+  getPeriodogramStartPeriod(): number {
+    return this.variablePeriodogram.getPeriodogramStartPeriod();
+  }
+
+  getPeriodogramEndPeriod(): number {
+    return this.variablePeriodogram.getPeriodogramEndPeriod();
+  }
+
+  getPeriodogramStorageObject(): VariablePeriodogramStorageObject {
+    return this.variablePeriodogram.getPeriodogramStorageObject();
+  }
+
+  setPeriodogramTitle(title: string): void {
+    this.variablePeriodogram.setPeriodogramTitle(title);
+    this.periodogramSubject.next(this.variablePeriodogram);
+    this.variableStorage.savePeriodogram(this.variablePeriodogram.getPeriodogramStorageObject());
+  }
+
+  setPeriodogramXAxisLabel(xAxis: string): void {
+    this.variablePeriodogram.setPeriodogramXAxisLabel(xAxis);
+    this.periodogramSubject.next(this.variablePeriodogram);
+    this.variableStorage.savePeriodogram(this.variablePeriodogram.getPeriodogramStorageObject());
+  }
+
+  setPeriodogramYAxisLabel(yAxis: string): void {
+    this.variablePeriodogram.setPeriodogramYAxisLabel(yAxis);
+    this.periodogramSubject.next(this.variablePeriodogram);
+    this.variableStorage.savePeriodogram(this.variablePeriodogram.getPeriodogramStorageObject());
+  }
+
+  setPeriodogramDataLabel(data: string): void {
+    this.variablePeriodogram.setPeriodogramDataLabel(data);
+    this.periodogramSubject.next(this.variablePeriodogram);
+    this.variableStorage.savePeriodogram(this.variablePeriodogram.getPeriodogramStorageObject());
+    this.dataSubject.next(this.variableData);
+  }
+
+  setPeriodogramStartPeriod(startPeriod: number): void {
+    this.variablePeriodogram.setPeriodogramStartPeriod(startPeriod);
+    this.periodogramSubject.next(this.variablePeriodogram);
+    this.variableStorage.savePeriodogram(this.variablePeriodogram.getPeriodogramStorageObject());
+  }
+
+  setPeriodogramEndPeriod(endPeriod: number): void {
+    this.variablePeriodogram.setPeriodogramEndPeriod(endPeriod);
+    this.periodogramSubject.next(this.variablePeriodogram);
+    this.variableStorage.savePeriodogram(this.variablePeriodogram.getPeriodogramStorageObject());
+  }
+
+  setPeriodogramStorageObject(storageObject: VariablePeriodogramStorageObject): void {
+    this.variablePeriodogram.setPeriodogramStorageObject(storageObject);
+    this.periodogramSubject.next(this.variablePeriodogram);
+    this.variableStorage.savePeriodogram(this.variablePeriodogram.getPeriodogramStorageObject());
+  }
+
+  resetPeriodogram(): void {
+    this.variablePeriodogram.setPeriodogramStorageObject(VariablePeriodogram.getDefaultPeriodogram());
+    this.variableStorage.savePeriodogram(this.variablePeriodogram.getPeriodogramStorageObject());
+    this.periodogramSubject.next(this.variablePeriodogram);
+    this.dataSubject.next(this.variableData);
+  }
+
 
   /** ChartInfo implementation */
 
@@ -59,7 +160,11 @@ export class VariableService implements MyData, VariableInterface, ChartInfo {
     if (this.getVariableStar() === VariableStarOptions.NONE) {
       return this.variableChartInfo.getDataLabels();
     } else {
-      return this.variableChartInfo.getDataLabel();
+      if (this.variableChartInfo.getDataLabel() === VariableChartInfo.defaultHash) {
+        return this.getDefaultDataLabel();
+      } else {
+        return this.variableChartInfo.getDataLabel();
+      }
     }
   }
 
@@ -95,9 +200,9 @@ export class VariableService implements MyData, VariableInterface, ChartInfo {
     } else {
       this.variableChartInfo.setDataLabel(data);
     }
-    console.log(this.variableChartInfo.getStorageObject());
     this.variableStorage.saveChartInfo(this.variableChartInfo.getStorageObject());
     this.chartInfoSubject.next(this.variableChartInfo);
+    this.dataSubject.next(this.variableData);
   }
 
   setStorageObject(storageObject: VariableChartInfoStorageObject): void {
@@ -106,19 +211,12 @@ export class VariableService implements MyData, VariableInterface, ChartInfo {
     this.chartInfoSubject.next(this.variableChartInfo);
   }
 
-  loadChartInfoStorage(): void {
-    this.variableChartInfo.setStorageObject(this.variableStorage.getChartInfo());
-    if (this.variableChartInfo.getDataLabel() === VariableChartInfo.defaultHash) {
-
-      this.variableStorage.saveChartInfo(this.variableChartInfo.getStorageObject());
-    }
-  }
 
   resetChartInfo(): void {
     this.variableChartInfo.setStorageObject(VariableChartInfo.getDefaultChartInfo());
-    this.setDefaultDataLabel();
     this.variableStorage.saveChartInfo(this.variableChartInfo.getStorageObject());
     this.chartInfoSubject.next(this.variableChartInfo);
+    this.dataSubject.next(this.variableData);
   }
 
   setVariableStar(variableStar: VariableStarOptions): void {
@@ -136,19 +234,31 @@ export class VariableService implements MyData, VariableInterface, ChartInfo {
     return this.variableInterface.getVariableStar();
   }
 
-  private setDefaultDataLabel(): void {
-    this.variableChartInfo.setDataLabel(
-      `Variable Star Mag + (${this.getReferenceStarMagnitude()} - Reference Star Mag)`);
+  setReferenceStarMagnitude(magnitude: number): void {
+    this.variableInterface.setReferenceStarMagnitude(magnitude);
+    this.variableStorage.saveInterface(this.variableInterface.getStorageObject());
+    this.interfaceSubject.next(this.variableInterface);
+    this.chartInfoSubject.next(this.variableChartInfo);
+    this.dataSubject.next(this.variableData);
+    this.periodogramSubject.next(this.variablePeriodogram);
   }
 
   getReferenceStarMagnitude(): number {
     return this.variableInterface.getReferenceStarMagnitude();
   }
 
-  setReferenceStarMagnitude(magnitude: number): void {
-    this.variableInterface.setReferenceStarMagnitude(magnitude);
-    this.variableStorage.saveInterface(this.variableInterface.getStorageObject());
-    this.interfaceSubject.next(this.variableInterface);
+  getChartVariableDataArray(): (number | null)[][] {
+    if (this.getVariableStar() === VariableStarOptions.NONE) {
+      return [];
+    } else if (this.getVariableStar() === VariableStarOptions.SOURCE1) {
+      return this.getData().filter((row: VariableDataDict) =>
+        row.jd !== null && row.source1 !== null && row.source2 !== null)
+        .map((row: VariableDataDict) => [row.jd, row.source1! - row.source2! - this.getReferenceStarMagnitude()])
+    } else {
+      return this.getData().filter((row: VariableDataDict) =>
+        row.jd !== null && row.source1 !== null && row.source2 !== null)
+        .map((row: VariableDataDict) => [row.jd, row.source2! - row.source1! - this.getReferenceStarMagnitude()])
+    }
   }
 
   getIsLightCurveOptionValid(): boolean {
@@ -180,34 +290,41 @@ export class VariableService implements MyData, VariableInterface, ChartInfo {
     return this.variableData.getChartSourcesErrorArray();
   }
 
-  getChartVariableDataArray(): (number | null)[][] {
-    if (this.getVariableStar() === VariableStarOptions.NONE) {
-      return [];
-    } else if (this.getVariableStar() === VariableStarOptions.SOURCE1) {
-      return this.getData().filter((row: VariableDataDict) => row.jd !== null && row.source1 !== null)
-        .map((row: VariableDataDict) => [row.jd, row.source1! - this.getReferenceStarMagnitude()])
-    } else {
-      return this.getData().filter((row: VariableDataDict) => row.jd !== null && row.source2 !== null)
-        .map((row: VariableDataDict) => [row.jd, row.source2! - this.getReferenceStarMagnitude()])
-    }
-  }
-
   getChartVariableErrorArray(): (number | null)[][] {
     if (this.getVariableStar() === VariableStarOptions.NONE) {
       return [];
     } else if (this.getVariableStar() === VariableStarOptions.SOURCE1) {
       return this.getData().filter(
-        (row: VariableDataDict) => row.jd !== null && row.source1 !== null && row.error1 !== null)
+        (row: VariableDataDict) => row.jd !== null && row.source1 !== null && row.source2 !== null && row.error1 !== null)
         .map((row: VariableDataDict) =>
-          [row.jd, row.source1! - this.getReferenceStarMagnitude() - row.error1!,
-            row.source1! - this.getReferenceStarMagnitude() + row.error1!])
+          [row.jd, row.source1! - row.source2! - this.getReferenceStarMagnitude() - row.error1!,
+            row.source1! - row.source2! - this.getReferenceStarMagnitude() + row.error1!])
     } else {
       return this.getData().filter(
-        (row: VariableDataDict) => row.jd !== null && row.source2 !== null && row.error2 !== null)
+        (row: VariableDataDict) => row.jd !== null && row.source1 !== null && row.source2 !== null && row.error2 !== null)
         .map((row: VariableDataDict) =>
-          [row.jd, row.source2! - this.getReferenceStarMagnitude() - row.error2!,
-            row.source2! - this.getReferenceStarMagnitude() + row.error2!])
+          [row.jd, row.source2! - row.source1! - this.getReferenceStarMagnitude() - row.error2!,
+            row.source2! - row.source1! - this.getReferenceStarMagnitude() + row.error2!])
     }
+  }
+
+  getChartPeriodogramDataArray(start: number, end: number): (number | null)[][] {
+    const variableData = this.getChartVariableDataArray();
+    const jdArray = variableData.map((entry) => entry[0]) as number[];
+    const magArray = variableData.map((entry) => entry[1]) as number[];
+    const errorArray = this.getData().map((row: VariableDataDict) =>
+      this.getVariableStar() === VariableStarOptions.SOURCE1 ? row.error1 : row.error2) as number[];
+    const error: any[] = [];
+    for (let i = 0; i < magArray.length; i++) {
+      error.push(
+        errorArray[3 * i + 2]! - magArray[i]!
+      )
+    }
+    return lombScargleWithError(jdArray, magArray, errorArray, start, end, 4000);
+  }
+
+  private getDefaultDataLabel(): string {
+    return `Variable Star Mag + (${this.getReferenceStarMagnitude()} - Reference Star Mag)`
   }
 
   removeRow(index: number, amount: number): void {

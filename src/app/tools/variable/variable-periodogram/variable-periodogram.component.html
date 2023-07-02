@@ -1,0 +1,66 @@
+<div class="container-row">
+  <div class="col-12">
+    <div class="row chart-row">
+      <div class="chart-container" id="chart-container">
+        <highcharts-chart
+          (chartInstance)="chartInitialized($event)"
+          [(update)]="updateFlag"
+          [Highcharts]="Highcharts"
+          [constructorType]="chartConstructor"
+          [options]="chartOptions"
+          style="width: 100%; height: 100%; display: block;"
+        ></highcharts-chart>
+      </div>
+    </div>
+    <div class="row chart-form-row">
+      <form [formGroup]="formGroup">
+        <div class="row">
+          <div class="col-4">
+            <mat-form-field>
+              <mat-label>Title</mat-label>
+              <input [formControlName]="'chartTitle'" matInput>
+            </mat-form-field>
+          </div>
+          <div class="col-4">
+            <mat-form-field>
+              <mat-label>Data</mat-label>
+              <input [formControlName]="'dataLabel'" matInput>
+            </mat-form-field>
+          </div>
+          <div class="col-2">
+            <mat-form-field>
+              <mat-label>X Axis</mat-label>
+              <input [formControlName]="'xAxisLabel'" matInput>
+            </mat-form-field>
+          </div>
+          <div class="col-2">
+            <mat-form-field>
+              <mat-label>Y Axis</mat-label>
+              <input [formControlName]="'yAxisLabel'" matInput>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4">
+            <mat-form-field>
+              <mat-label>Start Period (Days)</mat-label>
+              <input [formControlName]="'startPeriod'" matInput type="number" step="0.1">
+            </mat-form-field>
+          </div>
+          <div class="col-4">
+            <mat-form-field>
+              <mat-label>End Period (Days)</mat-label>
+              <input [formControlName]="'endPeriod'" matInput type="number" step="0.1">
+            </mat-form-field>
+          </div>
+          <div class="col-2">
+            <button mat-raised-button (click)="saveGraph()">Save Graph</button>
+          </div>
+          <div class="col-2">
+            <button mat-raised-button (click)="resetForm()">Reset Form</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

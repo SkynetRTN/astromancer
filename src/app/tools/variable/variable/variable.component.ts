@@ -25,4 +25,7 @@ export class VariableComponent implements OnDestroy {
     this.destroy$.complete();
   }
 
+  tabChanged() {
+    // this.service.tabChanged();
+  }
 }

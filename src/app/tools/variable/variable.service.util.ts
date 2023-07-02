@@ -273,10 +273,153 @@ export class VariableChartInfo implements ChartInfo {
 }
 
 
+export interface VariablePeriodogramStorageObject {
+  title: string;
+  xAxisLabel: string;
+  yAxisLabel: string;
+  dataLabel: string;
+  startPeriod: number;
+  endPeriod: number;
+}
+
+
+export interface VariablePeriodogramInterface {
+  getPeriodogramTitle(): string;
+
+  getPeriodogramXAxisLabel(): string;
+
+  getPeriodogramYAxisLabel(): string;
+
+  getPeriodogramDataLabel(): string;
+
+  getPeriodogramStartPeriod(): number;
+
+  getPeriodogramEndPeriod(): number;
+
+  getPeriodogramStorageObject(): VariablePeriodogramStorageObject;
+
+  setPeriodogramTitle(title: string): void;
+
+  setPeriodogramXAxisLabel(xAxis: string): void;
+
+  setPeriodogramYAxisLabel(yAxis: string): void;
+
+  setPeriodogramDataLabel(data: string): void;
+
+  setPeriodogramStartPeriod(startPeriod: number): void;
+
+  setPeriodogramEndPeriod(endPeriod: number): void;
+
+  setPeriodogramStorageObject(storageObject: VariablePeriodogramStorageObject): void;
+}
+
+
+export class VariablePeriodogram implements VariablePeriodogramInterface {
+  public static readonly defaultHash: string = "XQGeSlw7M6";
+  private title: string;
+  private xAxisLabel: string;
+  private yAxisLabel: string;
+  private dataLabel: string;
+  private startPeriod: number;
+  private endPeriod: number;
+
+
+  constructor() {
+    this.title = VariablePeriodogram.getDefaultPeriodogram().title;
+    this.xAxisLabel = VariablePeriodogram.getDefaultPeriodogram().xAxisLabel;
+    this.yAxisLabel = VariablePeriodogram.getDefaultPeriodogram().yAxisLabel;
+    this.dataLabel = VariablePeriodogram.getDefaultPeriodogram().dataLabel;
+    this.startPeriod = VariablePeriodogram.getDefaultPeriodogram().startPeriod;
+    this.endPeriod = VariablePeriodogram.getDefaultPeriodogram().endPeriod;
+  }
+
+  public static getDefaultPeriodogram(): VariablePeriodogramStorageObject {
+    return {
+      title: "Title",
+      xAxisLabel: "x",
+      yAxisLabel: "y",
+      dataLabel: VariablePeriodogram.defaultHash,
+      startPeriod: 0.1,
+      endPeriod: 1,
+    }
+  }
+
+  getPeriodogramDataLabel(): string {
+    return this.dataLabel;
+  }
+
+  getPeriodogramEndPeriod(): number {
+    return this.endPeriod;
+  }
+
+  getPeriodogramStartPeriod(): number {
+    return this.startPeriod;
+  }
+
+  getPeriodogramStorageObject(): VariablePeriodogramStorageObject {
+    return {
+      title: this.title,
+      xAxisLabel: this.xAxisLabel,
+      yAxisLabel: this.yAxisLabel,
+      dataLabel: this.dataLabel,
+      startPeriod: this.startPeriod,
+      endPeriod: this.endPeriod,
+    }
+  }
+
+  getPeriodogramTitle(): string {
+    return this.title;
+  }
+
+  getPeriodogramXAxisLabel(): string {
+    return this.xAxisLabel;
+  }
+
+  getPeriodogramYAxisLabel(): string {
+    return this.yAxisLabel;
+  }
+
+  setPeriodogramDataLabel(data: string): void {
+    this.dataLabel = data;
+  }
+
+  setPeriodogramEndPeriod(endPeriod: number): void {
+    this.endPeriod = endPeriod;
+  }
+
+  setPeriodogramStartPeriod(startPeriod: number): void {
+    this.startPeriod = startPeriod;
+  }
+
+  setPeriodogramStorageObject(storageObject: VariablePeriodogramStorageObject): void {
+    this.title = storageObject.title;
+    this.xAxisLabel = storageObject.xAxisLabel;
+    this.yAxisLabel = storageObject.yAxisLabel;
+    this.dataLabel = storageObject.dataLabel;
+    this.startPeriod = storageObject.startPeriod;
+    this.endPeriod = storageObject.endPeriod;
+  }
+
+  setPeriodogramTitle(title: string): void {
+    this.title = title;
+  }
+
+  setPeriodogramXAxisLabel(xAxis: string): void {
+    this.xAxisLabel = xAxis;
+  }
+
+  setPeriodogramYAxisLabel(yAxis: string): void {
+    this.yAxisLabel = yAxis;
+  }
+
+}
+
+
 export class VariableStorage implements MyStorage {
   private dataKey: string = "variableData";
   private interfaceKey: string = "variableInterface";
   private chartInfoKey: string = "variableChartInfo";
+  private periodogramKey: string = "variablePeriodogram";
 
   getChartInfo(): VariableChartInfoStorageObject {
     if (localStorage.getItem(this.chartInfoKey)) {
@@ -302,6 +445,14 @@ export class VariableStorage implements MyStorage {
     }
   }
 
+  getPeriodogram(): VariablePeriodogramStorageObject {
+    if (localStorage.getItem(this.periodogramKey)) {
+      return JSON.parse(localStorage.getItem(this.periodogramKey) as string);
+    } else {
+      return VariablePeriodogram.getDefaultPeriodogram();
+    }
+  }
+
   resetChartInfo(): void {
     localStorage.setItem(this.chartInfoKey, JSON.stringify(VariableChartInfo.getDefaultChartInfo()));
   }
@@ -314,6 +465,10 @@ export class VariableStorage implements MyStorage {
     localStorage.setItem(this.interfaceKey, JSON.stringify(VariableInterfaceImpl.getDefaultInterface()));
   }
 
+  resetPeriodogram(): void {
+    localStorage.setItem(this.periodogramKey, JSON.stringify(VariablePeriodogram.getDefaultPeriodogram()));
+  }
+
   saveChartInfo(chartInfo: VariableChartInfoStorageObject): void {
     localStorage.setItem(this.chartInfoKey, JSON.stringify(chartInfo));
   }
@@ -324,6 +479,10 @@ export class VariableStorage implements MyStorage {
 
   saveInterface(interfaceInfo: VariableInterfaceStorageObject): void {
     localStorage.setItem(this.interfaceKey, JSON.stringify(interfaceInfo));
+  }
+
+  savePeriodogram(periodogram: VariablePeriodogramStorageObject): void {
+    localStorage.setItem(this.periodogramKey, JSON.stringify(periodogram));
   }
 
 }

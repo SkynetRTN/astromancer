@@ -12,6 +12,7 @@ import {
 import {BehaviorSubject} from "rxjs";
 import {MyData} from "../shared/data/data.interface";
 import {ChartInfo} from "../shared/charts/chart.interface";
+import * as Highcharts from "highcharts";
 
 @Injectable()
 export class VariableService implements MyData, VariableInterface, ChartInfo {
@@ -30,6 +31,8 @@ export class VariableService implements MyData, VariableInterface, ChartInfo {
   private chartInfoSubject: BehaviorSubject<VariableChartInfo>
     = new BehaviorSubject<VariableChartInfo>(this.variableChartInfo);
   public chartInfo$ = this.chartInfoSubject.asObservable();
+
+  private highChart!: Highcharts.Chart;
 
   constructor() {
     this.variableData.setData(this.variableStorage.getData());
@@ -58,6 +61,10 @@ export class VariableService implements MyData, VariableInterface, ChartInfo {
     } else {
       return this.variableChartInfo.getDataLabel();
     }
+  }
+
+  getDataLabelArray(): string[] {
+    return this.variableChartInfo.getDataLabelArray();
   }
 
   getStorageObject() {
@@ -161,8 +168,46 @@ export class VariableService implements MyData, VariableInterface, ChartInfo {
     return this.variableData.getData();
   }
 
-  getDataArray(): (number|null)[][] {
+  getDataArray(): (number | null)[][] {
     return this.variableData.getDataArray();
+  }
+
+  getChartSourcesDataArray(): (number | null)[][][] {
+    return this.variableData.getChartSourcesDataArray();
+  }
+
+  getChartSourcesErrorArray(): (number | null)[][][] {
+    return this.variableData.getChartSourcesErrorArray();
+  }
+
+  getChartVariableDataArray(): (number | null)[][] {
+    if (this.getVariableStar() === VariableStarOptions.NONE) {
+      return [];
+    } else if (this.getVariableStar() === VariableStarOptions.SOURCE1) {
+      return this.getData().filter((row: VariableDataDict) => row.jd !== null && row.source1 !== null)
+        .map((row: VariableDataDict) => [row.jd, row.source1! - this.getReferenceStarMagnitude()])
+    } else {
+      return this.getData().filter((row: VariableDataDict) => row.jd !== null && row.source2 !== null)
+        .map((row: VariableDataDict) => [row.jd, row.source2! - this.getReferenceStarMagnitude()])
+    }
+  }
+
+  getChartVariableErrorArray(): (number | null)[][] {
+    if (this.getVariableStar() === VariableStarOptions.NONE) {
+      return [];
+    } else if (this.getVariableStar() === VariableStarOptions.SOURCE1) {
+      return this.getData().filter(
+        (row: VariableDataDict) => row.jd !== null && row.source1 !== null && row.error1 !== null)
+        .map((row: VariableDataDict) =>
+          [row.jd, row.source1! - this.getReferenceStarMagnitude() - row.error1!,
+            row.source1! - this.getReferenceStarMagnitude() + row.error1!])
+    } else {
+      return this.getData().filter(
+        (row: VariableDataDict) => row.jd !== null && row.source2 !== null && row.error2 !== null)
+        .map((row: VariableDataDict) =>
+          [row.jd, row.source2! - this.getReferenceStarMagnitude() - row.error2!,
+            row.source2! - this.getReferenceStarMagnitude() + row.error2!])
+    }
   }
 
   removeRow(index: number, amount: number): void {
@@ -183,5 +228,13 @@ export class VariableService implements MyData, VariableInterface, ChartInfo {
     this.dataSubject.next(this.variableData);
   }
 
+
+  setHighChart(highChart: Highcharts.Chart): void {
+    this.highChart = highChart;
+  }
+
+  getHighChart(): Highcharts.Chart {
+    return this.highChart;
+  }
 
 }

@@ -46,9 +46,35 @@ export class VariableData implements MyData {
     return this.dataDict;
   }
 
-  getDataArray(): (number|null)[][] {
+  getDataArray(): (number | null)[][] {
     return this.dataDict.map((entry: VariableDataDict) =>
       [entry.jd, entry.source1, entry.source2, entry.error1, entry.error2]);
+  }
+
+  getChartSourcesDataArray(): (number | null)[][][] {
+    return [
+      this.dataDict.filter(
+        (entry: VariableDataDict) => entry.jd !== null && entry.source1 !== null)
+        .map(
+          (entry: VariableDataDict) => [entry.jd, entry.source1]),
+      this.dataDict.filter(
+        (entry: VariableDataDict) => entry.jd !== null && entry.source2 !== null)
+        .map(
+          (entry: VariableDataDict) => [entry.jd, entry.source2])
+    ]
+  }
+
+  getChartSourcesErrorArray(): (number | null)[][][] {
+    return [
+      this.dataDict.filter(
+        (entry: VariableDataDict) => entry.jd !== null && entry.source1 !== null && entry.error1 !== null)
+        .map(
+          (entry: VariableDataDict) => [entry.jd, entry.source1! - entry.error1!, entry.source1! + entry.error1!]),
+      this.dataDict.filter(
+        (entry: VariableDataDict) => entry.jd !== null && entry.source2 !== null && entry.error2 !== null)
+        .map(
+          (entry: VariableDataDict) => [entry.jd, entry.source2! - entry.error2!, entry.source2! + entry.error2!]),
+    ];
   }
 
   removeRow(index: number, amount: number): void {
@@ -185,6 +211,10 @@ export class VariableChartInfo implements ChartInfo {
     } else {
       return this.dataLabels.join(", ");
     }
+  }
+
+  getDataLabelArray(): string[] {
+    return this.dataLabels;
   }
 
   setDataLabels(label: string): void {

@@ -19,6 +19,10 @@ import {MatSelectModule} from "@angular/material/select";
 import {
   VariableLightCurveChartFormComponent
 } from './variable-light-curve-chart-form/variable-light-curve-chart-form.component';
+import {
+  VariableLightCurveHighchartComponent
+} from './variable-light-curve-highchart/variable-light-curve-highchart.component';
+import {HighchartsChartModule} from "highcharts-angular";
 
 
 @NgModule({
@@ -27,7 +31,8 @@ import {
     VariableLightCurveComponent,
     VariableTableComponent,
     VariableLightCurveFormComponent,
-    VariableLightCurveChartFormComponent
+    VariableLightCurveChartFormComponent,
+    VariableLightCurveHighchartComponent
   ],
   imports: [
     CommonModule,
@@ -43,6 +48,7 @@ import {
     MatInputModule,
     MatOptionModule,
     MatSelectModule,
+    HighchartsChartModule,
   ],
   providers: [VariableService],
 })

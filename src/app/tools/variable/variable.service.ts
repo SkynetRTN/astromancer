@@ -20,6 +20,7 @@ import {MyData} from "../shared/data/data.interface";
 import {ChartInfo} from "../shared/charts/chart.interface";
 import * as Highcharts from "highcharts";
 import {lombScargleWithError} from "../shared/data/utils";
+import {UpdateSource} from "../moon/moon.service.util";
 
 @Injectable()
 export class VariableService implements MyData, VariableInterface, ChartInfo, VariablePeriodogramInterface, VariablePeriodFoldingInterface {
@@ -49,8 +50,8 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
   private periodFoldingDataSubject: BehaviorSubject<VariableData>
     = new BehaviorSubject<VariableData>(this.variableData);
   public periodFoldingData$ = this.periodFoldingDataSubject.asObservable();
-  private periodFoldingFormSubject: BehaviorSubject<VariablePeriodFolding>
-    = new BehaviorSubject<VariablePeriodFolding>(this.variablePeriodFolding);
+  private periodFoldingFormSubject: BehaviorSubject<UpdateSource>
+    = new BehaviorSubject<UpdateSource>(UpdateSource.INIT);
   public periodFoldingForm$ = this.periodFoldingFormSubject.asObservable();
 
   private highChart!: Highcharts.Chart;
@@ -61,6 +62,7 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
     this.variableInterface.setStorageObject(this.variableStorage.getInterface());
     this.variableChartInfo.setStorageObject(this.variableStorage.getChartInfo());
     this.variablePeriodogram.setPeriodogramStorageObject(this.variableStorage.getPeriodogram());
+    this.variablePeriodFolding.setPeriodFoldingStorageObject(this.variableStorage.getPeriodFolding());
     this.tabIndex = this.variableStorage.getTabIndex();
   }
 
@@ -99,49 +101,56 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
     }
   }
 
-  setPeriodFoldingDisplayPeriod(displayPeriod: number): void {
+  setPeriodFoldingDisplayPeriod(displayPeriod: VariableDisplayPeriod): void {
     this.variablePeriodFolding.setPeriodFoldingDisplayPeriod(displayPeriod);
     this.variableStorage.savePeriodFolding(this.variablePeriodFolding.getPeriodFoldingStorageObject());
-    this.periodFoldingFormSubject.next(this.variablePeriodFolding);
+    this.periodFoldingFormSubject.next(UpdateSource.INTERFACE);
     this.periodFoldingDataSubject.next(this.variableData);
   }
 
   setPeriodFoldingPeriod(period: number): void {
     this.variablePeriodFolding.setPeriodFoldingPeriod(period);
     this.variableStorage.savePeriodFolding(this.variablePeriodFolding.getPeriodFoldingStorageObject());
-    this.periodFoldingFormSubject.next(this.variablePeriodFolding);
+    this.periodFoldingFormSubject.next(UpdateSource.INTERFACE);
     this.periodFoldingDataSubject.next(this.variableData);
   }
 
   setPeriodFoldingPhase(phase: number): void {
     this.variablePeriodFolding.setPeriodFoldingPhase(phase);
     this.variableStorage.savePeriodFolding(this.variablePeriodFolding.getPeriodFoldingStorageObject());
-    this.periodFoldingFormSubject.next(this.variablePeriodFolding);
+    this.periodFoldingFormSubject.next(UpdateSource.INTERFACE);
     this.periodFoldingDataSubject.next(this.variableData);
   }
 
   setPeriodFoldingTitle(title: string): void {
     this.variablePeriodFolding.setPeriodFoldingTitle(title);
     this.variableStorage.savePeriodFolding(this.variablePeriodFolding.getPeriodFoldingStorageObject());
-    this.periodFoldingFormSubject.next(this.variablePeriodFolding);
+    this.periodFoldingFormSubject.next(UpdateSource.INTERFACE);
   }
 
   setPeriodFoldingXAxisLabel(xAxis: string): void {
     this.variablePeriodFolding.setPeriodFoldingXAxisLabel(xAxis);
     this.variableStorage.savePeriodFolding(this.variablePeriodFolding.getPeriodFoldingStorageObject());
-    this.periodFoldingFormSubject.next(this.variablePeriodFolding);
+    this.periodFoldingFormSubject.next(UpdateSource.INTERFACE);
   }
 
   setPeriodFoldingYAxisLabel(yAxis: string): void {
     this.variablePeriodFolding.setPeriodFoldingYAxisLabel(yAxis);
     this.variableStorage.savePeriodFolding(this.variablePeriodFolding.getPeriodFoldingStorageObject());
-    this.periodFoldingFormSubject.next(this.variablePeriodFolding);
+    this.periodFoldingFormSubject.next(UpdateSource.INTERFACE);
   }
 
   setPeriodFoldingDataLabel(data: string): void {
     this.variablePeriodFolding.setPeriodFoldingDataLabel(data);
     this.variableStorage.savePeriodFolding(this.variablePeriodFolding.getPeriodFoldingStorageObject());
-    this.periodFoldingFormSubject.next(this.variablePeriodFolding);
+    this.periodFoldingFormSubject.next(UpdateSource.INTERFACE);
+  }
+
+  resetPeriodFoldingForm(): void {
+    this.variablePeriodFolding.setPeriodFoldingStorageObject(VariablePeriodFolding.getDefaultStorageObject());
+    this.variableStorage.savePeriodFolding(this.variablePeriodFolding.getPeriodFoldingStorageObject());
+    this.periodFoldingFormSubject.next(UpdateSource.RESET);
+    this.periodFoldingDataSubject.next(this.variableData);
   }
 
   /** Periodogram Interface */
@@ -334,6 +343,8 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
     this.dataSubject.next(this.variableData);
     this.periodogramFormSubject.next(this.variablePeriodogram);
     this.periodogramDataSubject.next(this.variableData);
+    this.periodFoldingFormSubject.next(UpdateSource.INIT);
+    this.periodFoldingDataSubject.next(this.variableData);
   }
 
   getReferenceStarMagnitude(): number {

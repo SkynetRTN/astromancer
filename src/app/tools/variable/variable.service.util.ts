@@ -416,8 +416,8 @@ export class VariablePeriodogram implements VariablePeriodogramInterface {
 
 
 export enum VariableDisplayPeriod {
-  ONE = 1,
-  TWO = 2,
+  ONE = '1',
+  TWO = '2',
 }
 
 
@@ -434,18 +434,31 @@ export interface VariablePeriodFoldingStorageObject {
 
 export interface VariablePeriodFoldingInterface {
   getPeriodFoldingDisplayPeriod(): VariableDisplayPeriod;
+
   getPeriodFoldingPeriod(): number;
+
   getPeriodFoldingPhase(): number;
+
   getPeriodFoldingTitle(): string;
+
   getPeriodFoldingXAxisLabel(): string;
+
   getPeriodFoldingYAxisLabel(): string;
+
   getPeriodFoldingDataLabel(): string;
-  setPeriodFoldingDisplayPeriod(displayPeriod: number): void;
+
+  setPeriodFoldingDisplayPeriod(displayPeriod: VariableDisplayPeriod): void;
+
   setPeriodFoldingPeriod(period: number): void;
+
   setPeriodFoldingPhase(phase: number): void;
+
   setPeriodFoldingTitle(title: string): void;
+
   setPeriodFoldingXAxisLabel(xAxis: string): void;
+
   setPeriodFoldingYAxisLabel(yAxis: string): void;
+
   setPeriodFoldingDataLabel(data: string): void;
 }
 

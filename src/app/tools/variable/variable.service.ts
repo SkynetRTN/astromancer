@@ -290,10 +290,12 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
     return this.variableData.getChartSourcesDataArray();
   }
 
+  //TODO: Figure out the correct algorithm for Source Error Bars
   getChartSourcesErrorArray(): (number | null)[][][] {
     return this.variableData.getChartSourcesErrorArray();
   }
 
+  //TODO: Figure out the correct algorithm for Variable Error Bars
   getChartVariableErrorArray(): (number | null)[][] {
     if (this.getVariableStar() === VariableStarOptions.NONE) {
       return [];

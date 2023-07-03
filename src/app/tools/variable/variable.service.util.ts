@@ -415,12 +415,161 @@ export class VariablePeriodogram implements VariablePeriodogramInterface {
 }
 
 
+export enum VariableDisplayPeriod {
+  ONE = 1,
+  TWO = 2,
+}
+
+
+export interface VariablePeriodFoldingStorageObject {
+  displayPeriod: VariableDisplayPeriod;
+  period: number;
+  phase: number;
+  title: string;
+  xAxisLabel: string;
+  yAxisLabel: string;
+  dataLabel: string;
+}
+
+
+export interface VariablePeriodFoldingInterface {
+  getPeriodFoldingDisplayPeriod(): VariableDisplayPeriod;
+  getPeriodFoldingPeriod(): number;
+  getPeriodFoldingPhase(): number;
+  getPeriodFoldingTitle(): string;
+  getPeriodFoldingXAxisLabel(): string;
+  getPeriodFoldingYAxisLabel(): string;
+  getPeriodFoldingDataLabel(): string;
+  setPeriodFoldingDisplayPeriod(displayPeriod: number): void;
+  setPeriodFoldingPeriod(period: number): void;
+  setPeriodFoldingPhase(phase: number): void;
+  setPeriodFoldingTitle(title: string): void;
+  setPeriodFoldingXAxisLabel(xAxis: string): void;
+  setPeriodFoldingYAxisLabel(yAxis: string): void;
+  setPeriodFoldingDataLabel(data: string): void;
+}
+
+
+export class VariablePeriodFolding implements VariablePeriodFoldingInterface {
+  public static readonly defaultHash: string = "XQGeSlw7M6";
+  private displayPeriod: VariableDisplayPeriod;
+  private period: number;
+  private phase: number;
+  private title: string;
+  private xAxisLabel: string;
+  private yAxisLabel: string;
+  private dataLabel: string;
+
+  constructor() {
+    this.displayPeriod = VariablePeriodFolding.getDefaultStorageObject().displayPeriod;
+    this.period = VariablePeriodFolding.getDefaultStorageObject().period;
+    this.phase = VariablePeriodFolding.getDefaultStorageObject().phase;
+    this.title = VariablePeriodFolding.getDefaultStorageObject().title;
+    this.xAxisLabel = VariablePeriodFolding.getDefaultStorageObject().xAxisLabel;
+    this.yAxisLabel = VariablePeriodFolding.getDefaultStorageObject().yAxisLabel;
+    this.dataLabel = VariablePeriodFolding.getDefaultStorageObject().dataLabel;
+  }
+
+  public static getDefaultStorageObject(): VariablePeriodFoldingStorageObject {
+    return {
+      displayPeriod: VariableDisplayPeriod.ONE,
+      period: 10,
+      phase: 0,
+      title: "Title",
+      xAxisLabel: "x",
+      yAxisLabel: "y",
+      dataLabel: VariablePeriodFolding.defaultHash,
+    }
+  }
+
+  getPeriodFoldingDataLabel(): string {
+    return this.dataLabel;
+  }
+
+  getPeriodFoldingDisplayPeriod(): VariableDisplayPeriod {
+    return this.displayPeriod;
+  }
+
+  getPeriodFoldingPeriod(): number {
+    return this.period;
+  }
+
+  getPeriodFoldingPhase(): number {
+    return this.phase;
+  }
+
+  getPeriodFoldingTitle(): string {
+    return this.title;
+  }
+
+  getPeriodFoldingXAxisLabel(): string {
+    return this.xAxisLabel;
+  }
+
+  getPeriodFoldingYAxisLabel(): string {
+    return this.yAxisLabel;
+  }
+
+  setPeriodFoldingDataLabel(data: string): void {
+    this.dataLabel = data;
+  }
+
+  setPeriodFoldingDisplayPeriod(displayPeriod: VariableDisplayPeriod): void {
+    this.displayPeriod = displayPeriod;
+  }
+
+  setPeriodFoldingPeriod(period: number): void {
+    this.period = period;
+  }
+
+  setPeriodFoldingPhase(phase: number): void {
+    this.phase = phase;
+  }
+
+  setPeriodFoldingTitle(title: string): void {
+    this.title = title;
+  }
+
+  setPeriodFoldingXAxisLabel(xAxis: string): void {
+    this.xAxisLabel = xAxis;
+  }
+
+  setPeriodFoldingYAxisLabel(yAxis: string): void {
+    this.yAxisLabel = yAxis;
+  }
+
+  getPeriodFoldingStorageObject(): VariablePeriodFoldingStorageObject {
+    return {
+      displayPeriod: this.displayPeriod,
+      period: this.period,
+      phase: this.phase,
+      title: this.title,
+      xAxisLabel: this.xAxisLabel,
+      yAxisLabel: this.yAxisLabel,
+      dataLabel: this.dataLabel,
+    }
+  }
+
+  setPeriodFoldingStorageObject(storageObject: VariablePeriodFoldingStorageObject): void {
+    this.displayPeriod = storageObject.displayPeriod;
+    this.period = storageObject.period;
+    this.phase = storageObject.phase;
+    this.title = storageObject.title;
+    this.xAxisLabel = storageObject.xAxisLabel;
+    this.yAxisLabel = storageObject.yAxisLabel;
+    this.dataLabel = storageObject.dataLabel;
+  }
+
+}
+
+
 export class VariableStorage implements MyStorage {
   private dataKey: string = "variableData";
   private interfaceKey: string = "variableInterface";
   private chartInfoKey: string = "variableChartInfo";
   private periodogramKey: string = "variablePeriodogram";
   private tabIndexKey: string = "variableTabIndex";
+  private periodFoldingKey: string = "variablePeriodFolding";
 
   getChartInfo(): VariableChartInfoStorageObject {
     if (localStorage.getItem(this.chartInfoKey)) {
@@ -451,6 +600,14 @@ export class VariableStorage implements MyStorage {
       return JSON.parse(localStorage.getItem(this.periodogramKey) as string);
     } else {
       return VariablePeriodogram.getDefaultPeriodogram();
+    }
+  }
+
+  getPeriodFolding(): VariablePeriodFoldingStorageObject {
+    if (localStorage.getItem(this.periodFoldingKey)) {
+      return JSON.parse(localStorage.getItem(this.periodFoldingKey) as string);
+    } else {
+      return VariablePeriodFolding.getDefaultStorageObject();
     }
   }
 
@@ -492,6 +649,10 @@ export class VariableStorage implements MyStorage {
 
   savePeriodogram(periodogram: VariablePeriodogramStorageObject): void {
     localStorage.setItem(this.periodogramKey, JSON.stringify(periodogram));
+  }
+
+  savePeriodFolding(periodFolding: VariablePeriodFoldingStorageObject): void {
+    localStorage.setItem(this.periodFoldingKey, JSON.stringify(periodFolding));
   }
 
   saveTabIndex(tabIndex: number): void {

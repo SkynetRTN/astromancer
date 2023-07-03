@@ -4,8 +4,11 @@ import {
   VariableChartInfoStorageObject,
   VariableData,
   VariableDataDict,
+  VariableDisplayPeriod,
   VariableInterface,
   VariableInterfaceImpl,
+  VariablePeriodFolding,
+  VariablePeriodFoldingInterface,
   VariablePeriodogram,
   VariablePeriodogramInterface,
   VariablePeriodogramStorageObject,
@@ -19,11 +22,12 @@ import * as Highcharts from "highcharts";
 import {lombScargleWithError} from "../shared/data/utils";
 
 @Injectable()
-export class VariableService implements MyData, VariableInterface, ChartInfo, VariablePeriodogramInterface {
+export class VariableService implements MyData, VariableInterface, ChartInfo, VariablePeriodogramInterface, VariablePeriodFoldingInterface {
   private variableData: VariableData = new VariableData();
   private variableInterface: VariableInterfaceImpl = new VariableInterfaceImpl();
   private variableChartInfo: VariableChartInfo = new VariableChartInfo();
   private variablePeriodogram: VariablePeriodogram = new VariablePeriodogram();
+  private variablePeriodFolding: VariablePeriodFolding = new VariablePeriodFolding();
 
   private variableStorage: VariableStorage = new VariableStorage();
 
@@ -42,6 +46,12 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
   private periodogramFormSubject: BehaviorSubject<VariablePeriodogram>
     = new BehaviorSubject<VariablePeriodogram>(this.variablePeriodogram);
   public periodogramForm$ = this.periodogramFormSubject.asObservable();
+  private periodFoldingDataSubject: BehaviorSubject<VariableData>
+    = new BehaviorSubject<VariableData>(this.variableData);
+  public periodFoldingData$ = this.periodFoldingDataSubject.asObservable();
+  private periodFoldingFormSubject: BehaviorSubject<VariablePeriodFolding>
+    = new BehaviorSubject<VariablePeriodFolding>(this.variablePeriodFolding);
+  public periodFoldingForm$ = this.periodFoldingFormSubject.asObservable();
 
   private highChart!: Highcharts.Chart;
   private tabIndex: number;
@@ -54,6 +64,85 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
     this.tabIndex = this.variableStorage.getTabIndex();
   }
 
+  /** PeriodFolding Interface */
+
+
+  getPeriodFoldingDisplayPeriod(): VariableDisplayPeriod {
+    return this.variablePeriodFolding.getPeriodFoldingDisplayPeriod();
+  }
+
+  getPeriodFoldingPeriod(): number {
+    return this.variablePeriodFolding.getPeriodFoldingPeriod();
+  }
+
+  getPeriodFoldingPhase(): number {
+    return this.variablePeriodFolding.getPeriodFoldingPhase();
+  }
+
+  getPeriodFoldingTitle(): string {
+    return this.variablePeriodFolding.getPeriodFoldingTitle();
+  }
+
+  getPeriodFoldingXAxisLabel(): string {
+    return this.variablePeriodFolding.getPeriodFoldingXAxisLabel();
+  }
+
+  getPeriodFoldingYAxisLabel(): string {
+    return this.variablePeriodFolding.getPeriodFoldingYAxisLabel();
+  }
+
+  getPeriodFoldingDataLabel(): string {
+    if (this.variablePeriodFolding.getPeriodFoldingDataLabel() === VariablePeriodFolding.defaultHash) {
+      return this.getDefaultDataLabel();
+    } else {
+      return this.variablePeriodFolding.getPeriodFoldingDataLabel();
+    }
+  }
+
+  setPeriodFoldingDisplayPeriod(displayPeriod: number): void {
+    this.variablePeriodFolding.setPeriodFoldingDisplayPeriod(displayPeriod);
+    this.variableStorage.savePeriodFolding(this.variablePeriodFolding.getPeriodFoldingStorageObject());
+    this.periodFoldingFormSubject.next(this.variablePeriodFolding);
+    this.periodFoldingDataSubject.next(this.variableData);
+  }
+
+  setPeriodFoldingPeriod(period: number): void {
+    this.variablePeriodFolding.setPeriodFoldingPeriod(period);
+    this.variableStorage.savePeriodFolding(this.variablePeriodFolding.getPeriodFoldingStorageObject());
+    this.periodFoldingFormSubject.next(this.variablePeriodFolding);
+    this.periodFoldingDataSubject.next(this.variableData);
+  }
+
+  setPeriodFoldingPhase(phase: number): void {
+    this.variablePeriodFolding.setPeriodFoldingPhase(phase);
+    this.variableStorage.savePeriodFolding(this.variablePeriodFolding.getPeriodFoldingStorageObject());
+    this.periodFoldingFormSubject.next(this.variablePeriodFolding);
+    this.periodFoldingDataSubject.next(this.variableData);
+  }
+
+  setPeriodFoldingTitle(title: string): void {
+    this.variablePeriodFolding.setPeriodFoldingTitle(title);
+    this.variableStorage.savePeriodFolding(this.variablePeriodFolding.getPeriodFoldingStorageObject());
+    this.periodFoldingFormSubject.next(this.variablePeriodFolding);
+  }
+
+  setPeriodFoldingXAxisLabel(xAxis: string): void {
+    this.variablePeriodFolding.setPeriodFoldingXAxisLabel(xAxis);
+    this.variableStorage.savePeriodFolding(this.variablePeriodFolding.getPeriodFoldingStorageObject());
+    this.periodFoldingFormSubject.next(this.variablePeriodFolding);
+  }
+
+  setPeriodFoldingYAxisLabel(yAxis: string): void {
+    this.variablePeriodFolding.setPeriodFoldingYAxisLabel(yAxis);
+    this.variableStorage.savePeriodFolding(this.variablePeriodFolding.getPeriodFoldingStorageObject());
+    this.periodFoldingFormSubject.next(this.variablePeriodFolding);
+  }
+
+  setPeriodFoldingDataLabel(data: string): void {
+    this.variablePeriodFolding.setPeriodFoldingDataLabel(data);
+    this.variableStorage.savePeriodFolding(this.variablePeriodFolding.getPeriodFoldingStorageObject());
+    this.periodFoldingFormSubject.next(this.variablePeriodFolding);
+  }
 
   /** Periodogram Interface */
 

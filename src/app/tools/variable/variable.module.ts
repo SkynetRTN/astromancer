@@ -26,6 +26,9 @@ import {HighchartsChartModule} from "highcharts-angular";
 import {VariablePeriodogramComponent} from './periodogram/variable-periodogram/variable-periodogram.component';
 import { VariablePeriodogramHighchartsComponent } from './periodogram/variable-periodogram-highcharts/variable-periodogram-highcharts.component';
 import { VariablePeriodogramFormComponent } from './periodogram/variable-periodogram-form/variable-periodogram-form.component';
+import { VariablePeriodFoldingComponent } from './period-folding/variable-period-folding/variable-period-folding.component';
+import { VariablePeriodFoldingFormComponent } from './period-folding/variable-period-folding-form/variable-period-folding-form.component';
+import { VariablePeriodFoldingHighchartComponent } from './period-folding/variable-period-folding-highchart/variable-period-folding-highchart.component';
 
 
 @NgModule({
@@ -38,7 +41,10 @@ import { VariablePeriodogramFormComponent } from './periodogram/variable-periodo
     VariableLightCurveHighchartComponent,
     VariablePeriodogramComponent,
     VariablePeriodogramHighchartsComponent,
-    VariablePeriodogramFormComponent
+    VariablePeriodogramFormComponent,
+    VariablePeriodFoldingComponent,
+    VariablePeriodFoldingFormComponent,
+    VariablePeriodFoldingHighchartComponent
   ],
   imports: [
     CommonModule,

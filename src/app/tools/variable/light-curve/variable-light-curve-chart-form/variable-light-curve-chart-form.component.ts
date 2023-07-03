@@ -1,7 +1,7 @@
 import {Component, OnDestroy} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
 import {debounceTime, Subject, takeUntil} from "rxjs";
-import {VariableService} from "../../variable/variable.service";
+import {VariableService} from "../../variable.service";
 
 @Component({
   selector: 'app-variable-light-curve-chart-form',

@@ -1,7 +1,7 @@
 import {Component, OnDestroy} from '@angular/core';
-import {VariableStarOptions} from "../variable.service.util";
+import {VariableStarOptions} from "../../variable.service.util";
 import {Subject} from "rxjs";
-import {VariableService} from "../variable.service";
+import {VariableService} from "../../variable.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 
 @Component({

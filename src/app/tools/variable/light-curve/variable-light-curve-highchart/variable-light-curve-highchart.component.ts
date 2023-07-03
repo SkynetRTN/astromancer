@@ -2,8 +2,8 @@ import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import {Subject, takeUntil} from "rxjs";
 import * as Highcharts from "highcharts";
 import More from "highcharts/highcharts-more";
-import {VariableService} from "../variable.service";
-import {VariableStarOptions} from "../variable.service.util";
+import {VariableService} from "../../variable.service";
+import {VariableStarOptions} from "../../variable.service.util";
 
 @Component({
   selector: 'app-variable-light-curve-highchart',

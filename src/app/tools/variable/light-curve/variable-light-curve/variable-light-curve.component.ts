@@ -1,8 +1,8 @@
 import {Component} from '@angular/core';
-import {TableAction} from "../../shared/types/actions";
-import {VariableService} from "../variable.service";
-import {HonorCodePopupService} from "../../shared/honor-code-popup/honor-code-popup.service";
-import {HonorCodeChartService} from "../../shared/honor-code-popup/honor-code-chart.service";
+import {TableAction} from "../../../shared/types/actions";
+import {VariableService} from "../../variable.service";
+import {HonorCodePopupService} from "../../../shared/honor-code-popup/honor-code-popup.service";
+import {HonorCodeChartService} from "../../../shared/honor-code-popup/honor-code-chart.service";
 
 @Component({
   selector: 'app-variable-light-curve',

@@ -1,8 +1,8 @@
 import {Component, OnDestroy} from '@angular/core';
-import {VariableService} from "../variable.service";
+import {VariableService} from "../../variable.service";
 import {debounceTime, Subject, takeUntil} from "rxjs";
-import {HonorCodePopupService} from "../../shared/honor-code-popup/honor-code-popup.service";
-import {HonorCodeChartService} from "../../shared/honor-code-popup/honor-code-chart.service";
+import {HonorCodePopupService} from "../../../shared/honor-code-popup/honor-code-popup.service";
+import {HonorCodeChartService} from "../../../shared/honor-code-popup/honor-code-chart.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 
 @Component({

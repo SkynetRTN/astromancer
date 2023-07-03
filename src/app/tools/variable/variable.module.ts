@@ -5,27 +5,27 @@ import {MatStepperModule} from "@angular/material/stepper";
 import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
 import {MatTabsModule} from "@angular/material/tabs";
-import {VariableLightCurveComponent} from './variable-light-curve/variable-light-curve.component';
+import {VariableLightCurveComponent} from './light-curve/variable-light-curve/variable-light-curve.component';
 import {SimpleDataButtonModule} from "../shared/simple-data-button/simple-data-button.component";
 import {SimpleGraphButtonModule} from "../shared/simple-graph-button/simple-graph-button.component";
 import {VariableService} from "./variable.service";
-import {VariableTableComponent} from './variable-table/variable-table.component';
+import {VariableTableComponent} from './light-curve/variable-table/variable-table.component';
 import {HotTableModule} from "@handsontable/angular";
-import {VariableLightCurveFormComponent} from './variable-light-curve-form/variable-light-curve-form.component';
+import {VariableLightCurveFormComponent} from './light-curve/variable-light-curve-form/variable-light-curve-form.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatInputModule} from "@angular/material/input";
 import {MatOptionModule} from "@angular/material/core";
 import {MatSelectModule} from "@angular/material/select";
 import {
   VariableLightCurveChartFormComponent
-} from './variable-light-curve-chart-form/variable-light-curve-chart-form.component';
+} from './light-curve/variable-light-curve-chart-form/variable-light-curve-chart-form.component';
 import {
   VariableLightCurveHighchartComponent
-} from './variable-light-curve-highchart/variable-light-curve-highchart.component';
+} from './light-curve/variable-light-curve-highchart/variable-light-curve-highchart.component';
 import {HighchartsChartModule} from "highcharts-angular";
-import {VariablePeriodogramComponent} from './variable-periodogram/variable-periodogram.component';
-import { VariablePeriodogramHighchartsComponent } from './variable-periodogram-highcharts/variable-periodogram-highcharts.component';
-import { VariablePeriodogramFormComponent } from './variable-periodogram-form/variable-periodogram-form.component';
+import {VariablePeriodogramComponent} from './periodogram/variable-periodogram/variable-periodogram.component';
+import { VariablePeriodogramHighchartsComponent } from './periodogram/variable-periodogram-highcharts/variable-periodogram-highcharts.component';
+import { VariablePeriodogramFormComponent } from './periodogram/variable-periodogram-form/variable-periodogram-form.component';
 
 
 @NgModule({

@@ -1,9 +1,9 @@
 import {AfterViewInit, Component, OnDestroy} from '@angular/core';
-import {MyTable} from "../../shared/tables/table-interface";
-import {VariableDataDict} from "../../variable/variable.service.util";
+import {MyTable} from "../../../shared/tables/table-interface";
+import {VariableDataDict} from "../../variable.service.util";
 import {Subject, takeUntil} from "rxjs";
-import {VariableService} from "../../variable/variable.service";
-import {MyData} from "../../shared/data/data.interface";
+import {VariableService} from "../../variable.service";
+import {MyData} from "../../../shared/data/data.interface";
 import {HotTableRegisterer} from "@handsontable/angular";
 import Handsontable from "handsontable";
 

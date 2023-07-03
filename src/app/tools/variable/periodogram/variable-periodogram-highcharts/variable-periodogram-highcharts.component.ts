@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import * as Highcharts from "highcharts";
 import {Subject, takeUntil} from "rxjs";
-import {VariableService} from "../variable.service";
+import {VariableService} from "../../variable.service";
 
 @Component({
   selector: 'app-variable-periodogram-highcharts',

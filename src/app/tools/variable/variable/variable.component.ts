@@ -10,6 +10,8 @@ import {Subject, takeUntil} from "rxjs";
 export class VariableComponent implements OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
   lightCurveFormValid: boolean = false;
+  variableTabindex: number = this.service.getTabIndex();
+
 
   constructor(private service: VariableService) {
 
@@ -24,8 +26,9 @@ export class VariableComponent implements OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
+  
 
-  tabChanged() {
-    // this.service.tabChanged();
+  onTabChange($event: number) {
+    this.service.setTabIndex($event);
   }
 }

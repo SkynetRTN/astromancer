@@ -420,6 +420,7 @@ export class VariableStorage implements MyStorage {
   private interfaceKey: string = "variableInterface";
   private chartInfoKey: string = "variableChartInfo";
   private periodogramKey: string = "variablePeriodogram";
+  private tabIndexKey: string = "variableTabIndex";
 
   getChartInfo(): VariableChartInfoStorageObject {
     if (localStorage.getItem(this.chartInfoKey)) {
@@ -453,6 +454,14 @@ export class VariableStorage implements MyStorage {
     }
   }
 
+  getTabIndex(): number {
+    if (localStorage.getItem(this.tabIndexKey)) {
+      return JSON.parse(localStorage.getItem(this.tabIndexKey) as string);
+    } else {
+      return 0;
+    }
+  }
+
   resetChartInfo(): void {
     localStorage.setItem(this.chartInfoKey, JSON.stringify(VariableChartInfo.getDefaultChartInfo()));
   }
@@ -483,6 +492,10 @@ export class VariableStorage implements MyStorage {
 
   savePeriodogram(periodogram: VariablePeriodogramStorageObject): void {
     localStorage.setItem(this.periodogramKey, JSON.stringify(periodogram));
+  }
+
+  saveTabIndex(tabIndex: number): void {
+    localStorage.setItem(this.tabIndexKey, JSON.stringify(tabIndex));
   }
 
 }

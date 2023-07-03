@@ -41,20 +41,16 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
   public periodogram$ = this.periodogramSubject.asObservable();
 
   private highChart!: Highcharts.Chart;
+  private tabIndex: number;
 
   constructor() {
     this.variableData.setData(this.variableStorage.getData());
     this.variableInterface.setStorageObject(this.variableStorage.getInterface());
     this.variableChartInfo.setStorageObject(this.variableStorage.getChartInfo());
     this.variablePeriodogram.setPeriodogramStorageObject(this.variableStorage.getPeriodogram());
+    this.tabIndex = this.variableStorage.getTabIndex();
   }
 
-  tabChanged() {
-    this.dataSubject.next(this.variableData);
-    this.interfaceSubject.next(this.variableInterface);
-    this.chartInfoSubject.next(this.variableChartInfo);
-    this.periodogramSubject.next(this.variablePeriodogram);
-  }
 
   /** Periodogram Interface */
 
@@ -352,6 +348,15 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
 
   getHighChart(): Highcharts.Chart {
     return this.highChart;
+  }
+
+  setTabIndex(index: number): void {
+    this.tabIndex = index;
+    this.variableStorage.saveTabIndex(this.tabIndex);
+  }
+
+  getTabIndex(): number {
+    return this.tabIndex;
   }
 
 }

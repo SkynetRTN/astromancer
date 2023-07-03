@@ -324,7 +324,7 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
         errorArray[3 * i + 2]! - magArray[i]!
       )
     }
-    return lombScargleWithError(jdArray, magArray, errorArray, start, end, Math.abs(end-start)*6900);
+    return lombScargleWithError(jdArray, magArray, errorArray, start, end, 5000);
   }
 
   private getDefaultDataLabel(): string {

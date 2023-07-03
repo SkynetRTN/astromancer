@@ -36,9 +36,12 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
   private chartInfoSubject: BehaviorSubject<VariableChartInfo>
     = new BehaviorSubject<VariableChartInfo>(this.variableChartInfo);
   public chartInfo$ = this.chartInfoSubject.asObservable();
-  private periodogramSubject: BehaviorSubject<VariablePeriodogram>
+  private periodogramDataSubject: BehaviorSubject<VariableData>
+    = new BehaviorSubject<VariableData>(this.variableData);
+  public periodogramData$ = this.periodogramDataSubject.asObservable();
+  private periodogramFormSubject: BehaviorSubject<VariablePeriodogram>
     = new BehaviorSubject<VariablePeriodogram>(this.variablePeriodogram);
-  public periodogram$ = this.periodogramSubject.asObservable();
+  public periodogramForm$ = this.periodogramFormSubject.asObservable();
 
   private highChart!: Highcharts.Chart;
   private tabIndex: number;
@@ -88,52 +91,55 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
 
   setPeriodogramTitle(title: string): void {
     this.variablePeriodogram.setPeriodogramTitle(title);
-    this.periodogramSubject.next(this.variablePeriodogram);
     this.variableStorage.savePeriodogram(this.variablePeriodogram.getPeriodogramStorageObject());
+    this.periodogramFormSubject.next(this.variablePeriodogram);
   }
 
   setPeriodogramXAxisLabel(xAxis: string): void {
     this.variablePeriodogram.setPeriodogramXAxisLabel(xAxis);
-    this.periodogramSubject.next(this.variablePeriodogram);
     this.variableStorage.savePeriodogram(this.variablePeriodogram.getPeriodogramStorageObject());
+    this.periodogramFormSubject.next(this.variablePeriodogram);
   }
 
   setPeriodogramYAxisLabel(yAxis: string): void {
     this.variablePeriodogram.setPeriodogramYAxisLabel(yAxis);
-    this.periodogramSubject.next(this.variablePeriodogram);
     this.variableStorage.savePeriodogram(this.variablePeriodogram.getPeriodogramStorageObject());
+    this.periodogramFormSubject.next(this.variablePeriodogram);
   }
 
   setPeriodogramDataLabel(data: string): void {
     this.variablePeriodogram.setPeriodogramDataLabel(data);
-    this.periodogramSubject.next(this.variablePeriodogram);
     this.variableStorage.savePeriodogram(this.variablePeriodogram.getPeriodogramStorageObject());
-    this.dataSubject.next(this.variableData);
+    this.periodogramFormSubject.next(this.variablePeriodogram);
+    this.periodogramDataSubject.next(this.variableData);
   }
 
   setPeriodogramStartPeriod(startPeriod: number): void {
     this.variablePeriodogram.setPeriodogramStartPeriod(startPeriod);
-    this.periodogramSubject.next(this.variablePeriodogram);
     this.variableStorage.savePeriodogram(this.variablePeriodogram.getPeriodogramStorageObject());
+    this.periodogramFormSubject.next(this.variablePeriodogram);
+    this.periodogramDataSubject.next(this.variableData);
   }
 
   setPeriodogramEndPeriod(endPeriod: number): void {
     this.variablePeriodogram.setPeriodogramEndPeriod(endPeriod);
-    this.periodogramSubject.next(this.variablePeriodogram);
     this.variableStorage.savePeriodogram(this.variablePeriodogram.getPeriodogramStorageObject());
+    this.periodogramFormSubject.next(this.variablePeriodogram);
+    this.periodogramDataSubject.next(this.variableData);
   }
 
   setPeriodogramStorageObject(storageObject: VariablePeriodogramStorageObject): void {
     this.variablePeriodogram.setPeriodogramStorageObject(storageObject);
-    this.periodogramSubject.next(this.variablePeriodogram);
     this.variableStorage.savePeriodogram(this.variablePeriodogram.getPeriodogramStorageObject());
+    this.periodogramFormSubject.next(this.variablePeriodogram);
+    this.periodogramDataSubject.next(this.variableData);
   }
 
   resetPeriodogram(): void {
     this.variablePeriodogram.setPeriodogramStorageObject(VariablePeriodogram.getDefaultPeriodogram());
     this.variableStorage.savePeriodogram(this.variablePeriodogram.getPeriodogramStorageObject());
-    this.periodogramSubject.next(this.variablePeriodogram);
-    this.dataSubject.next(this.variableData);
+    this.periodogramFormSubject.next(this.variablePeriodogram);
+    this.periodogramDataSubject.next(this.variableData);
   }
 
 
@@ -220,6 +226,7 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
     this.variableStorage.saveInterface(this.variableInterface.getStorageObject());
     this.interfaceSubject.next(this.variableInterface);
     this.chartInfoSubject.next(this.variableChartInfo);
+    this.periodogramDataSubject.next(this.variableData);
   }
 
 
@@ -236,7 +243,8 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
     this.interfaceSubject.next(this.variableInterface);
     this.chartInfoSubject.next(this.variableChartInfo);
     this.dataSubject.next(this.variableData);
-    this.periodogramSubject.next(this.variablePeriodogram);
+    this.periodogramFormSubject.next(this.variablePeriodogram);
+    this.periodogramDataSubject.next(this.variableData);
   }
 
   getReferenceStarMagnitude(): number {

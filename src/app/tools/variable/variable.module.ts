@@ -24,6 +24,8 @@ import {
 } from './variable-light-curve-highchart/variable-light-curve-highchart.component';
 import {HighchartsChartModule} from "highcharts-angular";
 import {VariablePeriodogramComponent} from './variable-periodogram/variable-periodogram.component';
+import { VariablePeriodogramHighchartsComponent } from './variable-periodogram-highcharts/variable-periodogram-highcharts.component';
+import { VariablePeriodogramFormComponent } from './variable-periodogram-form/variable-periodogram-form.component';
 
 
 @NgModule({
@@ -34,7 +36,9 @@ import {VariablePeriodogramComponent} from './variable-periodogram/variable-peri
     VariableLightCurveFormComponent,
     VariableLightCurveChartFormComponent,
     VariableLightCurveHighchartComponent,
-    VariablePeriodogramComponent
+    VariablePeriodogramComponent,
+    VariablePeriodogramHighchartsComponent,
+    VariablePeriodogramFormComponent
   ],
   imports: [
     CommonModule,

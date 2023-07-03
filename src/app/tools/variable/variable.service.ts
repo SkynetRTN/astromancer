@@ -19,7 +19,7 @@ import {BehaviorSubject} from "rxjs";
 import {MyData} from "../shared/data/data.interface";
 import {ChartInfo} from "../shared/charts/chart.interface";
 import * as Highcharts from "highcharts";
-import {lombScargleWithError} from "../shared/data/utils";
+import {floatMod, lombScargleWithError} from "../shared/data/utils";
 import {UpdateSource} from "../moon/moon.service.util";
 
 @Injectable()
@@ -68,7 +68,7 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
 
   /** PeriodFolding Interface */
 
-
+  //TODO: Modify default value for period
   getPeriodFoldingDisplayPeriod(): VariableDisplayPeriod {
     return this.variablePeriodFolding.getPeriodFoldingDisplayPeriod();
   }
@@ -151,6 +151,37 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
     this.variableStorage.savePeriodFolding(this.variablePeriodFolding.getPeriodFoldingStorageObject());
     this.periodFoldingFormSubject.next(UpdateSource.RESET);
     this.periodFoldingDataSubject.next(this.variableData);
+  }
+
+  //TODO: Figure out error calculation
+  getPeriodFoldingChartDataWithError(): { [key: string]: number[][] } {
+    const data = this.getChartVariableDataArray()
+      .filter((entry) => entry[0] !== null)
+      .sort((a, b) => a[0]! - b[0]!);
+    const error = this.getChartVariableErrorArray()
+      .filter((entry) => entry[0] !== null)
+      .sort((a, b) => a[0]! - b[0]!);
+    const minJD = data[0][0]!;
+    const period = this.getPeriodFoldingPeriod();
+    const phase = this.getPeriodFoldingPhase();
+    const pfData: number[][] = [];
+    const pfError: number[][] = [];
+    if (period !== 0) {
+      for (let i = 0; i < data.length; i++) {
+        let temp_x = phase * period + floatMod((data[i][0]! - minJD), period);
+        if (temp_x > period) {
+          temp_x -= period;
+        }
+        pfData.push([temp_x, data[i][1]!]);
+        pfError.push([temp_x, data[i][1]! - error[i][1]!, data[i][1]! + error[i][1]!]);
+        if (this.getPeriodFoldingDisplayPeriod() === VariableDisplayPeriod.TWO) {
+          let new_x = temp_x + parseFloat(period.toString());
+          pfData.push([new_x, data[i][1]!]);
+          pfError.push([new_x, data[i][1]! - error[i][1]!, data[i][1]! + error[i][1]!]);
+        }
+      }
+    }
+    return {data: pfData, error: pfError};
   }
 
   /** Periodogram Interface */

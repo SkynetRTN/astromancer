@@ -9,6 +9,19 @@ export function rad(degree: number): number {
 
 
 /**
+ * This function computes the floating point modulo.
+ * @param {number} a The dividend
+ * @param {number} b The divisor
+ */
+export function floatMod(a: number, b: number) {
+  while (a > b) {
+    a -= b;
+  }
+  return a;
+}
+
+
+/**
  * This function computes the Error Considered Lomb Scargle periodogram for a given set of time/observation data.
  * @param {array(number)} ts The array of time values
  * @param {array{number}} ys They array of observation values. The length of ys and ts must match

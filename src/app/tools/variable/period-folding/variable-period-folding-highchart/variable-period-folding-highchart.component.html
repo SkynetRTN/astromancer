@@ -1,1 +1,10 @@
-<p>variable-period-folding-highchart works!</p>
+<div class="chart-container" id="chart-container">
+  <highcharts-chart
+    (chartInstance)="chartInitialized($event)"
+    [(update)]="updateFlag"
+    [Highcharts]="Highcharts"
+    [constructorType]="chartConstructor"
+    [options]="chartOptions"
+    style="width: 100%; height: 100%; display: block;"
+  ></highcharts-chart>
+</div>

@@ -3,9 +3,10 @@ import {ChartAction} from "../../shared/types/actions";
 import {HonorCodePopupService} from "../../shared/honor-code-popup/honor-code-popup.service";
 import {SpectrumService} from "../spectrum.service";
 import {HonorCodeChartService} from "../../shared/honor-code-popup/honor-code-chart.service";
-import {FileType, MyFileParser} from "../../shared/data/FileParser";
+import {MyFileParser} from "../../shared/data/FileParser/FileParser";
 import {Subject, takeUntil} from "rxjs";
 import {SpectrumDataDict} from "../spectrum.service.util";
+import {FileType} from "../../shared/data/FileParser/FileParser.util";
 
 @Component({
   selector: 'app-spectrum',
@@ -16,11 +17,11 @@ export class SpectrumComponent implements OnDestroy {
   private static readonly RadioTxtFields: string[] = ["Freq1(MHz)", "XX1", "YY1"];
   private static readonly OpticalTxtFields: string[] = ["Freq1", "XX1", "YY1"];
   private radioFileParser: MyFileParser
-    = new MyFileParser(FileType.SPECTRUM_TXT,
+    = new MyFileParser(FileType.TXT,
     SpectrumComponent.RadioTxtFields,
     [{key: "Actual_FREQ1"}],);
   private opticalFileParser: MyFileParser
-    = new MyFileParser(FileType.SPECTRUM_TXT,
+    = new MyFileParser(FileType.TXT,
     SpectrumComponent.OpticalTxtFields);
   private destroy$: Subject<void> = new Subject<void>();
 

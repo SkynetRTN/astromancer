@@ -11,7 +11,12 @@ import {HighchartsChartModule} from "highcharts-angular";
 import {VenusChartFormComponent} from './venus-chart-form/venus-chart-form.component';
 import {MatLegacyFormFieldModule} from "@angular/material/legacy-form-field";
 import {MatLegacyInputModule} from "@angular/material/legacy-input";
+import {RouterModule, Routes} from "@angular/router";
+import {CommonModule} from "@angular/common";
 
+const routes: Routes = [
+  {path: '', component: VenusComponent, title: 'Venus'}
+];
 
 @NgModule({
   declarations: [
@@ -21,6 +26,8 @@ import {MatLegacyInputModule} from "@angular/material/legacy-input";
     VenusChartFormComponent
   ],
   imports: [
+    RouterModule.forChild(routes),
+    CommonModule,
     SimpleDataButtonModule,
     SimpleGraphButtonModule,
     HotTableModule,
@@ -30,6 +37,7 @@ import {MatLegacyInputModule} from "@angular/material/legacy-input";
     MatLegacyInputModule,
     ReactiveFormsModule,
   ],
+  exports: [VenusComponent, RouterModule],
   providers: [VenusService],
 })
 export class VenusModule { }

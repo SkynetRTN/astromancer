@@ -1,17 +1,11 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {CurveComponent} from "./tools/curve/curve.component";
 import {HomeComponent} from "./shared/home/home.component";
 import {AboutComponent} from "./shared/about/about.component";
 import {PageNotFoundComponent} from "./shared/page-not-found/page-not-found.component";
 import {SettingsComponent} from "./shared/settings/settings.component";
 import {AppearanceComponent} from "./shared/settings/appearance/appearance.component";
-import {MoonComponent} from "./tools/moon/moon/moon.component";
 import {VenusComponent} from "./tools/venus/venus/venus.component";
-import {ScatterComponent} from "./tools/scatter/scatter/scatter.component";
-import {DualComponent} from "./tools/dual/dual/dual.component";
-import {SpectrumComponent} from "./tools/spectrum/spectrum/spectrum.component";
-import {VariableComponent} from "./tools/variable/variable/variable.component";
 
 /**
  * Routes for the site
@@ -19,13 +13,13 @@ import {VariableComponent} from "./tools/variable/variable/variable.component";
 const TOOLS_ROUTES: Routes = [
   {path: "home", component: HomeComponent, data: {title: getToolSiteName($localize`:home:Home`)}},
   {path: "about", component: AboutComponent, data: {title: getToolSiteName($localize`:about:About`)}},
-  {path: "curve", component: CurveComponent, data: {title: getToolSiteName($localize`:curve:Curve`)}},
-  {path: "moon", component: MoonComponent, data: {title: getToolSiteName($localize`:moon:Moon`)}},
-  {path: "venus", component: VenusComponent, data: {title: getToolSiteName($localize`:venus:Venus`)}},
-  {path: "scatter", component: ScatterComponent, data: {title: getToolSiteName($localize`:scatter:Scatter`)}},
-  {path: "variable", component: VariableComponent, data: {title: getToolSiteName($localize`:variable:Variable`)}},
-  {path: "spectrum", component: SpectrumComponent, data: {title: getToolSiteName($localize`:spectrum:Spectrum`)}},
-  {path: "dual", component: DualComponent, data: {title: getToolSiteName($localize`:dual:Dual`)}},
+  {path: "curve", loadChildren: () => import('./tools/curve/curve.module').then(m => m.CurveModule)},
+  {path: "moon", loadChildren: () => import('./tools/moon/moon.module').then(m => m.MoonModule)},
+  {path: "venus", loadChildren: () => import('./tools/venus/venus.module').then(m => m.VenusModule)},
+  {path: "scatter", loadChildren: () => import('./tools/scatter/scatter.module').then(m => m.ScatterModule)},
+  {path: "variable", loadChildren: () => import('./tools/variable/variable.module').then(m => m.VariableModule)},
+  {path: "spectrum", loadChildren: () => import('./tools/spectrum/spectrum.module').then(m => m.SpectrumModule)},
+  {path: "dual", loadChildren: () => import('./tools/dual/dual.module').then(m => m.DualModule)},
   {
     path: "settings", component: SettingsComponent, data: {title: getToolSiteName($localize`:settings:Settings`)},
     children: [

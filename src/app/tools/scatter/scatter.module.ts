@@ -14,7 +14,12 @@ import {MatLegacyInputModule} from "@angular/material/legacy-input";
 import {ReactiveFormsModule} from "@angular/forms";
 import {ScatterFormComponent} from './scatter-form/scatter-form.component';
 import {InterfaceUtilModule} from "../shared/interface/util";
+import {Router, RouterModule, Routes} from "@angular/router";
+import {HonorCodePopupService} from "../shared/honor-code-popup/honor-code-popup.service";
 
+const routes: Routes = [
+  {path: '', component: ScatterComponent, title: 'Scatter'}
+];
 
 @NgModule({
   declarations: [
@@ -25,6 +30,7 @@ import {InterfaceUtilModule} from "../shared/interface/util";
     ScatterFormComponent
   ],
   imports: [
+    RouterModule.forChild(routes),
     CommonModule,
     SimpleDataButtonModule,
     SimpleGraphButtonModule,
@@ -35,6 +41,7 @@ import {InterfaceUtilModule} from "../shared/interface/util";
     ReactiveFormsModule,
     InterfaceUtilModule
   ],
-  providers: [ScatterService,],
+  exports: [ScatterComponent, RouterModule],
+  providers: [ScatterService],
 })
 export class ScatterModule { }

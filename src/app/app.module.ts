@@ -9,8 +9,6 @@ import {HomeComponent} from "./shared/home/home.component";
 import {AboutComponent} from "./shared/about/about.component";
 import {PageNotFoundComponent} from "./shared/page-not-found/page-not-found.component";
 import {HonorCodePopupModule} from "./tools/shared/honor-code-popup/honor-code-popup.module";
-import {SettingsModule} from './shared/settings/settings.component';
-import {AppearanceComponent} from './shared/settings/appearance/appearance.component';
 import {MatLegacyInputModule as MatInputModule} from "@angular/material/legacy-input";
 import {MatLegacySelectModule as MatSelectModule} from "@angular/material/legacy-select";
 import {ReactiveFormsModule} from "@angular/forms";
@@ -28,7 +26,6 @@ registerAllModules();
     BrowserAnimationsModule,
     ToolsNavbarModule,
     HonorCodePopupModule,
-    SettingsModule,
     MatInputModule,
     MatSelectModule,
     ReactiveFormsModule,
@@ -39,7 +36,6 @@ registerAllModules();
     HomeComponent,
     AboutComponent,
     PageNotFoundComponent,
-    AppearanceComponent,
   ],
   providers: [AppearanceStorageService, AppearanceService],
   bootstrap: [AppComponent],

@@ -3,6 +3,7 @@ import {Subject, takeUntil} from "rxjs";
 import {VariableService} from "../../variable.service";
 import * as Highcharts from 'highcharts';
 import {VariableDisplayPeriod} from "../../variable.service.util";
+import More from "highcharts/highcharts-more";
 
 @Component({
   selector: 'app-variable-period-folding-highchart',
@@ -37,6 +38,7 @@ export class VariablePeriodFoldingHighchartComponent implements AfterViewInit, O
   private destroy$: Subject<any> = new Subject<any>();
 
   constructor(private service: VariableService) {
+    More(Highcharts);
   }
 
   ngAfterViewInit() {

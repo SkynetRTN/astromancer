@@ -21,7 +21,7 @@ export class VariableLightCurveComponent {
         this.service.addRow(-1, 1);
       } else if (action.action === "saveGraph") {
         this.honorCodeService.honored().subscribe((name: string) => {
-          this.chartService.saveImageHighChartOffline(this.service.getHighChart(), "spectrum", name);
+          this.chartService.saveImageHighChartOffline(this.service.getHighChart(), "Variable Light Curve", name);
         })
       } else if (action.action === "resetData") {
         this.service.resetData();

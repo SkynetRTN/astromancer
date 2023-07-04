@@ -147,6 +147,8 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
     this.variablePeriodFolding.setPeriodFoldingDataLabel(data);
     this.variableStorage.savePeriodFolding(this.variablePeriodFolding.getPeriodFoldingStorageObject());
     this.periodFoldingFormSubject.next(UpdateSource.INTERFACE);
+    this.periodFoldingDataSubject.next(this.variableData);
+
   }
 
   resetPeriodFoldingForm(): void {
@@ -273,6 +275,7 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
     this.variableStorage.savePeriodogram(this.variablePeriodogram.getPeriodogramStorageObject());
     this.periodogramFormSubject.next(this.variablePeriodogram);
     this.periodogramDataSubject.next(this.variableData);
+    this.periodFoldingFormSubject.next(UpdateSource.INIT);
   }
 
 

@@ -160,6 +160,8 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
 
   //TODO: Figure out error calculation
   getPeriodFoldingChartDataWithError(): { [key: string]: number[][] } {
+    if (this.getVariableStar() === VariableStarOptions.NONE)
+      return {data: [], error: []};
     const data = this.getChartVariableDataArray()
       .filter((entry) => entry[0] !== null)
       .sort((a, b) => a[0]! - b[0]!);
@@ -363,6 +365,7 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
     this.interfaceSubject.next(this.variableInterface);
     this.chartInfoSubject.next(this.variableChartInfo);
     this.periodogramDataSubject.next(this.variableData);
+    this.periodFoldingDataSubject.next(this.variableData);
   }
 
 
@@ -487,6 +490,8 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
     this.variableData.setData(VariableData.getDefaultDataDict());
     this.variableStorage.saveData(this.variableData.getData());
     this.dataSubject.next(this.variableData);
+    this.periodogramDataSubject.next(this.variableData);
+    this.periodFoldingDataSubject.next(this.variableData);
   }
 
 

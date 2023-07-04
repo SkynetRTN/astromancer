@@ -146,7 +146,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="11" class="link-to-prism">src/app/tools/shared/honor-code-popup/honor-code-popup.service.ts:11</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="13" class="link-to-prism">src/app/tools/shared/honor-code-popup/honor-code-popup.service.ts:13</a></div>
                             </td>
                         </tr>
 
@@ -211,8 +211,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="24"
-                            class="link-to-prism">src/app/tools/shared/honor-code-popup/honor-code-popup.service.ts:24</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="26"
+                            class="link-to-prism">src/app/tools/shared/honor-code-popup/honor-code-popup.service.ts:26</a></div>
                 </td>
             </tr>
 
@@ -250,8 +250,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="28"
-                            class="link-to-prism">src/app/tools/shared/honor-code-popup/honor-code-popup.service.ts:28</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="30"
+                            class="link-to-prism">src/app/tools/shared/honor-code-popup/honor-code-popup.service.ts:30</a></div>
                 </td>
             </tr>
 
@@ -289,8 +289,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="32"
-                            class="link-to-prism">src/app/tools/shared/honor-code-popup/honor-code-popup.service.ts:32</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="34"
+                            class="link-to-prism">src/app/tools/shared/honor-code-popup/honor-code-popup.service.ts:34</a></div>
                 </td>
             </tr>
 
@@ -328,8 +328,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="16"
-                            class="link-to-prism">src/app/tools/shared/honor-code-popup/honor-code-popup.service.ts:16</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="18"
+                            class="link-to-prism">src/app/tools/shared/honor-code-popup/honor-code-popup.service.ts:18</a></div>
                 </td>
             </tr>
 
@@ -399,8 +399,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="20"
-                            class="link-to-prism">src/app/tools/shared/honor-code-popup/honor-code-popup.service.ts:20</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="22"
+                            class="link-to-prism">src/app/tools/shared/honor-code-popup/honor-code-popup.service.ts:22</a></div>
                 </td>
             </tr>
 
@@ -474,7 +474,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="10" class="link-to-prism">src/app/tools/shared/honor-code-popup/honor-code-popup.service.ts:10</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="12" class="link-to-prism">src/app/tools/shared/honor-code-popup/honor-code-popup.service.ts:12</a></div>
                         </td>
                     </tr>
 
@@ -501,7 +501,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="11" class="link-to-prism">src/app/tools/shared/honor-code-popup/honor-code-popup.service.ts:11</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="13" class="link-to-prism">src/app/tools/shared/honor-code-popup/honor-code-popup.service.ts:13</a></div>
                         </td>
                     </tr>
 
@@ -521,7 +521,9 @@ import {Observable} from &quot;rxjs&quot;;
 import {MatButton} from &quot;@angular/material/button&quot;;
 import {MatProgressSpinner} from &quot;@angular/material/progress-spinner&quot;;
 
-@Injectable()
+@Injectable({
+  providedIn: &#x27;root&#x27;
+})
 export class HonorCodePopupService {
   private saveGraphButton!: MatButton;
   private saveGraphSpinner!: MatProgressSpinner;

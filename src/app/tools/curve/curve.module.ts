@@ -21,12 +21,22 @@ import {MatLegacySlideToggleModule as MatSlideToggleModule} from "@angular/mater
 import {CurveHighChartComponent} from './curve-highchart/curve-high-chart.component';
 import {HighchartsChartModule} from "highcharts-angular";
 import {HonorCodePopupService} from "../shared/honor-code-popup/honor-code-popup.service";
+import {RouterModule, Routes} from "@angular/router";
+import {CommonModule} from "@angular/common";
+
+const routes: Routes = [
+  {path: '', component: CurveComponent, title: 'Curve'}
+];
+
+
 
 /**
  * Module encapsulating {@link CurveComponent}
  */
 @NgModule({
   imports: [
+    RouterModule.forChild(routes),
+    CommonModule,
     NgChartsModule,
     SimpleDataButtonModule,
     SimpleGraphButtonModule,
@@ -35,7 +45,6 @@ import {HonorCodePopupService} from "../shared/honor-code-popup/honor-code-popup
     MatSelectModule,
     FormsModule,
     MatFormFieldModule,
-    BrowserAnimationsModule,
     ReactiveFormsModule,
     HotTableModule,
     MatButtonModule,
@@ -51,8 +60,12 @@ import {HonorCodePopupService} from "../shared/honor-code-popup/honor-code-popup
     CurveChartFormComponent,
     CurveHighChartComponent,
   ],
-  exports: [CurveComponent],
+  exports: [CurveComponent, RouterModule],
   providers: [CurveService, HonorCodePopupService],
 })
 export class CurveModule {
 }
+
+
+
+

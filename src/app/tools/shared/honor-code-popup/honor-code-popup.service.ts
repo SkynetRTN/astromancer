@@ -5,7 +5,9 @@ import {Observable} from "rxjs";
 import {MatButton} from "@angular/material/button";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class HonorCodePopupService {
   private saveGraphButton!: MatButton;
   private saveGraphSpinner!: MatProgressSpinner;

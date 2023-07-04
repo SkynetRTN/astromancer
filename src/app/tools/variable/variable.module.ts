@@ -42,7 +42,11 @@ import {
   VariablePeriodFoldingHighchartComponent
 } from './period-folding/variable-period-folding-highchart/variable-period-folding-highchart.component';
 import {InterfaceUtilModule} from "../shared/interface/util";
+import {RouterModule, Routes} from "@angular/router";
 
+const routes : Routes = [
+  {path: '', component: VariableComponent, title: 'Variable'}
+];
 
 @NgModule({
   declarations: [
@@ -60,6 +64,7 @@ import {InterfaceUtilModule} from "../shared/interface/util";
     VariablePeriodFoldingHighchartComponent
   ],
   imports: [
+    RouterModule.forChild(routes),
     CommonModule,
     MatStepperModule,
     MatButtonModule,
@@ -76,6 +81,7 @@ import {InterfaceUtilModule} from "../shared/interface/util";
     HighchartsChartModule,
     InterfaceUtilModule,
   ],
+  exports: [VariableComponent, RouterModule],
   providers: [VariableService],
 })
 export class VariableModule { }

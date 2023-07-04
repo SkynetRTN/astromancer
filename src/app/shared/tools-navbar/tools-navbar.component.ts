@@ -4,14 +4,7 @@ import {MenubarModule} from "../menubar/menubar.component";
 import {AppRoutingModule} from "../../app-routing.module";
 import {MatLegacyButtonModule as MatButtonModule} from "@angular/material/legacy-button";
 import {MatIconModule} from "@angular/material/icon";
-import {CurveModule} from "../../tools/curve/curve.module";
 import {MatLegacyListModule as MatListModule} from "@angular/material/legacy-list";
-import {MoonModule} from "../../tools/moon/moon.module";
-import {VenusModule} from "../../tools/venus/venus.module";
-import {ScatterModule} from "../../tools/scatter/scatter.module";
-import {DualModule} from "../../tools/dual/dual.module";
-import {SpectrumModule} from "../../tools/spectrum/spectrum.module";
-import {VariableModule} from "../../tools/variable/variable.module";
 
 /**
  * Sidenav with custom escape and backdrop click behavior
@@ -57,13 +50,6 @@ export class ToolsNavbarComponent {
     MatButtonModule,
     MatIconModule,
     MatListModule,
-    CurveModule,
-    MoonModule,
-    VenusModule,
-    ScatterModule,
-    VariableModule,
-    SpectrumModule,
-    DualModule,
   ],
   declarations: [
     ToolsNavbarComponent,

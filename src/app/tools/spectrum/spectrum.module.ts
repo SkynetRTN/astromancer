@@ -16,7 +16,11 @@ import {SpectrumChartFormComponent} from './spectrum-chart-form/spectrum-chart-f
 import {MatLegacyInputModule} from "@angular/material/legacy-input";
 import {SpectrumHighchartComponent} from './spectrum-highchart/spectrum-highchart.component';
 import {HighchartsChartModule} from "highcharts-angular";
+import {RouterModule, Routes} from "@angular/router";
 
+const routes: Routes = [
+  {path: '', component: SpectrumComponent, title: 'Spectrum'}
+];
 
 @NgModule({
   declarations: [
@@ -27,6 +31,7 @@ import {HighchartsChartModule} from "highcharts-angular";
     SpectrumHighchartComponent
   ],
   imports: [
+    RouterModule.forChild(routes),
     CommonModule,
     SimpleDataButtonModule,
     SimpleGraphButtonModule,
@@ -40,6 +45,7 @@ import {HighchartsChartModule} from "highcharts-angular";
     MatLegacyInputModule,
     HighchartsChartModule
   ],
+  exports: [SpectrumComponent, RouterModule],
   providers: [SpectrumService]
 })
 export class SpectrumModule { }

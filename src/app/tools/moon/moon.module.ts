@@ -13,9 +13,14 @@ import {MatLegacyInputModule} from "@angular/material/legacy-input";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MoonFormComponent} from './moon-form/moon-form.component';
 import {MatSliderModule} from "@angular/material/slider";
-import {NgIf} from "@angular/common";
+import {CommonModule, NgIf} from "@angular/common";
 import {HonorCodePopupService} from "../shared/honor-code-popup/honor-code-popup.service";
 import {InterfaceUtilModule} from "../shared/interface/util";
+import {RouterModule, Routes} from "@angular/router";
+
+const routes: Routes = [
+  {path: '', component: MoonComponent, title: 'Moon'}
+];
 
 @NgModule({
   declarations: [
@@ -26,6 +31,8 @@ import {InterfaceUtilModule} from "../shared/interface/util";
     MoonFormComponent,
   ],
   imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
     SimpleDataButtonModule,
     SimpleGraphButtonModule,
     InterfaceUtilModule,
@@ -38,7 +45,8 @@ import {InterfaceUtilModule} from "../shared/interface/util";
     FormsModule,
     NgIf,
   ],
-  providers: [MoonService, HonorCodePopupService],
+  exports: [MoonComponent, RouterModule],
+  providers: [MoonService],
 })
 export class MoonModule {
 }

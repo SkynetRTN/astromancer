@@ -12,7 +12,11 @@ import {MatLegacyFormFieldModule} from "@angular/material/legacy-form-field";
 import {MatLegacyInputModule} from "@angular/material/legacy-input";
 import {DualHighchartComponent} from './dual-highchart/dual-highchart.component';
 import {HighchartsChartModule} from "highcharts-angular";
+import {RouterModule, Routes} from "@angular/router";
 
+const routes: Routes = [
+  {path: '', component: DualComponent, title: 'Dual'}
+];
 
 @NgModule({
   declarations: [
@@ -22,6 +26,7 @@ import {HighchartsChartModule} from "highcharts-angular";
     DualHighchartComponent
   ],
   imports: [
+    RouterModule.forChild(routes),
     CommonModule,
     SimpleDataButtonModule,
     SimpleGraphButtonModule,
@@ -32,6 +37,7 @@ import {HighchartsChartModule} from "highcharts-angular";
     ReactiveFormsModule,
     HighchartsChartModule
   ],
+  exports: [DualComponent, RouterModule],
   providers: [DualService]
 })
 export class DualModule { }

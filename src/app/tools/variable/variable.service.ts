@@ -68,13 +68,16 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
 
   /** PeriodFolding Interface */
 
-  //TODO: Modify default value for period
+
   getPeriodFoldingDisplayPeriod(): VariableDisplayPeriod {
     return this.variablePeriodFolding.getPeriodFoldingDisplayPeriod();
   }
 
   getPeriodFoldingPeriod(): number {
-    return this.variablePeriodFolding.getPeriodFoldingPeriod();
+    if (this.variablePeriodFolding.getPeriodFoldingPeriod() < 0)
+      return this.getPeriodogramStartPeriod();
+    else
+      return this.variablePeriodFolding.getPeriodFoldingPeriod();
   }
 
   getPeriodFoldingPhase(): number {
@@ -248,6 +251,7 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
     this.variableStorage.savePeriodogram(this.variablePeriodogram.getPeriodogramStorageObject());
     this.periodogramFormSubject.next(this.variablePeriodogram);
     this.periodogramDataSubject.next(this.variableData);
+    this.periodFoldingFormSubject.next(UpdateSource.INIT);
   }
 
   setPeriodogramEndPeriod(endPeriod: number): void {

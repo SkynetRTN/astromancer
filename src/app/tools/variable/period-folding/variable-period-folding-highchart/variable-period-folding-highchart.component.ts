@@ -58,7 +58,6 @@ export class VariablePeriodFoldingHighchartComponent implements AfterViewInit, O
     this.service.periodFoldingData$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
-      console.log("periodFoldingData$")
       this.updateData();
       this.updateXAxisScale();
     });

@@ -75,7 +75,7 @@ export class InputSliderComponent implements OnDestroy, AfterViewInit {
       takeUntil(this.destroy$),
     ).subscribe(
       (value) => {
-        this.formControl.setValue(value);
+        this.formControl.setValue(value, {emitEvent: false});
       });
   }
 

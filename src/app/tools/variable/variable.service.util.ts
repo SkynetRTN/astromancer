@@ -486,7 +486,7 @@ export class VariablePeriodFolding implements VariablePeriodFoldingInterface {
   public static getDefaultStorageObject(): VariablePeriodFoldingStorageObject {
     return {
       displayPeriod: VariableDisplayPeriod.ONE,
-      period: 10,
+      period: -1,
       phase: 0,
       title: "Title",
       xAxisLabel: "x",

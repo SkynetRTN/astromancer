@@ -6,6 +6,12 @@
          routerLinkActive="active"
       >Appearance</a>
     </mat-nav-list>
+    <mat-nav-list>
+      <a [routerLink]="'local-storage'"
+         mat-list-item
+         routerLinkActive="active"
+      >Local Storage</a>
+    </mat-nav-list>
   </mat-drawer>
   <mat-drawer-content>
     <router-outlet></router-outlet>

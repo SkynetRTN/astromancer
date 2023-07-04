@@ -82,13 +82,13 @@ export class VariablePeriodFoldingHighchartComponent implements AfterViewInit, O
         radius: 5,
       }
     })
-    this.chartObject.addSeries({
-      name: "error",
-      data: dataError['error'],
-      type: 'errorbar',
-      showInLegend: false,
-      enableMouseTracking: false,
-    });
+    // this.chartObject.addSeries({
+    //   name: "error",
+    //   data: dataError['error'],
+    //   type: 'errorbar',
+    //   showInLegend: false,
+    //   enableMouseTracking: false,
+    // });
   }
 
   updateData() {
@@ -98,11 +98,11 @@ export class VariablePeriodFoldingHighchartComponent implements AfterViewInit, O
       data: dataError['data'],
       type: 'scatter',
     });
-    this.chartObject.series[1].update({
-      name: "error",
-      data: dataError['error'],
-      type: 'errorbar',
-    });
+    // this.chartObject.series[1].update({
+    //   name: "error",
+    //   data: dataError['error'],
+    //   type: 'errorbar',
+    // });
   }
 
   ngOnDestroy(): void {

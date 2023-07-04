@@ -1,12 +1,8 @@
 import {Subject} from "rxjs";
-import {
-  FileType,
-  HeaderRequirement,
-  MyFileParserErrors,
-  MyFileParserStrategy
-} from "./FileParser.util";
+import {FileType, HeaderRequirement, MyFileParserErrors, MyFileParserStrategy} from "./FileParser.util";
 import {MyFileParserTXT} from "./FileParser.TXT";
 import {MyFileParserDefault} from "./FileParser.Default";
+import {MyFileParserCSV} from "./FileParser.CSV";
 
 
 export class MyFileParser {
@@ -27,6 +23,8 @@ export class MyFileParser {
               headerRequirements: HeaderRequirement[] = [],) {
     if (fileType === FileType.TXT) {
       this.strategy = new MyFileParserTXT();
+    } else if (fileType === FileType.CSV) {
+      this.strategy = new MyFileParserCSV();
     } else {
       this.strategy = new MyFileParserDefault();
     }

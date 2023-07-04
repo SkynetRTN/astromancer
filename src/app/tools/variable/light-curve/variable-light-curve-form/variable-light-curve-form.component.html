@@ -1,0 +1,22 @@
+<div class="container">
+  <form class="row" [formGroup]="formGroup">
+    <div class="row input-container">
+      <mat-form-field>
+        <mat-label i18n>Select Variable Star</mat-label>
+        <mat-select [formControlName]="'variableStar'">
+          <mat-option *ngFor="let star of variableStarKeys" [value]="star">
+            {{star}}
+          </mat-option>
+        </mat-select>
+        <mat-error>Please a variable star to proceed</mat-error>
+      </mat-form-field>
+    </div>
+    <div class="row input-container">
+      <mat-form-field>
+        <mat-label>Reference Star Actual Magnitude</mat-label>
+        <input matInput [formControlName]="'refStarMag'" type="number" [step]="0.1">
+        <mat-error>Magnitude is required</mat-error>
+      </mat-form-field>
+    </div>
+  </form>
+</div>

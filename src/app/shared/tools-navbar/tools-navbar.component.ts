@@ -11,6 +11,7 @@ import {VenusModule} from "../../tools/venus/venus.module";
 import {ScatterModule} from "../../tools/scatter/scatter.module";
 import {DualModule} from "../../tools/dual/dual.module";
 import {SpectrumModule} from "../../tools/spectrum/spectrum.module";
+import {VariableModule} from "../../tools/variable/variable.module";
 
 /**
  * Sidenav with custom escape and backdrop click behavior
@@ -60,6 +61,7 @@ export class ToolsNavbarComponent {
     MoonModule,
     VenusModule,
     ScatterModule,
+    VariableModule,
     SpectrumModule,
     DualModule,
   ],

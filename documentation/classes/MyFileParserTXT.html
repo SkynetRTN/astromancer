@@ -68,7 +68,7 @@
             <h3>File</h3>
         </p>
         <p class="comment">
-            <code>src/app/tools/shared/data/FileParser.ts</code>
+            <code>src/app/tools/shared/data/FileParser/FileParser.TXT.ts</code>
         </p>
 
 
@@ -149,8 +149,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="156"
-                            class="link-to-prism">src/app/tools/shared/data/FileParser.ts:156</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="5"
+                            class="link-to-prism">src/app/tools/shared/data/FileParser/FileParser.TXT.ts:5</a></div>
                 </td>
             </tr>
 
@@ -242,8 +242,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="178"
-                            class="link-to-prism">src/app/tools/shared/data/FileParser.ts:178</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="27"
+                            class="link-to-prism">src/app/tools/shared/data/FileParser/FileParser.TXT.ts:27</a></div>
                 </td>
             </tr>
 
@@ -323,8 +323,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="196"
-                            class="link-to-prism">src/app/tools/shared/data/FileParser.ts:196</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="45"
+                            class="link-to-prism">src/app/tools/shared/data/FileParser/FileParser.TXT.ts:45</a></div>
                 </td>
             </tr>
 
@@ -404,8 +404,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="218"
-                            class="link-to-prism">src/app/tools/shared/data/FileParser.ts:218</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="67"
+                            class="link-to-prism">src/app/tools/shared/data/FileParser/FileParser.TXT.ts:67</a></div>
                 </td>
             </tr>
 
@@ -533,8 +533,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="256"
-                            class="link-to-prism">src/app/tools/shared/data/FileParser.ts:256</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="105"
+                            class="link-to-prism">src/app/tools/shared/data/FileParser/FileParser.TXT.ts:105</a></div>
                 </td>
             </tr>
 
@@ -593,160 +593,9 @@
 
     <div class="tab-pane fade  tab-source-code" id="source">
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {Subject} from &quot;rxjs&quot;;
+import {HeaderRequirement, MyFileParserErrors, MyFileParserStrategy} from &quot;./FileParser.util&quot;;
 
-
-export enum MyFileParserErrors {
-  FORMAT &#x3D; &quot;format&quot;,
-  FIELD &#x3D; &quot;field&quot;,
-  HEADER &#x3D; &quot;header&quot;,
-  DATA &#x3D; &quot;data&quot;,
-  STRATEGY &#x3D; &quot;strategy&quot;,
-}
-
-export interface HeaderRequirement {
-  key: string;
-  value?: string;
-}
-
-export interface MyFileParserStrategy {
-  /**
-   * Validate the format of the file
-   * @param file
-   * @return true if the format is valid, false otherwise
-   */
-  validateFormat(file: File): boolean;
-
-  /**
-   * Get the headers of the file as a dictionary
-   * @param fileText
-   * @param headerRequirements
-   * @return the headers of the file as a dictionary or undefined if the headers are not found
-   */
-  getHeaders(fileText: string,
-             headerRequirements: HeaderRequirement[])
-    : { [key: string]: string } | undefined;
-
-  /**
-   * Get the indices of the fields in the file
-   * Emits an error if one or more fields are not found
-   * @param fileText
-   * @param dataKeys
-   * @return the indices of the fields in the file or undefined if one or more fields are not found
-   */
-  getFieldsIndices(fileText: string,
-                   dataKeys: string[])
-    : { [key: string]: number } | undefined;
-
-  /**
-   * Get the data from the file
-   * Emits an error if the data is invalid
-   * Emits the data if the data is valid
-   * @param fileText
-   * @param fields
-   * @param fieldsIndices
-   * @return the data from the file or undefined if the data is invalid
-   */
-  getData(fileText: string,
-          fields: string[],
-          fieldsIndices: { [key: string]: number },)
-    : any[] | undefined;
-
-  /**
-   * Read the file
-   * Emits an error if the file is invalid
-   * Emits the data if the file is valid
-   * @param file
-   * @param headerRequirements
-   * @param dataKeys
-   * @param errorSubject
-   * @param dataSubject
-   * @param headerSubject
-   */
-  readFile(file: File,
-           headerRequirements: HeaderRequirement[],
-           dataKeys: string[],
-           errorSubject: Subject&lt;MyFileParserErrors&gt;,
-           dataSubject: Subject&lt;any&gt; | undefined,
-           headerSubject: Subject&lt;any&gt; | undefined): void;
-}
-
-export class MyFileParser {
-  private readonly strategy!: MyFileParserStrategy;
-  private readonly headerRequirements: HeaderRequirement[];
-  private readonly dataKeys: string[];
-
-  private errorSubject: Subject&lt;MyFileParserErrors&gt; &#x3D; new Subject&lt;MyFileParserErrors&gt;();
-  public error$ &#x3D; this.errorSubject.asObservable();
-  private headerSubject: Subject&lt;{ [key: string]: string } | undefined&gt;
-    &#x3D; new Subject&lt;{ [key: string]: string } | undefined&gt;();
-  public header$ &#x3D; this.headerSubject.asObservable();
-  private dataSubject: Subject&lt;any&gt; &#x3D; new Subject&lt;any&gt;();
-  public data$ &#x3D; this.dataSubject.asObservable();
-
-  constructor(fileType: FileType,
-              dataKeys: string[],
-              headerRequirements: HeaderRequirement[] &#x3D; [],) {
-    if (fileType &#x3D;&#x3D;&#x3D; FileType.GBO_SPECTRUM_TXT) {
-      this.strategy &#x3D; new MyFileParserTXT();
-    } else {
-      this.strategy &#x3D; new MyFileParserDefault();
-    }
-    this.headerRequirements &#x3D; headerRequirements;
-    this.dataKeys &#x3D; dataKeys;
-  }
-
-  /**
-   * Validate the format of a file
-   * @param file
-   * @return true if the format is valid, false otherwise
-   */
-  public validateFormat(file: File): boolean {
-    return this.strategy.validateFormat(file);
-  }
-
-  /**
-   * Get the headers of a file as a dictionary
-   * Emit the headers if the headers are found
-   * @param file
-   * @param isEmitError
-   */
-  public getHeaders(file: File, isEmitError: false): void {
-    if (this.validateFormat(file)) {
-      const fileReader &#x3D; new FileReader();
-      fileReader.onload &#x3D; () &#x3D;&gt; {
-        const fileText &#x3D; fileReader.result as string;
-        const headers &#x3D; this.strategy.getHeaders(fileText, this.headerRequirements);
-        if (headers &#x3D;&#x3D;&#x3D; undefined &amp;&amp; isEmitError) {
-          this.errorSubject.next(MyFileParserErrors.HEADER);
-        } else {
-          this.headerSubject.next(headers);
-        }
-      }
-      fileReader.readAsText(file);
-    }
-  }
-
-  /**
-   * Read a file, with options weather to emit the data and/or the headers
-   * @param file
-   * @param isEmitData
-   * @param isEmitHeaders
-   */
-  public readFile(file: File, isEmitData: boolean &#x3D; true, isEmitHeaders: boolean &#x3D; false): void {
-    this.strategy.readFile(file, this.headerRequirements, this.dataKeys, this.errorSubject,
-      isEmitData ? this.dataSubject : undefined,
-      isEmitHeaders ? this.headerSubject : undefined);
-  }
-
-
-}
-
-export enum FileType {
-  GBO_SPECTRUM_TXT &#x3D; &quot;gbo-spectrum-txt&quot;,
-}
-
-
-class MyFileParserTXT implements MyFileParserStrategy {
+export class MyFileParserTXT implements MyFileParserStrategy {
   getData(fileText: string,
           fields: string[],
           fieldsIndices: { [p: string]: number }): any[] | undefined {
@@ -850,33 +699,6 @@ class MyFileParserTXT implements MyFileParserStrategy {
   validateFormat(file: File): boolean {
     return !(!file.type.match(&quot;text/plain&quot;) || !file.name.endsWith(&quot;.txt&quot;));
   }
-}
-
-class MyFileParserDefault implements MyFileParserStrategy {
-  getData(fileText: string, fields: string[],
-          fieldsIndices: { [value: string]: number }): any[] | undefined {
-    return undefined;
-  }
-
-  getFieldsIndices(fileText: string, dataKeys: string[]): { [p: string]: number } | undefined {
-    return undefined;
-  }
-
-  getHeaders(fileText: string, headerRequirements: HeaderRequirement[]): { [p: string]: string } | undefined {
-    return undefined;
-  }
-
-  readFile(file: File, headerRequirements: HeaderRequirement[], dataKeys: string[],
-           errorSubject: Subject&lt;MyFileParserErrors&gt;,
-           dataSubject: Subject&lt;any&gt; | undefined,
-           headerSubject: Subject&lt;any&gt; | undefined): void {
-    errorSubject.next(MyFileParserErrors.STRATEGY);
-  }
-
-  validateFormat(file: File): boolean {
-    return false;
-  }
-
 }
 </code></pre>
     </div>

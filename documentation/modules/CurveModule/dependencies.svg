@@ -24,159 +24,159 @@
 <title>cluster_CurveModule</title>
 <polygon fill="none" stroke="black" stroke-dasharray="1,5" points="8,-70 8,-268 1795,-268 1795,-70 8,-70"/>
 </g>
-<g id="clust10" class="cluster">
-<title>cluster_CurveModule_exports</title>
-<polygon fill="none" stroke="black" points="823,-208 823,-260 959,-260 959,-208 823,-208"/>
-</g>
-<g id="clust12" class="cluster">
-<title>cluster_CurveModule_providers</title>
-<polygon fill="none" stroke="black" points="1406,-78 1406,-130 1787,-130 1787,-78 1406,-78"/>
-</g>
 <g id="clust2" class="cluster">
 <title>cluster_CurveModule_declarations</title>
-<polygon fill="none" stroke="black" points="394,-78 394,-130 1398,-130 1398,-78 394,-78"/>
+<polygon fill="none" stroke="black" points="783,-78 783,-130 1787,-130 1787,-78 783,-78"/>
+</g>
+<g id="clust10" class="cluster">
+<title>cluster_CurveModule_exports</title>
+<polygon fill="none" stroke="black" points="872,-208 872,-260 1008,-260 1008,-208 872,-208"/>
 </g>
 <g id="clust9" class="cluster">
 <title>cluster_CurveModule_imports</title>
-<polygon fill="none" stroke="black" points="16,-78 16,-130 386,-130 386,-78 16,-78"/>
+<polygon fill="none" stroke="black" points="405,-78 405,-130 775,-130 775,-78 405,-78"/>
+</g>
+<g id="clust12" class="cluster">
+<title>cluster_CurveModule_providers</title>
+<polygon fill="none" stroke="black" points="16,-78 16,-130 397,-130 397,-78 16,-78"/>
 </g>
 <!-- CurveChartComponent -->
 <g id="node1" class="node">
 <title>CurveChartComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="1390.15,-122 1243.85,-122 1243.85,-86 1390.15,-86 1390.15,-122"/>
-<text text-anchor="middle" x="1317" y="-99.8" font-family="Times,serif" font-size="14.00">CurveChartComponent</text>
+<polygon fill="#ffffb3" stroke="black" points="1779.15,-122 1632.85,-122 1632.85,-86 1779.15,-86 1779.15,-122"/>
+<text text-anchor="middle" x="1706" y="-99.8" font-family="Times,serif" font-size="14.00">CurveChartComponent</text>
 </g>
 <!-- CurveModule -->
 <g id="node7" class="node">
 <title>CurveModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="937.76,-187 934.76,-191 913.76,-191 910.76,-187 844.24,-187 844.24,-151 937.76,-151 937.76,-187"/>
-<text text-anchor="middle" x="891" y="-164.8" font-family="Times,serif" font-size="14.00">CurveModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="986.76,-187 983.76,-191 962.76,-191 959.76,-187 893.24,-187 893.24,-151 986.76,-151 986.76,-187"/>
+<text text-anchor="middle" x="940" y="-164.8" font-family="Times,serif" font-size="14.00">CurveModule</text>
 </g>
 <!-- CurveChartComponent&#45;&gt;CurveModule -->
 <g id="edge1" class="edge">
 <title>CurveChartComponent&#45;&gt;CurveModule</title>
-<path fill="none" stroke="black" d="M1317,-122.27C1317,-140.56 1317,-166 1317,-166 1317,-166 947.81,-166 947.81,-166"/>
-<polygon fill="black" stroke="black" points="947.81,-162.5 937.81,-166 947.81,-169.5 947.81,-162.5"/>
+<path fill="none" stroke="black" d="M1706,-122.01C1706,-144.49 1706,-180 1706,-180 1706,-180 996.76,-180 996.76,-180"/>
+<polygon fill="black" stroke="black" points="996.76,-176.5 986.76,-180 996.76,-183.5 996.76,-176.5"/>
 </g>
 <!-- CurveChartFormComponent -->
 <g id="node2" class="node">
 <title>CurveChartFormComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="1225.48,-122 1048.52,-122 1048.52,-86 1225.48,-86 1225.48,-122"/>
-<text text-anchor="middle" x="1137" y="-99.8" font-family="Times,serif" font-size="14.00">CurveChartFormComponent</text>
+<polygon fill="#ffffb3" stroke="black" points="1614.48,-122 1437.52,-122 1437.52,-86 1614.48,-86 1614.48,-122"/>
+<text text-anchor="middle" x="1526" y="-99.8" font-family="Times,serif" font-size="14.00">CurveChartFormComponent</text>
 </g>
 <!-- CurveChartFormComponent&#45;&gt;CurveModule -->
 <g id="edge2" class="edge">
 <title>CurveChartFormComponent&#45;&gt;CurveModule</title>
-<path fill="none" stroke="black" d="M1137,-122.01C1137,-138.05 1137,-159 1137,-159 1137,-159 947.85,-159 947.85,-159"/>
-<polygon fill="black" stroke="black" points="947.85,-155.5 937.85,-159 947.85,-162.5 947.85,-155.5"/>
+<path fill="none" stroke="black" d="M1526,-122.13C1526,-142.57 1526,-173 1526,-173 1526,-173 996.96,-173 996.96,-173"/>
+<polygon fill="black" stroke="black" points="996.96,-169.5 986.96,-173 996.96,-176.5 996.96,-169.5"/>
 </g>
 <!-- CurveComponent -->
 <g id="node3" class="node">
 <title>CurveComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="1030.55,-122 915.45,-122 915.45,-86 1030.55,-86 1030.55,-122"/>
-<text text-anchor="middle" x="973" y="-99.8" font-family="Times,serif" font-size="14.00">CurveComponent</text>
+<polygon fill="#ffffb3" stroke="black" points="1419.55,-122 1304.45,-122 1304.45,-86 1419.55,-86 1419.55,-122"/>
+<text text-anchor="middle" x="1362" y="-99.8" font-family="Times,serif" font-size="14.00">CurveComponent</text>
 </g>
 <!-- CurveComponent&#45;&gt;CurveModule -->
 <g id="edge3" class="edge">
 <title>CurveComponent&#45;&gt;CurveModule</title>
-<path fill="none" stroke="black" d="M926.55,-122.11C926.55,-122.11 926.55,-140.99 926.55,-140.99"/>
-<polygon fill="black" stroke="black" points="923.05,-140.99 926.55,-150.99 930.05,-140.99 923.05,-140.99"/>
+<path fill="none" stroke="black" d="M1362,-122.27C1362,-140.56 1362,-166 1362,-166 1362,-166 996.77,-166 996.77,-166"/>
+<polygon fill="black" stroke="black" points="996.77,-162.5 986.77,-166 996.77,-169.5 996.77,-162.5"/>
 </g>
 <!-- CurveHighChartComponent -->
 <g id="node4" class="node">
 <title>CurveHighChartComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="897.14,-122 722.86,-122 722.86,-86 897.14,-86 897.14,-122"/>
-<text text-anchor="middle" x="810" y="-99.8" font-family="Times,serif" font-size="14.00">CurveHighChartComponent</text>
+<polygon fill="#ffffb3" stroke="black" points="1286.14,-122 1111.86,-122 1111.86,-86 1286.14,-86 1286.14,-122"/>
+<text text-anchor="middle" x="1199" y="-99.8" font-family="Times,serif" font-size="14.00">CurveHighChartComponent</text>
 </g>
 <!-- CurveHighChartComponent&#45;&gt;CurveModule -->
 <g id="edge4" class="edge">
 <title>CurveHighChartComponent&#45;&gt;CurveModule</title>
-<path fill="none" stroke="black" d="M870.72,-122.11C870.72,-122.11 870.72,-140.99 870.72,-140.99"/>
-<polygon fill="black" stroke="black" points="867.22,-140.99 870.72,-150.99 874.22,-140.99 867.22,-140.99"/>
+<path fill="none" stroke="black" d="M1199,-122.01C1199,-138.05 1199,-159 1199,-159 1199,-159 996.9,-159 996.9,-159"/>
+<polygon fill="black" stroke="black" points="996.9,-155.5 986.9,-159 996.9,-162.5 996.9,-155.5"/>
 </g>
 <!-- CurveTableComponent -->
 <g id="node5" class="node">
 <title>CurveTableComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="704.92,-122 557.08,-122 557.08,-86 704.92,-86 704.92,-122"/>
-<text text-anchor="middle" x="631" y="-99.8" font-family="Times,serif" font-size="14.00">CurveTableComponent</text>
+<polygon fill="#ffffb3" stroke="black" points="1093.92,-122 946.08,-122 946.08,-86 1093.92,-86 1093.92,-122"/>
+<text text-anchor="middle" x="1020" y="-99.8" font-family="Times,serif" font-size="14.00">CurveTableComponent</text>
 </g>
 <!-- CurveTableComponent&#45;&gt;CurveModule -->
 <g id="edge5" class="edge">
 <title>CurveTableComponent&#45;&gt;CurveModule</title>
-<path fill="none" stroke="black" d="M631,-122.01C631,-138.05 631,-159 631,-159 631,-159 834.22,-159 834.22,-159"/>
-<polygon fill="black" stroke="black" points="834.22,-162.5 844.22,-159 834.22,-155.5 834.22,-162.5"/>
+<path fill="none" stroke="black" d="M966.59,-122.11C966.59,-122.11 966.59,-140.99 966.59,-140.99"/>
+<polygon fill="black" stroke="black" points="963.09,-140.99 966.59,-150.99 970.09,-140.99 963.09,-140.99"/>
 </g>
 <!-- LineFormComponent -->
 <g id="node6" class="node">
 <title>LineFormComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="539.82,-122 402.18,-122 402.18,-86 539.82,-86 539.82,-122"/>
-<text text-anchor="middle" x="471" y="-99.8" font-family="Times,serif" font-size="14.00">LineFormComponent</text>
+<polygon fill="#ffffb3" stroke="black" points="928.82,-122 791.18,-122 791.18,-86 928.82,-86 928.82,-122"/>
+<text text-anchor="middle" x="860" y="-99.8" font-family="Times,serif" font-size="14.00">LineFormComponent</text>
 </g>
 <!-- LineFormComponent&#45;&gt;CurveModule -->
 <g id="edge6" class="edge">
 <title>LineFormComponent&#45;&gt;CurveModule</title>
-<path fill="none" stroke="black" d="M471,-122.27C471,-140.56 471,-166 471,-166 471,-166 834.04,-166 834.04,-166"/>
-<polygon fill="black" stroke="black" points="834.04,-169.5 844.04,-166 834.04,-162.5 834.04,-169.5"/>
+<path fill="none" stroke="black" d="M910.89,-122.11C910.89,-122.11 910.89,-140.99 910.89,-140.99"/>
+<polygon fill="black" stroke="black" points="907.39,-140.99 910.89,-150.99 914.39,-140.99 907.39,-140.99"/>
 </g>
 <!-- CurveComponent  -->
 <g id="node10" class="node">
 <title>CurveComponent </title>
-<polygon fill="#fb8072" stroke="black" points="950.54,-252 831.46,-252 831.46,-216 950.54,-216 950.54,-252"/>
-<text text-anchor="middle" x="891" y="-229.8" font-family="Times,serif" font-size="14.00">CurveComponent </text>
+<polygon fill="#fb8072" stroke="black" points="999.54,-252 880.46,-252 880.46,-216 999.54,-216 999.54,-252"/>
+<text text-anchor="middle" x="940" y="-229.8" font-family="Times,serif" font-size="14.00">CurveComponent </text>
 </g>
 <!-- CurveModule&#45;&gt;CurveComponent  -->
 <g id="edge9" class="edge">
 <title>CurveModule&#45;&gt;CurveComponent </title>
-<path fill="none" stroke="black" stroke-dasharray="5,2" d="M891,-187.11C891,-187.11 891,-205.99 891,-205.99"/>
-<polygon fill="black" stroke="black" points="887.5,-205.99 891,-215.99 894.5,-205.99 887.5,-205.99"/>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M940,-187.11C940,-187.11 940,-205.99 940,-205.99"/>
+<polygon fill="black" stroke="black" points="936.5,-205.99 940,-215.99 943.5,-205.99 936.5,-205.99"/>
 </g>
 <!-- SimpleDataButtonModule -->
 <g id="node8" class="node">
 <title>SimpleDataButtonModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="377.76,-122 374.76,-126 353.76,-126 350.76,-122 214.24,-122 214.24,-86 377.76,-86 377.76,-122"/>
-<text text-anchor="middle" x="296" y="-99.8" font-family="Times,serif" font-size="14.00">SimpleDataButtonModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="766.76,-122 763.76,-126 742.76,-126 739.76,-122 603.24,-122 603.24,-86 766.76,-86 766.76,-122"/>
+<text text-anchor="middle" x="685" y="-99.8" font-family="Times,serif" font-size="14.00">SimpleDataButtonModule</text>
 </g>
 <!-- SimpleDataButtonModule&#45;&gt;CurveModule -->
 <g id="edge7" class="edge">
 <title>SimpleDataButtonModule&#45;&gt;CurveModule</title>
-<path fill="none" stroke="black" d="M296,-122.13C296,-142.57 296,-173 296,-173 296,-173 833.81,-173 833.81,-173"/>
-<polygon fill="black" stroke="black" points="833.81,-176.5 843.81,-173 833.81,-169.5 833.81,-176.5"/>
+<path fill="none" stroke="black" d="M685,-122.01C685,-138.05 685,-159 685,-159 685,-159 883.23,-159 883.23,-159"/>
+<polygon fill="black" stroke="black" points="883.23,-162.5 893.23,-159 883.23,-155.5 883.23,-162.5"/>
 </g>
 <!-- SimpleGraphButtonModule -->
 <g id="node9" class="node">
 <title>SimpleGraphButtonModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="196.32,-122 193.32,-126 172.32,-126 169.32,-122 23.68,-122 23.68,-86 196.32,-86 196.32,-122"/>
-<text text-anchor="middle" x="110" y="-99.8" font-family="Times,serif" font-size="14.00">SimpleGraphButtonModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="585.32,-122 582.32,-126 561.32,-126 558.32,-122 412.68,-122 412.68,-86 585.32,-86 585.32,-122"/>
+<text text-anchor="middle" x="499" y="-99.8" font-family="Times,serif" font-size="14.00">SimpleGraphButtonModule</text>
 </g>
 <!-- SimpleGraphButtonModule&#45;&gt;CurveModule -->
 <g id="edge8" class="edge">
 <title>SimpleGraphButtonModule&#45;&gt;CurveModule</title>
-<path fill="none" stroke="black" d="M110,-122.01C110,-144.49 110,-180 110,-180 110,-180 834.19,-180 834.19,-180"/>
-<polygon fill="black" stroke="black" points="834.19,-183.5 844.19,-180 834.19,-176.5 834.19,-183.5"/>
+<path fill="none" stroke="black" d="M499,-122.27C499,-140.56 499,-166 499,-166 499,-166 883.22,-166 883.22,-166"/>
+<polygon fill="black" stroke="black" points="883.22,-169.5 893.22,-166 883.22,-162.5 883.22,-169.5"/>
 </g>
 <!-- CurveService -->
 <g id="node11" class="node">
 <title>CurveService</title>
-<ellipse fill="#fdb462" stroke="black" cx="1715" cy="-104" rx="63.68" ry="18"/>
-<text text-anchor="middle" x="1715" y="-99.8" font-family="Times,serif" font-size="14.00">CurveService</text>
+<ellipse fill="#fdb462" stroke="black" cx="325" cy="-104" rx="63.68" ry="18"/>
+<text text-anchor="middle" x="325" y="-99.8" font-family="Times,serif" font-size="14.00">CurveService</text>
 </g>
 <!-- CurveService&#45;&gt;CurveModule -->
 <g id="edge10" class="edge">
 <title>CurveService&#45;&gt;CurveModule</title>
-<path fill="none" stroke="black" d="M1715,-122.01C1715,-144.49 1715,-180 1715,-180 1715,-180 947.96,-180 947.96,-180"/>
-<polygon fill="black" stroke="black" points="947.96,-176.5 937.96,-180 947.96,-183.5 947.96,-176.5"/>
+<path fill="none" stroke="black" d="M325,-122.13C325,-142.57 325,-173 325,-173 325,-173 883.02,-173 883.02,-173"/>
+<polygon fill="black" stroke="black" points="883.02,-176.5 893.02,-173 883.02,-169.5 883.02,-176.5"/>
 </g>
 <!-- HonorCodePopupService -->
 <g id="node12" class="node">
 <title>HonorCodePopupService</title>
-<ellipse fill="#fdb462" stroke="black" cx="1524" cy="-104" rx="109.96" ry="18"/>
-<text text-anchor="middle" x="1524" y="-99.8" font-family="Times,serif" font-size="14.00">HonorCodePopupService</text>
+<ellipse fill="#fdb462" stroke="black" cx="134" cy="-104" rx="109.96" ry="18"/>
+<text text-anchor="middle" x="134" y="-99.8" font-family="Times,serif" font-size="14.00">HonorCodePopupService</text>
 </g>
 <!-- HonorCodePopupService&#45;&gt;CurveModule -->
 <g id="edge11" class="edge">
 <title>HonorCodePopupService&#45;&gt;CurveModule</title>
-<path fill="none" stroke="black" d="M1524,-122.13C1524,-142.57 1524,-173 1524,-173 1524,-173 947.8,-173 947.8,-173"/>
-<polygon fill="black" stroke="black" points="947.8,-169.5 937.8,-173 947.8,-176.5 947.8,-169.5"/>
+<path fill="none" stroke="black" d="M134,-122.01C134,-144.49 134,-180 134,-180 134,-180 883.18,-180 883.18,-180"/>
+<polygon fill="black" stroke="black" points="883.18,-183.5 893.18,-180 883.18,-176.5 883.18,-183.5"/>
 </g>
 </g>
 </svg>

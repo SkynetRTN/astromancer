@@ -73,7 +73,7 @@
                             <a href="#CurveParam" title="src/app/tools/curve/curve.service.util.ts" ><b>CurveParam</b>&nbsp;&nbsp;&nbsp;(src/.../curve.service.util.ts)</a>
                         </li>
                         <li>
-                            <a href="#FileType" title="src/app/tools/shared/data/FileParser.ts" ><b>FileType</b>&nbsp;&nbsp;&nbsp;(src/.../FileParser.ts)</a>
+                            <a href="#FileType" title="src/app/tools/shared/data/FileParser/FileParser.util.ts" ><b>FileType</b>&nbsp;&nbsp;&nbsp;(src/.../FileParser.util.ts)</a>
                         </li>
                         <li>
                             <a href="#FontFamily" title="src/app/shared/settings/appearance/service/appearance.utils.ts" ><b>FontFamily</b>&nbsp;&nbsp;&nbsp;(src/.../appearance.utils.ts)</a>
@@ -88,7 +88,7 @@
                             <a href="#MoonModelParameters" title="src/app/tools/moon/moon-form/moon-form.component.ts" ><b>MoonModelParameters</b>&nbsp;&nbsp;&nbsp;(src/.../moon-form.component.ts)</a>
                         </li>
                         <li>
-                            <a href="#MyFileParserErrors" title="src/app/tools/shared/data/FileParser.ts" ><b>MyFileParserErrors</b>&nbsp;&nbsp;&nbsp;(src/.../FileParser.ts)</a>
+                            <a href="#MyFileParserErrors" title="src/app/tools/shared/data/FileParser/FileParser.util.ts" ><b>MyFileParserErrors</b>&nbsp;&nbsp;&nbsp;(src/.../FileParser.util.ts)</a>
                         </li>
                         <li>
                             <a href="#ScatterModelParameters" title="src/app/tools/scatter/scatter-form/scatter-form.component.ts" ><b>ScatterModelParameters</b>&nbsp;&nbsp;&nbsp;(src/.../scatter-form.component.ts)</a>
@@ -98,6 +98,12 @@
                         </li>
                         <li>
                             <a href="#UpdateSource" title="src/app/tools/moon/moon.service.util.ts" ><b>UpdateSource</b>&nbsp;&nbsp;&nbsp;(src/.../moon.service.util.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#VariableDisplayPeriod" title="src/app/tools/variable/variable.service.util.ts" ><b>VariableDisplayPeriod</b>&nbsp;&nbsp;&nbsp;(src/.../variable.service.util.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#VariableStarOptions" title="src/app/tools/variable/variable.service.util.ts" ><b>VariableStarOptions</b>&nbsp;&nbsp;&nbsp;(src/.../variable.service.util.ts)</a>
                         </li>
                     </ul>
                 </td>
@@ -412,7 +418,7 @@
             </tbody>
         </table>
 </section>
-    <h3>src/app/tools/shared/data/FileParser.ts</h3>
+    <h3>src/app/tools/shared/data/FileParser/FileParser.util.ts</h3>
     <section data-compodoc="block-enums">
         <table class="table table-sm table-bordered">
             <tbody>
@@ -424,12 +430,22 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                &nbsp;GBO_SPECTRUM_TXT
+                                &nbsp;TXT
                             </td>
                         </tr>
                         <tr>
                             <td class="col-md-4">
-                                <i>Value : </i><code>gbo-spectrum-txt</code>
+                                <i>Value : </i><code>txt</code>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                &nbsp;CSV
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <i>Value : </i><code>csv</code>
                             </td>
                         </tr>
             </tbody>
@@ -652,6 +668,79 @@
                         <tr>
                             <td class="col-md-4">
                                 <i>Value : </i><code>interface</code>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+</section>
+    <h3>src/app/tools/variable/variable.service.util.ts</h3>
+    <section data-compodoc="block-enums">
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="VariableDisplayPeriod"></a>
+                        <span class="name "><b>VariableDisplayPeriod</b><a href="#VariableDisplayPeriod"><span class="icon ion-ios-link"></span></a></span>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                &nbsp;ONE
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <i>Value : </i><code>1</code>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                &nbsp;TWO
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <i>Value : </i><code>2</code>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="VariableStarOptions"></a>
+                        <span class="name "><b>VariableStarOptions</b><a href="#VariableStarOptions"><span class="icon ion-ios-link"></span></a></span>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                &nbsp;NONE
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <i>Value : </i><code>None</code>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                &nbsp;SOURCE1
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <i>Value : </i><code>Source 1</code>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                &nbsp;SOURCE2
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <i>Value : </i><code>Source 2</code>
                             </td>
                         </tr>
             </tbody>

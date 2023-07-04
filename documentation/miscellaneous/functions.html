@@ -70,6 +70,9 @@
                             <a href="#dateAppendZero" title="src/app/tools/shared/charts/utils.ts" ><b>dateAppendZero</b>&nbsp;&nbsp;&nbsp;(src/.../utils.ts)</a>
                         </li>
                         <li>
+                            <a href="#floatMod" title="src/app/tools/shared/data/utils.ts" ><b>floatMod</b>&nbsp;&nbsp;&nbsp;(src/.../utils.ts)</a>
+                        </li>
+                        <li>
                             <a href="#formatTime" title="src/app/tools/shared/charts/utils.ts" ><b>formatTime</b>&nbsp;&nbsp;&nbsp;(src/.../utils.ts)</a>
                         </li>
                         <li>
@@ -79,7 +82,13 @@
                             <a href="#getToolSiteName" title="src/app/app-routing.module.ts" ><b>getToolSiteName</b>&nbsp;&nbsp;&nbsp;(src/.../app-routing.module.ts)</a>
                         </li>
                         <li>
+                            <a href="#lombScargleWithError" title="src/app/tools/shared/data/utils.ts" ><b>lombScargleWithError</b>&nbsp;&nbsp;&nbsp;(src/.../utils.ts)</a>
+                        </li>
+                        <li>
                             <a href="#rad" title="src/app/tools/shared/data/utils.ts" ><b>rad</b>&nbsp;&nbsp;&nbsp;(src/.../utils.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#rawDataToDataDict" title="src/app/tools/spectrum/spectrum/spectrum.component.ts" ><b>rawDataToDataDict</b>&nbsp;&nbsp;&nbsp;(src/.../spectrum.component.ts)</a>
                         </li>
                         <li>
                             <a href="#updateLine" title="src/app/tools/shared/charts/utils.ts" ><b>updateLine</b>&nbsp;&nbsp;&nbsp;(src/.../utils.ts)</a>
@@ -565,6 +574,328 @@ correctly update when there are multiple datasets in the Chart object or in the 
             </tr>
         </tbody>
     </table>
+</section>    <h3>src/app/tools/shared/data/utils.ts</h3>
+    <section data-compodoc="block-methods">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="floatMod"></a>
+                    <span class="name">
+                        <span ><b>floatMod</b></span>
+                        <a href="#floatMod"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>floatMod(a: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, b: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>This function computes the floating point modulo.</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>a</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>The dividend</p>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>b</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>The divisor</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="lombScargleWithError"></a>
+                    <span class="name">
+                        <span ><b>lombScargleWithError</b></span>
+                        <a href="#lombScargleWithError"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>lombScargleWithError(ts, ys, error, start: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, stop: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, steps: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, freqMode)</code>
+                </td>
+            </tr>
+
+
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>This function computes the Error Considered Lomb Scargle periodogram for a given set of time/observation data.</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Default value</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>ts</td>
+                                    <td>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+                                    <td>
+                                    </td>
+
+                                    <td>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>ys</td>
+                                    <td>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+                                    <td>
+                                    </td>
+
+                                    <td>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>error</td>
+                                    <td>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+                                    <td>
+                                    </td>
+
+                                    <td>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>start</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+                                    <td>
+                                    </td>
+
+                                    <td>
+                                        <p>the starting period</p>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>stop</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+                                    <td>
+                                    </td>
+
+                                    <td>
+                                        <p>the stopin period</p>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>steps</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+                                    <td>
+                                        <code>1000</code>
+                                    </td>
+
+                                    <td>
+                                        <p>number of steps between start and stop. Default is 1000.</p>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>freqMode</td>
+                                    <td>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+                                    <td>
+                                        <code>false</code>
+                                    </td>
+
+                                    <td>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>any[]</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="rad"></a>
+                    <span class="name">
+                        <span ><b>rad</b></span>
+                        <a href="#rad"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>rad(degree: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>This function takes an angle in degrees and returns it in radians.</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>degree</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>:  An angle in degrees</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </section>    <h3>src/app/app-routing.module.ts</h3>
     <section data-compodoc="block-methods">
     <h3></h3>    <table class="table table-sm table-bordered">
@@ -637,22 +968,22 @@ correctly update when there are multiple datasets in the Chart object or in the 
             </tr>
         </tbody>
     </table>
-</section>    <h3>src/app/tools/shared/data/utils.ts</h3>
+</section>    <h3>src/app/tools/spectrum/spectrum/spectrum.component.ts</h3>
     <section data-compodoc="block-methods">
     <h3></h3>    <table class="table table-sm table-bordered">
         <tbody>
             <tr>
                 <td class="col-md-4">
-                    <a name="rad"></a>
+                    <a name="rawDataToDataDict"></a>
                     <span class="name">
-                        <span ><b>rad</b></span>
-                        <a href="#rad"><span class="icon ion-ios-link"></span></a>
+                        <span ><b>rawDataToDataDict</b></span>
+                        <a href="#rawDataToDataDict"><span class="icon ion-ios-link"></span></a>
                     </span>
                 </td>
             </tr>
             <tr>
                 <td class="col-md-4">
-<code>rad(degree: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+<code>rawDataToDataDict(data, fields, wlRange)</code>
                 </td>
             </tr>
 
@@ -661,8 +992,6 @@ correctly update when there are multiple datasets in the Chart object or in the 
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-description"><p>This function takes an angle in degrees and returns it in radians.</p>
-</div>
 
                     <div class="io-description">
                         <b>Parameters :</b>
@@ -671,27 +1000,36 @@ correctly update when there are multiple datasets in the Chart object or in the 
                             <thead>
                                 <tr>
                                     <td>Name</td>
-                                    <td>Type</td>
                                     <td>Optional</td>
-                                    <td>Description</td>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>degree</td>
-                                    <td>
-                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
-                                    </td>
+                                    <td>data</td>
 
                                     <td>
                                         No
                                     </td>
 
 
-                                    <td>
-                                        <p>:  An angle in degrees</p>
+                                </tr>
+                                <tr>
+                                    <td>fields</td>
 
+                                    <td>
+                                        No
                                     </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>wlRange</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
                                 </tr>
                             </tbody>
                         </table>
@@ -699,7 +1037,7 @@ correctly update when there are multiple datasets in the Chart object or in the 
                     <div>
                     </div>
                     <div class="io-description">
-                        <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                        <b>Returns : </b>        <code><a href="../interfaces/SpectrumDataDict.html" target="_self" >SpectrumDataDict[]</a></code>
 
                     </div>
                     <div class="io-description">

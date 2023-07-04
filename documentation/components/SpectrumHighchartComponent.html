@@ -479,8 +479,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="135"
-                            class="link-to-prism">src/app/tools/spectrum/spectrum-highchart/spectrum-highchart.component.ts:135</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="146"
+                            class="link-to-prism">src/app/tools/spectrum/spectrum-highchart/spectrum-highchart.component.ts:146</a></div>
                 </td>
             </tr>
 
@@ -518,8 +518,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="139"
-                            class="link-to-prism">src/app/tools/spectrum/spectrum-highchart/spectrum-highchart.component.ts:139</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="150"
+                            class="link-to-prism">src/app/tools/spectrum/spectrum-highchart/spectrum-highchart.component.ts:150</a></div>
                 </td>
             </tr>
 
@@ -557,8 +557,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="145"
-                            class="link-to-prism">src/app/tools/spectrum/spectrum-highchart/spectrum-highchart.component.ts:145</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="156"
+                            class="link-to-prism">src/app/tools/spectrum/spectrum-highchart/spectrum-highchart.component.ts:156</a></div>
                 </td>
             </tr>
 
@@ -633,8 +633,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="131"
-                            class="link-to-prism">src/app/tools/spectrum/spectrum-highchart/spectrum-highchart.component.ts:131</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="142"
+                            class="link-to-prism">src/app/tools/spectrum/spectrum-highchart/spectrum-highchart.component.ts:142</a></div>
                 </td>
             </tr>
 
@@ -670,8 +670,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="114"
-                            class="link-to-prism">src/app/tools/spectrum/spectrum-highchart/spectrum-highchart.component.ts:114</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="115"
+                            class="link-to-prism">src/app/tools/spectrum/spectrum-highchart/spectrum-highchart.component.ts:115</a></div>
                 </td>
             </tr>
 
@@ -996,7 +996,8 @@ export class SpectrumHighchartComponent implements AfterViewInit, OnDestroy {
       visible: SpectrumOptions.ONE &#x3D;&#x3D;&#x3D; this.service.getChannel(),
       showInLegend: SpectrumOptions.ONE &#x3D;&#x3D;&#x3D; this.service.getChannel(),
       marker: {
-        enabled: true,
+        // only enable marker when it iss radio spectrum aka the frequency is low enough
+        enabled: this.service.getDataArray()[0][0][0] &lt; 1000,
         symbol: &#x27;circle&#x27;,
         radius: 3,
       },
@@ -1008,7 +1009,7 @@ export class SpectrumHighchartComponent implements AfterViewInit, OnDestroy {
       visible: SpectrumOptions.TWO &#x3D;&#x3D;&#x3D; this.service.getChannel(),
       showInLegend: SpectrumOptions.TWO &#x3D;&#x3D;&#x3D; this.service.getChannel(),
       marker: {
-        enabled: true,
+        enabled: this.service.getDataArray()[1][0][0] &lt; 1000,
         symbol: &#x27;circle&#x27;,
         radius: 3,
       },
@@ -1022,6 +1023,11 @@ export class SpectrumHighchartComponent implements AfterViewInit, OnDestroy {
       type: &#x27;line&#x27;,
       visible: SpectrumOptions.ONE &#x3D;&#x3D;&#x3D; this.service.getChannel(),
       showInLegend: SpectrumOptions.ONE &#x3D;&#x3D;&#x3D; this.service.getChannel(),
+      marker: {
+        enabled: this.service.getDataArray()[0][0][0] &lt; 1000,
+        symbol: &#x27;circle&#x27;,
+        radius: 3,
+      },
     });
     this.chartObject.series[1].update({
       name: SpectrumOptions.TWO,
@@ -1029,6 +1035,11 @@ export class SpectrumHighchartComponent implements AfterViewInit, OnDestroy {
       type: &#x27;line&#x27;,
       visible: SpectrumOptions.TWO &#x3D;&#x3D;&#x3D; this.service.getChannel(),
       showInLegend: SpectrumOptions.TWO &#x3D;&#x3D;&#x3D; this.service.getChannel(),
+      marker: {
+        enabled: this.service.getDataArray()[1][0][0] &lt; 1000,
+        symbol: &#x27;circle&#x27;,
+        radius: 3,
+      },
     });
   }
 
@@ -1118,7 +1129,7 @@ export class SpectrumHighchartComponent implements AfterViewInit, OnDestroy {
 <script src="../js/libs/deep-iterator.js"></script>
 <script>
         var COMPONENT_TEMPLATE = '<div><div class="chart-container" id="chart-container">  <highcharts-chart    (chartInstance)="chartInitialized($event)"    [(update)]="updateFlag"    [Highcharts]="Highcharts"    [constructorType]="chartConstructor"    [options]="chartOptions"    style="width: 100%; height: 100%; display: block;"  ></highcharts-chart></div></div>'
-    var COMPONENTS = [{'name': 'AboutComponent', 'selector': 'app-about'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'AppearanceComponent', 'selector': 'app-appearance'},{'name': 'CurveChartComponent', 'selector': 'app-curve-chart'},{'name': 'CurveChartFormComponent', 'selector': 'app-curve-chart-form'},{'name': 'CurveComponent', 'selector': 'app-curve'},{'name': 'CurveHighChartComponent', 'selector': 'app-curve-highchart'},{'name': 'CurveTableComponent', 'selector': 'app-curve-table'},{'name': 'DualChartFormComponent', 'selector': 'app-dual-chart-form'},{'name': 'DualComponent', 'selector': 'app-dual'},{'name': 'DualHighchartComponent', 'selector': 'app-dual-highchart'},{'name': 'DualTableComponent', 'selector': 'app-dual-table'},{'name': 'HomeComponent', 'selector': 'app-home'},{'name': 'HonorCodePopupComponent', 'selector': 'app-honor-code-popup'},{'name': 'InputSliderComponent', 'selector': 'my-input-slider'},{'name': 'LineFormComponent', 'selector': 'app-line-form'},{'name': 'MenubarComponent', 'selector': 'app-menubar'},{'name': 'MoonChartFormComponent', 'selector': 'app-moon-chart-form'},{'name': 'MoonComponent', 'selector': 'app-moon'},{'name': 'MoonFormComponent', 'selector': 'app-moon-form'},{'name': 'MoonHighchartComponent', 'selector': 'app-moon-highchart'},{'name': 'MoonTableComponent', 'selector': 'app-moon-table'},{'name': 'PageNotFoundComponent', 'selector': 'app-page-not-found'},{'name': 'ScatterChartFormComponent', 'selector': 'app-scatter-chart-form'},{'name': 'ScatterComponent', 'selector': 'app-scatter'},{'name': 'ScatterFormComponent', 'selector': 'app-scatter-form'},{'name': 'ScatterHighchartComponent', 'selector': 'app-scatter-highchart'},{'name': 'ScatterTableComponent', 'selector': 'app-scatter-table'},{'name': 'SettingsComponent', 'selector': 'app-settings'},{'name': 'SimpleDataButtonComponent', 'selector': 'app-simple-data-button'},{'name': 'SimpleGraphButtonComponent', 'selector': 'app-simple-graph-button'},{'name': 'SpectrumChartFormComponent', 'selector': 'app-spectrum-chart-form'},{'name': 'SpectrumComponent', 'selector': 'app-spectrum'},{'name': 'SpectrumFormComponent', 'selector': 'app-spectrum-form'},{'name': 'SpectrumHighchartComponent', 'selector': 'app-spectrum-highchart'},{'name': 'SpectrumTableComponent', 'selector': 'app-spectrum-table'},{'name': 'ToolsNavbarComponent', 'selector': 'app-tools-navbar'},{'name': 'VenusChartFormComponent', 'selector': 'app-venus-chart-form'},{'name': 'VenusComponent', 'selector': 'app-venus'},{'name': 'VenusHighchartComponent', 'selector': 'app-venus-highchart'},{'name': 'VenusTableComponent', 'selector': 'app-venus-table'}];
+    var COMPONENTS = [{'name': 'AboutComponent', 'selector': 'app-about'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'AppearanceComponent', 'selector': 'app-appearance'},{'name': 'CurveChartComponent', 'selector': 'app-curve-chart'},{'name': 'CurveChartFormComponent', 'selector': 'app-curve-chart-form'},{'name': 'CurveComponent', 'selector': 'app-curve'},{'name': 'CurveHighChartComponent', 'selector': 'app-curve-highchart'},{'name': 'CurveTableComponent', 'selector': 'app-curve-table'},{'name': 'DualChartFormComponent', 'selector': 'app-dual-chart-form'},{'name': 'DualComponent', 'selector': 'app-dual'},{'name': 'DualHighchartComponent', 'selector': 'app-dual-highchart'},{'name': 'DualTableComponent', 'selector': 'app-dual-table'},{'name': 'HomeComponent', 'selector': 'app-home'},{'name': 'HonorCodePopupComponent', 'selector': 'app-honor-code-popup'},{'name': 'InputSliderComponent', 'selector': 'my-input-slider'},{'name': 'LineFormComponent', 'selector': 'app-line-form'},{'name': 'MenubarComponent', 'selector': 'app-menubar'},{'name': 'MoonChartFormComponent', 'selector': 'app-moon-chart-form'},{'name': 'MoonComponent', 'selector': 'app-moon'},{'name': 'MoonFormComponent', 'selector': 'app-moon-form'},{'name': 'MoonHighchartComponent', 'selector': 'app-moon-highchart'},{'name': 'MoonTableComponent', 'selector': 'app-moon-table'},{'name': 'PageNotFoundComponent', 'selector': 'app-page-not-found'},{'name': 'ScatterChartFormComponent', 'selector': 'app-scatter-chart-form'},{'name': 'ScatterComponent', 'selector': 'app-scatter'},{'name': 'ScatterFormComponent', 'selector': 'app-scatter-form'},{'name': 'ScatterHighchartComponent', 'selector': 'app-scatter-highchart'},{'name': 'ScatterTableComponent', 'selector': 'app-scatter-table'},{'name': 'SettingsComponent', 'selector': 'app-settings'},{'name': 'SimpleDataButtonComponent', 'selector': 'app-simple-data-button'},{'name': 'SimpleGraphButtonComponent', 'selector': 'app-simple-graph-button'},{'name': 'SpectrumChartFormComponent', 'selector': 'app-spectrum-chart-form'},{'name': 'SpectrumComponent', 'selector': 'app-spectrum'},{'name': 'SpectrumFormComponent', 'selector': 'app-spectrum-form'},{'name': 'SpectrumHighchartComponent', 'selector': 'app-spectrum-highchart'},{'name': 'SpectrumTableComponent', 'selector': 'app-spectrum-table'},{'name': 'ToolsNavbarComponent', 'selector': 'app-tools-navbar'},{'name': 'VariableComponent', 'selector': 'app-variable'},{'name': 'VariableLightCurveChartFormComponent', 'selector': 'app-variable-light-curve-chart-form'},{'name': 'VariableLightCurveComponent', 'selector': 'app-variable-light-curve'},{'name': 'VariableLightCurveFormComponent', 'selector': 'app-variable-light-curve-form'},{'name': 'VariableLightCurveHighchartComponent', 'selector': 'app-variable-light-curve-highchart'},{'name': 'VariablePeriodFoldingComponent', 'selector': 'app-variable-period-folding'},{'name': 'VariablePeriodFoldingFormComponent', 'selector': 'app-variable-period-folding-form'},{'name': 'VariablePeriodFoldingHighchartComponent', 'selector': 'app-variable-period-folding-highchart'},{'name': 'VariablePeriodogramComponent', 'selector': 'app-variable-periodogram'},{'name': 'VariablePeriodogramFormComponent', 'selector': 'app-variable-periodogram-form'},{'name': 'VariablePeriodogramHighchartsComponent', 'selector': 'app-variable-periodogram-highcharts'},{'name': 'VariableTableComponent', 'selector': 'app-variable-table'},{'name': 'VenusChartFormComponent', 'selector': 'app-venus-chart-form'},{'name': 'VenusComponent', 'selector': 'app-venus'},{'name': 'VenusHighchartComponent', 'selector': 'app-venus-highchart'},{'name': 'VenusTableComponent', 'selector': 'app-venus-table'}];
     var DIRECTIVES = [];
     var ACTUAL_COMPONENT = {'name': 'SpectrumHighchartComponent'};
 </script>

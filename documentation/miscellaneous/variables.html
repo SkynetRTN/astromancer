@@ -61,6 +61,9 @@
                 <td class="col-md-4">
                     <ul class="index-list">
                         <li>
+                            <a href="#ArrMath" title="src/app/tools/shared/data/utils.ts" ><b>ArrMath</b>&nbsp;&nbsp;&nbsp;(src/.../utils.ts)</a>
+                        </li>
+                        <li>
                             <a href="#environment" title="src/environments/environment.prod.ts" ><b>environment</b>&nbsp;&nbsp;&nbsp;(src/.../environment.prod.ts)</a>
                         </li>
                         <li>
@@ -73,6 +76,163 @@
     </table>
 </section>
 
+    <h3>src/app/tools/shared/data/utils.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ArrMath"></a>
+                    <span class="name">
+                        <span ><b>ArrMath</b></span>
+                        <a href="#ArrMath"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/object" target="_blank" >object</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>{
+  max: function (arr: number[]): number {
+    return Math.max.apply(null, arr);
+  },
+  min: function (arr: number[]): number {
+    return Math.min.apply(null, arr);
+  },
+  sum: function (arr: number[]): number {
+    return arr.reduce((acc, cur) &#x3D;&gt; acc + cur, 0);
+  },
+  weightedSum: function (arr: number[], weight: number[]): number {
+    let summed &#x3D; 0;
+    for (let i &#x3D; 0; i &lt; arr.length; i++) {
+      summed &#x3D; summed + arr[i] * weight[i];
+    }
+
+    return summed
+  },
+  mean: function (arr: number[]): number {
+    return this.sum(arr) / arr.length;
+  },
+  errorMean: function (arr: number[], error: number[]) {
+    let weight &#x3D; [];
+    for (let i &#x3D; 0; i &lt; arr.length; i++) {
+      weight[i] &#x3D; 1 / (error[i] * error[i])
+    }
+
+    return this.weightedSum(arr, weight) / this.sum(weight)
+
+  },
+  mul: function (arr1: number[] | number, arr2: number[] | number): number[] {
+    if (Array.isArray(arr1) &amp;&amp; Array.isArray(arr2)) {
+      console.assert(arr1.length &#x3D;&#x3D;&#x3D; arr2.length,
+        &quot;Error: Dimension mismatch when multiplying two arrays.&quot;);
+      return arr1.map((x, i) &#x3D;&gt; x * arr2[i]);
+    } else if (Array.isArray(arr1)) {
+      return arr1.map(x &#x3D;&gt; x * (arr2 as number));
+    } else if (Array.isArray(arr2)) {
+      return arr2.map(x &#x3D;&gt; x * (arr1 as number));
+    } else {
+      throw new TypeError(&quot;Error: Do not use ArrMath for scalar multiplications&quot;);
+    }
+  },
+  div: function (arr1: number[] | number, arr2: number[] | number): number[] {
+    if (Array.isArray(arr1) &amp;&amp; Array.isArray(arr2)) {
+      console.assert(arr1.length &#x3D;&#x3D;&#x3D; arr2.length,
+        &quot;Error: Dimension mismatch when dividing two arrays.&quot;);
+      return arr1.map((x, i) &#x3D;&gt; x / arr2[i]);
+    } else if (Array.isArray(arr1)) {
+      return arr1.map(x &#x3D;&gt; x / (arr2 as number));
+    } else if (Array.isArray(arr2)) {
+      return arr2.map(x &#x3D;&gt; x / (arr1 as number));
+    } else {
+      throw new TypeError(&quot;Error: Do not use ArrMath for scalar divisions&quot;);
+    }
+  },
+  add: function (arr1: number[] | number, arr2: number[] | number): number[] {
+    if (Array.isArray(arr1) &amp;&amp; Array.isArray(arr2)) {
+      console.assert(arr1.length &#x3D;&#x3D;&#x3D; arr2.length,
+        &quot;Error: Dimension mismatch when adding two arrays.&quot;);
+      return arr1.map((x, i) &#x3D;&gt; x + arr2[i]);
+    } else if (Array.isArray(arr1)) {
+      return arr1.map(x &#x3D;&gt; x + (arr2 as number));
+    } else if (Array.isArray(arr2)) {
+      return arr2.map(x &#x3D;&gt; x + (arr1 as number));
+    } else {
+      throw new TypeError(&quot;Error: Do not use ArrMath for scalar additions&quot;);
+    }
+  },
+  sub: function (arr1: number[] | number, arr2: number[] | number): number[] {
+    if (Array.isArray(arr1) &amp;&amp; Array.isArray(arr2)) {
+      console.assert(arr1.length &#x3D;&#x3D;&#x3D; arr2.length,
+        &quot;Error: Dimension mismatch when subtracting two arrays.&quot;);
+      return arr1.map((x, i) &#x3D;&gt; x - arr2[i]);
+    } else if (Array.isArray(arr1)) {
+      return arr1.map(x &#x3D;&gt; x - (arr2 as number));
+    } else if (Array.isArray(arr2)) {
+      return arr2.map(x &#x3D;&gt; x - (arr1 as number));
+    } else {
+      throw new TypeError(&quot;Error: Do not use ArrMath for scalar subtractions&quot;);
+    }
+  },
+  dot: function (arr1: number[] | number, arr2?: number[] | number): number {
+    if (arr2 &#x3D;&#x3D;&#x3D; undefined) {
+      return this.dot(arr1, arr1);
+    }
+    if (Array.isArray(arr1) &amp;&amp; Array.isArray(arr2)) {
+      console.assert(arr1.length &#x3D;&#x3D;&#x3D; arr2.length,
+        &quot;Error: Dimension mismatch when dot multiplying two arrays.&quot;);
+      return arr1.reduce((acc, cur, i) &#x3D;&gt; (acc + cur * arr2[i]), 0);
+    } else if (!Array.isArray(arr1) &amp;&amp; !Array.isArray(arr2)) {
+      return arr1 * arr2;
+    } else {
+      throw new TypeError(&quot;Error: Can&#x27;t take dot product of a vector and a number&quot;);
+    }
+  },
+  errordot: function (arr1: number[] | number, error: number[] | number, arr2?: number[] | number,): number {
+    if (arr2 &#x3D;&#x3D;&#x3D; undefined) {
+      return this.errordot(arr1, error, arr1);
+    }
+    if (Array.isArray(arr1) &amp;&amp; Array.isArray(arr2) &amp;&amp; Array.isArray(error)) {
+      console.assert(arr1.length &#x3D;&#x3D;&#x3D; arr2.length,
+        &quot;Error: Dimension mismatch when dot multiplying two arrays.&quot;);
+      let weight &#x3D; [];
+      let dotlist &#x3D; []
+      for (let i &#x3D; 0; i &lt; arr1.length; i++) {
+        weight[i] &#x3D; 1 / (error[i] * error[i])
+        dotlist.push(arr1[i] * arr2[i])
+      }
+
+      return this.weightedSum(dotlist, weight) / this.sum(weight);
+    } else if (!Array.isArray(arr1) &amp;&amp; !Array.isArray(arr2) &amp;&amp; !Array.isArray(error)) {
+      return arr1 * arr2;
+    } else {
+      throw new TypeError(&quot;Error: Can&#x27;t take dot product of a vector and a number&quot;);
+    }
+  },
+  cos: function (arr: number[]): number[] {
+    return arr.map(x &#x3D;&gt; Math.cos(x));
+  },
+  sin: function (arr: number[]): number[] {
+    return arr.map(x &#x3D;&gt; Math.sin(x));
+  },
+  var: function (arr: number[]): number {
+    // Variance
+    let mean &#x3D; this.mean(arr);
+    return this.sum(arr.map(x &#x3D;&gt; Math.pow(x - mean, 2))) / arr.length;
+  }
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
     <h3>src/environments/environment.prod.ts</h3>
     <section data-compodoc="block-properties">
     <h3></h3>    <table class="table table-sm table-bordered">

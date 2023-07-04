@@ -436,18 +436,82 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 <a href="modules/ToolsNavbarModule.html" data-type="entity-link" >ToolsNavbarModule</a>
                                     <li class="chapter inner">
                                         <div class="simple menu-toggler" data-bs-toggle="collapse" ${ isNormalMode ?
-                                            'data-bs-target="#components-links-module-ToolsNavbarModule-eb753068e8c56788285e11a227a2b36e618626beee2adc0f39291a80fa6dcf392db0bc0e4ef0c120090abb954be5879f27b6296aa4fb1f295398b5b476fe3643"' : 'data-bs-target="#xs-components-links-module-ToolsNavbarModule-eb753068e8c56788285e11a227a2b36e618626beee2adc0f39291a80fa6dcf392db0bc0e4ef0c120090abb954be5879f27b6296aa4fb1f295398b5b476fe3643"' }>
+                                            'data-bs-target="#components-links-module-ToolsNavbarModule-adedb761829d31049a873d9e0d42e739c13c340c45b9bf20cfbf4aca530b27b018b6b6000ffc9f331454765efb1b506c2067eb9f7a210fd63b404aa8172602c5"' : 'data-bs-target="#xs-components-links-module-ToolsNavbarModule-adedb761829d31049a873d9e0d42e739c13c340c45b9bf20cfbf4aca530b27b018b6b6000ffc9f331454765efb1b506c2067eb9f7a210fd63b404aa8172602c5"' }>
                                             <span class="icon ion-md-cog"></span>
                                             <span>Components</span>
                                             <span class="icon ion-ios-arrow-down"></span>
                                         </div>
-                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-ToolsNavbarModule-eb753068e8c56788285e11a227a2b36e618626beee2adc0f39291a80fa6dcf392db0bc0e4ef0c120090abb954be5879f27b6296aa4fb1f295398b5b476fe3643"' :
-                                            'id="xs-components-links-module-ToolsNavbarModule-eb753068e8c56788285e11a227a2b36e618626beee2adc0f39291a80fa6dcf392db0bc0e4ef0c120090abb954be5879f27b6296aa4fb1f295398b5b476fe3643"' }>
+                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-ToolsNavbarModule-adedb761829d31049a873d9e0d42e739c13c340c45b9bf20cfbf4aca530b27b018b6b6000ffc9f331454765efb1b506c2067eb9f7a210fd63b404aa8172602c5"' :
+                                            'id="xs-components-links-module-ToolsNavbarModule-adedb761829d31049a873d9e0d42e739c13c340c45b9bf20cfbf4aca530b27b018b6b6000ffc9f331454765efb1b506c2067eb9f7a210fd63b404aa8172602c5"' }>
                                             <li class="link">
                                                 <a href="components/ToolsNavbarComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >ToolsNavbarComponent</a>
                                             </li>
                                         </ul>
                                     </li>
+                            </li>
+                            <li class="link">
+                                <a href="modules/VariableModule.html" data-type="entity-link" >VariableModule</a>
+                                    <li class="chapter inner">
+                                        <div class="simple menu-toggler" data-bs-toggle="collapse" ${ isNormalMode ?
+                                            'data-bs-target="#components-links-module-VariableModule-f7fe770a133646b6aa56184ca5a58d04e37df8d08d8bcdeb48faf2ee3992202e05a294677afc3776b9fe11f2b0d59680726ba6b407b39ea124c47282ab2e6da3"' : 'data-bs-target="#xs-components-links-module-VariableModule-f7fe770a133646b6aa56184ca5a58d04e37df8d08d8bcdeb48faf2ee3992202e05a294677afc3776b9fe11f2b0d59680726ba6b407b39ea124c47282ab2e6da3"' }>
+                                            <span class="icon ion-md-cog"></span>
+                                            <span>Components</span>
+                                            <span class="icon ion-ios-arrow-down"></span>
+                                        </div>
+                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-VariableModule-f7fe770a133646b6aa56184ca5a58d04e37df8d08d8bcdeb48faf2ee3992202e05a294677afc3776b9fe11f2b0d59680726ba6b407b39ea124c47282ab2e6da3"' :
+                                            'id="xs-components-links-module-VariableModule-f7fe770a133646b6aa56184ca5a58d04e37df8d08d8bcdeb48faf2ee3992202e05a294677afc3776b9fe11f2b0d59680726ba6b407b39ea124c47282ab2e6da3"' }>
+                                            <li class="link">
+                                                <a href="components/VariableComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >VariableComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/VariableLightCurveChartFormComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >VariableLightCurveChartFormComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/VariableLightCurveComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >VariableLightCurveComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/VariableLightCurveFormComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >VariableLightCurveFormComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/VariableLightCurveHighchartComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >VariableLightCurveHighchartComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/VariablePeriodFoldingComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >VariablePeriodFoldingComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/VariablePeriodFoldingFormComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >VariablePeriodFoldingFormComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/VariablePeriodFoldingHighchartComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >VariablePeriodFoldingHighchartComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/VariablePeriodogramComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >VariablePeriodogramComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/VariablePeriodogramFormComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >VariablePeriodogramFormComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/VariablePeriodogramHighchartsComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >VariablePeriodogramHighchartsComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/VariableTableComponent.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >VariableTableComponent</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                <li class="chapter inner">
+                                    <div class="simple menu-toggler" data-bs-toggle="collapse" ${ isNormalMode ?
+                                        'data-bs-target="#injectables-links-module-VariableModule-f7fe770a133646b6aa56184ca5a58d04e37df8d08d8bcdeb48faf2ee3992202e05a294677afc3776b9fe11f2b0d59680726ba6b407b39ea124c47282ab2e6da3"' : 'data-bs-target="#xs-injectables-links-module-VariableModule-f7fe770a133646b6aa56184ca5a58d04e37df8d08d8bcdeb48faf2ee3992202e05a294677afc3776b9fe11f2b0d59680726ba6b407b39ea124c47282ab2e6da3"' }>
+                                        <span class="icon ion-md-arrow-round-down"></span>
+                                        <span>Injectables</span>
+                                        <span class="icon ion-ios-arrow-down"></span>
+                                    </div>
+                                    <ul class="links collapse" ${ isNormalMode ? 'id="injectables-links-module-VariableModule-f7fe770a133646b6aa56184ca5a58d04e37df8d08d8bcdeb48faf2ee3992202e05a294677afc3776b9fe11f2b0d59680726ba6b407b39ea124c47282ab2e6da3"' :
+                                        'id="xs-injectables-links-module-VariableModule-f7fe770a133646b6aa56184ca5a58d04e37df8d08d8bcdeb48faf2ee3992202e05a294677afc3776b9fe11f2b0d59680726ba6b407b39ea124c47282ab2e6da3"' }>
+                                        <li class="link">
+                                            <a href="injectables/VariableService.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >VariableService</a>
+                                        </li>
+                                    </ul>
+                                </li>
                             </li>
                             <li class="link">
                                 <a href="modules/VenusModule.html" data-type="entity-link" >VenusModule</a>
@@ -557,6 +621,9 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 <a href="classes/MyFileParser.html" data-type="entity-link" >MyFileParser</a>
                             </li>
                             <li class="link">
+                                <a href="classes/MyFileParserCSV.html" data-type="entity-link" >MyFileParserCSV</a>
+                            </li>
+                            <li class="link">
                                 <a href="classes/MyFileParserDefault.html" data-type="entity-link" >MyFileParserDefault</a>
                             </li>
                             <li class="link">
@@ -594,6 +661,27 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             </li>
                             <li class="link">
                                 <a href="classes/SpectrumTable.html" data-type="entity-link" >SpectrumTable</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/VariableChartInfo.html" data-type="entity-link" >VariableChartInfo</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/VariableData.html" data-type="entity-link" >VariableData</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/VariableInterfaceImpl.html" data-type="entity-link" >VariableInterfaceImpl</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/VariablePeriodFolding.html" data-type="entity-link" >VariablePeriodFolding</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/VariablePeriodogram.html" data-type="entity-link" >VariablePeriodogram</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/VariableStorage.html" data-type="entity-link" >VariableStorage</a>
+                            </li>
+                            <li class="link">
+                                <a href="classes/VariableTable.html" data-type="entity-link" >VariableTable</a>
                             </li>
                             <li class="link">
                                 <a href="classes/VenusChartInfo.html" data-type="entity-link" >VenusChartInfo</a>
@@ -722,6 +810,30 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                             </li>
                             <li class="link">
                                 <a href="interfaces/SpectrumInterface.html" data-type="entity-link" >SpectrumInterface</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/VariableChartInfoStorageObject.html" data-type="entity-link" >VariableChartInfoStorageObject</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/VariableDataDict.html" data-type="entity-link" >VariableDataDict</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/VariableInterface.html" data-type="entity-link" >VariableInterface</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/VariableInterfaceStorageObject.html" data-type="entity-link" >VariableInterfaceStorageObject</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/VariablePeriodFoldingInterface.html" data-type="entity-link" >VariablePeriodFoldingInterface</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/VariablePeriodFoldingStorageObject.html" data-type="entity-link" >VariablePeriodFoldingStorageObject</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/VariablePeriodogramInterface.html" data-type="entity-link" >VariablePeriodogramInterface</a>
+                            </li>
+                            <li class="link">
+                                <a href="interfaces/VariablePeriodogramStorageObject.html" data-type="entity-link" >VariablePeriodogramStorageObject</a>
                             </li>
                             <li class="link">
                                 <a href="interfaces/VenusChartInfoStorageObject.html" data-type="entity-link" >VenusChartInfoStorageObject</a>

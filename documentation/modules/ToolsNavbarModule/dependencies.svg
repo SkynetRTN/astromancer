@@ -28,13 +28,13 @@
 <title>cluster_ToolsNavbarModule_declarations</title>
 <polygon fill="none" stroke="black" points="303,-78 303,-130 473,-130 473,-78 303,-78"/>
 </g>
-<g id="clust4" class="cluster">
-<title>cluster_ToolsNavbarModule_imports</title>
-<polygon fill="none" stroke="black" points="23,-78 23,-130 295,-130 295,-78 23,-78"/>
-</g>
 <g id="clust5" class="cluster">
 <title>cluster_ToolsNavbarModule_exports</title>
 <polygon fill="none" stroke="black" points="136,-208 136,-260 310,-260 310,-208 136,-208"/>
+</g>
+<g id="clust4" class="cluster">
+<title>cluster_ToolsNavbarModule_imports</title>
+<polygon fill="none" stroke="black" points="23,-78 23,-130 295,-130 295,-78 23,-78"/>
 </g>
 <!-- ToolsNavbarComponent -->
 <g id="node1" class="node">

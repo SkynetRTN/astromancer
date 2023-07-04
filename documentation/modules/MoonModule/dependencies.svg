@@ -24,159 +24,159 @@
 <title>cluster_MoonModule</title>
 <polygon fill="none" stroke="black" stroke-dasharray="1,5" points="8,-70 8,-268 1615,-268 1615,-70 8,-70"/>
 </g>
+<g id="clust8" class="cluster">
+<title>cluster_MoonModule_imports</title>
+<polygon fill="none" stroke="black" points="1015,-78 1015,-130 1607,-130 1607,-78 1015,-78"/>
+</g>
 <g id="clust2" class="cluster">
 <title>cluster_MoonModule_declarations</title>
-<polygon fill="none" stroke="black" points="766,-78 766,-130 1607,-130 1607,-78 766,-78"/>
+<polygon fill="none" stroke="black" points="166,-78 166,-130 1007,-130 1007,-78 166,-78"/>
 </g>
 <g id="clust9" class="cluster">
 <title>cluster_MoonModule_exports</title>
-<polygon fill="none" stroke="black" points="700,-208 700,-260 834,-260 834,-208 700,-208"/>
+<polygon fill="none" stroke="black" points="762,-208 762,-260 896,-260 896,-208 762,-208"/>
 </g>
 <g id="clust11" class="cluster">
 <title>cluster_MoonModule_providers</title>
-<polygon fill="none" stroke="black" points="616,-78 616,-130 758,-130 758,-78 616,-78"/>
-</g>
-<g id="clust8" class="cluster">
-<title>cluster_MoonModule_imports</title>
-<polygon fill="none" stroke="black" points="16,-78 16,-130 608,-130 608,-78 16,-78"/>
+<polygon fill="none" stroke="black" points="16,-78 16,-130 158,-130 158,-78 16,-78"/>
 </g>
 <!-- MoonChartFormComponent -->
 <g id="node1" class="node">
 <title>MoonChartFormComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="1599.21,-122 1422.79,-122 1422.79,-86 1599.21,-86 1599.21,-122"/>
-<text text-anchor="middle" x="1511" y="-99.8" font-family="Times,serif" font-size="14.00">MoonChartFormComponent</text>
+<polygon fill="#ffffb3" stroke="black" points="999.21,-122 822.79,-122 822.79,-86 999.21,-86 999.21,-122"/>
+<text text-anchor="middle" x="911" y="-99.8" font-family="Times,serif" font-size="14.00">MoonChartFormComponent</text>
 </g>
 <!-- MoonModule -->
 <g id="node6" class="node">
 <title>MoonModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="813.49,-187 810.49,-191 789.49,-191 786.49,-187 720.51,-187 720.51,-151 813.49,-151 813.49,-187"/>
-<text text-anchor="middle" x="767" y="-164.8" font-family="Times,serif" font-size="14.00">MoonModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="875.49,-187 872.49,-191 851.49,-191 848.49,-187 782.51,-187 782.51,-151 875.49,-151 875.49,-187"/>
+<text text-anchor="middle" x="829" y="-164.8" font-family="Times,serif" font-size="14.00">MoonModule</text>
 </g>
 <!-- MoonChartFormComponent&#45;&gt;MoonModule -->
 <g id="edge1" class="edge">
 <title>MoonChartFormComponent&#45;&gt;MoonModule</title>
-<path fill="none" stroke="black" d="M1511,-122.01C1511,-144.49 1511,-180 1511,-180 1511,-180 823.54,-180 823.54,-180"/>
-<polygon fill="black" stroke="black" points="823.54,-176.5 813.54,-180 823.54,-183.5 823.54,-176.5"/>
+<path fill="none" stroke="black" d="M849.2,-122.11C849.2,-122.11 849.2,-140.99 849.2,-140.99"/>
+<polygon fill="black" stroke="black" points="845.7,-140.99 849.2,-150.99 852.7,-140.99 845.7,-140.99"/>
 </g>
 <!-- MoonComponent -->
 <g id="node2" class="node">
 <title>MoonComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="1405.28,-122 1290.72,-122 1290.72,-86 1405.28,-86 1405.28,-122"/>
-<text text-anchor="middle" x="1348" y="-99.8" font-family="Times,serif" font-size="14.00">MoonComponent</text>
+<polygon fill="#ffffb3" stroke="black" points="805.28,-122 690.72,-122 690.72,-86 805.28,-86 805.28,-122"/>
+<text text-anchor="middle" x="748" y="-99.8" font-family="Times,serif" font-size="14.00">MoonComponent</text>
 </g>
 <!-- MoonComponent&#45;&gt;MoonModule -->
 <g id="edge2" class="edge">
 <title>MoonComponent&#45;&gt;MoonModule</title>
-<path fill="none" stroke="black" d="M1348,-122.13C1348,-142.57 1348,-173 1348,-173 1348,-173 823.56,-173 823.56,-173"/>
-<polygon fill="black" stroke="black" points="823.56,-169.5 813.56,-173 823.56,-176.5 823.56,-169.5"/>
+<path fill="none" stroke="black" d="M793.95,-122.11C793.95,-122.11 793.95,-140.99 793.95,-140.99"/>
+<polygon fill="black" stroke="black" points="790.45,-140.99 793.95,-150.99 797.45,-140.99 790.45,-140.99"/>
 </g>
 <!-- MoonFormComponent -->
 <g id="node3" class="node">
 <title>MoonFormComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="1272.61,-122 1127.39,-122 1127.39,-86 1272.61,-86 1272.61,-122"/>
-<text text-anchor="middle" x="1200" y="-99.8" font-family="Times,serif" font-size="14.00">MoonFormComponent</text>
+<polygon fill="#ffffb3" stroke="black" points="672.61,-122 527.39,-122 527.39,-86 672.61,-86 672.61,-122"/>
+<text text-anchor="middle" x="600" y="-99.8" font-family="Times,serif" font-size="14.00">MoonFormComponent</text>
 </g>
 <!-- MoonFormComponent&#45;&gt;MoonModule -->
 <g id="edge3" class="edge">
 <title>MoonFormComponent&#45;&gt;MoonModule</title>
-<path fill="none" stroke="black" d="M1200,-122.27C1200,-140.56 1200,-166 1200,-166 1200,-166 823.75,-166 823.75,-166"/>
-<polygon fill="black" stroke="black" points="823.75,-162.5 813.75,-166 823.75,-169.5 823.75,-162.5"/>
+<path fill="none" stroke="black" d="M600,-122.01C600,-138.05 600,-159 600,-159 600,-159 772.38,-159 772.38,-159"/>
+<polygon fill="black" stroke="black" points="772.38,-162.5 782.38,-159 772.38,-155.5 772.38,-162.5"/>
 </g>
 <!-- MoonHighchartComponent -->
 <g id="node4" class="node">
 <title>MoonHighchartComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="1109.25,-122 938.75,-122 938.75,-86 1109.25,-86 1109.25,-122"/>
-<text text-anchor="middle" x="1024" y="-99.8" font-family="Times,serif" font-size="14.00">MoonHighchartComponent</text>
+<polygon fill="#ffffb3" stroke="black" points="509.25,-122 338.75,-122 338.75,-86 509.25,-86 509.25,-122"/>
+<text text-anchor="middle" x="424" y="-99.8" font-family="Times,serif" font-size="14.00">MoonHighchartComponent</text>
 </g>
 <!-- MoonHighchartComponent&#45;&gt;MoonModule -->
 <g id="edge4" class="edge">
 <title>MoonHighchartComponent&#45;&gt;MoonModule</title>
-<path fill="none" stroke="black" d="M1024,-122.01C1024,-138.05 1024,-159 1024,-159 1024,-159 823.54,-159 823.54,-159"/>
-<polygon fill="black" stroke="black" points="823.54,-155.5 813.54,-159 823.54,-162.5 823.54,-155.5"/>
+<path fill="none" stroke="black" d="M424,-122.27C424,-140.56 424,-166 424,-166 424,-166 772.15,-166 772.15,-166"/>
+<polygon fill="black" stroke="black" points="772.15,-169.5 782.15,-166 772.15,-162.5 772.15,-169.5"/>
 </g>
 <!-- MoonTableComponent -->
 <g id="node5" class="node">
 <title>MoonTableComponent</title>
-<polygon fill="#ffffb3" stroke="black" points="920.15,-122 773.85,-122 773.85,-86 920.15,-86 920.15,-122"/>
-<text text-anchor="middle" x="847" y="-99.8" font-family="Times,serif" font-size="14.00">MoonTableComponent</text>
+<polygon fill="#ffffb3" stroke="black" points="320.15,-122 173.85,-122 173.85,-86 320.15,-86 320.15,-122"/>
+<text text-anchor="middle" x="247" y="-99.8" font-family="Times,serif" font-size="14.00">MoonTableComponent</text>
 </g>
 <!-- MoonTableComponent&#45;&gt;MoonModule -->
 <g id="edge5" class="edge">
 <title>MoonTableComponent&#45;&gt;MoonModule</title>
-<path fill="none" stroke="black" d="M793.59,-122.11C793.59,-122.11 793.59,-140.99 793.59,-140.99"/>
-<polygon fill="black" stroke="black" points="790.09,-140.99 793.59,-150.99 797.09,-140.99 790.09,-140.99"/>
+<path fill="none" stroke="black" d="M247,-122.13C247,-142.57 247,-173 247,-173 247,-173 772.36,-173 772.36,-173"/>
+<polygon fill="black" stroke="black" points="772.36,-176.5 782.36,-173 772.36,-169.5 772.36,-176.5"/>
 </g>
 <!-- MoonComponent  -->
 <g id="node11" class="node">
 <title>MoonComponent </title>
-<polygon fill="#fb8072" stroke="black" points="826.28,-252 707.72,-252 707.72,-216 826.28,-216 826.28,-252"/>
-<text text-anchor="middle" x="767" y="-229.8" font-family="Times,serif" font-size="14.00">MoonComponent </text>
+<polygon fill="#fb8072" stroke="black" points="888.28,-252 769.72,-252 769.72,-216 888.28,-216 888.28,-252"/>
+<text text-anchor="middle" x="829" y="-229.8" font-family="Times,serif" font-size="14.00">MoonComponent </text>
 </g>
 <!-- MoonModule&#45;&gt;MoonComponent  -->
 <g id="edge10" class="edge">
 <title>MoonModule&#45;&gt;MoonComponent </title>
-<path fill="none" stroke="black" stroke-dasharray="5,2" d="M767,-187.11C767,-187.11 767,-205.99 767,-205.99"/>
-<polygon fill="black" stroke="black" points="763.5,-205.99 767,-215.99 770.5,-205.99 763.5,-205.99"/>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M829,-187.11C829,-187.11 829,-205.99 829,-205.99"/>
+<polygon fill="black" stroke="black" points="825.5,-205.99 829,-215.99 832.5,-205.99 825.5,-205.99"/>
 </g>
 <!-- InterfaceUtilModule -->
 <g id="node7" class="node">
 <title>InterfaceUtilModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="599.56,-122 596.56,-126 575.56,-126 572.56,-122 468.44,-122 468.44,-86 599.56,-86 599.56,-122"/>
-<text text-anchor="middle" x="534" y="-99.8" font-family="Times,serif" font-size="14.00">InterfaceUtilModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="1598.56,-122 1595.56,-126 1574.56,-126 1571.56,-122 1467.44,-122 1467.44,-86 1598.56,-86 1598.56,-122"/>
+<text text-anchor="middle" x="1533" y="-99.8" font-family="Times,serif" font-size="14.00">InterfaceUtilModule</text>
 </g>
 <!-- InterfaceUtilModule&#45;&gt;MoonModule -->
 <g id="edge6" class="edge">
 <title>InterfaceUtilModule&#45;&gt;MoonModule</title>
-<path fill="none" stroke="black" d="M534,-122.01C534,-138.05 534,-159 534,-159 534,-159 710.41,-159 710.41,-159"/>
-<polygon fill="black" stroke="black" points="710.41,-162.5 720.41,-159 710.41,-155.5 710.41,-162.5"/>
+<path fill="none" stroke="black" d="M1533,-122.01C1533,-144.49 1533,-180 1533,-180 1533,-180 885.74,-180 885.74,-180"/>
+<polygon fill="black" stroke="black" points="885.74,-176.5 875.74,-180 885.74,-183.5 885.74,-176.5"/>
 </g>
 <!-- NgIf -->
 <g id="node8" class="node">
 <title>NgIf</title>
-<polygon fill="#8dd3c7" stroke="black" points="450,-122 447,-126 426,-126 423,-122 396,-122 396,-86 450,-86 450,-122"/>
-<text text-anchor="middle" x="423" y="-99.8" font-family="Times,serif" font-size="14.00">NgIf</text>
+<polygon fill="#8dd3c7" stroke="black" points="1449,-122 1446,-126 1425,-126 1422,-122 1395,-122 1395,-86 1449,-86 1449,-122"/>
+<text text-anchor="middle" x="1422" y="-99.8" font-family="Times,serif" font-size="14.00">NgIf</text>
 </g>
 <!-- NgIf&#45;&gt;MoonModule -->
 <g id="edge7" class="edge">
 <title>NgIf&#45;&gt;MoonModule</title>
-<path fill="none" stroke="black" d="M423,-122.27C423,-140.56 423,-166 423,-166 423,-166 710.25,-166 710.25,-166"/>
-<polygon fill="black" stroke="black" points="710.25,-169.5 720.25,-166 710.25,-162.5 710.25,-169.5"/>
+<path fill="none" stroke="black" d="M1422,-122.13C1422,-142.57 1422,-173 1422,-173 1422,-173 885.53,-173 885.53,-173"/>
+<polygon fill="black" stroke="black" points="885.53,-169.5 875.53,-173 885.53,-176.5 885.53,-169.5"/>
 </g>
 <!-- SimpleDataButtonModule -->
 <g id="node9" class="node">
 <title>SimpleDataButtonModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="377.76,-122 374.76,-126 353.76,-126 350.76,-122 214.24,-122 214.24,-86 377.76,-86 377.76,-122"/>
-<text text-anchor="middle" x="296" y="-99.8" font-family="Times,serif" font-size="14.00">SimpleDataButtonModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="1376.76,-122 1373.76,-126 1352.76,-126 1349.76,-122 1213.24,-122 1213.24,-86 1376.76,-86 1376.76,-122"/>
+<text text-anchor="middle" x="1295" y="-99.8" font-family="Times,serif" font-size="14.00">SimpleDataButtonModule</text>
 </g>
 <!-- SimpleDataButtonModule&#45;&gt;MoonModule -->
 <g id="edge8" class="edge">
 <title>SimpleDataButtonModule&#45;&gt;MoonModule</title>
-<path fill="none" stroke="black" d="M296,-122.13C296,-142.57 296,-173 296,-173 296,-173 710.12,-173 710.12,-173"/>
-<polygon fill="black" stroke="black" points="710.12,-176.5 720.12,-173 710.12,-169.5 710.12,-176.5"/>
+<path fill="none" stroke="black" d="M1295,-122.27C1295,-140.56 1295,-166 1295,-166 1295,-166 885.82,-166 885.82,-166"/>
+<polygon fill="black" stroke="black" points="885.82,-162.5 875.82,-166 885.82,-169.5 885.82,-162.5"/>
 </g>
 <!-- SimpleGraphButtonModule -->
 <g id="node10" class="node">
 <title>SimpleGraphButtonModule</title>
-<polygon fill="#8dd3c7" stroke="black" points="196.32,-122 193.32,-126 172.32,-126 169.32,-122 23.68,-122 23.68,-86 196.32,-86 196.32,-122"/>
-<text text-anchor="middle" x="110" y="-99.8" font-family="Times,serif" font-size="14.00">SimpleGraphButtonModule</text>
+<polygon fill="#8dd3c7" stroke="black" points="1195.32,-122 1192.32,-126 1171.32,-126 1168.32,-122 1022.68,-122 1022.68,-86 1195.32,-86 1195.32,-122"/>
+<text text-anchor="middle" x="1109" y="-99.8" font-family="Times,serif" font-size="14.00">SimpleGraphButtonModule</text>
 </g>
 <!-- SimpleGraphButtonModule&#45;&gt;MoonModule -->
 <g id="edge9" class="edge">
 <title>SimpleGraphButtonModule&#45;&gt;MoonModule</title>
-<path fill="none" stroke="black" d="M110,-122.01C110,-144.49 110,-180 110,-180 110,-180 710.28,-180 710.28,-180"/>
-<polygon fill="black" stroke="black" points="710.28,-183.5 720.28,-180 710.28,-176.5 710.28,-183.5"/>
+<path fill="none" stroke="black" d="M1109,-122.01C1109,-138.05 1109,-159 1109,-159 1109,-159 885.55,-159 885.55,-159"/>
+<polygon fill="black" stroke="black" points="885.55,-155.5 875.55,-159 885.55,-162.5 885.55,-155.5"/>
 </g>
 <!-- MoonService -->
 <g id="node12" class="node">
 <title>MoonService</title>
-<ellipse fill="#fdb462" stroke="black" cx="687" cy="-104" rx="63.12" ry="18"/>
-<text text-anchor="middle" x="687" y="-99.8" font-family="Times,serif" font-size="14.00">MoonService</text>
+<ellipse fill="#fdb462" stroke="black" cx="87" cy="-104" rx="63.12" ry="18"/>
+<text text-anchor="middle" x="87" y="-99.8" font-family="Times,serif" font-size="14.00">MoonService</text>
 </g>
 <!-- MoonService&#45;&gt;MoonModule -->
 <g id="edge11" class="edge">
 <title>MoonService&#45;&gt;MoonModule</title>
-<path fill="none" stroke="black" d="M735.28,-115.62C735.28,-115.62 735.28,-140.85 735.28,-140.85"/>
-<polygon fill="black" stroke="black" points="731.78,-140.85 735.28,-150.85 738.78,-140.85 731.78,-140.85"/>
+<path fill="none" stroke="black" d="M87,-122.01C87,-144.49 87,-180 87,-180 87,-180 772.3,-180 772.3,-180"/>
+<polygon fill="black" stroke="black" points="772.3,-183.5 782.3,-180 772.3,-176.5 772.3,-183.5"/>
 </g>
 </g>
 </svg>

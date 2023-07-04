@@ -83,9 +83,7 @@ import {RouterModule, Routes} from &#x27;@angular/router&#x27;;
 import {HomeComponent} from &quot;./shared/home/home.component&quot;;
 import {AboutComponent} from &quot;./shared/about/about.component&quot;;
 import {PageNotFoundComponent} from &quot;./shared/page-not-found/page-not-found.component&quot;;
-import {SettingsComponent} from &quot;./shared/settings/settings.component&quot;;
-import {AppearanceComponent} from &quot;./shared/settings/appearance/appearance.component&quot;;
-import {VenusComponent} from &quot;./tools/venus/venus/venus.component&quot;;
+import {SettingsModule} from &quot;./shared/settings/settings.module&quot;;
 
 /**
  * Routes for the site
@@ -100,20 +98,7 @@ const TOOLS_ROUTES: Routes &#x3D; [
   {path: &quot;variable&quot;, loadChildren: () &#x3D;&gt; &quot;import(&#x27;./tools/variable/variable.module&#x27;).then(m &#x3D;&gt; m.VariableModule)&quot;},
   {path: &quot;spectrum&quot;, loadChildren: () &#x3D;&gt; &quot;import(&#x27;./tools/spectrum/spectrum.module&#x27;).then(m &#x3D;&gt; m.SpectrumModule)&quot;},
   {path: &quot;dual&quot;, loadChildren: () &#x3D;&gt; &quot;import(&#x27;./tools/dual/dual.module&#x27;).then(m &#x3D;&gt; m.DualModule)&quot;},
-  {
-    path: &quot;settings&quot;, component: SettingsComponent, data: {title: &quot;getToolSiteName($localize&#x60;:settings:Settings&#x60;)&quot;},
-    children: [
-      {
-        path: &#x27;&#x27;,
-        pathMatch: &#x27;full&#x27;,
-        redirectTo: &#x27;appearance&#x27;
-      },
-      {
-        path: &#x27;appearance&#x27;,
-        component: AppearanceComponent,
-        data: {title: &#x27;Appearance Settings&#x27;},
-      },]
-  },
+  {path: &quot;settings&quot;, loadChildren: () &#x3D;&gt; &quot;import(&#x27;./shared/settings/settings.component&#x27;).then(m &#x3D;&gt; SettingsModule)&quot;},
   {path: &#x27;&#x27;, redirectTo: &#x27;/home&#x27;, pathMatch: &#x27;full&#x27;},
   {path: &#x27;**&#x27;, component: PageNotFoundComponent, data: {title: $localize&#x60;:page-not-found:Page Not Found&#x60;}}
 ]

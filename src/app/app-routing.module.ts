@@ -3,9 +3,6 @@ import {RouterModule, Routes} from '@angular/router';
 import {HomeComponent} from "./shared/home/home.component";
 import {AboutComponent} from "./shared/about/about.component";
 import {PageNotFoundComponent} from "./shared/page-not-found/page-not-found.component";
-import {SettingsComponent} from "./shared/settings/settings.component";
-import {AppearanceComponent} from "./shared/settings/appearance/appearance.component";
-import {VenusComponent} from "./tools/venus/venus/venus.component";
 
 /**
  * Routes for the site
@@ -20,20 +17,7 @@ const TOOLS_ROUTES: Routes = [
   {path: "variable", loadChildren: () => import('./tools/variable/variable.module').then(m => m.VariableModule)},
   {path: "spectrum", loadChildren: () => import('./tools/spectrum/spectrum.module').then(m => m.SpectrumModule)},
   {path: "dual", loadChildren: () => import('./tools/dual/dual.module').then(m => m.DualModule)},
-  {
-    path: "settings", component: SettingsComponent, data: {title: getToolSiteName($localize`:settings:Settings`)},
-    children: [
-      {
-        path: '',
-        pathMatch: 'full',
-        redirectTo: 'appearance'
-      },
-      {
-        path: 'appearance',
-        component: AppearanceComponent,
-        data: {title: 'Appearance Settings'},
-      },]
-  },
+  {path: "settings", loadChildren: () => import('./shared/settings/settings.component').then(m => m.SettingsModule)},
   {path: '', redirectTo: '/home', pathMatch: 'full'},
   {path: '**', component: PageNotFoundComponent, data: {title: $localize`:page-not-found:Page Not Found`}}
 ]

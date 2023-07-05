@@ -46,7 +46,7 @@ export class VariableLightCurveHighchartComponent implements AfterViewInit, OnDe
 
   chartInitialized($event: Highcharts.Chart) {
     this.chartObject = $event;
-    this.service.setHighChart(this.chartObject);
+    this.service.setHighChartLightCurve(this.chartObject);
 
   }
 

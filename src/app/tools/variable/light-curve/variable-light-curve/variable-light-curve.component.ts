@@ -104,7 +104,7 @@ export class VariableLightCurveComponent implements OnDestroy {
         this.service.addRow(-1, 1);
       } else if (action.action === "saveGraph") {
         this.honorCodeService.honored().subscribe((name: string) => {
-          this.chartService.saveImageHighChartOffline(this.service.getHighChart(), "Variable Light Curve", name);
+          this.chartService.saveImageHighChartOffline(this.service.getHighChartLightCurve(), "Variable Light Curve", name);
         })
       } else if (action.action === "resetData") {
         this.service.resetData();

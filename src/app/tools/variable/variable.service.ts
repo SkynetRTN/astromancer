@@ -54,7 +54,9 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
     = new BehaviorSubject<UpdateSource>(UpdateSource.INIT);
   public periodFoldingForm$ = this.periodFoldingFormSubject.asObservable();
 
-  private highChart!: Highcharts.Chart;
+  private highChartLightCurve!: Highcharts.Chart;
+  private highChartPeriodogram!: Highcharts.Chart;
+  private highChartPeriodFolding!: Highcharts.Chart;
   private tabIndex: number;
 
   constructor() {
@@ -495,12 +497,28 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
   }
 
 
-  setHighChart(highChart: Highcharts.Chart): void {
-    this.highChart = highChart;
+  setHighChartLightCurve(highChart: Highcharts.Chart): void {
+    this.highChartLightCurve = highChart;
   }
 
-  getHighChart(): Highcharts.Chart {
-    return this.highChart;
+  getHighChartLightCurve(): Highcharts.Chart {
+    return this.highChartLightCurve;
+  }
+
+  setHighChartPeriodogram(highChart: Highcharts.Chart): void {
+    this.highChartPeriodogram = highChart;
+  }
+
+  getHighChartPeriodogram(): Highcharts.Chart {
+    return this.highChartPeriodogram;
+  }
+
+  setHighChartPeriodFolding(highChart: Highcharts.Chart): void {
+    this.highChartPeriodFolding = highChart;
+  }
+
+  getHighChartPeriodFolding(): Highcharts.Chart {
+    return this.highChartPeriodFolding;
   }
 
   setTabIndex(index: number): void {

@@ -80,7 +80,7 @@ export class VariablePeriodogramFormComponent implements OnDestroy {
 
   saveGraph() {
     this.honorCodeService.honored().subscribe((name: string) => {
-      this.chartService.saveImageHighChartOffline(this.service.getHighChart(), "Variable Periodogram", name);
+      this.chartService.saveImageHighChartOffline(this.service.getHighChartPeriodFolding(), "Variable Periodogram", name);
     })
   }
 

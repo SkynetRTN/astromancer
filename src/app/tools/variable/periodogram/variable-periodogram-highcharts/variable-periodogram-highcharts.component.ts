@@ -62,7 +62,7 @@ export class VariablePeriodogramHighchartsComponent implements AfterViewInit, On
 
   chartInitialized($event: Highcharts.Chart) {
     this.chartObject = $event;
-    this.service.setHighChart(this.chartObject);
+    this.service.setHighChartPeriodFolding(this.chartObject);
   }
 
   initChartSeries() {

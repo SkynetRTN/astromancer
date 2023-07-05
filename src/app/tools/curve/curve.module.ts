@@ -8,7 +8,6 @@ import {MatLegacyInputModule as MatInputModule} from "@angular/material/legacy-i
 import {MatLegacySelectModule as MatSelectModule} from "@angular/material/legacy-select";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatLegacyFormFieldModule as MatFormFieldModule} from "@angular/material/legacy-form-field";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {CurveTableComponent} from './curve-table/curve-table.component';
 import {HotTableModule} from "@handsontable/angular";
 import {CurveService} from "./curve.service";
@@ -27,7 +26,6 @@ import {CommonModule} from "@angular/common";
 const routes: Routes = [
   {path: '', component: CurveComponent, title: 'Curve'}
 ];
-
 
 
 /**

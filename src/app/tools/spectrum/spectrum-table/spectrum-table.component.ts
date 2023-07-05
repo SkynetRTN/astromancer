@@ -12,12 +12,13 @@ import Handsontable from "handsontable";
   templateUrl: './spectrum-table.component.html',
   styleUrls: ['./spectrum-table.component.scss']
 })
-export class SpectrumTableComponent implements AfterViewInit, OnDestroy{
+export class SpectrumTableComponent implements AfterViewInit, OnDestroy {
   id: string = "spectrum-table";
   table: MyTable = new SpectrumTable(this.id);
   colNames: string[] = ["Wavelength", "Channel 1", "Channel 2"];
   dataSet: SpectrumDataDict[];
   private destroy$: Subject<void> = new Subject<void>();
+
   constructor(private service: SpectrumService) {
     this.dataSet = this.service.getData();
   }

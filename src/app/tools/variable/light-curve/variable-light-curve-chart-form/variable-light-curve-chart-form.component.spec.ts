@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { VariableLightCurveChartFormComponent } from './variable-light-curve-chart-form.component';
+import {VariableLightCurveChartFormComponent} from './variable-light-curve-chart-form.component';
 
 describe('VariableLightCurveChartFormComponent', () => {
   let component: VariableLightCurveChartFormComponent;
@@ -8,9 +8,9 @@ describe('VariableLightCurveChartFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ VariableLightCurveChartFormComponent ]
+      declarations: [VariableLightCurveChartFormComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(VariableLightCurveChartFormComponent);
     component = fixture.componentInstance;

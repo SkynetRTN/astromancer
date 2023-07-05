@@ -9,11 +9,10 @@ import {UpdateSource} from "../../moon/moon.service.util";
   templateUrl: './scatter-form.component.html',
   styleUrls: ['./scatter-form.component.scss']
 })
-export class ScatterFormComponent implements AfterViewInit, OnDestroy{
-  private destroy$ = new Subject<void>();
-
+export class ScatterFormComponent implements AfterViewInit, OnDestroy {
   protected distanceSubject: Subject<number> = new Subject<number>();
   protected diameterSubject: Subject<number> = new Subject<number>();
+  private destroy$ = new Subject<void>();
 
   constructor(private service: ScatterService) {
   }

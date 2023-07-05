@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { SpectrumTableComponent } from './spectrum-table.component';
+import {SpectrumTableComponent} from './spectrum-table.component';
 
 describe('SpectrumTableComponent', () => {
   let component: SpectrumTableComponent;
@@ -8,9 +8,9 @@ describe('SpectrumTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SpectrumTableComponent ]
+      declarations: [SpectrumTableComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(SpectrumTableComponent);
     component = fixture.componentInstance;

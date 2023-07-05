@@ -44,7 +44,7 @@ import {
 import {InterfaceUtilModule} from "../shared/interface/util";
 import {RouterModule, Routes} from "@angular/router";
 
-const routes : Routes = [
+const routes: Routes = [
   {path: '', component: VariableComponent, title: 'Variable'}
 ];
 
@@ -84,4 +84,5 @@ const routes : Routes = [
   exports: [VariableComponent, RouterModule],
   providers: [VariableService],
 })
-export class VariableModule { }
+export class VariableModule {
+}

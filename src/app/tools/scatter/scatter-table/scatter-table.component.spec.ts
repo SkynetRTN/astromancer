@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ScatterTableComponent } from './scatter-table.component';
+import {ScatterTableComponent} from './scatter-table.component';
 
 describe('ScatterTableComponent', () => {
   let component: ScatterTableComponent;
@@ -8,9 +8,9 @@ describe('ScatterTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ScatterTableComponent ]
+      declarations: [ScatterTableComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(ScatterTableComponent);
     component = fixture.componentInstance;

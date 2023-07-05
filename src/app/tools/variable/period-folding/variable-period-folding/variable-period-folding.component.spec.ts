@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { VariablePeriodFoldingComponent } from './variable-period-folding.component';
+import {VariablePeriodFoldingComponent} from './variable-period-folding.component';
 
 describe('VariablePeriodFoldingComponent', () => {
   let component: VariablePeriodFoldingComponent;
@@ -8,9 +8,9 @@ describe('VariablePeriodFoldingComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ VariablePeriodFoldingComponent ]
+      declarations: [VariablePeriodFoldingComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(VariablePeriodFoldingComponent);
     component = fixture.componentInstance;

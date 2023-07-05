@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { VariableComponent } from './variable.component';
+import {VariableComponent} from './variable.component';
 
 describe('VariableComponent', () => {
   let component: VariableComponent;
@@ -8,9 +8,9 @@ describe('VariableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ VariableComponent ]
+      declarations: [VariableComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(VariableComponent);
     component = fixture.componentInstance;

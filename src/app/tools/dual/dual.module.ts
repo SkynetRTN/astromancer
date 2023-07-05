@@ -40,4 +40,5 @@ const routes: Routes = [
   exports: [DualComponent, RouterModule],
   providers: [DualService]
 })
-export class DualModule { }
+export class DualModule {
+}

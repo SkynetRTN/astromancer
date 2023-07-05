@@ -17,14 +17,12 @@ import {rad} from "../shared/data/utils";
 
 @Injectable()
 export class MoonService implements MyData, ChartInfo, MoonInterface, MoonModel {
+  private static CHARTPRECISION: number = 3;
   private moonInterface: MoonInterface = new MoonInterfaceImpl();
   private moonChartInfo: ChartInfo = new MoonChartInfo();
   private moonData: MyData = new MoonData();
   private moonStorage: MoonStorage = new MoonStorage();
   private highChart!: Highcharts.Chart;
-
-  private static CHARTPRECISION: number = 3;
-
   private interfaceSubject = new BehaviorSubject<UpdateSource>(UpdateSource.INIT);
   public interface$ = this.interfaceSubject.asObservable();
   private chartInfoSubject = new BehaviorSubject<ChartInfo>(this.moonChartInfo);

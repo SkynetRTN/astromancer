@@ -48,4 +48,5 @@ const routes: Routes = [
   exports: [SpectrumComponent, RouterModule],
   providers: [SpectrumService]
 })
-export class SpectrumModule { }
+export class SpectrumModule {
+}

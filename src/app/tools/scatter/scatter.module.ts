@@ -14,8 +14,7 @@ import {MatLegacyInputModule} from "@angular/material/legacy-input";
 import {ReactiveFormsModule} from "@angular/forms";
 import {ScatterFormComponent} from './scatter-form/scatter-form.component';
 import {InterfaceUtilModule} from "../shared/interface/util";
-import {Router, RouterModule, Routes} from "@angular/router";
-import {HonorCodePopupService} from "../shared/honor-code-popup/honor-code-popup.service";
+import {RouterModule, Routes} from "@angular/router";
 
 const routes: Routes = [
   {path: '', component: ScatterComponent, title: 'Scatter'}
@@ -44,4 +43,5 @@ const routes: Routes = [
   exports: [ScatterComponent, RouterModule],
   providers: [ScatterService],
 })
-export class ScatterModule { }
+export class ScatterModule {
+}

@@ -40,4 +40,5 @@ const routes: Routes = [
   exports: [VenusComponent, RouterModule],
   providers: [VenusService],
 })
-export class VenusModule { }
+export class VenusModule {
+}

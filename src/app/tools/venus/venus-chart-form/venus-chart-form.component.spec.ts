@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { VenusChartFormComponent } from './venus-chart-form.component';
+import {VenusChartFormComponent} from './venus-chart-form.component';
 
 describe('VenusChartFormComponent', () => {
   let component: VenusChartFormComponent;
@@ -8,9 +8,9 @@ describe('VenusChartFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ VenusChartFormComponent ]
+      declarations: [VenusChartFormComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(VenusChartFormComponent);
     component = fixture.componentInstance;

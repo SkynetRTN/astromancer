@@ -5,7 +5,6 @@ import {MyTable} from "../../shared/tables/table-interface";
 import {HotTableRegisterer} from "@handsontable/angular";
 import Handsontable from "handsontable";
 import {ScatterDataDict} from "../scatter.service.util";
-import {MoonDataDict} from "../../moon/moon.service.util";
 import {MyData} from "../../shared/data/data.interface";
 
 @Component({
@@ -13,13 +12,14 @@ import {MyData} from "../../shared/data/data.interface";
   templateUrl: './scatter-table.component.html',
   styleUrls: ['./scatter-table.component.scss']
 })
-export class ScatterTableComponent implements AfterViewInit, OnDestroy{
+export class ScatterTableComponent implements AfterViewInit, OnDestroy {
   static FLOAT_PRECISION: number = 2;
   id: string = "scatter-table";
   table: MyTable = new ScatterTable(this.id);
   colNames: string[] = ["Longitude", "Latitude", "Distance"];
   dataSet: ScatterDataDict[];
   private destroy$: Subject<void> = new Subject<void>();
+
   constructor(private service: ScatterService) {
     this.dataSet = this.service.getData();
   }

@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { SpectrumHighchartComponent } from './spectrum-highchart.component';
+import {SpectrumHighchartComponent} from './spectrum-highchart.component';
 
 describe('SpectrumHighchartComponent', () => {
   let component: SpectrumHighchartComponent;
@@ -8,9 +8,9 @@ describe('SpectrumHighchartComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SpectrumHighchartComponent ]
+      declarations: [SpectrumHighchartComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(SpectrumHighchartComponent);
     component = fixture.componentInstance;

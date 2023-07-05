@@ -694,7 +694,7 @@ export class VariablePeriodFoldingFormComponent implements OnDestroy {
 
   saveGraph() {
     this.honorCodeService.honored().subscribe((name: string) &#x3D;&gt; {
-      this.chartService.saveImageHighChartOffline(this.service.getHighChart(), &quot;Variable Period Folding&quot;, name);
+      this.chartService.saveImageHighChartOffline(this.service.getHighChartPeriodogram(), &quot;Variable Period Folding&quot;, name);
     })
   }
 

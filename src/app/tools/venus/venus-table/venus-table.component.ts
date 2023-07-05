@@ -12,12 +12,11 @@ import Handsontable from "handsontable";
   styleUrls: ['./venus-table.component.scss']
 })
 export class VenusTableComponent implements AfterViewInit, OnDestroy {
-  private destroy$: Subject<void> = new Subject<void>();
   id: string = "moon-table";
   table: VenusTable = new VenusTable(this.id);
   colNames: string[] = ["Angular Diameter", "Phase of Venus"];
   dataSet: VenusDataDict[];
-
+  private destroy$: Subject<void> = new Subject<void>();
 
   constructor(private service: VenusService) {
     this.dataSet = this.service.getData();

@@ -79,7 +79,7 @@ export class DualHighchartComponent implements AfterViewInit, OnDestroy {
     const data: number[][][] = this.service.getDataArray();
     for (let i = 0; i < 2; i++) {
       this.chartObject.addSeries({
-        name: labels[2*i+1],
+        name: labels[2 * i + 1],
         data: data[i],
         type: 'line',
       });
@@ -91,7 +91,7 @@ export class DualHighchartComponent implements AfterViewInit, OnDestroy {
     const data: number[][][] = this.service.getDataArray();
     for (let i = 0; i < 2; i++) {
       this.chartObject.series[i].update({
-        name: labels[2*i+1],
+        name: labels[2 * i + 1],
         data: data[i],
         type: 'line',
       });

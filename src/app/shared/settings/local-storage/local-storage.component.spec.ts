@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { LocalStorageComponent } from './local-storage.component';
+import {LocalStorageComponent} from './local-storage.component';
 
 describe('LocalStorageComponent', () => {
   let component: LocalStorageComponent;
@@ -8,9 +8,9 @@ describe('LocalStorageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LocalStorageComponent ]
+      declarations: [LocalStorageComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(LocalStorageComponent);
     component = fixture.componentInstance;

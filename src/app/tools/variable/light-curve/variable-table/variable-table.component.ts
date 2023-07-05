@@ -12,12 +12,13 @@ import Handsontable from "handsontable";
   templateUrl: './variable-table.component.html',
   styleUrls: ['./variable-table.component.scss']
 })
-export class VariableTableComponent implements AfterViewInit, OnDestroy{
+export class VariableTableComponent implements AfterViewInit, OnDestroy {
   id: string = "variable-table";
   table: MyTable = new VariableTable(this.id);
   colNames: string[] = ["Julian Date", "Source 1", "Source 2", "Error 1", "Error 2"];
   dataSet: VariableDataDict[];
   private destroy$: Subject<void> = new Subject<void>();
+
   constructor(private service: VariableService) {
     this.dataSet = this.service.getData();
   }

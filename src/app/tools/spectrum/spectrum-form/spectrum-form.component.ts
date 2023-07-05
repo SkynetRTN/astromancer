@@ -9,11 +9,11 @@ import {SpectrumService} from "../spectrum.service";
   styleUrls: ['./spectrum-form.component.scss']
 })
 export class SpectrumFormComponent {
+  form: FormControl = new FormControl({});
   protected channelOptions = [
     SpectrumOptions.ONE,
     SpectrumOptions.TWO,
   ]
-  form: FormControl = new FormControl({});
 
   constructor(private service: SpectrumService) {
     this.form.setValue(this.service.getChannel());

@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { SpectrumChartFormComponent } from './spectrum-chart-form.component';
+import {SpectrumChartFormComponent} from './spectrum-chart-form.component';
 
 describe('SpectrumChartFormComponent', () => {
   let component: SpectrumChartFormComponent;
@@ -8,9 +8,9 @@ describe('SpectrumChartFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SpectrumChartFormComponent ]
+      declarations: [SpectrumChartFormComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(SpectrumChartFormComponent);
     component = fixture.componentInstance;

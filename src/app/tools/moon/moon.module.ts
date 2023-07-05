@@ -14,7 +14,6 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MoonFormComponent} from './moon-form/moon-form.component';
 import {MatSliderModule} from "@angular/material/slider";
 import {CommonModule, NgIf} from "@angular/common";
-import {HonorCodePopupService} from "../shared/honor-code-popup/honor-code-popup.service";
 import {InterfaceUtilModule} from "../shared/interface/util";
 import {RouterModule, Routes} from "@angular/router";
 

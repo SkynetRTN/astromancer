@@ -10,16 +10,17 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
   styleUrls: ['./variable-light-curve-form.component.scss']
 })
 export class VariableLightCurveFormComponent implements OnDestroy {
-  private destroy$: Subject<void> = new Subject<void>();
   formGroup: FormGroup;
   variableStarKeys = Object.values(VariableStarOptions);
+  private destroy$: Subject<void> = new Subject<void>();
 
   constructor(private service: VariableService) {
     this.formGroup = new FormGroup({
       variableStar: new FormControl(this.service.getVariableStar(),
         [Validators.required, Validators.pattern('^((?!None).)*$')]),
       refStarMag: new FormControl(this.service.getReferenceStarMagnitude(),
-        [Validators.required]),});
+        [Validators.required]),
+    });
     this.formGroup.controls['variableStar'].markAllAsTouched();
     this.formGroup.controls['refStarMag'].markAllAsTouched();
 

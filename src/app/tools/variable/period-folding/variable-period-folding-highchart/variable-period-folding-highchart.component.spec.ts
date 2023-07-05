@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { VariablePeriodFoldingHighchartComponent } from './variable-period-folding-highchart.component';
+import {VariablePeriodFoldingHighchartComponent} from './variable-period-folding-highchart.component';
 
 describe('VariablePeriodFoldingHighchartComponent', () => {
   let component: VariablePeriodFoldingHighchartComponent;
@@ -8,9 +8,9 @@ describe('VariablePeriodFoldingHighchartComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ VariablePeriodFoldingHighchartComponent ]
+      declarations: [VariablePeriodFoldingHighchartComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(VariablePeriodFoldingHighchartComponent);
     component = fixture.componentInstance;

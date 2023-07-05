@@ -16,6 +16,21 @@ export class VenusData implements MyData {
     this.dataDict = VenusData.getDefaultData();
   }
 
+  public static getDefaultData(): VenusDataDict[] {
+    return [
+      {diameter: 15, phase: 0.7},
+      {diameter: 30, phase: 0.53},
+      {diameter: 45, phase: 0.27},
+      {diameter: 60, phase: 0},
+      {diameter: null, phase: null},
+      {diameter: null, phase: null},
+      {diameter: null, phase: null},
+      {diameter: null, phase: null},
+      {diameter: null, phase: null},
+      {diameter: null, phase: null},
+    ];
+  }
+
   addRow(index: number, amount: number): void {
     if (index > 0) {
       for (let i = 0; i < amount; i++) {
@@ -30,7 +45,7 @@ export class VenusData implements MyData {
     return this.dataDict;
   }
 
-  getDataArray(): (number|null)[][] {
+  getDataArray(): (number | null)[][] {
     return this.dataDict.filter(
       (entry: VenusDataDict) => {
         return entry.diameter !== null && entry.phase !== null;
@@ -47,21 +62,6 @@ export class VenusData implements MyData {
 
   setData(data: VenusDataDict[]): void {
     this.dataDict = data;
-  }
-
-  public static getDefaultData(): VenusDataDict[] {
-    return [
-      {diameter: 15, phase: 0.7},
-      {diameter: 30, phase: 0.53},
-      {diameter: 45, phase: 0.27},
-      {diameter: 60, phase: 0},
-      {diameter: null, phase: null},
-      {diameter: null, phase: null},
-      {diameter: null, phase: null},
-      {diameter: null, phase: null},
-      {diameter: null, phase: null},
-      {diameter: null, phase: null},
-    ];
   }
 }
 
@@ -86,6 +86,15 @@ export class VenusChartInfo implements ChartInfo {
     this.dataLabel = VenusChartInfo.getDefaultChartInfo().dataLabel;
     this.xAxisLabel = VenusChartInfo.getDefaultChartInfo().xAxisLabel;
     this.yAxisLabel = VenusChartInfo.getDefaultChartInfo().yAxisLabel;
+  }
+
+  public static getDefaultChartInfo() {
+    return {
+      chartTitle: "Title",
+      dataLabel: "Data",
+      xAxisLabel: "x",
+      yAxisLabel: "y",
+    };
   }
 
   getChartTitle(): string {
@@ -135,21 +144,13 @@ export class VenusChartInfo implements ChartInfo {
   setYAxisLabel(yAxis: string): void {
     this.yAxisLabel = yAxis;
   }
-
-  public static getDefaultChartInfo() {
-    return {
-      chartTitle: "Title",
-      dataLabel: "Data",
-      xAxisLabel: "x",
-      yAxisLabel: "y",
-    };
-  }
 }
 
 
 export class VenusStorage implements MyStorage {
   private readonly dataKey: string = "venusData";
   private readonly chartInfoKey: string = "venusChartInfo";
+
   getChartInfo(): VenusChartInfoStorageObject {
     if (localStorage.getItem(this.chartInfoKey)) {
       return JSON.parse(localStorage.getItem(this.chartInfoKey) as string);

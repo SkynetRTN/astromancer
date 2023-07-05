@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { SpectrumFormComponent } from './spectrum-form.component';
+import {SpectrumFormComponent} from './spectrum-form.component';
 
 describe('SpectrumFormComponent', () => {
   let component: SpectrumFormComponent;
@@ -8,9 +8,9 @@ describe('SpectrumFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SpectrumFormComponent ]
+      declarations: [SpectrumFormComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(SpectrumFormComponent);
     component = fixture.componentInstance;

@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { VariablePeriodogramComponent } from './variable-periodogram.component';
+import {VariablePeriodogramComponent} from './variable-periodogram.component';
 
 describe('VariablePeriodogramComponent', () => {
   let component: VariablePeriodogramComponent;
@@ -8,9 +8,9 @@ describe('VariablePeriodogramComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ VariablePeriodogramComponent ]
+      declarations: [VariablePeriodogramComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(VariablePeriodogramComponent);
     component = fixture.componentInstance;

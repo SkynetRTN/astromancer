@@ -9,8 +9,8 @@ export interface ScatterDataDict {
 }
 
 export class ScatterData implements MyData {
-  private dataDict: ScatterDataDict[];
   private static readonly FLOAT_PRECISION = 3;
+  private dataDict: ScatterDataDict[];
 
   constructor() {
     this.dataDict = ScatterData.getDefaultDataDict();

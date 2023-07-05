@@ -472,10 +472,6 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
     return lombScargleWithError(jdArray, magArray, errorArray, start, end, 5000);
   }
 
-  private getDefaultDataLabel(): string {
-    return `Variable Star Mag + (${this.getReferenceStarMagnitude()} - Reference Star Mag)`
-  }
-
   removeRow(index: number, amount: number): void {
     this.variableData.removeRow(index, amount);
     this.variableStorage.saveData(this.variableData.getData());
@@ -495,7 +491,6 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
     this.periodogramDataSubject.next(this.variableData);
     this.periodFoldingDataSubject.next(this.variableData);
   }
-
 
   setHighChartLightCurve(highChart: Highcharts.Chart): void {
     this.highChartLightCurve = highChart;
@@ -528,6 +523,10 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
 
   getTabIndex(): number {
     return this.tabIndex;
+  }
+
+  private getDefaultDataLabel(): string {
+    return `Variable Star Mag + (${this.getReferenceStarMagnitude()} - Reference Star Mag)`
   }
 
 }

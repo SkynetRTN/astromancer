@@ -38,6 +38,7 @@ export class AppearanceComponent implements OnInit {
     this.appearanceService.setColorTheme(DefaultAppearanceSettings.theme);
     this.appearanceService.setFontStyle(DefaultAppearanceSettings.fontStyle);
     this.appearanceService.setFontSize(DefaultAppearanceSettings.fontSize);
+    this.appearanceService.setFontFamily(DefaultAppearanceSettings.fontFamily);
     this.getFormGroup(DefaultAppearanceSettings.theme,
       DefaultAppearanceSettings.fontFamily,
       DefaultAppearanceSettings.fontStyle,

@@ -22,6 +22,7 @@ import {HighchartsChartModule} from "highcharts-angular";
 import {HonorCodePopupService} from "../shared/honor-code-popup/honor-code-popup.service";
 import {RouterModule, Routes} from "@angular/router";
 import {CommonModule} from "@angular/common";
+import {MatDialogModule, MatDialogRef} from "@angular/material/dialog";
 
 const routes: Routes = [
   {path: '', component: CurveComponent, title: 'Curve'}
@@ -49,6 +50,7 @@ const routes: Routes = [
     MatIconModule,
     MatSlideToggleModule,
     HighchartsChartModule,
+    MatDialogModule,
   ],
   declarations: [
     CurveComponent,

@@ -2,6 +2,8 @@ import {Component, OnDestroy} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
 import {CurveService} from "../curve.service";
 import {debounceTime, Subject, takeUntil} from "rxjs";
+import {HonorCodePopupService} from "../../shared/honor-code-popup/honor-code-popup.service";
+import {HonorCodeChartService} from "../../shared/honor-code-popup/honor-code-chart.service";
 
 @Component({
   selector: 'app-curve-chart-form',
@@ -12,7 +14,9 @@ export class CurveChartFormComponent implements OnDestroy {
   public formGroup!: FormGroup;
   private destroy$: Subject<any> = new Subject<any>();
 
-  constructor(private service: CurveService) {
+  constructor(private service: CurveService,
+              private honorCodeService: HonorCodePopupService,
+              private chartService: HonorCodeChartService,) {
     this.service.chartInfo$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(info => {
@@ -50,5 +54,8 @@ export class CurveChartFormComponent implements OnDestroy {
     this.destroy$.complete();
   }
 
+  resetLabels() {
+    this.service.resetChartInfo();
+  }
 }
 

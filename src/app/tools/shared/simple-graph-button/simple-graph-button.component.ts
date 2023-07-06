@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, EventEmitter, NgModule, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Input, NgModule, Output, ViewChild} from '@angular/core';
 import {ChartAction} from "../types/actions";
 import {MatLegacyButtonModule as MatButtonModule} from "@angular/material/legacy-button";
 import {MatProgressSpinner, MatProgressSpinnerModule} from "@angular/material/progress-spinner";
@@ -13,6 +13,7 @@ import {HonorCodePopupService} from "../honor-code-popup/honor-code-popup.servic
 export class SimpleGraphButtonComponent implements AfterViewInit {
   @ViewChild("saveGraphButton") saveGraphButton!: MatButton;
   @ViewChild("saveGraphSpinner") saveGraphSpinner!: MatProgressSpinner;
+  @Input() isEditChartInfo: boolean = false;
   @Output()
   private chartUserActionObs$: EventEmitter<ChartAction[]>;
 
@@ -35,6 +36,9 @@ export class SimpleGraphButtonComponent implements AfterViewInit {
     this.chartUserActionObs$.emit([{action: "resetChartInfo"}])
   }
 
+  ediChartInfo() {
+    this.chartUserActionObs$.emit([{action: "editChartInfo"}])
+  }
 }
 
 @NgModule({

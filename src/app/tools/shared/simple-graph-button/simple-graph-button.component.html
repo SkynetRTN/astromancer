@@ -1,6 +1,9 @@
+<button #saveGraphButton (click)="ediChartInfo()" [hidden]="!isEditChartInfo" i18n mat-raised-button>
+  Edit Chart Labels
+</button>
 <button #saveGraphButton (click)="saveGraph()" i18n mat-raised-button>
   Save Graph
   <mat-spinner #saveGraphSpinner [diameter]="20"
                style="display: none;"></mat-spinner>
 </button>
-<button (click)="resetGraphInfo()" i18n mat-raised-button>Reset Graph Labels</button>
+<button (click)="resetGraphInfo()" [hidden]="isEditChartInfo" i18n mat-raised-button>Reset Graph Labels</button>

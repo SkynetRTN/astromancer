@@ -36,8 +36,6 @@
     "handsontable": "^12.4.0",
     "highcharts": "^11.1.0",
     "highcharts-angular": "^3.1.2",
-    "highcharts-exporting": "^0.1.7",
-    "highcharts-offline-exporting": "^0.1.7",
     "ng2-charts": "^4.1.1",
     "ngx-webstorage-service": "^5.0.0",
     "node-sass": "^8.0.0",

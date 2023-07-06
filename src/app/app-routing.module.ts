@@ -3,14 +3,13 @@ import {RouterModule, Routes} from '@angular/router';
 import {HomeComponent} from "./shared/home/home.component";
 import {AboutComponent} from "./shared/about/about.component";
 import {PageNotFoundComponent} from "./shared/page-not-found/page-not-found.component";
-import {SettingsModule} from "./shared/settings/settings.module";
 
 /**
  * Routes for the site
  */
 const TOOLS_ROUTES: Routes = [
-  {path: "home", component: HomeComponent, data: {title: getToolSiteName($localize`:home:Home`)}},
-  {path: "about", component: AboutComponent, data: {title: getToolSiteName($localize`:about:About`)}},
+  {path: "home", component: HomeComponent, title: getToolSiteName($localize`:by Skynet:by Skynet`)},
+  {path: "about", component: AboutComponent, title: getToolSiteName($localize`:about:About`)},
   {path: "curve", loadChildren: () => import('./tools/curve/curve.module').then(m => m.CurveModule)},
   {path: "moon", loadChildren: () => import('./tools/moon/moon.module').then(m => m.MoonModule)},
   {path: "venus", loadChildren: () => import('./tools/venus/venus.module').then(m => m.VenusModule)},
@@ -18,9 +17,9 @@ const TOOLS_ROUTES: Routes = [
   {path: "variable", loadChildren: () => import('./tools/variable/variable.module').then(m => m.VariableModule)},
   {path: "spectrum", loadChildren: () => import('./tools/spectrum/spectrum.module').then(m => m.SpectrumModule)},
   {path: "dual", loadChildren: () => import('./tools/dual/dual.module').then(m => m.DualModule)},
-  {path: "settings", loadChildren: () => import('./shared/settings/settings.component').then(m => SettingsModule)},
+  {path: "settings", loadChildren: () => import('./shared/settings/settings.module').then(m => m.SettingsModule)},
   {path: '', redirectTo: '/home', pathMatch: 'full'},
-  {path: '**', component: PageNotFoundComponent, data: {title: $localize`:page-not-found:Page Not Found`}}
+  {path: '**', component: PageNotFoundComponent, title: $localize`:page-not-found:Page Not Found`}
 ]
 
 /**
@@ -29,7 +28,7 @@ const TOOLS_ROUTES: Routes = [
  * @returns
  */
 function getToolSiteName(tool: string): string {
-  return $localize`:site-name:Skynet Plotting Neo` + tool;
+  return $localize`:site-name:Astromancer ` + tool;
 }
 
 @NgModule({

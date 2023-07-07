@@ -1,20 +1,20 @@
-<div class="row container-row">
+<div class="row tool-container">
   <div class="col-4">
-    <div class="row data-form-row">
+    <div class="row">
       <app-line-form></app-line-form>
     </div>
-    <div class="row data-table-row">
+    <div class="row dynamic">
       <app-curve-table></app-curve-table>
     </div>
-    <div class="row data-button-row">
+    <div class="row button-row">
       <app-simple-data-button (tableUserActionObs$)="actionHandler($event)"></app-simple-data-button>
     </div>
   </div>
   <div class="col-8">
-    <div class="row chart-row">
+    <div class="row dynamic">
       <app-curve-highchart></app-curve-highchart>
     </div>
-    <div class="row chart-button-row">
+    <div class="row button-row">
       <app-simple-graph-button [isEditChartInfo]="true" (chartUserActionObs$)="actionHandler($event)"></app-simple-graph-button>
     </div>
   </div>

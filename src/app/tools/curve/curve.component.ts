@@ -12,7 +12,7 @@ import {CurveChartFormComponent} from "./curve-chart-form/curve-chart-form.compo
 @Component({
   selector: 'app-curve',
   templateUrl: './curve.component.html',
-  styleUrls: ['./curve.component.scss'],
+  styleUrls: ['./curve.component.scss', '../shared/interface/tools.scss'],
   providers: [],
 })
 export class CurveComponent {

@@ -1,0 +1,88 @@
+@media screen and (max-width: 500px) {
+  .tool-container {
+    padding: 10px 0px;
+  }
+  .button-row {
+    padding-left: 10px;
+  }
+}
+
+@media screen and (max-width: 1441px) and (min-width: 500px) {
+  .tool-container {
+    padding: 20px;
+  }
+  .button-row {
+    padding-left: 20px;
+  }
+}
+
+@media screen and (min-width: 1441px) {
+  .tool-container {
+    padding: 20px 55px;
+  }
+  .button-row {
+    padding-left: 20px;
+  }
+}
+
+
+.tool-container {
+  display: flex;
+  height: calc(100% - 64px);
+  width: 100%;
+}
+
+.button-row {
+  padding-top: 10px;
+}
+
+@media screen and (min-aspect-ratio: 1/1) {
+  .tool-container {
+    flex-direction: row;
+  }
+
+  .col-4, .col-8 {
+    display: flex;
+    flex-flow: column;
+  }
+
+  .dynamic, {
+    flex: min-content;
+  }
+}
+
+@media screen and (max-aspect-ratio: 1/1) {
+  .tool-container {
+    flex-direction: column;
+
+  }
+
+  .col-4, .col-8 {
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    flex-flow: column;
+  }
+
+  .col-4 {
+    flex: 1;
+  }
+
+  .col-8 {
+    flex: 2;
+  }
+
+  .dynamic, {
+    height: 1200px;
+    flex: min-content;
+  }
+
+  @media screen and (max-height: 900px) {
+    .tool-container {
+      height: calc(2 * (100% - 64px));
+    }
+    .col-4, .col-8 {
+      flex: 1;
+    }
+  }
+}

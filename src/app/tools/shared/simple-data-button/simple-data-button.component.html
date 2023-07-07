@@ -1,10 +1,9 @@
-<div class="container">
-  <button (click)="uploadData();fileInput.click()" [hidden]="!isUploadData" i18n mat-raised-button>
-    Upload Data File
-    <input #fileInput (change)="fileChanged($event)" [hidden]="true" type="file">
-  </button>
-  <button (click)="tableAddRow()" i18n mat-raised-button>Add Row</button>
-  <button (click)="dataReset()" *ngIf="!isDataRandom" i18n mat-raised-button>Reset Data</button>
-  <button (click)="dataReset()" *ngIf="isDataRandom" i18n mat-raised-button>Random Data</button>
-  <button (click)="modelReset()" [hidden]="!modelResetVisible" i18n mat-raised-button>Reset Model</button>
-</div>
+<button (click)="uploadData();fileInput.click()" [hidden]="!isUploadData" i18n mat-raised-button>
+  Upload Data File
+  <input #fileInput (change)="fileChanged($event)" [hidden]="true" type="file">
+</button>
+<button (click)="tableAddRow()" i18n mat-raised-button>Add Row</button>
+<button (click)="dataReset()" *ngIf="!isDataRandom" i18n mat-raised-button>Reset Data</button>
+<button (click)="dataReset()" *ngIf="isDataRandom" i18n mat-raised-button>Random Data</button>
+<button (click)="modelReset()" [hidden]="!modelResetVisible" i18n mat-raised-button>Reset Model</button>
+

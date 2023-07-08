@@ -6,7 +6,7 @@ import {debounceTime, Subject, takeUntil} from "rxjs";
 @Component({
   selector: 'app-moon-chart-form',
   templateUrl: './moon-chart-form.component.html',
-  styleUrls: ['./moon-chart-form.component.scss']
+  styleUrls: ['./moon-chart-form.component.scss', '../../shared/interface/chart-form.scss'],
 })
 export class MoonChartFormComponent implements OnDestroy {
   formGroup!: FormGroup;
@@ -48,6 +48,10 @@ export class MoonChartFormComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next(null);
     this.destroy$.complete();
+  }
+
+  resetLabels() {
+    this.service.resetChartInfo();
   }
 
 }

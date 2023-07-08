@@ -1,26 +1,24 @@
-<div class="row container-row">
+<div class="row tool-container">
   <div class="col-4">
-    <div class="row data-form-row">
+    <div class="row">
       <app-moon-form></app-moon-form>
     </div>
-    <div class="row data-table-row">
+    <div class="row dynamic">
       <app-moon-table></app-moon-table>
     </div>
-    <div class="row data-button-row">
+    <div class="row button-row">
       <app-simple-data-button (tableUserActionObs$)="actionHandler($event)"
                               [isDataRandom]="true" [modelResetVisible]="true">
       </app-simple-data-button>
     </div>
   </div>
   <div class="col-8">
-    <div class="row chart-row">
+    <div class="row dynamic">
       <app-moon-highchart></app-moon-highchart>
     </div>
-    <div class="row chart-form-row">
-      <app-moon-chart-form></app-moon-chart-form>
-    </div>
-    <div class="row chart-button-row">
-      <app-simple-graph-button (chartUserActionObs$)="actionHandler($event)"></app-simple-graph-button>
+    <div class="row button-row">
+      <app-simple-graph-button [isEditChartInfo]="true" (chartUserActionObs$)="actionHandler($event)">
+      </app-simple-graph-button>
     </div>
   </div>
 </div>

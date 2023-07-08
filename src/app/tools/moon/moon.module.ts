@@ -16,6 +16,8 @@ import {MatSliderModule} from "@angular/material/slider";
 import {CommonModule, NgIf} from "@angular/common";
 import {InterfaceUtilModule} from "../shared/interface/util";
 import {RouterModule, Routes} from "@angular/router";
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatLegacyButtonModule} from "@angular/material/legacy-button";
 
 const routes: Routes = [
   {path: '', component: MoonComponent, title: 'Moon'}
@@ -43,6 +45,8 @@ const routes: Routes = [
     MatSliderModule,
     FormsModule,
     NgIf,
+    MatDialogModule,
+    MatLegacyButtonModule,
   ],
   exports: [MoonComponent, RouterModule],
   providers: [MoonService],

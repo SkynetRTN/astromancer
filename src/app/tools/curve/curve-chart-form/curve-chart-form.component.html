@@ -30,8 +30,10 @@
       </div>
     </div>
   </form>
-  <button mat-raised-button [mat-dialog-close]="'OK'">OK</button>
-  <button mat-raised-button [color]="'warn'"  (click)="resetLabels()">Reset Graph Labels</button>
-  <button mat-raised-button [color]="'primary'" [mat-dialog-close]="'saveGraph'">Save Graph</button>
+  <div class="button-container">
+    <button mat-raised-button [mat-dialog-close]="'OK'">OK</button>
+    <button mat-raised-button [color]="'warn'" (click)="resetLabels()">Reset Graph Labels</button>
+    <button mat-raised-button [color]="'primary'" [mat-dialog-close]="'saveGraph'">Save Graph</button>
+  </div>
 </div>
 

@@ -1,0 +1,50 @@
+.col {
+  display: flex;
+  justify-content: center;
+}
+
+mat-form-field {
+  width: calc(100% - 20px);
+}
+
+@media screen and (min-width: 900px) {
+  .form-pop-container {
+    width: 900px;
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .button-container {
+    flex-direction: row;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  button {
+    margin-right: 10px;
+  }
+
+}
+
+@media screen and (max-width: 900px) {
+  .form-pop-container {
+    width: 100%;
+    margin: 10px;
+    padding: 10px;
+    flex-direction: row;
+  }
+
+  .button-container {
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+  }
+
+  button {
+    margin-top: 10px;
+    width: 100%;
+  }
+}
+
+
+

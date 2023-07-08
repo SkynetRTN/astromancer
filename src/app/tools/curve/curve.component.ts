@@ -33,7 +33,7 @@ export class CurveComponent {
       } else if (action.action === "resetChartInfo") {
         this.service.resetChartInfo();
       } else if (action.action === "editChartInfo") {
-        const dialogRef = this.dialog.open(CurveChartFormComponent, {width: '900'});
+        const dialogRef = this.dialog.open(CurveChartFormComponent, {width: 'fit-content'});
         dialogRef.afterClosed().pipe().subscribe(result => {
           if (result === "saveGraph")
             this.saveGraph();

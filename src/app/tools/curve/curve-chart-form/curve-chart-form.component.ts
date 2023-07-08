@@ -8,7 +8,7 @@ import {HonorCodeChartService} from "../../shared/honor-code-popup/honor-code-ch
 @Component({
   selector: 'app-curve-chart-form',
   templateUrl: './curve-chart-form.component.html',
-  styleUrls: ['./curve-chart-form.component.scss']
+  styleUrls: ['./curve-chart-form.component.scss', '../../shared/interface/chart-form.scss'],
 })
 export class CurveChartFormComponent implements OnDestroy {
   public formGroup!: FormGroup;

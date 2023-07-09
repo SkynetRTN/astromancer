@@ -26,8 +26,8 @@ export class ScatterComponent {
         this.saveGraph();
       } else if (action.action === "resetData") {
         this.service.resetData();
-      } else if (action.action === "resetChartInfo") {
-        this.service.resetChartInfo();
+      } else if (action.action === "resetModel") {
+        this.service.resetModel();
       } else if (action.action === "editChartInfo") {
         const dialogRef =
           this.dialog.open(ScatterChartFormComponent, {width: 'fit-content'});

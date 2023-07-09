@@ -172,37 +172,36 @@ export class ScatterHighchartComponent implements AfterViewInit, OnDestroy {
   }
 
   private adjustScale(): void {
-    const data: (number | null)[][] = this.service.getDataArray().filter(d => d[0] !== null && d[1] !== null);
+    const data: (number | null)[][] = this.service.getDataArray().filter(d => d[0] !== null && d[1] !== null)
+      .concat([[0, 0]]); // Add the sun
+    // .concat(this.service.getModel().filter(d => d[0] !== null && d[1] !== null)); // No Model for the time being
     let minX: number = Math.min(...data.map(d => d[0]!));
     let maxX: number = Math.max(...data.map(d => d[0]!));
     let minY: number = Math.min(...data.map(d => d[1]!));
     let maxY: number = Math.max(...data.map(d => d[1]!));
 
     // Adjusting the min/max values to avoid having data points on the very edge
-    minX -= 3;
-    maxX += 3;
-    minY -= 3;
-    maxY += 3;
+    minX -= 2;
+    maxX += 2;
+    minY -= 2;
+    maxY += 2;
 
-    // This is the ratio of the length of X axis over the length of Y axis
-    const screenRatio = this.chartObject.plotWidth / this.chartObject.plotHeight;
-    let dataRatio = (maxX - minX) / (maxY - minY);
+    const plotRatio = this.chartObject.plotWidth / this.chartObject.plotHeight;
+    const xDiff = (maxX - minX);
+    const yDiff = (maxY - minY);
 
-    if (dataRatio < screenRatio) {
-      let m = (maxX + minX) / 2;
-      let d = (maxX - minX) / 2;
-      maxX = m + d / dataRatio * screenRatio;
-      minX = m - d / dataRatio * screenRatio;
+    if (xDiff > yDiff) {
+      const addition = (xDiff / plotRatio - yDiff) / 2;
+      minY -= addition;
+      maxY += addition;
     } else {
-      let m = (maxY + minY) / 2;
-      let d = (maxY - minY) / 2;
-      maxY = m + d * dataRatio / screenRatio;
-      minY = m - d * dataRatio / screenRatio;
+      const addition = (yDiff * plotRatio - xDiff) / 2;
+      minX -= addition;
+      maxX += addition;
     }
 
     this.chartObject.xAxis[0].setExtremes(Math.floor(minX), Math.ceil(maxX));
     this.chartObject.yAxis[0].setExtremes(Math.floor(minY), Math.ceil(maxY));
-
 
   }
 

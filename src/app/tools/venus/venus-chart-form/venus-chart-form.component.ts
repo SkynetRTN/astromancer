@@ -6,7 +6,7 @@ import {VenusService} from "../../venus/venus.service";
 @Component({
   selector: 'app-venus-chart-form',
   templateUrl: './venus-chart-form.component.html',
-  styleUrls: ['./venus-chart-form.component.scss']
+  styleUrls: ['./venus-chart-form.component.scss', '../../shared/interface/chart-form.scss'],
 })
 export class VenusChartFormComponent implements OnDestroy {
   formGroup!: FormGroup;
@@ -48,6 +48,10 @@ export class VenusChartFormComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next(null);
     this.destroy$.complete();
+  }
+
+  resetLabels() {
+    this.service.resetChartInfo();
   }
 
 }

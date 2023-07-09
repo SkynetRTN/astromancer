@@ -43,6 +43,8 @@ import {
 } from './period-folding/variable-period-folding-highchart/variable-period-folding-highchart.component';
 import {InterfaceUtilModule} from "../shared/interface/util";
 import {RouterModule, Routes} from "@angular/router";
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatLegacyButtonModule} from "@angular/material/legacy-button";
 
 const routes: Routes = [
   {path: '', component: VariableComponent, title: 'Variable'}
@@ -80,6 +82,7 @@ const routes: Routes = [
     MatSelectModule,
     HighchartsChartModule,
     InterfaceUtilModule,
+    MatDialogModule,
   ],
   exports: [VariableComponent, RouterModule],
   providers: [VariableService],

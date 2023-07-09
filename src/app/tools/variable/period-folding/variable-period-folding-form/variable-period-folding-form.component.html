@@ -1,4 +1,4 @@
-<form [formGroup]="formGroup">
+<form [formGroup]="formGroup" class="variable-form-horizontal">
   <div class="row">
     <div class="col-2">
       <mat-form-field>
@@ -55,6 +55,71 @@
       <button (click)="saveGraph()" mat-raised-button>Save Graph</button>
     </div>
     <div class="col-2">
+      <button (click)="resetForm()" mat-raised-button>Reset Form</button>
+    </div>
+  </div>
+</form>
+<form [formGroup]="formGroup" class="variable-form-vertical">
+  <div class="row">
+    <div class="col-6">
+      <mat-form-field>
+        <mat-label>Title</mat-label>
+        <input [formControlName]="'chartTitle'" matInput>
+      </mat-form-field>
+    </div>
+    <div class="col-6">
+      <mat-form-field>
+        <mat-label>Data</mat-label>
+        <input [formControlName]="'dataLabel'" matInput>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-4">
+      <mat-form-field>
+        <mat-label>X Axis</mat-label>
+        <input [formControlName]="'xAxisLabel'" matInput>
+      </mat-form-field>
+    </div>
+    <div class="col-4">
+      <mat-form-field>
+        <mat-label>Y Axis</mat-label>
+        <input [formControlName]="'yAxisLabel'" matInput>
+      </mat-form-field>
+    </div>
+    <div class="col-4">
+      <mat-form-field>
+        <mat-label i18n>Period Shown</mat-label>
+        <mat-select [formControlName]="'displayPeriod'">
+          <mat-option *ngFor="let period of displayPeriods" [value]="period">
+            {{period}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <my-input-slider (value)="onChange($event)" [defaultValue]="0.1"
+                       [isLog]="true" [label]="'Period (days)'"
+                       [maxValue]="100" [minValue]="0.1"
+                       [name]="'period'"
+                       [stepValue]="0.001" [value$]="periodSubject">
+      </my-input-slider>
+    </div>
+    <div class="col-6">
+      <my-input-slider (value)="onChange($event)" [defaultValue]="0"
+                       [label]="'Phase (cycles)'" [maxValue]="1"
+                       [minValue]="0"
+                       [name]="'phase'" [value$]="phaseSubject">
+      </my-input-slider>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <button (click)="saveGraph()" mat-raised-button>Save Graph</button>
+    </div>
+    <div class="col-6">
       <button (click)="resetForm()" mat-raised-button>Reset Form</button>
     </div>
   </div>

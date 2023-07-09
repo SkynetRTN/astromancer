@@ -7,11 +7,16 @@ import {MyFileParser} from "../../../shared/data/FileParser/FileParser";
 import {FileType} from "../../../shared/data/FileParser/FileParser.util";
 import {Subject, takeUntil} from "rxjs";
 import {VariableDataDict} from "../../variable.service.util";
+import {DualChartFormComponent} from "../../../dual/dual-chart-form/dual-chart-form.component";
+import {MatDialog} from "@angular/material/dialog";
+import {
+  VariableLightCurveChartFormComponent
+} from "../variable-light-curve-chart-form/variable-light-curve-chart-form.component";
 
 @Component({
   selector: 'app-variable-light-curve',
   templateUrl: './variable-light-curve.component.html',
-  styleUrls: ['./variable-light-curve.component.scss']
+  styleUrls: ['./variable-light-curve.component.scss', '../../../shared/interface/tools.scss']
 })
 export class VariableLightCurveComponent implements OnDestroy {
   private destroy$ = new Subject<void>();
@@ -20,7 +25,8 @@ export class VariableLightCurveComponent implements OnDestroy {
 
   constructor(private service: VariableService,
               private honorCodeService: HonorCodePopupService,
-              private chartService: HonorCodeChartService) {
+              private chartService: HonorCodeChartService,
+              public dialog: MatDialog) {
     this.fileParser.error$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(
@@ -103,14 +109,23 @@ export class VariableLightCurveComponent implements OnDestroy {
       if (action.action === "addRow") {
         this.service.addRow(-1, 1);
       } else if (action.action === "saveGraph") {
-        this.honorCodeService.honored().subscribe((name: string) => {
-          this.chartService.saveImageHighChartOffline(this.service.getHighChartLightCurve(), "Variable Light Curve", name);
-        })
+        this.saveGraph();
       } else if (action.action === "resetData") {
         this.service.resetData();
-      } else if (action.action === "resetChartInfo") {
-        this.service.resetChartInfo();
+      } else if (action.action === "editChartInfo") {
+        const dialogRef =
+          this.dialog.open(VariableLightCurveChartFormComponent, {width: 'fit-content'});
+        dialogRef.afterClosed().pipe().subscribe(result => {
+          if (result === "saveGraph")
+            this.saveGraph();
+        });
       }
+    })
+  }
+
+  private saveGraph() {
+    this.honorCodeService.honored().subscribe((name: string) => {
+      this.chartService.saveImageHighChartOffline(this.service.getHighChartLightCurve(), "Variable Light Curve", name);
     })
   }
 

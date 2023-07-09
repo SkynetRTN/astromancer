@@ -6,7 +6,7 @@ import {DualService} from "../dual.service";
 @Component({
   selector: 'app-dual-chart-form',
   templateUrl: './dual-chart-form.component.html',
-  styleUrls: ['./dual-chart-form.component.scss']
+  styleUrls: ['./dual-chart-form.component.scss', '../../shared/interface/chart-form.scss']
 })
 export class DualChartFormComponent {
   public formGroup!: FormGroup;
@@ -48,6 +48,10 @@ export class DualChartFormComponent {
   ngOnDestroy(): void {
     this.destroy$.next(null);
     this.destroy$.complete();
+  }
+
+  resetLabels() {
+    this.service.resetChartInfo();
   }
 
 }

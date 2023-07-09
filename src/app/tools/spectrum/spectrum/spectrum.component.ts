@@ -7,11 +7,13 @@ import {MyFileParser} from "../../shared/data/FileParser/FileParser";
 import {Subject, takeUntil} from "rxjs";
 import {SpectrumDataDict} from "../spectrum.service.util";
 import {FileType} from "../../shared/data/FileParser/FileParser.util";
+import {MatDialog} from "@angular/material/dialog";
+import {SpectrumChartFormComponent} from "../spectrum-chart-form/spectrum-chart-form.component";
 
 @Component({
   selector: 'app-spectrum',
   templateUrl: './spectrum.component.html',
-  styleUrls: ['./spectrum.component.scss']
+  styleUrls: ['./spectrum.component.scss', "../../shared/interface/tools.scss"]
 })
 export class SpectrumComponent implements OnDestroy {
   private static readonly RadioTxtFields: string[] = ["Freq1(MHz)", "XX1", "YY1"];
@@ -28,7 +30,8 @@ export class SpectrumComponent implements OnDestroy {
   constructor(
     private service: SpectrumService,
     private honorCodeService: HonorCodePopupService,
-    private chartService: HonorCodeChartService,) {
+    private chartService: HonorCodeChartService,
+    private dialog: MatDialog) {
     this.radioFileParser.error$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(
@@ -67,13 +70,16 @@ export class SpectrumComponent implements OnDestroy {
       if (action.action === "addRow") {
         this.service.addRow(-1, 1);
       } else if (action.action === "saveGraph") {
-        this.honorCodeService.honored().subscribe((name: string) => {
-          this.chartService.saveImageHighChartOffline(this.service.getHighChart(), "spectrum", name);
-        })
+        this.saveGraph();
       } else if (action.action === "resetData") {
         this.service.resetData();
-      } else if (action.action === "resetChartInfo") {
-        this.service.resetChartInfo();
+      } else if (action.action === "editChartInfo") {
+        const dialogRef =
+          this.dialog.open(SpectrumChartFormComponent, {width: 'fit-content'});
+        dialogRef.afterClosed().pipe().subscribe(result => {
+          if (result === "saveGraph")
+            this.saveGraph();
+        });
       }
     })
   }
@@ -92,6 +98,12 @@ export class SpectrumComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private saveGraph() {
+    this.honorCodeService.honored().subscribe((name: string) => {
+      this.chartService.saveImageHighChartOffline(this.service.getHighChart(), "spectrum", name);
+    });
   }
 }
 

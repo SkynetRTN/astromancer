@@ -13,6 +13,8 @@ import {MatLegacyInputModule} from "@angular/material/legacy-input";
 import {DualHighchartComponent} from './dual-highchart/dual-highchart.component';
 import {HighchartsChartModule} from "highcharts-angular";
 import {RouterModule, Routes} from "@angular/router";
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatLegacyButtonModule} from "@angular/material/legacy-button";
 
 const routes: Routes = [
   {path: '', component: DualComponent, title: 'Dual'}
@@ -35,7 +37,9 @@ const routes: Routes = [
     MatLegacyFormFieldModule,
     MatLegacyInputModule,
     ReactiveFormsModule,
-    HighchartsChartModule
+    HighchartsChartModule,
+    MatDialogModule,
+    MatLegacyButtonModule,
   ],
   exports: [DualComponent, RouterModule],
   providers: [DualService]

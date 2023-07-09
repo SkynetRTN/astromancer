@@ -13,6 +13,8 @@ import {MatLegacyFormFieldModule} from "@angular/material/legacy-form-field";
 import {MatLegacyInputModule} from "@angular/material/legacy-input";
 import {RouterModule, Routes} from "@angular/router";
 import {CommonModule} from "@angular/common";
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatLegacyButtonModule} from "@angular/material/legacy-button";
 
 const routes: Routes = [
   {path: '', component: VenusComponent, title: 'Venus'}
@@ -36,6 +38,8 @@ const routes: Routes = [
     MatLegacyFormFieldModule,
     MatLegacyInputModule,
     ReactiveFormsModule,
+    MatDialogModule,
+    MatLegacyButtonModule,
   ],
   exports: [VenusComponent, RouterModule],
   providers: [VenusService],

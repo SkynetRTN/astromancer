@@ -6,7 +6,7 @@ import {SpectrumService} from "../spectrum.service";
 @Component({
   selector: 'app-spectrum-chart-form',
   templateUrl: './spectrum-chart-form.component.html',
-  styleUrls: ['./spectrum-chart-form.component.scss']
+  styleUrls: ['./spectrum-chart-form.component.scss', '../../shared/interface/chart-form.scss']
 })
 export class SpectrumChartFormComponent implements OnDestroy {
   formGroup!: FormGroup;
@@ -45,4 +45,7 @@ export class SpectrumChartFormComponent implements OnDestroy {
     this.destroy$.complete();
   }
 
+  resetLabels() {
+    this.service.resetChartInfo();
+  }
 }

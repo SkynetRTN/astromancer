@@ -6,7 +6,7 @@ import {VariableService} from "../../variable.service";
 @Component({
   selector: 'app-variable-light-curve-chart-form',
   templateUrl: './variable-light-curve-chart-form.component.html',
-  styleUrls: ['./variable-light-curve-chart-form.component.scss']
+  styleUrls: ['./variable-light-curve-chart-form.component.scss', '../../../shared/interface/chart-form.scss'],
 })
 export class VariableLightCurveChartFormComponent implements OnDestroy {
   formGroup!: FormGroup;
@@ -53,6 +53,10 @@ export class VariableLightCurveChartFormComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next(null);
     this.destroy$.complete();
+  }
+
+  resetLabels() {
+    this.service.resetChartInfo();
   }
 
 }

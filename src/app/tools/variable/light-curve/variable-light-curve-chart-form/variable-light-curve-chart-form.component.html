@@ -1,3 +1,4 @@
+<div class="form-pop-container">
 <form [formGroup]="formGroup">
   <div class="row">
     <div class="col">
@@ -29,4 +30,9 @@
     </div>
   </div>
 </form>
-
+  <div class="button-container">
+    <button [mat-dialog-close]="'OK'" mat-raised-button>OK</button>
+    <button (click)="resetLabels()" [color]="'warn'" mat-raised-button>Reset Graph Labels</button>
+    <button [color]="'primary'" [mat-dialog-close]="'saveGraph'" mat-raised-button>Save Graph</button>
+  </div>
+</div>

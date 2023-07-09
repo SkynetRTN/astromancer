@@ -17,6 +17,8 @@ import {MatLegacyInputModule} from "@angular/material/legacy-input";
 import {SpectrumHighchartComponent} from './spectrum-highchart/spectrum-highchart.component';
 import {HighchartsChartModule} from "highcharts-angular";
 import {RouterModule, Routes} from "@angular/router";
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatLegacyButtonModule} from "@angular/material/legacy-button";
 
 const routes: Routes = [
   {path: '', component: SpectrumComponent, title: 'Spectrum'}
@@ -43,7 +45,9 @@ const routes: Routes = [
     MatLegacySlideToggleModule,
     ReactiveFormsModule,
     MatLegacyInputModule,
-    HighchartsChartModule
+    HighchartsChartModule,
+    MatDialogModule,
+    MatLegacyButtonModule,
   ],
   exports: [SpectrumComponent, RouterModule],
   providers: [SpectrumService]

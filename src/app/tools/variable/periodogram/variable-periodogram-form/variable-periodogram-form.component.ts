@@ -8,7 +8,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 @Component({
   selector: 'app-variable-periodogram-form',
   templateUrl: './variable-periodogram-form.component.html',
-  styleUrls: ['./variable-periodogram-form.component.scss']
+  styleUrls: ['./variable-periodogram-form.component.scss', '../../variable/variable.component.scss']
 })
 export class VariablePeriodogramFormComponent implements OnDestroy {
   formGroup: any;

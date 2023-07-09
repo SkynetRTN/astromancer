@@ -1,30 +1,8 @@
-.container-row {
-  height: calc((100vh - 60px) * 0.8);
-  padding: 20px 100px 20px 100px;
-  width: 100%;
-  display: flex;
-}
-
 .col-4, .col-8, .col-12 {
   display: flex;
   flex-flow: column;
 }
 
-.data-form-row, data-button-row, chart-form-row, chart-button-row {
-  height: fit-content;
-  flex: 0 1 auto;
-}
-
-.data-table-row, .chart-row {
-  flex: 1 1 auto;
-}
-
-.data-table-row {
-  padding-bottom: 15px;
-}
-
-.chart-container {
-  width: 100%;
-  height: 100%;
-  padding: 10px;
+.periodogram {
+  flex-direction: column !important;
 }

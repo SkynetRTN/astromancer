@@ -6,7 +6,7 @@ import {ScatterService} from "../scatter.service";
 @Component({
   selector: 'app-scatter-chart-form',
   templateUrl: './scatter-chart-form.component.html',
-  styleUrls: ['./scatter-chart-form.component.scss']
+  styleUrls: ['./scatter-chart-form.component.scss', '../../shared/interface/chart-form.scss']
 })
 export class ScatterChartFormComponent implements OnDestroy {
   formGroup!: FormGroup;
@@ -48,6 +48,10 @@ export class ScatterChartFormComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next(null);
     this.destroy$.complete();
+  }
+
+  resetLabels() {
+    this.service.resetChartInfo();
   }
 
 }

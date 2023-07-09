@@ -1,26 +1,24 @@
-<div class="row container-row">
+<div class="row tool-container">
   <div class="col-4">
-    <div class="row data-form-row">
+    <div class="row">
       <app-scatter-form></app-scatter-form>
     </div>
-    <div class="row data-table-row">
+    <div class="row dynamic">
       <app-scatter-table></app-scatter-table>
     </div>
-    <div class="row data-button-row">
+    <div class="row button-row">
       <app-simple-data-button (tableUserActionObs$)="actionHandler($event)"
                               [isDataRandom]="true" [modelResetVisible]="true">
       </app-simple-data-button>
     </div>
   </div>
   <div class="col-8">
-    <div class="row chart-row">
+    <div class="row dynamic">
       <app-scatter-highchart></app-scatter-highchart>
     </div>
-    <div class="row chart-form-row">
-      <app-scatter-chart-form></app-scatter-chart-form>
-    </div>
-    <div class="row chart-button-row">
-      <app-simple-graph-button (chartUserActionObs$)="actionHandler($event)"></app-simple-graph-button>
+    <div class="row button-row">
+      <app-simple-graph-button (chartUserActionObs$)="actionHandler($event)" [isEditChartInfo]="true">
+      </app-simple-graph-button>
     </div>
   </div>
 </div>

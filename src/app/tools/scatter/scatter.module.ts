@@ -15,6 +15,8 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {ScatterFormComponent} from './scatter-form/scatter-form.component';
 import {InterfaceUtilModule} from "../shared/interface/util";
 import {RouterModule, Routes} from "@angular/router";
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatLegacyButtonModule} from "@angular/material/legacy-button";
 
 const routes: Routes = [
   {path: '', component: ScatterComponent, title: 'Scatter'}
@@ -38,7 +40,9 @@ const routes: Routes = [
     MatLegacyFormFieldModule,
     MatLegacyInputModule,
     ReactiveFormsModule,
-    InterfaceUtilModule
+    InterfaceUtilModule,
+    MatDialogModule,
+    MatLegacyButtonModule,
   ],
   exports: [ScatterComponent, RouterModule],
   providers: [ScatterService],

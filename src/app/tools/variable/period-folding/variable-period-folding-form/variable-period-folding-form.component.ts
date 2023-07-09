@@ -11,7 +11,7 @@ import {InputSliderValue} from "../../../shared/interface/input-slider/input-sli
 @Component({
   selector: 'app-variable-period-folding-form',
   templateUrl: './variable-period-folding-form.component.html',
-  styleUrls: ['./variable-period-folding-form.component.scss']
+  styleUrls: ['./variable-period-folding-form.component.scss', '../../variable/variable.component.scss']
 })
 export class VariablePeriodFoldingFormComponent implements OnDestroy {
   formGroup: any;

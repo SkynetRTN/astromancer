@@ -5,6 +5,7 @@ import {saveAs} from 'file-saver';
 import * as Highcharts from 'highcharts';
 import HC_exporting from "highcharts/modules/exporting";
 import HC_offline_exporting from "highcharts/modules/offline-exporting";
+import html2canvas from "html2canvas";
 
 /**
  * Services for charts to perform
@@ -24,21 +25,9 @@ export class HonorCodeChartService {
    * @param chart The chart.js that needs to be saved
    * @param signature User's signature
    */
-  saveImage(chart: Chart, signature: string): void {
-    const destCanvas = document.createElement('canvas');
+  saveImage(chart: Chart, signature: string, chartType: string): void {
     const canvas = chart.canvas;
-    destCanvas.width = canvas.width;
-    destCanvas.height = canvas.height;
-    const destCtx = destCanvas.getContext('2d');
-    if (!destCtx)
-      return;
-    destCtx.fillStyle = '#FFFFFF';
-    destCtx.fillRect(0, 0, destCanvas.width, destCanvas.height);
-    destCtx.drawImage(canvas, 0, 0);
-    const time = getDateString();
-    const exifImage = addEXIFToImage(destCanvas.toDataURL('image/jpeg', 1.0), signature, time);
-    //create image
-    saveAs(dataURLtoBlob(exifImage), 'chart-' + formatTime(time) + '.jpg');
+    this.saveCanvasAsJpg(canvas, signature, chartType);
   }
 
   public saveImageHighChart(chart: Highcharts.Chart, chartType: string, signature: string): void {
@@ -54,17 +43,38 @@ export class HonorCodeChartService {
 
   public saveImageHighChartOffline(chart: Highcharts.Chart, ChartType: string, signature: string): void {
     if (ChartType && signature) {
-      chart.exportChartLocal(
-        {
-          filename: this.generateFileName(ChartType, signature),
-          type: 'image/jpeg',
-        },
-        {credits: {text: this.generateSignature(signature)}});
+      html2canvas(chart.container, {}).then(
+        (canvas) => {
+          this.saveCanvasAsJpg(canvas, signature, ChartType);
+        }
+      );
     }
   }
 
-  private generateFileName(chartType: string, signature: string): string {
-    return chartType + '-' + formatTime(getDateString()) + '-' + signature;
+  private saveCanvasAsJpg(canvas: HTMLCanvasElement, signature: string, chartType?: string): void {
+    const destCanvas = document.createElement('canvas');
+    destCanvas.width = canvas.width;
+    destCanvas.height = canvas.height;
+    const destCtx = destCanvas.getContext('2d');
+    if (!destCtx)
+      return;
+    destCtx.fillStyle = '#FFFFFF';
+    destCtx.fillRect(0, 0, destCanvas.width, destCanvas.height);
+    destCtx.drawImage(canvas, 0, 0);
+    const time = getDateString();
+    const exifImage = addEXIFToImage(destCanvas.toDataURL('image/jpeg', 1.0), signature, time);
+    //create image
+    saveAs(dataURLtoBlob(exifImage), this.generateFileName(chartType, signature) + '.jpg');
+  }
+
+  private generateFileName(chartType?: string, signature?: string): string {
+    let result = "";
+    if (chartType)
+      result += chartType + '-';
+    if (signature)
+      result += signature + '-';
+    result += formatTime(getDateString());
+    return result;
   }
 
   private generateSignature(signature: string): string {

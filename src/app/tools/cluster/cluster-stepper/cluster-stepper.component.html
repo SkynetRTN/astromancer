@@ -1,0 +1,15 @@
+<mat-stepper #stepper linear orientation="horizontal">
+  <mat-step [stepControl]="dataSourceFormControl" label="Data Source">
+    <div class="my-full-stepper-container">
+      <app-data-source></app-data-source>
+    </div>
+  </mat-step>
+  <mat-step [optional]="true" label="Field Star Removal">
+  </mat-step>
+  <mat-step [optional]="true" label="Archive Fetching">
+  </mat-step>
+  <mat-step label="Isochrone Fitting">
+  </mat-step>
+  <mat-step label="Result Summary">
+  </mat-step>
+</mat-stepper>

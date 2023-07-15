@@ -1,4 +1,19 @@
 .col-6 {
+  display: flex;
   justify-content: center;
+  align-items: center;
   text-align: center;
+  flex: 1;
+}
+
+@media screen and (max-aspect-ratio: 1/1) {
+  .col-6 {
+    width: 100% !important;
+  }
+}
+
+@media screen and (min-aspect-ratio: 1/1) {
+  .col-6 {
+    width: 50% !important;
+  }
 }

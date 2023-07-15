@@ -17,6 +17,7 @@ const TOOLS_ROUTES: Routes = [
   {path: "variable", loadChildren: () => import('./tools/variable/variable.module').then(m => m.VariableModule)},
   {path: "spectrum", loadChildren: () => import('./tools/spectrum/spectrum.module').then(m => m.SpectrumModule)},
   {path: "dual", loadChildren: () => import('./tools/dual/dual.module').then(m => m.DualModule)},
+  {path: "cluster", loadChildren: () => import('./tools/cluster/cluster.module').then(m => m.ClusterModule)},
   {path: "settings", loadChildren: () => import('./shared/settings/settings.module').then(m => m.SettingsModule)},
   {path: '', redirectTo: '/home', pathMatch: 'full'},
   {path: '**', component: PageNotFoundComponent, title: $localize`:page-not-found:Page Not Found`}

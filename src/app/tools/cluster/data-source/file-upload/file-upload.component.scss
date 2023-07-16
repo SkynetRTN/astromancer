@@ -1,0 +1,17 @@
+@import "src/styles.scss";
+
+.drop-zone {
+  height: 100%;
+  width: 100%;
+  //padding: 20px;
+  border-width: 2px;
+  border-style: dashed;
+  opacity: 0.5;
+}
+
+.LIGHT_THEME {
+  :host .drop-zone {
+    border-color: map_get($light-primary, 500);
+    background-color: map_get($light-primary, 100);
+  }
+}

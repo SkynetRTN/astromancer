@@ -17,4 +17,8 @@ export class ClusterDataSourceService implements ClusterDataSourceStepper {
     this.dataSourceStepperImpl.setFormControlStatus(isValid);
   }
 
+  onFileUpload(file: File): void {
+    console.log(file);
+  }
+
 }

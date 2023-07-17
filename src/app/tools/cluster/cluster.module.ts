@@ -8,18 +8,21 @@ import {MatButtonModule} from "@angular/material/button";
 import {DataSourceComponent} from './data-source/data-source/data-source.component';
 import {ClusterDataSourceService} from "./data-source/cluster-data-source.service";
 import {FileUploadComponent} from './data-source/file-upload/file-upload.component';
+import {MatIconModule} from "@angular/material/icon";
+import {DragNDropDirective} from './data-source/drag-n-drop.directive';
 
 const routes: Routes = [
   {path: '', component: ClusterComponent, title: 'Cluster'}
 ];
 
 @NgModule({
-  declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent],
+  declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective],
   imports: [
     RouterModule.forChild(routes),
     CommonModule,
     MatStepperModule,
-    MatButtonModule
+    MatButtonModule,
+    MatIconModule
   ],
   exports: [ClusterComponent, RouterModule],
   providers: [ClusterDataSourceService]

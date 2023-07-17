@@ -124,3 +124,22 @@
     color: map_get($light-primary, 400);
   }
 }
+
+.DARK_THEME {
+  :host .drop-zone {
+    border-color: map_get($dark-primary, 500);
+    background-color: map_get($light-primary, 900);
+  }
+
+  :host .click-zone {
+    border-color: map_get($dark-primary, 500);
+  }
+
+  :host h5 {
+    color: map_get($dark-primary, 300);
+  }
+
+  :host a {
+    color: map_get($dark-primary, 400);
+  }
+}

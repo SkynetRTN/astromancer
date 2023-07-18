@@ -1,3 +1,5 @@
+import {rad} from "../shared/data/utils";
+
 export interface ClusterDataDict {
   id: string;
   ra: number | undefined;
@@ -64,3 +66,25 @@ export const filterWavelength: { [key: string]: number } = {
   "G": 0.673,
   "RP": 0.797,
 };
+
+export interface gaiaMatchQueryRange {
+  ra: number;
+  dec: number;
+  r: number;
+  wrap: boolean;
+}
+
+export interface gaiaMatchQueryDataDict {
+  id: string;
+  ra: number | undefined;
+  dec: number | undefined;
+}
+
+export function haversine(dec1: number, dec2: number, ra1: number, ra2: number): number {
+  let dec1_rad = rad(dec1)
+  let dec2_rad = rad(dec2)
+  let ra1_rad = rad(ra1)
+  let ra2_rad = rad(ra2)
+  let theta = 2 * Math.asin((Math.sin((dec1_rad - dec2_rad) / 2) ** 2 + Math.cos(dec1_rad) * Math.cos(dec2_rad) * (Math.sin((ra1_rad - ra2_rad) / 2)) ** 2) ** 0.5)
+  return (theta / Math.PI) * 180
+}

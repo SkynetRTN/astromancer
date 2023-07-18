@@ -4,7 +4,8 @@
       <mat-card-subtitle>{{data.source}}</mat-card-subtitle>
       <mat-card-title>Source Data Overview</mat-card-title>
     </mat-card-header>
-    <mat-card-content>
+
+    <mat-card-content [hidden]="isSummaryHidden">
       <div class="row">
         <div class="col-6">
           <mat-form-field>
@@ -23,11 +24,31 @@
           </p>
         </div>
       </div>
-      <mat-divider></mat-divider>
     </mat-card-content>
+
+    <mat-card-content [hidden]="isLoadHidden">
+      <div class="in-progress-container">
+        <h4><i>Gaia Matching In Progress</i></h4>
+      </div>
+    </mat-card-content>
+    <mat-card-footer [hidden]="isLoadHidden">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    </mat-card-footer>
+
+    <mat-card-content [hidden]="isCompleteHidden">
+      <h2>Gaia Solutions Found: {{gaiaStarCount}}/{{totalStarCount}}.</h2>
+    </mat-card-content>
+
+    <mat-card-content [hidden]="isFailedHidden">
+      <h3>Gaia Matching Failed!</h3>
+      <p><strong>Errors:</strong></p>
+      <p>Server being sus</p>
+    </mat-card-content>
+
+    <mat-divider></mat-divider>
     <mat-card-actions>
-      <button mat-button>Cancel</button>
-      <button [disabled]="clusterName === ''" mat-button>Next</button>
+      <button mat-button mat-dialog-close>Cancel</button>
+      <button (click)="next()" [disabled]="clusterName === ''" mat-button>Next</button>
     </mat-card-actions>
   </mat-card>
 </div>

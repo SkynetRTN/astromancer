@@ -10,12 +10,17 @@ import {ClusterDataSourceService} from "./data-source/cluster-data-source.servic
 import {FileUploadComponent} from './data-source/file-upload/file-upload.component';
 import {MatIconModule} from "@angular/material/icon";
 import {DragNDropDirective} from './data-source/drag-n-drop.directive';
-import { SummaryComponent } from './data-source/summary/summary.component';
+import {SummaryComponent} from './data-source/summary/summary.component';
 import {MatDialogModule} from "@angular/material/dialog";
 import {MatCardModule} from "@angular/material/card";
 import {MatDividerModule} from "@angular/material/divider";
 import {MatInputModule} from "@angular/material/input";
 import {FormsModule} from "@angular/forms";
+import {ClusterDataService} from "./cluster-data.service";
+import {ClusterService} from "./cluster.service";
+import {HttpClientModule} from "@angular/common/http";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
 
 const routes: Routes = [
   {path: '', component: ClusterComponent, title: 'Cluster'}
@@ -34,9 +39,12 @@ const routes: Routes = [
     MatDividerModule,
     MatInputModule,
     FormsModule,
+    HttpClientModule,
+    MatProgressSpinnerModule,
+    MatProgressBarModule,
   ],
   exports: [ClusterComponent, RouterModule],
-  providers: [ClusterDataSourceService]
+  providers: [ClusterDataSourceService, ClusterService, ClusterDataService]
 })
 export class ClusterModule {
 }

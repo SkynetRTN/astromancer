@@ -9,7 +9,8 @@ import {ClusterDataDict, FILTER} from "../cluster.util";
 
 @Injectable()
 export class ClusterDataSourceService implements ClusterDataSourceStepper {
-  public rawData$: Subject<ClusterRawData[]> = new Subject<ClusterRawData[]>();
+  private rawDataSubject: Subject<ClusterRawData[]> = new Subject<ClusterRawData[]>();
+  public rawData$ = this.rawDataSubject.asObservable();
   private readonly dataSourceStepperImpl: ClusterDataSourceStepper = new ClusterDataSourceStepperImpl();
   private readonly fileParser: MyFileParser = new MyFileParser(FileType.CSV,
     ['id', 'filter', 'calibrated_mag', 'mag_error', 'ra_hours', 'dec_degs'])
@@ -38,12 +39,6 @@ export class ClusterDataSourceService implements ClusterDataSourceStepper {
         alert("File Upload Error: " + error);
       });
     this.fileParser.readFile(file, true);
-  }
-
-  private setRawData(rawData: ClusterRawData[]): void {
-    this.rawData = rawData;
-    this.processData();
-    this.rawData$.next(this.rawData);
   }
 
   processData(): void {
@@ -100,5 +95,11 @@ export class ClusterDataSourceService implements ClusterDataSourceStepper {
 
   getFilters(): FILTER[] {
     return this.filters;
+  }
+
+  private setRawData(rawData: ClusterRawData[]): void {
+    this.rawData = rawData;
+    this.processData();
+    this.rawDataSubject.next(this.rawData);
   }
 }

@@ -1,0 +1,33 @@
+<div class="summary-container">
+  <mat-card class="summary-card">
+    <mat-card-header>
+      <mat-card-subtitle>{{data.source}}</mat-card-subtitle>
+      <mat-card-title>Source Data Overview</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="row">
+        <div class="col-6">
+          <mat-form-field>
+            <mat-label>Cluster Name</mat-label>
+            <input [(ngModel)]="clusterName" matInput type="text">
+            <button (click)="clusterName=''" *ngIf="clusterName" aria-label="Clear" mat-icon-button matSuffix>
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+        <div class="col-6">
+          <p>
+            <strong>Filters</strong>: {{data.filters.join(", ")}}
+            <br>
+            <strong>Number of Stars</strong>: {{data.starCounts}}
+          </p>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button>Cancel</button>
+      <button [disabled]="clusterName === ''" mat-button>Next</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

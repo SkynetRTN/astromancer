@@ -32,8 +32,6 @@
 							"src/favicon.ico",
 							"src/assets"
 						],
-            "baseHref": "/astr101l/graph-neo/",
-            "deployUrl": "/astr101l/graph-neo/",
 						"styles": [
               "src/styles.scss",
               "./node_modules/@angular/material/prebuilt-themes/purple-green.css"

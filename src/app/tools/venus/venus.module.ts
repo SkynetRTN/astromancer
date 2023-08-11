@@ -9,12 +9,13 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {VenusHighchartComponent} from './venus-highchart/venus-highchart.component';
 import {HighchartsChartModule} from "highcharts-angular";
 import {VenusChartFormComponent} from './venus-chart-form/venus-chart-form.component';
-import {MatLegacyFormFieldModule} from "@angular/material/legacy-form-field";
-import {MatLegacyInputModule} from "@angular/material/legacy-input";
 import {RouterModule, Routes} from "@angular/router";
 import {CommonModule} from "@angular/common";
 import {MatDialogModule} from "@angular/material/dialog";
-import {MatLegacyButtonModule} from "@angular/material/legacy-button";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
+import {MatButtonModule} from "@angular/material/button";
+
 
 const routes: Routes = [
   {path: '', component: VenusComponent, title: 'Venus'}
@@ -35,11 +36,11 @@ const routes: Routes = [
     HotTableModule,
     FormsModule,
     HighchartsChartModule,
-    MatLegacyFormFieldModule,
-    MatLegacyInputModule,
+    MatFormFieldModule,
+    MatInputModule,
     ReactiveFormsModule,
     MatDialogModule,
-    MatLegacyButtonModule,
+    MatButtonModule,
   ],
   exports: [VenusComponent, RouterModule],
   providers: [VenusService],

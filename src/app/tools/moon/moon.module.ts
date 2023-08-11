@@ -8,8 +8,6 @@ import {MoonService} from "./moon.service";
 import {MoonHighchartComponent} from "./moon-highchart/moon-highchart.component";
 import {HighchartsChartModule} from "highcharts-angular";
 import {MoonChartFormComponent} from './moon-chart-form/moon-chart-form.component';
-import {MatLegacyFormFieldModule} from "@angular/material/legacy-form-field";
-import {MatLegacyInputModule} from "@angular/material/legacy-input";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MoonFormComponent} from './moon-form/moon-form.component';
 import {MatSliderModule} from "@angular/material/slider";
@@ -17,7 +15,10 @@ import {CommonModule, NgIf} from "@angular/common";
 import {InterfaceUtilModule} from "../shared/interface/util";
 import {RouterModule, Routes} from "@angular/router";
 import {MatDialogModule} from "@angular/material/dialog";
-import {MatLegacyButtonModule} from "@angular/material/legacy-button";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
+import {MatButtonModule} from "@angular/material/button";
+
 
 const routes: Routes = [
   {path: '', component: MoonComponent, title: 'Moon'}
@@ -39,14 +40,14 @@ const routes: Routes = [
     InterfaceUtilModule,
     HotTableModule,
     HighchartsChartModule,
-    MatLegacyFormFieldModule,
-    MatLegacyInputModule,
+    MatFormFieldModule,
+    MatInputModule,
     ReactiveFormsModule,
     MatSliderModule,
     FormsModule,
     NgIf,
     MatDialogModule,
-    MatLegacyButtonModule,
+    MatButtonModule,
   ],
   exports: [MoonComponent, RouterModule],
   providers: [MoonService],

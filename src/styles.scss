@@ -152,7 +152,6 @@ $dark-theme: mat.define-dark-theme($dark-primary, $dark-accent, $dark-warn);
   --scroll-thumb: #575757;
   --scroll-thumb-hover: #575757;
 
-
   #table {
     border-top: thin solid var(--table-border-color);
     border-bottom: thin solid var(--table-border-color);
@@ -275,6 +274,15 @@ $dark-theme: mat.define-dark-theme($dark-primary, $dark-accent, $dark-warn);
   }
 
   /* Context menu */
+  .htContextMenu table tbody tr td.htDisabled {
+    color: #888;
+  }
+
+  .htContextMenu table tbody tr td {
+    color: #fff;
+  }
+
+
   .htContextMenu tr,
   .htDropdownMenu tr,
   .htFiltersConditionsMenu tr {
@@ -302,7 +310,8 @@ $dark-theme: mat.define-dark-theme($dark-primary, $dark-accent, $dark-warn);
     background-color: var(--ctx-background);
   }
 
-  .handsontable .htUISelectCaption .handsontable .htUISelectCaption:hover {
+  .handsontable .htUISelectCaption
+  .handsontable .htUISelectCaption:hover {
     background-color: var(--ctx-background);
   }
 

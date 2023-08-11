@@ -4,11 +4,11 @@ mat-form-field {
 
 mat-slide-toggle {
   margin-left: 10px;
-  margin-top: 15px;
-  font-size: large;
+  margin-top: 7px;
 }
 
 p {
-  margin-top: 15px;
-  //font-size: medium;
+  margin-left: 5px;
+  margin-top: 14px;
+  font-size: clamp(10px, 20px, 30px);
 }

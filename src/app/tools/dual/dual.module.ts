@@ -8,13 +8,14 @@ import {DualTableComponent} from './dual-table/dual-table.component';
 import {HotTableModule} from "@handsontable/angular";
 import {DualChartFormComponent} from './dual-chart-form/dual-chart-form.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {MatLegacyFormFieldModule} from "@angular/material/legacy-form-field";
-import {MatLegacyInputModule} from "@angular/material/legacy-input";
 import {DualHighchartComponent} from './dual-highchart/dual-highchart.component';
 import {HighchartsChartModule} from "highcharts-angular";
 import {RouterModule, Routes} from "@angular/router";
 import {MatDialogModule} from "@angular/material/dialog";
-import {MatLegacyButtonModule} from "@angular/material/legacy-button";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
+import {MatButtonModule} from "@angular/material/button";
+
 
 const routes: Routes = [
   {path: '', component: DualComponent, title: 'Dual'}
@@ -34,12 +35,12 @@ const routes: Routes = [
     SimpleGraphButtonModule,
     HotTableModule,
     FormsModule,
-    MatLegacyFormFieldModule,
-    MatLegacyInputModule,
+    MatFormFieldModule,
+    MatInputModule,
     ReactiveFormsModule,
     HighchartsChartModule,
     MatDialogModule,
-    MatLegacyButtonModule,
+    MatButtonModule,
   ],
   exports: [DualComponent, RouterModule],
   providers: [DualService]

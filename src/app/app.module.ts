@@ -1,4 +1,4 @@
-import {ANIMATION_MODULE_TYPE, NgModule} from '@angular/core';
+import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -15,6 +15,8 @@ import {MatInputModule} from "@angular/material/input";
 import {MatSelectModule} from "@angular/material/select";
 import {MatButtonModule} from "@angular/material/button";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {MarkdownModule} from "ngx-markdown";
+import {HttpClientModule} from "@angular/common/http";
 
 
 registerAllModules();
@@ -29,7 +31,9 @@ registerAllModules();
     MatInputModule,
     MatSelectModule,
     ReactiveFormsModule,
-    MatButtonModule
+    MatButtonModule,
+    HttpClientModule,
+    MarkdownModule.forRoot({loader: HttpClientModule}),
   ],
   declarations: [
     AppComponent,

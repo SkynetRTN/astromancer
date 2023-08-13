@@ -1,4 +1,4 @@
-<div class="row tool-container">
+<div class="row light-curve-container tool-container">
   <div class="col-4">
     <div class="row">
       <app-variable-light-curve-form></app-variable-light-curve-form>
@@ -18,7 +18,7 @@
       <app-variable-light-curve-highchart></app-variable-light-curve-highchart>
     </div>
     <div class="row button-row">
-      <app-simple-graph-button [isEditChartInfo]="true" (chartUserActionObs$)="actionHandler($event)">
+      <app-simple-graph-button (chartUserActionObs$)="actionHandler($event)" [isEditChartInfo]="true">
       </app-simple-graph-button>
     </div>
   </div>

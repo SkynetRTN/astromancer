@@ -469,19 +469,24 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
         errorArray[3 * i + 2]! - magArray[i]!
       )
     }
-    return lombScargleWithError(jdArray, magArray, errorArray, start, end, 5000);
+    // Maximum points for html2canvas to successfully render is 2000
+    return lombScargleWithError(jdArray, magArray, errorArray, start, end, 2000);
   }
 
   removeRow(index: number, amount: number): void {
     this.variableData.removeRow(index, amount);
     this.variableStorage.saveData(this.variableData.getData());
     this.dataSubject.next(this.variableData);
+    this.periodogramDataSubject.next(this.variableData);
+    this.periodFoldingDataSubject.next(this.variableData);
   }
 
   setData(data: any[]): void {
     this.variableData.setData(data);
     this.variableStorage.saveData(this.variableData.getData());
     this.dataSubject.next(this.variableData);
+    this.periodogramDataSubject.next(this.variableData);
+    this.periodFoldingDataSubject.next(this.variableData);
   }
 
   resetData(): void {

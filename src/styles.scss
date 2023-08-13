@@ -1,6 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 @use '@angular/material' as mat;
 @use '@angular/material/theming';
+
+@include mat.core();
 @import url("https://code.highcharts.com/css/highcharts.css");
 @import "~bootstrap/dist/css/bootstrap.css";
 @import '~handsontable/dist/handsontable.full.css';
@@ -350,17 +352,16 @@ $dark-theme: mat.define-dark-theme($dark-primary, $dark-accent, $dark-warn);
 }
 
 
-//Define a high contrast theme.
-// Define a dark high contrast theme.
 $dark-hc-primary: mat.define-palette(mat.$yellow-palette, 500, 400, 600);
 $dark-hc-text: mat.get-color-from-palette(mat.$yellow-palette, 500);
 $dark-hc-disabled-text: mat.get-color-from-palette(mat.$yellow-palette, 700);
 $dark-hc-icons: mat.get-color-from-palette(mat.$yellow-palette, 400);
 $dark-hc-accent: mat.define-palette(mat.$yellow-palette, 600);
 $dark-hc-theme: mat.define-dark-theme($dark-hc-primary, $dark-hc-accent, $dark-warn);
-$dark-hc-foreground: map-get($dark-hc-theme, foreground);
-$dark-hc-foreground: map_merge(
-    $dark-hc-foreground,
+$foreground: map-get($dark-hc-theme, foreground);
+// @debug $foreground;
+$foreground: map_merge(
+    $foreground,
     (
       text: $dark-hc-text,
       "secondary-text": $dark-hc-text,
@@ -368,20 +369,22 @@ $dark-hc-foreground: map_merge(
     )
 );
 
-$dark-hc-background: map-get($dark-hc-theme, background);
+$background: map-get($dark-hc-theme, background);
 // @debug $foreground;
-$dark-hc-background: map_merge($dark-hc-background, ());
+$background: map_merge($background, ());
 
 $dark-hc-theme: map_merge(
     $dark-hc-theme,
     (
-      foreground: $dark-hc-foreground,
-      background: $dark-hc-background,
+      foreground: $foreground,
+      background: $background,
     )
 );
 
+
 .HC_DARK_THEME {
   @include mat.all-legacy-component-themes($dark-hc-theme);
+  @include mat.all-component-themes($dark-hc-theme);
 
   .mat-list-item.active, .mat-list-item.active:focus, .mat-list-item.active:hover {
     font-weight: bold;
@@ -390,6 +393,225 @@ $dark-hc-theme: map_merge(
     //noinspection CssInvalidFunction
     background-color: map-get($dark-hc-primary, darker) !important;
   }
+
+  p {
+    color: mat.get-color-from-palette(mat.$yellow-palette, 500);
+  }
+
+  //Handsontable High Contrast Dark Theme
+
+  --background: #000;
+  --color: #FFEB3B;
+  --table-border-color: #FFF59D;
+  --table-header-background: #262626;
+  --table-header-color: #FBC02D;
+  --background-color-row-odd: #0D0D0D;
+  --background-color-row-even: #0D0D0D;
+  --background-color-row-first: #0D0D0D;
+  --cell-color: #0D0D0D;
+  --cell-selected-color: #222;
+  --ctx-background: #111;
+  --ctx-background-hover: #222;
+  --scroll-track: #111;
+  --scroll-thumb: #575757;
+  --scroll-thumb-hover: #575757;
+
+  #table {
+    border-top: thin solid var(--table-border-color);
+    border-bottom: thin solid var(--table-border-color);
+  }
+
+  #table .handsontable {
+    color: var(--color);
+  }
+
+  /*
+  #table .handsontable .wtHolder{
+    background-color: var(--table-header-background);
+  }
+  */
+
+  #table .htCore tbody tr:nth-of-type(odd) > td {
+    background-color: var(--background-color-row-odd);
+  }
+
+  #table .htCore tbody tr:nth-of-type(even) > td {
+    background-color: var(--background-color-row-even);
+  }
+
+  #table .htCore tbody tr:first-child > td {
+    background-color: var(--background-color-row-first);
+  }
+
+
+  /* All headers */
+  #table .handsontable th {
+    background-color: var(--table-header-background);
+    color: var(--table-header-color);
+  }
+
+  /* Row headers */
+  #table .ht_clone_left th {
+    background-color: var(--table-header-background);
+    color: var(--table-header-color);
+  }
+
+  /* Column headers */
+  #table .ht_clone_top th {
+    background-color: var(--table-header-background);
+    color: var(--table-header-color);
+  }
+
+  /* Row headers */
+  #table .ht_clone_top_left_corner th {
+    border-bottom: 1px solid var(--table-border-color);
+  }
+
+  #table .ht_clone_left th {
+    border-right: 1px solid var(--table-border-color);
+    border-left: 1px solid var(--table-border-color);
+  }
+
+  /* Column headers */
+  #table .ht_clone_top th {
+    border-top: 1px solid var(--table-border-color);
+    border-right: 1px solid var(--table-border-color);
+    border-bottom: 1px solid var(--table-border-color);
+  }
+
+  #table .ht_clone_top_left_corner th {
+    border-right: 1px solid var(--table-border-color);
+  }
+
+  #table .handsontable .changeType {
+    background: inherit;
+    border-color: var(--table-border-color);
+  }
+
+  /* Borders */
+  #table .handsontable th,
+  #table .handsontable td {
+    border-right: 1px solid var(--table-border-color);
+    border-bottom: 1px solid var(--table-border-color);
+  }
+
+  #table .handsontable tr:first-child td,
+  #table .handsontable tr:first-child th {
+    border-top: 1px solid var(--table-border-color);
+  }
+
+  #table .ht_master tr > td {
+    border-bottom: 1px solid var(--table-border-color);
+  }
+
+  /* Right */
+  #table .ht_master tr > td {
+    border-right: 1px solid var(--table-border-color);
+  }
+
+  #table #table .handsontable .htNoFrame + td,
+  #table .handsontable .htNoFrame + th,
+  #table .handsontable.htRowHeaders thead tr th:nth-child(2),
+  #table .handsontable td:first-of-type,
+  #table .handsontable th:first-child,
+  #table .handsontable th:nth-child(2) {
+    border-left: 1px solid var(--table-border-color);
+  }
+
+  #table .ht_clone_top_left_corner thead tr th:nth-last-child(2) {
+    border-right: 1px solid var(--table-border-color);
+  }
+
+  #table .handsontable th:last-child {
+    border-right: 1px solid var(--table-border-color);
+    border-bottom: 1px solid var(--table-border-color);
+  }
+
+  /* Selected cell */
+  #table tr > td {
+    background-color: var(--cell-color);
+  }
+
+  /* Selected cell */
+  #table tr > td.current {
+    background-color: var(--cell-selected-color);
+  }
+
+  /* Context menu */
+  .htContextMenu table tbody tr td.htDisabled {
+    color: #888;
+  }
+
+  .htContextMenu table tbody tr td {
+    color: var(--color);
+  }
+
+
+  .htContextMenu tr,
+  .htDropdownMenu tr,
+  .htFiltersConditionsMenu tr {
+    background-color: var(--ctx-background);
+  }
+
+  .htContextMenu table tbody tr td,
+  .htDropdownMenu table tbody tr td,
+  .htFiltersConditionsMenu table tbody tr td {
+    background-color: var(--ctx-background);
+  }
+
+  .htContextMenu table tbody tr td.current,
+  .htContextMenu table tbody tr td.zeroclipboard-is-hover,
+  .htDropdownMenu table tbody tr td.current,
+  .htDropdownMenu table tbody tr td.zeroclipboard-is-hover,
+  .htFiltersConditionsMenu table tbody tr td.current,
+  .htFiltersConditionsMenu table tbody tr td.zeroclipboard-is-hover {
+    background-color: var(--ctx-background-hover);
+  }
+
+
+  .htContextMenu .handsontable table td.htCustomMenuRenderer,
+  .htDropdownMenu .handsontable table td.htCustomMenuRenderer {
+    background-color: var(--ctx-background);
+  }
+
+  .handsontable .htUISelectCaption
+  .handsontable .htUISelectCaption:hover {
+    background-color: var(--ctx-background);
+  }
+
+  /* Highcharts High Contrast Dark Theme */
+
+  /* Chart background, point stroke for markers and columns etc */
+  --highcharts-background-color: rgb(48, 48, 48);
+
+  /* Colors for data series and points. */
+  --highcharts-color-0: #2b908f;
+  --highcharts-color-1: #90ee7e;
+  --highcharts-color-2: #f45b5b;
+  --highcharts-color-3: #7798bf;
+  --highcharts-color-4: #aaeeee;
+  --highcharts-color-5: #ff0066;
+  --highcharts-color-6: #eeaaee;
+  --highcharts-color-7: #55bf3b;
+  --highcharts-color-8: #df5353;
+  --highcharts-color-9: #7798bf;
+
+  /* Neutral colors */
+  --highcharts-neutral-color-100: #FFEB3B;
+  --highcharts-neutral-color-80: #FFEE58;
+  --highcharts-neutral-color-60: #FFF176;
+  --highcharts-neutral-color-40: #FFF59D;
+  --highcharts-neutral-color-20: #FFF59D;
+  --highcharts-neutral-color-10: #707073;
+  --highcharts-neutral-color-5: #505053;
+  --highcharts-neutral-color-3: #303033;
+
+  /* Highlight colors https://jsfiddle.net/highcharts/pukradvh/ */
+  --highcharts-highlight-color-100: rgb(166, 199, 237);
+  --highcharts-highlight-color-80: rgb(134, 165, 201);
+  --highcharts-highlight-color-60: rgb(102, 131, 164);
+  --highcharts-highlight-color-20: rgb(39, 64, 91);
+  --highcharts-highlight-color-10: rgb(23, 47, 73);
 }
 
 

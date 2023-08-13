@@ -128,9 +128,7 @@ $dark-theme: mat.define-dark-theme($dark-primary, $dark-accent, $dark-warn);
 
   .mat-list-item.active, .mat-list-item.active:focus, .mat-list-item.active:hover {
     font-weight: bold;
-    //noinspection CssInvalidFunction
-    color: map-get($dark-primary, A100);
-    //noinspection CssInvalidFunction
+    color: black;
     background-color: map-get($dark-primary, darker);
   }
 

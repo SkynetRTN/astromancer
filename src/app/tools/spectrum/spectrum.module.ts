@@ -8,17 +8,21 @@ import {HotTableModule} from "@handsontable/angular";
 import {SpectrumService} from "./spectrum.service";
 import {SpectrumFormComponent} from './spectrum-form/spectrum-form.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {MatLegacyFormFieldModule} from "@angular/material/legacy-form-field";
-import {MatLegacyOptionModule} from "@angular/material/legacy-core";
-import {MatLegacySelectModule} from "@angular/material/legacy-select";
-import {MatLegacySlideToggleModule} from "@angular/material/legacy-slide-toggle";
+
+
 import {SpectrumChartFormComponent} from './spectrum-chart-form/spectrum-chart-form.component';
-import {MatLegacyInputModule} from "@angular/material/legacy-input";
+
 import {SpectrumHighchartComponent} from './spectrum-highchart/spectrum-highchart.component';
 import {HighchartsChartModule} from "highcharts-angular";
 import {RouterModule, Routes} from "@angular/router";
 import {MatDialogModule} from "@angular/material/dialog";
-import {MatLegacyButtonModule} from "@angular/material/legacy-button";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatOptionModule} from "@angular/material/core";
+import {MatSelectModule} from "@angular/material/select";
+import {MatSliderModule} from "@angular/material/slider";
+import {MatInputModule} from "@angular/material/input";
+import {MatButtonModule} from "@angular/material/button";
+
 
 const routes: Routes = [
   {path: '', component: SpectrumComponent, title: 'Spectrum'}
@@ -39,15 +43,15 @@ const routes: Routes = [
     SimpleGraphButtonModule,
     HotTableModule,
     FormsModule,
-    MatLegacyFormFieldModule,
-    MatLegacyOptionModule,
-    MatLegacySelectModule,
-    MatLegacySlideToggleModule,
+    MatFormFieldModule,
+    MatOptionModule,
+    MatSelectModule,
+    MatSliderModule,
     ReactiveFormsModule,
-    MatLegacyInputModule,
+    MatInputModule,
     HighchartsChartModule,
     MatDialogModule,
-    MatLegacyButtonModule,
+    MatButtonModule,
   ],
   exports: [SpectrumComponent, RouterModule],
   providers: [SpectrumService]

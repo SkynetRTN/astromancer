@@ -44,7 +44,6 @@ import {
 import {InterfaceUtilModule} from "../shared/interface/util";
 import {RouterModule, Routes} from "@angular/router";
 import {MatDialogModule} from "@angular/material/dialog";
-import {MatLegacyButtonModule} from "@angular/material/legacy-button";
 
 const routes: Routes = [
   {path: '', component: VariableComponent, title: 'Variable'}
@@ -84,7 +83,7 @@ const routes: Routes = [
     InterfaceUtilModule,
     MatDialogModule,
   ],
-  exports: [VariableComponent, RouterModule],
+  exports: [VariableComponent, RouterModule, VariableLightCurveHighchartComponent],
   providers: [VariableService],
 })
 export class VariableModule {

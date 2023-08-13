@@ -44,7 +44,7 @@ const routes: Routes = [
     MatDialogModule,
     MatButtonModule,
   ],
-  exports: [ScatterComponent, RouterModule],
+  exports: [ScatterComponent, RouterModule, ScatterHighchartComponent],
   providers: [ScatterService],
 })
 export class ScatterModule {

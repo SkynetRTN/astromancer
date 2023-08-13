@@ -41,7 +41,7 @@
     flex-direction: row;
   }
 
-  .col-4, .col-8 {
+  .col-4, .col-8, col-6 {
     display: flex;
     flex-flow: column;
   }
@@ -54,10 +54,9 @@
 @media screen and (max-aspect-ratio: 1/1) {
   .tool-container {
     flex-direction: column;
-
   }
 
-  .col-4, .col-8 {
+  .col-4, .col-8, .col-6 {
     width: 100%;
     justify-content: center;
     display: flex;
@@ -65,6 +64,10 @@
   }
 
   .col-4 {
+    flex: 1;
+  }
+
+  .col-6 {
     flex: 1;
   }
 
@@ -81,7 +84,7 @@
     .tool-container {
       height: calc(2 * (100% - 64px));
     }
-    .col-4, .col-8 {
+    .col-4, .col-8, .col-6 {
       flex: 1;
     }
   }

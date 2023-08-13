@@ -60,7 +60,7 @@ const routes: Routes = [
     CurveChartFormComponent,
     CurveHighChartComponent,
   ],
-  exports: [CurveComponent, RouterModule],
+  exports: [CurveComponent, RouterModule, CurveTableComponent, CurveHighChartComponent],
   providers: [CurveService, HonorCodePopupService],
 })
 export class CurveModule {

@@ -49,7 +49,7 @@ const routes: Routes = [
     MatDialogModule,
     MatButtonModule,
   ],
-  exports: [MoonComponent, RouterModule],
+  exports: [MoonComponent, RouterModule, MoonHighchartComponent],
   providers: [MoonService],
 })
 export class MoonModule {

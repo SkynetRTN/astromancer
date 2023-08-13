@@ -1,0 +1,42 @@
+.home-container {
+  padding: 20px;
+  overflow: scroll;
+}
+
+h1, h2 {
+  text-align: center;
+}
+
+.card {
+  height: 100%;
+  width: 100%;
+}
+
+.tile-container {
+  height: 450px;
+}
+
+.tile-container:hover {
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
+.tile {
+  height: 100%;
+  display: flex;
+  overflow: clip;
+}
+
+.chart-preview {
+  height: 300px;
+  width: 100%;
+  pointer-events: none;
+}
+
+.center-vertical {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default !important;
+}
+

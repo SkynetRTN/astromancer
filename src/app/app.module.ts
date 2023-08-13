@@ -17,6 +17,15 @@ import {MatButtonModule} from "@angular/material/button";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MarkdownModule} from "ngx-markdown";
 import {HttpClientModule} from "@angular/common/http";
+import {MatGridListModule} from "@angular/material/grid-list";
+import {MatCardModule} from "@angular/material/card";
+import {CurveModule} from "./tools/curve/curve.module";
+import {MoonModule} from "./tools/moon/moon.module";
+import {VenusModule} from "./tools/venus/venus.module";
+import {VariableModule} from "./tools/variable/variable.module";
+import {ScatterModule} from "./tools/scatter/scatter.module";
+import {SpectrumModule} from "./tools/spectrum/spectrum.module";
+import {DualModule} from "./tools/dual/dual.module";
 
 
 registerAllModules();
@@ -34,6 +43,15 @@ registerAllModules();
     MatButtonModule,
     HttpClientModule,
     MarkdownModule.forRoot({loader: HttpClientModule}),
+    MatGridListModule,
+    MatCardModule,
+    CurveModule,
+    MoonModule,
+    VenusModule,
+    VariableModule,
+    ScatterModule,
+    SpectrumModule,
+    DualModule,
   ],
   declarations: [
     AppComponent,

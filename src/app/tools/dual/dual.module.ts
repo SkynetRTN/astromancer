@@ -42,7 +42,7 @@ const routes: Routes = [
     MatDialogModule,
     MatButtonModule,
   ],
-  exports: [DualComponent, RouterModule],
+  exports: [DualComponent, RouterModule, DualHighchartComponent],
   providers: [DualService]
 })
 export class DualModule {

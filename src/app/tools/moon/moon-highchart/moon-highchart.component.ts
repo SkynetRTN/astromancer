@@ -60,6 +60,7 @@ export class MoonHighchartComponent implements AfterViewInit, OnDestroy {
       this.setChartTitle();
       this.setChartXAxis();
       this.setChartYAxis();
+      this.updateData();
       this.updateChart();
     });
     this.service.interface$.pipe(

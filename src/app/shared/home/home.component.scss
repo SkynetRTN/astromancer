@@ -3,6 +3,11 @@
   overflow: scroll;
 }
 
+.tool-container {
+  padding: 0 !important;
+  width: 100%;
+}
+
 h1, h2 {
   text-align: center;
 }
@@ -14,6 +19,7 @@ h1, h2 {
 
 .tile-container {
   height: 450px;
+  padding: 20px;
 }
 
 .tile-container:hover {

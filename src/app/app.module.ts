@@ -26,6 +26,7 @@ import {VariableModule} from "./tools/variable/variable.module";
 import {ScatterModule} from "./tools/scatter/scatter.module";
 import {SpectrumModule} from "./tools/spectrum/spectrum.module";
 import {DualModule} from "./tools/dual/dual.module";
+import {NgOptimizedImage} from "@angular/common";
 
 
 registerAllModules();
@@ -52,6 +53,7 @@ registerAllModules();
     ScatterModule,
     SpectrumModule,
     DualModule,
+    NgOptimizedImage,
   ],
   declarations: [
     AppComponent,

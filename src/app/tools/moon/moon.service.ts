@@ -7,13 +7,12 @@ import {
   MoonInterface,
   MoonInterfaceImpl,
   MoonModel,
-  MoonStorage,
-  UpdateSource
+  MoonStorage
 } from "./moon.service.util";
 import {BehaviorSubject} from "rxjs";
 import * as Highcharts from 'highcharts';
 import {ChartInfo} from "../shared/charts/chart.interface";
-import {rad} from "../shared/data/utils";
+import {rad, UpdateSource} from "../shared/data/utils";
 
 @Injectable()
 export class MoonService implements MyData, ChartInfo, MoonInterface, MoonModel {

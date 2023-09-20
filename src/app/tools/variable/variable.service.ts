@@ -19,8 +19,7 @@ import {BehaviorSubject} from "rxjs";
 import {MyData} from "../shared/data/data.interface";
 import {ChartInfo} from "../shared/charts/chart.interface";
 import * as Highcharts from "highcharts";
-import {floatMod, lombScargleWithError} from "../shared/data/utils";
-import {UpdateSource} from "../moon/moon.service.util";
+import {floatMod, lombScargleWithError, UpdateSource} from "../shared/data/utils";
 
 @Injectable()
 export class VariableService implements MyData, VariableInterface, ChartInfo, VariablePeriodogramInterface, VariablePeriodFoldingInterface {

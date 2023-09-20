@@ -203,3 +203,9 @@ const ArrMath = {
     return this.sum(arr.map(x => Math.pow(x - mean, 2))) / arr.length;
   }
 }
+
+export enum UpdateSource {
+  INIT = "init",
+  RESET = "reset",
+  INTERFACE = "interface",
+}

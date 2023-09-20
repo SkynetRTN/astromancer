@@ -5,8 +5,8 @@ import {HonorCodePopupService} from "../../../shared/honor-code-popup/honor-code
 import {HonorCodeChartService} from "../../../shared/honor-code-popup/honor-code-chart.service";
 import {FormControl, FormGroup} from "@angular/forms";
 import {VariableDisplayPeriod} from "../../variable.service.util";
-import {UpdateSource} from "../../../moon/moon.service.util";
 import {InputSliderValue} from "../../../shared/interface/input-slider/input-slider.component";
+import {UpdateSource} from "../../../shared/data/utils";
 
 @Component({
   selector: 'app-variable-period-folding-form',

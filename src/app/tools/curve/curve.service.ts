@@ -13,6 +13,7 @@ import {
 } from "./curve.service.util";
 import {MyData} from "../shared/data/data.interface";
 import * as Highcharts from 'highcharts';
+import {UpdateSource} from "../shared/data/utils";
 
 @Injectable()
 export class CurveService implements ChartInfo, MyData, CurveInterface {
@@ -43,7 +44,7 @@ export class CurveService implements ChartInfo, MyData, CurveInterface {
   data$ = this.dataSubject.asObservable();
   private dataKeysSubject = new BehaviorSubject<string[]>(this.getDataLabelArray());
   dataKeys$ = this.dataKeysSubject.asObservable();
-  private chartInfoSubject = new BehaviorSubject<ChartInfo>(this.chartInfo);
+  private chartInfoSubject = new BehaviorSubject<UpdateSource>(UpdateSource.INIT);
   chartInfo$ = this.chartInfoSubject.asObservable();
   private interfaceSubject = new BehaviorSubject<CurveInterface>(this.curveImpl);
   interface$ = this.interfaceSubject.asObservable();
@@ -94,25 +95,25 @@ export class CurveService implements ChartInfo, MyData, CurveInterface {
   public setChartTitle(title: string): void {
     this.chartInfo.setChartTitle(title);
     this.curveStorage.saveChartInfo(this.chartInfo.getStorageObject());
-    this.chartInfoSubject.next(this.chartInfo);
+    this.chartInfoSubject.next(UpdateSource.INTERFACE);
   }
 
   public setXAxisLabel(label: string): void {
     this.chartInfo.setXAxisLabel(label);
     this.curveStorage.saveChartInfo(this.chartInfo.getStorageObject());
-    this.chartInfoSubject.next(this.chartInfo);
+    this.chartInfoSubject.next(UpdateSource.INTERFACE);
   }
 
   public setYAxisLabel(label: string): void {
     this.chartInfo.setYAxisLabel(label);
     this.curveStorage.saveChartInfo(this.chartInfo.getStorageObject());
-    this.chartInfoSubject.next(this.chartInfo);
+    this.chartInfoSubject.next(UpdateSource.INTERFACE);
   }
 
   public setDataLabel(label: string): void {
     this.chartInfo.setDataLabel(label);
     this.curveStorage.saveChartInfo(this.chartInfo.getStorageObject());
-    this.chartInfoSubject.next(this.chartInfo);
+    this.chartInfoSubject.next(UpdateSource.INTERFACE);
     this.dataKeysSubject.next(this.getDataLabelArray());
   }
 
@@ -164,7 +165,7 @@ export class CurveService implements ChartInfo, MyData, CurveInterface {
     this.curveStorage.saveInterface(this.curveImpl.getStorageObject());
     this.dataKeysSubject.next(this.getDataLabelArray());
     this.dataSubject.next(this.getData());
-    this.chartInfoSubject.next(this.chartInfo);
+    this.chartInfoSubject.next(UpdateSource.INIT);
   }
 
   public setIsMagnitudeOn(isMagnitudeOn: boolean): void {
@@ -183,7 +184,7 @@ export class CurveService implements ChartInfo, MyData, CurveInterface {
   public resetChartInfo(): void {
     this.chartInfo.setStorageObject(CurveChartInfo.getDefaultStorageObject());
     this.curveStorage.resetChartInfo();
-    this.chartInfoSubject.next(this.chartInfo);
+    this.chartInfoSubject.next(UpdateSource.RESET);
     this.dataKeysSubject.next(this.getDataLabelArray());
   }
 
@@ -191,7 +192,7 @@ export class CurveService implements ChartInfo, MyData, CurveInterface {
     this.curveImpl.setStorageObject(CurveImpl.getDefaultStorageObject());
     this.curveStorage.resetInterface();
     this.interfaceSubject.next(this.curveImpl);
-    this.chartInfoSubject.next(this.chartInfo);
+    this.chartInfoSubject.next(UpdateSource.RESET);
     this.dataSubject.next(this.getData());
   }
 

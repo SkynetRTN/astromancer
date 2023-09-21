@@ -40,6 +40,7 @@ export class MoonTableComponent implements AfterViewInit, OnDestroy {
 
   public onChange = (changes: any, source: any) => {
     if (changes) {
+      console.log(changes);
       this.service.setData(this.table.getData());
     }
   }
@@ -50,6 +51,15 @@ export class MoonTableComponent implements AfterViewInit, OnDestroy {
 
   public onInsert = (index: number, amount: number) => {
     this.service.addRow(index, amount);
+  }
+
+  public beforePaste = (data: any[], coords: any) => {
+    if (data && coords) {
+      const rowDiff = data.length - coords[0]['startRow'] - this.table.getData().length;
+      if (rowDiff > 0) {
+        this.table.getTable().alter('insert_row_below', this.table.getData().length, rowDiff);
+      }
+    }
   }
 
   private limitPrecision(data: MoonDataDict[], precision: number): MoonDataDict[] {

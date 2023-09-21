@@ -53,6 +53,7 @@ export class MoonHighchartComponent implements AfterViewInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(() => {
       this.updateData();
+      this.updateModel();
     });
     this.service.chartInfo$.pipe(
       takeUntil(this.destroy$)

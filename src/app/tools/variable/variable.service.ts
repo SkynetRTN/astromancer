@@ -399,11 +399,11 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
     } else if (this.getVariableStar() === VariableStarOptions.SOURCE1) {
       return this.getData().filter((row: VariableDataDict) =>
         row.jd !== null && row.source1 !== null && row.source2 !== null)
-        .map((row: VariableDataDict) => [row.jd, row.source1! - row.source2! - this.getReferenceStarMagnitude()])
+        .map((row: VariableDataDict) => [row.jd, row.source1! - row.source2! + this.getReferenceStarMagnitude()])
     } else {
       return this.getData().filter((row: VariableDataDict) =>
         row.jd !== null && row.source1 !== null && row.source2 !== null)
-        .map((row: VariableDataDict) => [row.jd, row.source2! - row.source1! - this.getReferenceStarMagnitude()])
+        .map((row: VariableDataDict) => [row.jd, row.source2! - row.source1! + this.getReferenceStarMagnitude()])
     }
   }
 
@@ -445,14 +445,14 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
       return this.getData().filter(
         (row: VariableDataDict) => row.jd !== null && row.source1 !== null && row.source2 !== null && row.error1 !== null)
         .map((row: VariableDataDict) =>
-          [row.jd, row.source1! - row.source2! - this.getReferenceStarMagnitude() - row.error1!,
-            row.source1! - row.source2! - this.getReferenceStarMagnitude() + row.error1!])
+          [row.jd, row.source1! - row.source2! + this.getReferenceStarMagnitude() - row.error1!,
+            row.source1! - row.source2! + this.getReferenceStarMagnitude() + row.error1!])
     } else {
       return this.getData().filter(
         (row: VariableDataDict) => row.jd !== null && row.source1 !== null && row.source2 !== null && row.error2 !== null)
         .map((row: VariableDataDict) =>
-          [row.jd, row.source2! - row.source1! - this.getReferenceStarMagnitude() - row.error2!,
-            row.source2! - row.source1! - this.getReferenceStarMagnitude() + row.error2!])
+          [row.jd, row.source2! - row.source1! + this.getReferenceStarMagnitude() - row.error2!,
+            row.source2! - row.source1! + this.getReferenceStarMagnitude() + row.error2!])
     }
   }
 

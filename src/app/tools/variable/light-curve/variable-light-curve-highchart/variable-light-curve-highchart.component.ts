@@ -198,7 +198,8 @@ export class VariableLightCurveHighchartComponent implements AfterViewInit, OnDe
 
   private setChartYAxis(): void {
     this.chartOptions.yAxis = {
-      title: {text: this.service.getYAxisLabel()}
+      title: {text: this.service.getYAxisLabel()},
+      reversed: true,
     };
   }
 

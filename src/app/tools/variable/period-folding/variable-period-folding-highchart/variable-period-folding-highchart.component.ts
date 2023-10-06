@@ -156,7 +156,8 @@ export class VariablePeriodFoldingHighchartComponent implements AfterViewInit, O
 
   private setChartYAxis(): void {
     this.chartOptions.yAxis = {
-      title: {text: this.service.getPeriodFoldingYAxisLabel()}
+      title: {text: this.service.getPeriodFoldingYAxisLabel()},
+      reversed: true,
     };
   }
 

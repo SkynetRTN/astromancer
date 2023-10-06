@@ -81,14 +81,12 @@ export class VariableLightCurveHighchartComponent implements AfterViewInit, OnDe
   initChartSeries() {
     this.setSources();
     this.setVariable();
-    this.updateYAxis();
     this.updateChart();
   }
 
   updateChartSeries(): void {
     this.updateSources();
     this.updateVariable();
-    this.updateYAxis();
     this.updateChart();
   }
 
@@ -181,10 +179,6 @@ export class VariableLightCurveHighchartComponent implements AfterViewInit, OnDe
       type: 'errorbar',
       visible: this.service.getVariableStar() !== VariableStarOptions.NONE,
     });
-  }
-
-  private updateYAxis(): void {
-    this.chartObject.yAxis[0].update({reversed: this.service.getVariableStar() !== VariableStarOptions.NONE});
   }
 
 

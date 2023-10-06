@@ -20,6 +20,9 @@ export class VariablePeriodFoldingHighchartComponent implements AfterViewInit, O
       animation: false,
       styledMode: true,
     },
+    yAxis: {
+      reversed: true,
+    },
     legend: {
       align: 'center',
     },

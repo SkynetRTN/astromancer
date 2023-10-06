@@ -7,7 +7,6 @@ import {MyFileParser} from "../../../shared/data/FileParser/FileParser";
 import {FileType} from "../../../shared/data/FileParser/FileParser.util";
 import {Subject, takeUntil} from "rxjs";
 import {VariableDataDict} from "../../variable.service.util";
-import {DualChartFormComponent} from "../../../dual/dual-chart-form/dual-chart-form.component";
 import {MatDialog} from "@angular/material/dialog";
 import {
   VariableLightCurveChartFormComponent
@@ -37,14 +36,20 @@ export class VariableLightCurveComponent implements OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(
       (data: any) => {
+        const sources = Array.from(new Set(data.map((d: any) => d.id)));
+        console.log(sources);
+        if (sources.length < 2) {
+          alert("Error" + "Please upload at least two sources")
+          return;
+        }
         const result: VariableDataDict[] = [];
-        const src0data = data.filter((d: any) => d.id === "SRC0")
+        const src0data = data.filter((d: any) => d.id === sources[0])
           .map((d: any) => [parseFloat(d.mjd), parseFloat(d.mag), parseFloat(d.mag_error)])
-          .filter((d: any) => isNaN(d[0]) === false && isNaN(d[1]) === false && isNaN(d[2]) === false)
+          .filter((d: any) => !isNaN(d[0]) && !isNaN(d[1]) && !isNaN(d[2]))
           .sort((a: any, b: any) => a[0] - b[0]);
-        const src1data = data.filter((d: any) => d.id === "SRC1")
+        const src1data = data.filter((d: any) => d.id === sources[1])
           .map((d: any) => [parseFloat(d.mjd), parseFloat(d.mag), parseFloat(d.mag_error)])
-          .filter((d: any) => isNaN(d[0]) === false && isNaN(d[1]) === false && isNaN(d[2]) === false)
+          .filter((d: any) => !isNaN(d[0]) && !isNaN(d[1]) && !isNaN(d[2]))
           .sort((a: any, b: any) => a[0] - b[0]);
         let left = 0;
         let right = 0;

@@ -174,7 +174,7 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
     const phase = this.getPeriodFoldingPhase();
     const pfData: number[][] = [];
     const pfError: number[][] = [];
-    if (period !== 0) {
+    if (period !== 0 && period !== null) {
       for (let i = 0; i < data.length; i++) {
         let temp_x = phase * period + floatMod((data[i][0]! - minJD), period);
         if (temp_x > period) {

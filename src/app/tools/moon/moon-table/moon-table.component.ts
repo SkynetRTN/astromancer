@@ -5,6 +5,7 @@ import {MyTable} from "../../shared/tables/table-interface";
 import {HotTableRegisterer} from "@handsontable/angular";
 import Handsontable from "handsontable";
 import {Subject, takeUntil} from "rxjs";
+import {beforePaste} from "../../shared/tables/util";
 
 @Component({
   selector: 'app-moon-table',
@@ -40,7 +41,6 @@ export class MoonTableComponent implements AfterViewInit, OnDestroy {
 
   public onChange = (changes: any, source: any) => {
     if (changes) {
-      console.log(changes);
       this.service.setData(this.table.getData());
     }
   }
@@ -54,12 +54,7 @@ export class MoonTableComponent implements AfterViewInit, OnDestroy {
   }
 
   public beforePaste = (data: any[], coords: any) => {
-    if (data && coords) {
-      const rowDiff = data.length - coords[0]['startRow'] - this.table.getData().length;
-      if (rowDiff > 0) {
-        this.table.getTable().alter('insert_row_below', this.table.getData().length, rowDiff);
-      }
-    }
+    beforePaste(data, coords, this.table);
   }
 
   private limitPrecision(data: MoonDataDict[], precision: number): MoonDataDict[] {

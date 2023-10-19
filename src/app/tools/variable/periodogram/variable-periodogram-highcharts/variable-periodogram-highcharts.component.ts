@@ -25,6 +25,9 @@ export class VariablePeriodogramHighchartsComponent implements AfterViewInit, On
       enabled: true,
       shared: false,
     },
+    xAxis: {
+      type: 'logarithmic',
+    },
     exporting: {
       buttons: {
         contextButton: {

@@ -76,7 +76,7 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
 
   getPeriodFoldingPeriod(): number {
     if (this.variablePeriodFolding.getPeriodFoldingPeriod() < 0)
-      return this.getPeriodogramStartPeriod();
+      return this.getJdRange();
     else
       return this.variablePeriodFolding.getPeriodFoldingPeriod();
   }
@@ -279,6 +279,12 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
     this.periodogramFormSubject.next(this.variablePeriodogram);
     this.periodogramDataSubject.next(this.variableData);
     this.periodFoldingFormSubject.next(UpdateSource.INIT);
+  }
+
+  getJdRange(): number {
+    const jdArray = this.getData().map((row: VariableDataDict) => row.jd)
+      .filter((jd: number | null) => jd !== null) as number[];
+    return parseFloat((Math.max(...jdArray) - Math.min(...jdArray)).toFixed(2));
   }
 
 

@@ -284,7 +284,7 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
   getJdRange(): number {
     const jdArray = this.getData().map((row: VariableDataDict) => row.jd)
       .filter((jd: number | null) => jd !== null) as number[];
-    return parseFloat((Math.max(...jdArray) - Math.min(...jdArray)).toFixed(2));
+    return parseFloat((Math.max(...jdArray) - Math.min(...jdArray)).toFixed(4));
   }
 
 

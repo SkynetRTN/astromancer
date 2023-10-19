@@ -38,9 +38,9 @@
   <div class="row">
     <div class="col-4">
       <my-input-slider (value)="onChange($event)" [defaultValue]="periodMax"
-                       [isLog]="true" [label]="'Period (days)'"
+                       [label]="'Period (days)'"
                        [maxValue]="periodMax" [minValue]="periodMin"
-                       [name]="'period'"
+                       [name]="'period'" [isLog]="true" [inputPrecision]="4"
                        [stepValue]="periodStep" [value$]="periodSubject">
       </my-input-slider>
     </div>

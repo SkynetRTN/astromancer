@@ -20,6 +20,7 @@ export class InputSliderComponent implements OnDestroy, AfterViewInit {
   @Input() name!: string;
   @Input() label!: string;
   @Input() value$!: Subject<number>;
+  @Input() inputPrecision: number = 2;
   @Output() value: EventEmitter<InputSliderValue> = new EventEmitter<InputSliderValue>();
 
 
@@ -104,12 +105,12 @@ class SliderUtil {
     }
   }
 
-  public static sliderToInput($event: Event, isLog: boolean) {
+  public static sliderToInput($event: Event, isLog: boolean, precision: number) {
     const slider = parseFloat(($event.target as HTMLInputElement).value);
     if (isLog) {
-      return String(SliderUtil.myRound(Math.exp(slider), 2));
+      return String(SliderUtil.myRound(Math.exp(slider), precision));
     } else {
-      return String(SliderUtil.myRound(slider, 2));
+      return String(SliderUtil.myRound(slider, precision));
     }
   }
 

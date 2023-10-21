@@ -17,7 +17,7 @@
       <app-moon-highchart></app-moon-highchart>
     </div>
     <div class="row button-row">
-      <app-simple-graph-button [isEditChartInfo]="true" (chartUserActionObs$)="actionHandler($event)">
+      <app-simple-graph-button (chartUserActionObs$)="actionHandler($event)" [isEditChartInfo]="true">
       </app-simple-graph-button>
     </div>
   </div>

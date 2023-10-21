@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { ClusterDataService } from './cluster-data.service';
+import {ClusterDataService} from './cluster-data.service';
 
 describe('ClusterDataService', () => {
   let service: ClusterDataService;

@@ -1,9 +1,11 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
 @Injectable()
 export class ClusterService {
   private clusterName: string = '';
-  constructor() { }
+
+  constructor() {
+  }
 
   setClusterName(name: string) {
     this.clusterName = name;

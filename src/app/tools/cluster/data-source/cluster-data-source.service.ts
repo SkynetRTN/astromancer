@@ -41,6 +41,14 @@ export class ClusterDataSourceService implements ClusterDataSourceStepper {
     this.fileParser.readFile(file, true);
   }
 
+  getSources(): Source[] {
+    return this.sources;
+  }
+
+  getFilters(): FILTER[] {
+    return this.filters;
+  }
+
   private processData(): void {
     const sortedData = this.rawData.sort((a, b) => {
       return a.id.localeCompare(b.id);
@@ -95,14 +103,6 @@ export class ClusterDataSourceService implements ClusterDataSourceStepper {
     this.sources = processedData;
     this.filters = filters;
     this.rawDataSubject.next(this.rawData);
-  }
-
-  getSources(): Source[] {
-    return this.sources;
-  }
-
-  getFilters(): FILTER[] {
-    return this.filters;
   }
 
   private setRawData(rawData: ClusterRawData[]): void {

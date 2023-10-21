@@ -128,12 +128,6 @@ export class VariableLightCurveComponent implements OnDestroy {
     })
   }
 
-  private saveGraph() {
-    this.honorCodeService.honored().subscribe((name: string) => {
-      this.chartService.saveImageHighChartOffline(this.service.getHighChartLightCurve(), "Variable Light Curve", name);
-    })
-  }
-
   uploadHandler($event: File) {
     this.fileParser.readFile($event, true);
   }
@@ -141,5 +135,11 @@ export class VariableLightCurveComponent implements OnDestroy {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private saveGraph() {
+    this.honorCodeService.honored().subscribe((name: string) => {
+      this.chartService.saveImageHighChartOffline(this.service.getHighChartLightCurve(), "Variable Light Curve", name);
+    })
   }
 }

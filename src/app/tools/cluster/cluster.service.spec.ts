@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { ClusterService } from './cluster.service';
+import {ClusterService} from './cluster.service';
 
 describe('ClusterService', () => {
   let service: ClusterService;

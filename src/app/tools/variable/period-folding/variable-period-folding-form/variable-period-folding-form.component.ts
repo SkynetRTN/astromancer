@@ -21,11 +21,11 @@ export class VariablePeriodFoldingFormComponent implements OnDestroy {
     = new BehaviorSubject<number>(this.service.getPeriodFoldingPeriod());
   phaseSubject: BehaviorSubject<number>
     = new BehaviorSubject<number>(this.service.getPeriodFoldingPhase());
-  private destroy$: Subject<void> = new Subject<void>();
-
   periodMin: number = this.service.getPeriodogramStartPeriod();
   periodMax: number = this.service.getJdRange();
   periodStep: number = this.getPeriodStep();
+  private destroy$: Subject<void> = new Subject<void>();
+
   constructor(private service: VariableService,
               private honorCodeService: HonorCodePopupService,
               private chartService: HonorCodeChartService) {

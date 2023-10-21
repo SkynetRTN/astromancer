@@ -15,7 +15,8 @@
       <app-curve-highchart></app-curve-highchart>
     </div>
     <div class="row button-row">
-      <app-simple-graph-button [isEditChartInfo]="true" (chartUserActionObs$)="actionHandler($event)"></app-simple-graph-button>
+      <app-simple-graph-button (chartUserActionObs$)="actionHandler($event)"
+                               [isEditChartInfo]="true"></app-simple-graph-button>
     </div>
   </div>
 </div>

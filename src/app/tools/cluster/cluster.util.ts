@@ -3,7 +3,7 @@ import {rad} from "../shared/data/utils";
 export interface Source {
   astrometry: Astrometry;
   photometries: Photometry[];
-  fsr: FSR|null;
+  fsr: FSR | null;
 }
 
 export interface Photometry {

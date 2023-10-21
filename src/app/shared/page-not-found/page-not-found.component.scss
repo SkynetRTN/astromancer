@@ -1,0 +1,23 @@
+.page-not-found-container {
+  padding-top: 20px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+h1 {
+  align-self: center;
+}
+
+h2 {
+  align-self: center;
+}
+
+img {
+  align-self: center;
+  cursor: pointer;
+}
+
+img:hover {
+  transform: scaleX(-1) scale(1.4);
+}

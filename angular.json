@@ -6,7 +6,7 @@
 	"version": 1,
 	"newProjectRoot": "projects",
 	"projects": {
-		"skynet-plotting-neo": {
+		"astromancer": {
 			"projectType": "application",
 			"schematics": {
 				"@schematics/angular:application": {
@@ -23,7 +23,7 @@
 				"build": {
 					"builder": "@angular-devkit/build-angular:browser",
 					"options": {
-						"outputPath": "dist",
+						"outputPath": "/skynet/htdocs/astromancer",
 						"index": "src/index.html",
 						"main": "src/main.ts",
 						"polyfills": "src/polyfills.ts",
@@ -32,8 +32,6 @@
 							"src/favicon.ico",
 							"src/assets"
 						],
-            "baseHref": "/astr101l/graph-neo/",
-            "deployUrl": "/astr101l/graph-neo/",
 						"styles": [
               "src/styles.scss",
               "./node_modules/@angular/material/prebuilt-themes/purple-green.css"
@@ -83,13 +81,13 @@
 					"builder": "@angular-devkit/build-angular:dev-server",
 					"configurations": {
 						"production": {
-							"browserTarget": "skynet-plotting-neo:build:production"
+							"browserTarget": "astromancer:build:production"
 						},
 						"development": {
-							"browserTarget": "skynet-plotting-neo:build:development"
+							"browserTarget": "astromancer:build:development"
 						},
 						"cn": {
-							"browserTarget": "skynet-plotting-neo:build:development,cn"
+							"browserTarget": "astromancer:build:development,cn"
 						}
 					},
 					"defaultConfiguration": "development"
@@ -97,7 +95,7 @@
 				"extract-i18n": {
 					"builder": "@angular-devkit/build-angular:extract-i18n",
 					"options": {
-						"browserTarget": "skynet-plotting-neo:build"
+						"browserTarget": "astromancer:build"
 					}
 				},
 				"test": {

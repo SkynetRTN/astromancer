@@ -6,6 +6,7 @@ import {MyTable} from "../../shared/tables/table-interface";
 import Handsontable from "handsontable";
 import {HotTableRegisterer} from "@handsontable/angular";
 import {Subject, takeUntil} from 'rxjs';
+import {beforePaste} from "../../shared/tables/util";
 
 @Component({
   selector: 'app-curve-table',
@@ -61,6 +62,9 @@ export class CurveTableComponent implements AfterViewInit, OnDestroy {
     this.dataService.addRow(index, amount);
   }
 
+  public beforePaste = (data: any[], coords: any) => {
+    beforePaste(data, coords, this.table);
+  }
 
 }
 

@@ -20,6 +20,9 @@ export class VariablePeriodFoldingHighchartComponent implements AfterViewInit, O
       animation: false,
       styledMode: true,
     },
+    yAxis: {
+      reversed: true,
+    },
     legend: {
       align: 'center',
     },
@@ -67,7 +70,7 @@ export class VariablePeriodFoldingHighchartComponent implements AfterViewInit, O
 
   chartInitialized($event: Highcharts.Chart) {
     this.chartObject = $event;
-    this.service.setHighChartPeriodogram(this.chartObject);
+    this.service.setHighChartPeriodFolding(this.chartObject);
   }
 
 
@@ -156,7 +159,8 @@ export class VariablePeriodFoldingHighchartComponent implements AfterViewInit, O
 
   private setChartYAxis(): void {
     this.chartOptions.yAxis = {
-      title: {text: this.service.getPeriodFoldingYAxisLabel()}
+      title: {text: this.service.getPeriodFoldingYAxisLabel()},
+      reversed: true,
     };
   }
 

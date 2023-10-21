@@ -2,7 +2,8 @@ import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import {Subject, takeUntil} from "rxjs";
 import {InputSliderValue} from "../../shared/interface/input-slider/input-slider.component";
 import {ScatterService} from "../scatter.service";
-import {UpdateSource} from "../../moon/moon.service.util";
+
+import {UpdateSource} from "../../shared/data/utils";
 
 @Component({
   selector: 'app-scatter-form',

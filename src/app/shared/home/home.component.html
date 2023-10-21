@@ -1,1 +1,151 @@
-<p>home works!</p>
+<div class="home-container">
+
+  <h1>
+    Astromancer: <i>Next Generation Data Analysis Tool for Astronomy Education</i>
+  </h1>
+  <h2><b>Pick a Tool to Start!</b></h2>
+
+  <div class="row tool-container">
+    <div class="col-6">
+      <div [routerLink]="'/curve'" class="tile-container">
+        <mat-card class="tile">
+          <mat-card-header>
+            <mat-card-title>Curve</mat-card-title>
+            <mat-card-subtitle>OPIS!</mat-card-subtitle>
+          </mat-card-header>
+          <div class="chart-preview">
+            <app-curve-highchart></app-curve-highchart>
+          </div>
+          <mat-card-content>
+            <p>
+              Description for the Curve plotting tool goes here.
+            </p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+    <div class="col-6">
+      <div [routerLink]="'/moon'" class="tile-container">
+        <mat-card class="tile">
+          <mat-card-header>
+            <mat-card-title>Moon</mat-card-title>
+            <mat-card-subtitle>OPIS!</mat-card-subtitle>
+          </mat-card-header>
+          <div class="chart-preview">
+            <app-moon-highchart></app-moon-highchart>
+          </div>
+          <mat-card-content>
+            <p>
+              Description for the Moon plotting tool goes here.
+            </p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+
+  <div class="row tool-container">
+    <div class="col-6">
+      <div [routerLink]="'/venus'" class="tile-container">
+        <mat-card class="tile">
+          <mat-card-header>
+            <mat-card-title>Venus</mat-card-title>
+            <mat-card-subtitle>OPIS!</mat-card-subtitle>
+          </mat-card-header>
+          <div class="chart-preview">
+            <app-venus-highchart></app-venus-highchart>
+          </div>
+          <mat-card-content>
+            <p>
+              Description for the Venus plotting tool goes here.
+            </p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+    <div class="col-6">
+      <div [routerLink]="'/variable'" class="tile-container">
+        <mat-card class="tile">
+          <mat-card-header>
+            <mat-card-title>Variable</mat-card-title>
+            <mat-card-subtitle>OPIS!</mat-card-subtitle>
+          </mat-card-header>
+          <div class="chart-preview">
+            <app-variable-light-curve-highchart></app-variable-light-curve-highchart>
+          </div>
+          <mat-card-content>
+            <p>
+              Description for the Variable plotting tool goes here.
+            </p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+
+  <div class="row tool-container">
+    <div class="col-6">
+      <div [routerLink]="'/scatter'" class="tile-container">
+        <mat-card class="tile">
+          <mat-card-header>
+            <mat-card-title>Scatter</mat-card-title>
+            <mat-card-subtitle>OPIS!</mat-card-subtitle>
+          </mat-card-header>
+          <div class="chart-preview">
+            <app-scatter-highchart></app-scatter-highchart>
+          </div>
+          <mat-card-content>
+            <p>
+              Description for the Scatter plotting tool goes here.
+            </p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+    <div class="col-6">
+      <div [routerLink]="'/spectrum'" class="tile-container">
+        <mat-card class="tile">
+          <mat-card-header>
+            <mat-card-title>Spectrum</mat-card-title>
+            <mat-card-subtitle>OPIS!</mat-card-subtitle>
+          </mat-card-header>
+          <div class="chart-preview">
+            <app-spectrum-highchart></app-spectrum-highchart>
+          </div>
+          <mat-card-content>
+            <p>
+              Description for the Spectrum plotting tool goes here.
+            </p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+
+  <div class="row tool-container">
+    <div class="col-6">
+      <div [routerLink]="'/dual'" class="tile-container">
+        <mat-card class="tile">
+          <mat-card-header>
+            <mat-card-title>Dual</mat-card-title>
+            <mat-card-subtitle>OPIS!</mat-card-subtitle>
+          </mat-card-header>
+          <div class="chart-preview">
+            <app-dual-highchart></app-dual-highchart>
+          </div>
+          <mat-card-content>
+            <p>
+              Description for the Dual plotting tool goes here.
+            </p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="tile-container center-vertical">
+        <h1>Tools for MWU! is on the way!</h1>
+      </div>
+    </div>
+  </div>
+
+</div>

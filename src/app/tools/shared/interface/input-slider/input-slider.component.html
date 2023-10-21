@@ -13,7 +13,7 @@
       [max]="SliderUtil.getSliderMax(input.max, isLog)"
       [min]="SliderUtil.getSliderMin(input.min, isLog)"
       [step]="SliderUtil.getSliderStep(input.min, input.max, input.step, isLog)">
-      <input (input)="sliderSubject.next(SliderUtil.sliderToInput($event, isLog))"
+      <input (input)="sliderSubject.next(SliderUtil.sliderToInput($event, isLog, inputPrecision))"
              [value]="SliderUtil.inputToSlider(input.value, isLog)"
              matSliderThumb>
     </mat-slider>

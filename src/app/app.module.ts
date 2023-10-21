@@ -2,19 +2,31 @@ import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ToolsNavbarModule} from './shared/tools-navbar/tools-navbar.component';
 import {registerAllModules} from 'handsontable/registry';
 import {HomeComponent} from "./shared/home/home.component";
 import {AboutComponent} from "./shared/about/about.component";
 import {PageNotFoundComponent} from "./shared/page-not-found/page-not-found.component";
 import {HonorCodePopupModule} from "./tools/shared/honor-code-popup/honor-code-popup.module";
-import {MatLegacyInputModule as MatInputModule} from "@angular/material/legacy-input";
-import {MatLegacySelectModule as MatSelectModule} from "@angular/material/legacy-select";
 import {ReactiveFormsModule} from "@angular/forms";
 import {AppearanceStorageService} from "./shared/settings/appearance/service/appearance-storage.service";
-import {MatLegacyButtonModule as MatButtonModule} from "@angular/material/legacy-button";
 import {AppearanceService} from "./shared/settings/appearance/service/appearance.service";
+import {MatInputModule} from "@angular/material/input";
+import {MatSelectModule} from "@angular/material/select";
+import {MatButtonModule} from "@angular/material/button";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {MarkdownModule} from "ngx-markdown";
+import {HttpClientModule} from "@angular/common/http";
+import {MatGridListModule} from "@angular/material/grid-list";
+import {MatCardModule} from "@angular/material/card";
+import {CurveModule} from "./tools/curve/curve.module";
+import {MoonModule} from "./tools/moon/moon.module";
+import {VenusModule} from "./tools/venus/venus.module";
+import {VariableModule} from "./tools/variable/variable.module";
+import {ScatterModule} from "./tools/scatter/scatter.module";
+import {SpectrumModule} from "./tools/spectrum/spectrum.module";
+import {DualModule} from "./tools/dual/dual.module";
+import {NgOptimizedImage} from "@angular/common";
 
 
 registerAllModules();
@@ -29,7 +41,19 @@ registerAllModules();
     MatInputModule,
     MatSelectModule,
     ReactiveFormsModule,
-    MatButtonModule
+    MatButtonModule,
+    HttpClientModule,
+    MarkdownModule.forRoot({loader: HttpClientModule}),
+    MatGridListModule,
+    MatCardModule,
+    CurveModule,
+    MoonModule,
+    VenusModule,
+    VariableModule,
+    ScatterModule,
+    SpectrumModule,
+    DualModule,
+    NgOptimizedImage,
   ],
   declarations: [
     AppComponent,

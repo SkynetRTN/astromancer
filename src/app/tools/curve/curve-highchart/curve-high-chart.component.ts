@@ -1,7 +1,6 @@
 import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import * as Highcharts from 'highcharts';
 import {CurveService} from "../curve.service";
-import {ChartInfo} from "../../shared/charts/chart.interface";
 import {Subject, takeUntil} from 'rxjs';
 
 @Component({
@@ -52,7 +51,7 @@ export class CurveHighChartComponent implements AfterViewInit, OnDestroy {
     this.service.setHighChart(this.chartObject);
     this.service.chartInfo$.pipe(
       takeUntil(this.destroy$)
-    ).subscribe((info: ChartInfo) => {
+    ).subscribe(() => {
       this.setChartYAxis();
       this.setChartXAxis();
       this.setChartTitle();

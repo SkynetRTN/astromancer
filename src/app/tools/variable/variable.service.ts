@@ -19,8 +19,7 @@ import {BehaviorSubject} from "rxjs";
 import {MyData} from "../shared/data/data.interface";
 import {ChartInfo} from "../shared/charts/chart.interface";
 import * as Highcharts from "highcharts";
-import {floatMod, lombScargleWithError} from "../shared/data/utils";
-import {UpdateSource} from "../moon/moon.service.util";
+import {floatMod, lombScargleWithError, UpdateSource} from "../shared/data/utils";
 
 @Injectable()
 export class VariableService implements MyData, VariableInterface, ChartInfo, VariablePeriodogramInterface, VariablePeriodFoldingInterface {
@@ -77,7 +76,7 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
 
   getPeriodFoldingPeriod(): number {
     if (this.variablePeriodFolding.getPeriodFoldingPeriod() < 0)
-      return this.getPeriodogramStartPeriod();
+      return this.getJdRange();
     else
       return this.variablePeriodFolding.getPeriodFoldingPeriod();
   }
@@ -175,7 +174,7 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
     const phase = this.getPeriodFoldingPhase();
     const pfData: number[][] = [];
     const pfError: number[][] = [];
-    if (period !== 0) {
+    if (period !== 0 && period !== null) {
       for (let i = 0; i < data.length; i++) {
         let temp_x = phase * period + floatMod((data[i][0]! - minJD), period);
         if (temp_x > period) {
@@ -280,6 +279,12 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
     this.periodogramFormSubject.next(this.variablePeriodogram);
     this.periodogramDataSubject.next(this.variableData);
     this.periodFoldingFormSubject.next(UpdateSource.INIT);
+  }
+
+  getJdRange(): number {
+    const jdArray = this.getData().map((row: VariableDataDict) => row.jd)
+      .filter((jd: number | null) => jd !== null) as number[];
+    return parseFloat((Math.max(...jdArray) - Math.min(...jdArray)).toFixed(4));
   }
 
 
@@ -400,11 +405,11 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
     } else if (this.getVariableStar() === VariableStarOptions.SOURCE1) {
       return this.getData().filter((row: VariableDataDict) =>
         row.jd !== null && row.source1 !== null && row.source2 !== null)
-        .map((row: VariableDataDict) => [row.jd, row.source1! - row.source2! - this.getReferenceStarMagnitude()])
+        .map((row: VariableDataDict) => [row.jd, row.source1! - row.source2! + this.getReferenceStarMagnitude()])
     } else {
       return this.getData().filter((row: VariableDataDict) =>
         row.jd !== null && row.source1 !== null && row.source2 !== null)
-        .map((row: VariableDataDict) => [row.jd, row.source2! - row.source1! - this.getReferenceStarMagnitude()])
+        .map((row: VariableDataDict) => [row.jd, row.source2! - row.source1! + this.getReferenceStarMagnitude()])
     }
   }
 
@@ -446,14 +451,14 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
       return this.getData().filter(
         (row: VariableDataDict) => row.jd !== null && row.source1 !== null && row.source2 !== null && row.error1 !== null)
         .map((row: VariableDataDict) =>
-          [row.jd, row.source1! - row.source2! - this.getReferenceStarMagnitude() - row.error1!,
-            row.source1! - row.source2! - this.getReferenceStarMagnitude() + row.error1!])
+          [row.jd, row.source1! - row.source2! + this.getReferenceStarMagnitude() - row.error1!,
+            row.source1! - row.source2! + this.getReferenceStarMagnitude() + row.error1!])
     } else {
       return this.getData().filter(
         (row: VariableDataDict) => row.jd !== null && row.source1 !== null && row.source2 !== null && row.error2 !== null)
         .map((row: VariableDataDict) =>
-          [row.jd, row.source2! - row.source1! - this.getReferenceStarMagnitude() - row.error2!,
-            row.source2! - row.source1! - this.getReferenceStarMagnitude() + row.error2!])
+          [row.jd, row.source2! - row.source1! + this.getReferenceStarMagnitude() - row.error2!,
+            row.source2! - row.source1! + this.getReferenceStarMagnitude() + row.error2!])
     }
   }
 
@@ -469,19 +474,24 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
         errorArray[3 * i + 2]! - magArray[i]!
       )
     }
-    return lombScargleWithError(jdArray, magArray, errorArray, start, end, 5000);
+    // Maximum points for html2canvas to successfully render is 2000
+    return lombScargleWithError(jdArray, magArray, errorArray, start, end, 2000);
   }
 
   removeRow(index: number, amount: number): void {
     this.variableData.removeRow(index, amount);
     this.variableStorage.saveData(this.variableData.getData());
     this.dataSubject.next(this.variableData);
+    this.periodogramDataSubject.next(this.variableData);
+    this.periodFoldingDataSubject.next(this.variableData);
   }
 
   setData(data: any[]): void {
     this.variableData.setData(data);
     this.variableStorage.saveData(this.variableData.getData());
     this.dataSubject.next(this.variableData);
+    this.periodogramDataSubject.next(this.variableData);
+    this.periodFoldingDataSubject.next(this.variableData);
   }
 
   resetData(): void {

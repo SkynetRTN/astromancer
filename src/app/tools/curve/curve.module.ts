@@ -4,25 +4,25 @@ import {SimpleDataButtonModule} from "../shared/simple-data-button/simple-data-b
 import {SimpleGraphButtonModule} from "../shared/simple-graph-button/simple-graph-button.component";
 import {LineFormComponent} from "./line-form/line-form.component";
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
-import {MatLegacyInputModule as MatInputModule} from "@angular/material/legacy-input";
-import {MatLegacySelectModule as MatSelectModule} from "@angular/material/legacy-select";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {MatLegacyFormFieldModule as MatFormFieldModule} from "@angular/material/legacy-form-field";
 import {CurveTableComponent} from './curve-table/curve-table.component';
 import {HotTableModule} from "@handsontable/angular";
 import {CurveService} from "./curve.service";
 import {CurveChartComponent} from "./curve-chart/curve-chart.component";
 import {NgChartsModule} from "ng2-charts";
 import {CurveChartFormComponent} from './curve-chart-form/curve-chart-form.component';
-import {MatLegacyButtonModule as MatButtonModule} from "@angular/material/legacy-button";
 import {MatIconModule} from "@angular/material/icon";
-import {MatLegacySlideToggleModule as MatSlideToggleModule} from "@angular/material/legacy-slide-toggle";
 import {CurveHighChartComponent} from './curve-highchart/curve-high-chart.component';
 import {HighchartsChartModule} from "highcharts-angular";
 import {HonorCodePopupService} from "../shared/honor-code-popup/honor-code-popup.service";
 import {RouterModule, Routes} from "@angular/router";
 import {CommonModule} from "@angular/common";
-import {MatDialogModule, MatDialogRef} from "@angular/material/dialog";
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatInputModule} from "@angular/material/input";
+import {MatSelectModule} from "@angular/material/select";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatButtonModule} from "@angular/material/button";
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 
 const routes: Routes = [
   {path: '', component: CurveComponent, title: 'Curve'}
@@ -60,7 +60,7 @@ const routes: Routes = [
     CurveChartFormComponent,
     CurveHighChartComponent,
   ],
-  exports: [CurveComponent, RouterModule],
+  exports: [CurveComponent, RouterModule, CurveTableComponent, CurveHighChartComponent],
   providers: [CurveService, HonorCodePopupService],
 })
 export class CurveModule {

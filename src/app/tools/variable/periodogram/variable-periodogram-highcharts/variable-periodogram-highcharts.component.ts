@@ -25,6 +25,9 @@ export class VariablePeriodogramHighchartsComponent implements AfterViewInit, On
       enabled: true,
       shared: false,
     },
+    xAxis: {
+      type: 'logarithmic',
+    },
     exporting: {
       buttons: {
         contextButton: {
@@ -62,11 +65,7 @@ export class VariablePeriodogramHighchartsComponent implements AfterViewInit, On
 
   chartInitialized($event: Highcharts.Chart) {
     this.chartObject = $event;
-    this.service.setHighChartPeriodFolding(this.chartObject);
-  }
-
-  initChartSeries() {
-    this.setData();
+    this.service.setHighChartPeriodogram(this.chartObject);
   }
 
   setData() {

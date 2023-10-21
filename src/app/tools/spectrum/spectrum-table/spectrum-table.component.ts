@@ -6,6 +6,7 @@ import {SpectrumService} from "../../spectrum/spectrum.service";
 import {MyData} from "../../shared/data/data.interface";
 import {HotTableRegisterer} from "@handsontable/angular";
 import Handsontable from "handsontable";
+import {beforePaste} from "../../shared/tables/util";
 
 @Component({
   selector: 'app-spectrum-table',
@@ -49,6 +50,10 @@ export class SpectrumTableComponent implements AfterViewInit, OnDestroy {
 
   public onInsert = (index: number, amount: number) => {
     this.service.addRow(index, amount);
+  }
+
+  public beforePaste = (data: any[], coords: any) => {
+    beforePaste(data, coords, this.table);
   }
 
   private limitPrecision(data: SpectrumDataDict[]): SpectrumDataDict[] {

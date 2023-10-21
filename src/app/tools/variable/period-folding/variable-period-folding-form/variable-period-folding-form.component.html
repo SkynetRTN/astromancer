@@ -37,11 +37,11 @@
   </div>
   <div class="row">
     <div class="col-4">
-      <my-input-slider (value)="onChange($event)" [defaultValue]="0.1"
-                       [isLog]="true" [label]="'Period (days)'"
-                       [maxValue]="100" [minValue]="0.1"
-                       [name]="'period'"
-                       [stepValue]="0.001" [value$]="periodSubject">
+      <my-input-slider (value)="onChange($event)" [defaultValue]="periodMax"
+                       [label]="'Period (days)'"
+                       [maxValue]="periodMax" [minValue]="periodMin"
+                       [name]="'period'" [isLog]="true" [inputPrecision]="4"
+                       [stepValue]="periodStep" [value$]="periodSubject">
       </my-input-slider>
     </div>
     <div class="col-4">

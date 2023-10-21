@@ -3,7 +3,8 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Subject, takeUntil} from "rxjs";
 import {MoonService} from "../moon.service";
 import {InputSliderValue} from "../../shared/interface/input-slider/input-slider.component";
-import {UpdateSource} from "../moon.service.util";
+
+import {UpdateSource} from "../../shared/data/utils";
 
 @Component({
   selector: 'app-moon-form',

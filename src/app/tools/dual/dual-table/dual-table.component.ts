@@ -5,6 +5,7 @@ import {DualService} from "../dual.service";
 import {MyTable} from "../../shared/tables/table-interface";
 import {HotTableRegisterer} from "@handsontable/angular";
 import Handsontable from "handsontable";
+import {beforePaste} from "../../shared/tables/util";
 
 @Component({
   selector: 'app-dual-table',
@@ -58,6 +59,10 @@ export class DualTableComponent {
 
   public onInsert = (index: number, amount: number) => {
     this.service.addRow(index, amount);
+  }
+
+  public beforePaste = (data: any[], coords: any) => {
+    beforePaste(data, coords, this.table);
   }
 
   private limitPrecision(data: DualDataDict[], precision: number): DualDataDict[] {

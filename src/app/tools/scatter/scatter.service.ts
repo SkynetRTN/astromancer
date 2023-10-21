@@ -13,7 +13,8 @@ import {MyData} from "../shared/data/data.interface";
 import {BehaviorSubject} from "rxjs";
 import * as Highcharts from "highcharts";
 import {ChartInfo} from "../shared/charts/chart.interface";
-import {UpdateSource} from "../moon/moon.service.util";
+
+import {UpdateSource} from "../shared/data/utils";
 
 @Injectable()
 export class ScatterService implements MyData, ChartInfo, ScatterModel {

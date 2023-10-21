@@ -324,8 +324,3 @@ export interface MoonModel {
   getMoonModelData(): number[][];
 }
 
-export enum UpdateSource {
-  INIT = "init",
-  RESET = "reset",
-  INTERFACE = "interface",
-}

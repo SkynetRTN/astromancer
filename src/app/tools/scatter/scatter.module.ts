@@ -9,14 +9,14 @@ import {HotTableModule} from "@handsontable/angular";
 import {ScatterHighchartComponent} from './scatter-highchart/scatter-highchart.component';
 import {HighchartsChartModule} from "highcharts-angular";
 import {ScatterChartFormComponent} from './scatter-chart-form/scatter-chart-form.component';
-import {MatLegacyFormFieldModule} from "@angular/material/legacy-form-field";
-import {MatLegacyInputModule} from "@angular/material/legacy-input";
 import {ReactiveFormsModule} from "@angular/forms";
 import {ScatterFormComponent} from './scatter-form/scatter-form.component';
 import {InterfaceUtilModule} from "../shared/interface/util";
 import {RouterModule, Routes} from "@angular/router";
 import {MatDialogModule} from "@angular/material/dialog";
-import {MatLegacyButtonModule} from "@angular/material/legacy-button";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
+import {MatButtonModule} from "@angular/material/button";
 
 const routes: Routes = [
   {path: '', component: ScatterComponent, title: 'Scatter'}
@@ -37,14 +37,14 @@ const routes: Routes = [
     SimpleGraphButtonModule,
     HotTableModule,
     HighchartsChartModule,
-    MatLegacyFormFieldModule,
-    MatLegacyInputModule,
+    MatFormFieldModule,
+    MatInputModule,
     ReactiveFormsModule,
     InterfaceUtilModule,
     MatDialogModule,
-    MatLegacyButtonModule,
+    MatButtonModule,
   ],
-  exports: [ScatterComponent, RouterModule],
+  exports: [ScatterComponent, RouterModule, ScatterHighchartComponent],
   providers: [ScatterService],
 })
 export class ScatterModule {

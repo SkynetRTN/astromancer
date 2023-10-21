@@ -32,7 +32,7 @@ export class SummaryComponent {
     this.isSummaryHidden = true;
     this.isLoadHidden = false;
     this.service.setClusterName(this.clusterName);
-    this.dataService.matchWithGaia();
+    this.dataService.fetchFieldStarRemoval();
     this.dataService.data$.pipe(
       take(1)
     ).subscribe(
@@ -40,7 +40,7 @@ export class SummaryComponent {
         this.isLoadHidden = true;
         this.isCompleteHidden = false;
         this.gaiaStarCount = data.filter((star) => {
-          return star.distance !== null && star.distance !== undefined;
+          return star.fsr !== null && star.fsr.distance !== undefined;
         }).length;
         this.totalStarCount = data.length;
       }

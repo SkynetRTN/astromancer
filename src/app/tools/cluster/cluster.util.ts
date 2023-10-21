@@ -1,22 +1,27 @@
 import {rad} from "../shared/data/utils";
 
-export interface ClusterDataDict {
-  id: string;
-  ra: number | undefined;
-  dec: number | undefined;
-  photometries: photometry[];
-  distance?: number;
-  distance_error?: number;
-  pmra?: number;
-  pmdec?: number;
+export interface Source {
+  astrometry: Astrometry;
+  photometries: Photometry[];
+  fsr: FSR|null;
 }
 
-export interface photometry {
+export interface Photometry {
   filter: FILTER;
-  ra: number;
-  dec: number;
   mag: number;
   mag_error: number;
+}
+
+export interface Astrometry {
+  id: string;
+  ra: number;
+  dec: number;
+}
+
+export interface FSR {
+  pm_ra: number;
+  pm_dec: number;
+  distance: number;
 }
 
 export enum FILTER {

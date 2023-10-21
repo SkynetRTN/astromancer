@@ -22,7 +22,7 @@ export class DataSourceComponent {
               filters: this.dataSourceService.getFilters().sort((a, b) => {
                 return filterWavelength[a] - filterWavelength[b];
               }),
-              starCounts: this.dataSourceService.getDataDict().length,
+              starCounts: this.dataSourceService.getSources().length,
               clusterName: '',
             }
           });

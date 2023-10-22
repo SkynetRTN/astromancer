@@ -3,6 +3,8 @@ import {ClusterDataSourceService} from "../cluster-data-source.service";
 import {MatDialog} from "@angular/material/dialog";
 import {SummaryComponent} from "../summary/summary.component";
 import {filterWavelength} from "../../cluster.util";
+import {delay, interval, throttle} from "rxjs";
+import {ClusterDataService} from "../../cluster-data.service";
 
 @Component({
   selector: 'app-data-source',
@@ -10,9 +12,14 @@ import {filterWavelength} from "../../cluster.util";
   styleUrls: ['./data-source.component.scss', '../../../shared/interface/tools.scss']
 })
 export class DataSourceComponent {
-  constructor(private dataSourceService: ClusterDataSourceService,
-              private dialog: MatDialog,) {
-    this.dataSourceService.rawData$.subscribe(
+  constructor(
+    private dataService: ClusterDataService,
+    private dataSourceService: ClusterDataSourceService,
+    private dialog: MatDialog,) {
+    this.dataSourceService.rawData$.pipe(
+      delay(100),
+      throttle(() => interval(1000)),
+    ).subscribe(
       () => {
         this.dialog.open(SummaryComponent,
           {

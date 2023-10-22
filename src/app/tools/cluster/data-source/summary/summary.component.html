@@ -5,7 +5,7 @@
       <mat-card-title>Source Data Overview</mat-card-title>
     </mat-card-header>
 
-    <mat-card-content [hidden]="isSummaryHidden">
+    <mat-card-content [hidden]="hasFSR || loadGaia">
       <div class="row">
         <div class="col-6">
           <mat-form-field>
@@ -26,28 +26,39 @@
       </div>
     </mat-card-content>
 
-    <mat-card-content [hidden]="isLoadHidden">
-      <div class="in-progress-container">
-        <h4><i>Gaia Matching In Progress</i></h4>
+    <div [hidden]="hasFSR || !loadGaia">
+      <mat-card-content>
+        <div class="in-progress-container">
+          <h4><i>{{gaia_text}}</i></h4>
+        </div>
+      </mat-card-content>
+      <mat-card-footer>
+        <mat-progress-bar [mode]=progress_mode [value]=progress_value></mat-progress-bar>
+      </mat-card-footer>
+    </div>
+
+    <mat-card-content [hidden]="!hasFSR">
+      <div class="row">
+        <div class="col-6">
+          <p>
+            <strong>Cluster</strong>: {{clusterName}}
+            <br>
+            <strong>Filters</strong>: {{data.filters.join(", ")}}
+          </p>
+        </div>
+        <div class="col-6">
+          <p>
+            <strong>Number of Stars</strong>: {{data.starCounts}}
+            <br>
+            <strong>Field Star Removal Found</strong>: {{fsr_count}}
+          </p>
+        </div>
       </div>
-    </mat-card-content>
-    <mat-card-footer [hidden]="isLoadHidden">
-      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-    </mat-card-footer>
-
-    <mat-card-content [hidden]="isCompleteHidden">
-      <h2>Gaia Solutions Found: {{gaiaStarCount}}/{{totalStarCount}}.</h2>
-    </mat-card-content>
-
-    <mat-card-content [hidden]="isFailedHidden">
-      <h3>Gaia Matching Failed!</h3>
-      <p><strong>Errors:</strong></p>
-      <p>Server being sus</p>
     </mat-card-content>
 
     <mat-divider></mat-divider>
     <mat-card-actions>
-      <button mat-button mat-dialog-close>Cancel</button>
+      <button (click)="cancel()" mat-button mat-dialog-close>Cancel</button>
       <button (click)="next()" [disabled]="clusterName === ''" mat-button>Next</button>
     </mat-card-actions>
   </mat-card>

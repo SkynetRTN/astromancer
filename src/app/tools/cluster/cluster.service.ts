@@ -7,6 +7,10 @@ export class ClusterService {
   constructor() {
   }
 
+  init() {
+    this.clusterName = '';
+  }
+
   setClusterName(name: string) {
     this.clusterName = name;
   }

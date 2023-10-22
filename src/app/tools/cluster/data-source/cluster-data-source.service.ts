@@ -21,6 +21,12 @@ export class ClusterDataSourceService implements ClusterDataSourceStepper {
   constructor() {
   }
 
+  init() {
+    this.rawData = [];
+    this.sources = [];
+    this.filters = [];
+  }
+
   getFormControl(): FormControl {
     return this.dataSourceStepperImpl.getFormControl();
   }
@@ -102,7 +108,6 @@ export class ClusterDataSourceService implements ClusterDataSourceStepper {
     processedData.push(currentStar);
     this.sources = processedData;
     this.filters = filters;
-    this.rawDataSubject.next(this.rawData);
   }
 
   private setRawData(rawData: ClusterRawData[]): void {

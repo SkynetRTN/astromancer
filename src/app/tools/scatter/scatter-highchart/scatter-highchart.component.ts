@@ -18,6 +18,18 @@ export class ScatterHighchartComponent implements AfterViewInit, OnDestroy {
       animation: false,
       styledMode: true,
     },
+    xAxis: {
+      minRange: 0.1,
+      alignTicks: false,
+      maxPadding: 0,
+    },
+    yAxis: {
+      minRange: 0.1,
+      alignTicks: false,
+      maxPadding: 0,
+      endOnTick: false,
+      startOnTick: false,
+    },
     legend: {
       align: 'center',
     },
@@ -161,13 +173,17 @@ export class ScatterHighchartComponent implements AfterViewInit, OnDestroy {
 
   private setChartXAxis(): void {
     this.chartOptions.xAxis = {
-      title: {text: this.service.getXAxisLabel()}
+      title: {text: this.service.getXAxisLabel()},
+      minRange: 0.1,
     };
   }
 
   private setChartYAxis(): void {
     this.chartOptions.yAxis = {
-      title: {text: this.service.getYAxisLabel()}
+      title: {text: this.service.getYAxisLabel()},
+      minRange: 0.1,
+      endOnTick: false,
+      startOnTick: false,
     };
   }
 
@@ -189,20 +205,20 @@ export class ScatterHighchartComponent implements AfterViewInit, OnDestroy {
     const plotRatio = this.chartObject.plotWidth / this.chartObject.plotHeight;
     const xDiff = (maxX - minX);
     const yDiff = (maxY - minY);
+    const dataRatio = xDiff / yDiff;
 
-    if (xDiff > yDiff) {
-      const addition = (xDiff / plotRatio - yDiff) / 2;
-      minY -= addition;
-      maxY += addition;
-    } else {
+    if (dataRatio < plotRatio) {
       const addition = (yDiff * plotRatio - xDiff) / 2;
       minX -= addition;
       maxX += addition;
+    } else {
+      const addition = (xDiff / plotRatio - yDiff) / 2;
+      minY -= addition;
+      maxY += addition;
     }
 
-    this.chartObject.xAxis[0].setExtremes(Math.floor(minX), Math.ceil(maxX));
-    this.chartObject.yAxis[0].setExtremes(Math.floor(minY), Math.ceil(maxY));
-
+    this.chartObject.xAxis[0].setExtremes(minX, maxX);
+    this.chartObject.yAxis[0].setExtremes(minY, maxY);
   }
 
 }

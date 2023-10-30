@@ -1,5 +1,6 @@
 import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import * as Highcharts from 'highcharts';
+import sonification from 'highcharts/modules/sonification'
 import {CurveService} from "../curve.service";
 import {Subject, takeUntil} from 'rxjs';
 
@@ -29,6 +30,21 @@ export class CurveHighChartComponent implements AfterViewInit, OnDestroy {
       buttons: {
         contextButton: {
           enabled: false,
+        },
+        sonifyButton: {
+          text: 'Sonify',
+          onclick: () => {
+            this.chartObject.sonify();
+          },
+        }
+      }
+    },
+    sonification: {
+      enabled: true,
+      events: {
+        onSeriesStart: (e: any) => {
+          this.chartObject.sonification?.speak(
+            `Series ${e['series']['name']}`)
         }
       }
     }
@@ -39,6 +55,7 @@ export class CurveHighChartComponent implements AfterViewInit, OnDestroy {
     this.setChartTitle();
     this.setChartXAxis();
     this.setChartYAxis();
+    sonification(Highcharts);
   }
 
   chartInitialized($event: Highcharts.Chart) {
@@ -138,5 +155,4 @@ export class CurveHighChartComponent implements AfterViewInit, OnDestroy {
       return a[0] - b[0];
     });
   }
-
 }

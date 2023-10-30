@@ -1,0 +1,33 @@
+<div class="look-up-container">
+  <div class="row center-content">
+    <h1>Look Up a Cluster</h1>
+  </div>
+  <div class="row center-content">
+    <mat-form-field class="search-bar">
+      <input matInput type="text" placeholder="NGC, Messier, or MWSC Catalog Number" [(ngModel)]="value">
+      <button *ngIf="value" matSuffix mat-icon-button aria-label="clear" (click)="value=''">
+        <mat-icon>clear</mat-icon>
+      </button>
+      <button color="warn" *ngIf="value" matSuffix mat-icon-button aria-label="look up">
+        <mat-icon>search</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+  <div class="row center-content">
+    <h3><i>or</i></h3>
+  </div>
+  <div class="row center-content">
+    <button class="coordinates" mat-flat-button color="primary">Type in Coordinates</button>
+  </div>
+  <div class="row">
+    <div class="recent-searches">
+      <h2>Recent Searches:</h2>
+      <div class="row">
+        <a href="https://astromancer.skynet.unc.edu">NGC2437</a>
+      </div>
+      <div class="row">
+        <a href="https://astromancer.skynet.unc.edu">NGC2437</a>
+      </div>
+    </div>
+  </div>
+</div>

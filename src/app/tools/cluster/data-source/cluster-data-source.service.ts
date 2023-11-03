@@ -1,16 +1,24 @@
 import {Injectable} from '@angular/core';
 import {FormControl} from "@angular/forms";
-import {ClusterDataSourceStepper, ClusterDataSourceStepperImpl} from "./cluster-data-source.service.uti";
 import {MyFileParser} from "../../shared/data/FileParser/FileParser";
 import {FileType} from "../../shared/data/FileParser/FileParser.util";
 import {Subject} from "rxjs";
-import {ClusterRawData} from "./cluster-data-source.service.util";
+import {
+  ClusterDataSourceStepper,
+  ClusterDataSourceStepperImpl,
+  ClusterLookUpData,
+  ClusterRawData
+} from "./cluster-data-source.service.util";
 import {FILTER, Source} from "../cluster.util";
+import {HttpClient} from "@angular/common/http";
+import {environment} from "../../../../environments/environment";
 
 @Injectable()
 export class ClusterDataSourceService implements ClusterDataSourceStepper {
   private rawDataSubject: Subject<ClusterRawData[]> = new Subject<ClusterRawData[]>();
   public rawData$ = this.rawDataSubject.asObservable();
+  private lookUpDataSubject: Subject<ClusterLookUpData> = new Subject<ClusterLookUpData>();
+  public lookUpData$ = this.lookUpDataSubject.asObservable();
   private readonly dataSourceStepperImpl: ClusterDataSourceStepper = new ClusterDataSourceStepperImpl();
   private readonly fileParser: MyFileParser = new MyFileParser(FileType.CSV,
     ['id', 'filter', 'calibrated_mag', 'mag_error', 'ra_hours', 'dec_degs'])
@@ -18,7 +26,7 @@ export class ClusterDataSourceService implements ClusterDataSourceStepper {
   private sources: Source[] = [];
   private filters: FILTER[] = [];
 
-  constructor() {
+  constructor(private http: HttpClient) {
   }
 
   init() {
@@ -53,6 +61,19 @@ export class ClusterDataSourceService implements ClusterDataSourceStepper {
 
   getFilters(): FILTER[] {
     return this.filters;
+  }
+
+  public lookUpCluster(query: string): void {
+    this.http.get(`${environment.apiUrl}/cluster/lookup`, {params: {'name': query}}).subscribe(
+      (response: any) => {
+        this.lookUpDataSubject.next({
+          name: query,
+          ra: parseFloat(response['ra']),
+          dec: parseFloat(response['dec']),
+          radius: parseFloat(response['radius'])
+        });
+      }
+    )
   }
 
   private processData(): void {

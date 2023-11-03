@@ -15,13 +15,14 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {MatCardModule} from "@angular/material/card";
 import {MatDividerModule} from "@angular/material/divider";
 import {MatInputModule} from "@angular/material/input";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ClusterDataService} from "./cluster-data.service";
 import {ClusterService} from "./cluster.service";
 import {HttpClientModule} from "@angular/common/http";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {LookUpComponent} from './data-source/look-up/look-up.component';
+import {MatListModule} from "@angular/material/list";
 
 const routes: Routes = [
   {path: '', component: ClusterComponent, title: 'Cluster'}
@@ -43,6 +44,8 @@ const routes: Routes = [
     HttpClientModule,
     MatProgressSpinnerModule,
     MatProgressBarModule,
+    ReactiveFormsModule,
+    MatListModule,
   ],
   exports: [ClusterComponent, RouterModule],
   providers: [ClusterDataSourceService, ClusterService, ClusterDataService]

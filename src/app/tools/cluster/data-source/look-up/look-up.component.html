@@ -1,33 +1,42 @@
-<div class="look-up-container">
+<div class="look-up-container" xmlns="http://www.w3.org/1999/html">
   <div class="row center-content">
     <h1>Look Up a Cluster</h1>
   </div>
   <div class="row center-content">
-    <mat-form-field class="search-bar">
-      <input matInput type="text" placeholder="NGC, Messier, or MWSC Catalog Number" [(ngModel)]="value">
-      <button *ngIf="value" matSuffix mat-icon-button aria-label="clear" (click)="value=''">
-        <mat-icon>clear</mat-icon>
-      </button>
-      <button color="warn" *ngIf="value" matSuffix mat-icon-button aria-label="look up">
-        <mat-icon>search</mat-icon>
-      </button>
-    </mat-form-field>
+    <form (submit)="submit()" [formGroup]="lookUpFrom">
+      <mat-form-field class="search-bar">
+        <input formControlName="name" matInput placeholder="NGC, Messier, or MWSC Catalog Number" type="text">
+        <button (click)="lookUpFrom.controls['name'].setValue('')" *ngIf="lookUpFrom.controls['name'].value" aria-label="clear" mat-icon-button
+                matSuffix type="button">
+          <mat-icon>clear</mat-icon>
+        </button>
+        <button *ngIf="lookUpFrom.controls['name'].value" aria-label="look up" color="warn" mat-icon-button matSuffix>
+          <mat-icon>search</mat-icon>
+        </button>
+      </mat-form-field>
+    </form>
   </div>
   <div class="row center-content">
     <h3><i>or</i></h3>
   </div>
   <div class="row center-content">
-    <button class="coordinates" mat-flat-button color="primary">Type in Coordinates</button>
+    <button class="coordinates" color="primary" mat-flat-button>Type in Coordinates</button>
   </div>
   <div class="row">
     <div class="recent-searches">
       <h2>Recent Searches:</h2>
-      <div class="row">
-        <a href="https://astromancer.skynet.unc.edu">NGC2437</a>
-      </div>
-      <div class="row">
-        <a href="https://astromancer.skynet.unc.edu">NGC2437</a>
-      </div>
+      <mat-list *ngFor="let lookup of recentLookUpsStack.list(); last as last">
+        <mat-list-item>
+          <div class="list-name">{{lookup.name}}</div>
+          &emsp; <i>RA:</i> {{lookup.ra.toFixed(2)}}
+          &emsp; <i>Dec:</i> {{lookup.dec.toFixed(2)}}
+          &emsp; <i>Radius:</i> {{lookup.radius.toFixed(2)}}
+          <button aria-label="search" class="recent-search" mat-icon-button>
+            <mat-icon>search</mat-icon>
+          </button>
+        </mat-list-item>
+        <mat-divider *ngIf="!last"></mat-divider>
+      </mat-list>
     </div>
   </div>
 </div>

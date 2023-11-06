@@ -85,6 +85,13 @@ export interface gaiaMatchQueryDataDict {
   dec: number | undefined;
 }
 
+export enum Catalogs {
+  GAIA = "GAIA",
+  APASS = "APASS",
+  TWOMASS = "2MASS",
+  WISE = "WISE",
+}
+
 export function haversine(dec1: number, dec2: number, ra1: number, ra2: number): number {
   let dec1_rad = rad(dec1)
   let dec2_rad = rad(dec2)

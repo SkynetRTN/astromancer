@@ -2,6 +2,8 @@ import {Component} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
 import {ClusterDataSourceService} from "../cluster-data-source.service";
 import {ClusterLookUpStackImpl} from "../cluster-data-source.service.util";
+import {MatDialog} from "@angular/material/dialog";
+import {FetchComponent} from "../pop-ups/fetch/fetch.component";
 
 @Component({
   selector: 'app-look-up',
@@ -15,10 +17,12 @@ export class LookUpComponent {
   })
   recentLookUpsStack: ClusterLookUpStackImpl = new ClusterLookUpStackImpl(5);
 
-  constructor(private dataSourceService: ClusterDataSourceService) {
+  constructor(private dataSourceService: ClusterDataSourceService, private dialog: MatDialog) {
     this.dataSourceService.lookUpData$.subscribe(
       data => {
         this.recentLookUpsStack.push(data);
+        this.dialog.open(FetchComponent,
+          {data: data});
       });
   }
 

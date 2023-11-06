@@ -1,27 +1,19 @@
 @media screen and (min-width: 900px) {
-  .summary-container {
+  .cluster-data-source-pop-up {
     width: 500px;
     flex-direction: column;
   }
 }
 
 @media screen and (max-width: 900px) {
-  .summary-container {
+  .cluster-data-source-pop-up {
     width: 80vw;
     flex-direction: row;
   }
 }
 
-.summary-card {
+.cluster-data-source-pop-ups-card {
   margin: 0px !important;
   width: 100% !important;
   height: min-content !important;
-}
-
-button {
-  margin-right: 10px;
-}
-
-mat-form-field {
-  width: 100%;
 }

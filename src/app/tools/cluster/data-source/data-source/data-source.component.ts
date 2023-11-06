@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {ClusterDataSourceService} from "../cluster-data-source.service";
 import {MatDialog} from "@angular/material/dialog";
-import {SummaryComponent} from "../summary/summary.component";
+import {SummaryComponent} from "../pop-ups/summary/summary.component";
 import {filterWavelength} from "../../cluster.util";
 import {delay, interval, throttle} from "rxjs";
 import {ClusterDataService} from "../../cluster-data.service";

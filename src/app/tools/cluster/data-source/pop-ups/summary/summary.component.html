@@ -1,5 +1,5 @@
-<div class="summary-container">
-  <mat-card class="summary-card">
+<div class="cluster-data-source-pop-up">
+  <mat-card class="cluster-data-source-pop-ups-card">
     <mat-card-header>
       <mat-card-subtitle>{{data.source}}</mat-card-subtitle>
       <mat-card-title>Source Data Overview</mat-card-title>
@@ -59,7 +59,7 @@
     <mat-divider></mat-divider>
     <mat-card-actions>
       <button (click)="cancel()" mat-button mat-dialog-close>Cancel</button>
-      <button (click)="next()" [disabled]="clusterName === ''" mat-button>Next</button>
+      <button (click)="next()" [disabled]="clusterName === ''||loadGaia" mat-button>Next</button>
     </mat-card-actions>
   </mat-card>
 </div>

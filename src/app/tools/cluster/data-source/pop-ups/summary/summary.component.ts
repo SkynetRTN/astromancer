@@ -1,14 +1,14 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
-import {ClusterService} from "../../cluster.service";
-import {ClusterDataService} from "../../cluster-data.service";
+import {ClusterService} from "../../../cluster.service";
+import {ClusterDataService} from "../../../cluster-data.service";
 import {ProgressBarMode} from "@angular/material/progress-bar";
-import {JobStatus} from "../../../../shared/job/job";
+import {JobStatus} from "../../../../../shared/job/job";
 
 @Component({
   selector: 'app-summary',
   templateUrl: './summary.component.html',
-  styleUrls: ['./summary.component.scss']
+  styleUrls: ['./summary.component.scss', '../cluster-data-source-pop-ups.scss']
 })
 export class SummaryComponent {
   clusterName: string = '';

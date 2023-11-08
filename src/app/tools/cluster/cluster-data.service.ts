@@ -46,9 +46,9 @@ export class ClusterDataService {
     return this.sources;
   }
 
-  public getAstrometry(): Astrometry[] {
+  public getAstrometry(): {id: string, astrometry: Astrometry }[] {
     return this.sources.map((source) => {
-      return source.astrometry;
+      return {id: source.id, astrometry: source.astrometry, photometry: []};
     })
   }
 
@@ -85,7 +85,7 @@ export class ClusterDataService {
     });
     let i = 0, j = 0;
     while (i < this.sources.length && j < fsr.length) {
-      const compare = this.sources[i].astrometry.id.localeCompare(fsr[j].id);
+      const compare = this.sources[i].id.localeCompare(fsr[j].id);
       if (compare === 0) {
         this.sources[i].fsr = {
           pm_ra: fsr[j].pm_ra,

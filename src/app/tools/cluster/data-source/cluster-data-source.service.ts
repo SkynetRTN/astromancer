@@ -84,8 +84,8 @@ export class ClusterDataSourceService implements ClusterDataSourceStepper {
     const filters: FILTER[] = [];
     let currentId = sortedData[0].id;
     let currentStar: Source = {
+      id : currentId,
       astrometry: {
-        id: currentId,
         ra: 0,
         dec: 0
       },
@@ -103,8 +103,8 @@ export class ClusterDataSourceService implements ClusterDataSourceStepper {
         raSum = parseFloat(sortedData[i].ra_hours) * 15;
         decSum = parseFloat(sortedData[i].dec_degs);
         currentStar = {
+          id : currentId,
           astrometry: {
-            id: currentId,
             ra: 0,
             dec: 0
           },

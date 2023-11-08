@@ -1,6 +1,7 @@
 import {rad} from "../shared/data/utils";
 
 export interface Source {
+  id: string;
   astrometry: Astrometry;
   photometries: Photometry[];
   fsr: FSR | null;
@@ -13,7 +14,6 @@ export interface Photometry {
 }
 
 export interface Astrometry {
-  id: string;
   ra: number;
   dec: number;
 }

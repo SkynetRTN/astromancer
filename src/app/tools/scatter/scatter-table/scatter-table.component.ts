@@ -54,7 +54,7 @@ export class ScatterTableComponent implements AfterViewInit, OnDestroy {
   }
 
   public beforePaste = (data: any[], coords: any) => {
-    beforePaste(data, coords, this.table);
+    return beforePaste(data, coords, this.table);
   }
 
   private limitPrecision(data: ScatterDataDict[], precision: number): ScatterDataDict[] {

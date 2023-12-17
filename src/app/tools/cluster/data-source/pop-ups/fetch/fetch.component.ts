@@ -6,6 +6,7 @@ import {Catalogs} from "../../../cluster.util";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../../../../environments/environment";
 import {ClusterDataService} from "../../../cluster-data.service";
+import {ClusterDataSourceService} from "../../cluster-data-source.service";
 
 @Component({
   selector: 'app-fetch',
@@ -29,6 +30,7 @@ export class FetchComponent {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: ClusterLookUpData,
               private http: HttpClient,
+              private dataSourceService: ClusterDataSourceService,
               private dataService: ClusterDataService) {
   }
 
@@ -38,6 +40,12 @@ export class FetchComponent {
     }
     this.loading = true;
     this.readyForNext = false;
+    this.dataSourceService.pushRecentSearch({
+      name: this.formGroup.controls['name'].value,
+      ra: parseFloat(this.formGroup.controls['ra'].value),
+      dec: parseFloat(this.formGroup.controls['dec'].value),
+      radius: parseFloat(this.formGroup.controls['radius'].value)
+    });
     this.http.post(`${environment.apiUrl}/cluster/catalog/test-radius`, {
       ra: this.formGroup.controls['ra'].value,
       dec: this.formGroup.controls['dec'].value,

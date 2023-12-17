@@ -25,6 +25,8 @@ export interface ClusterLookUpStack {
 
   hasData(): boolean;
 
+  load(data: ClusterLookUpData[]): void;
+
   clear(): void;
 }
 
@@ -37,7 +39,7 @@ export class ClusterLookUpStackImpl implements ClusterLookUpStack {
   }
 
   list(): ClusterLookUpData[] {
-    return this.data.reverse();
+    return this.data;
   }
 
   push(data: ClusterLookUpData): void {
@@ -50,6 +52,10 @@ export class ClusterLookUpStackImpl implements ClusterLookUpStack {
       this.data = this.data.filter(d => d.name !== data.name);
       this.data.push(data);
     }
+  }
+
+  load(data: ClusterLookUpData[]): void {
+    this.data = data;
   }
 
   hasData(): boolean {

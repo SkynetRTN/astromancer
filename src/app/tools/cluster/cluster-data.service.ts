@@ -7,6 +7,7 @@ import {Job} from "../../shared/job/job";
 
 import {environment} from "../../../environments/environment";
 import {appendFSRResults, sourceSerialization} from "./cluster-data.service.util";
+import {ClusterStorageService} from "./storage/cluster-storage.service";
 
 @Injectable()
 export class ClusterDataService {
@@ -19,7 +20,8 @@ export class ClusterDataService {
 
   constructor(
     private http: HttpClient,
-    private dataSourceService: ClusterDataSourceService) {
+    private dataSourceService: ClusterDataSourceService,
+    private storageService: ClusterStorageService) {
     this.dataSourceService.rawData$.subscribe(
       () => {
         this.sources = this.dataSourceService.getSources();

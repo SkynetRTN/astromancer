@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
 import {ClusterDataSourceService} from "../cluster-data-source.service";
-import {ClusterLookUpStackImpl} from "../cluster-data-source.service.util";
+import {ClusterLookUpData} from "../cluster-data-source.service.util";
 import {MatDialog} from "@angular/material/dialog";
 import {FetchComponent} from "../pop-ups/fetch/fetch.component";
 
@@ -15,12 +15,16 @@ export class LookUpComponent {
   lookUpFrom = new FormGroup({
     name: new FormControl(''),
   })
-  recentLookUpsStack: ClusterLookUpStackImpl = new ClusterLookUpStackImpl(5);
+  recentLookUps: ClusterLookUpData[];
 
   constructor(private dataSourceService: ClusterDataSourceService, private dialog: MatDialog) {
+    this.recentLookUps = this.dataSourceService.lookUpDataStack.list().slice().reverse();
+    this.dataSourceService.lookUpDataArray$.subscribe(
+      data => {
+        this.recentLookUps = this.dataSourceService.lookUpDataStack.list().slice().reverse();
+      });
     this.dataSourceService.lookUpData$.subscribe(
       data => {
-        this.recentLookUpsStack.push(data);
         this.dialog.open(FetchComponent,
           {data: data});
       });
@@ -40,5 +44,12 @@ export class LookUpComponent {
           radius: null,
         }
       });
+  }
+
+  searchRecent(lookup: ClusterLookUpData) {
+    this.dataSourceService.pushRecentSearch(lookup);
+    this.dialog.open(FetchComponent, {
+      data: lookup
+    });
   }
 }

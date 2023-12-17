@@ -7,14 +7,18 @@ import {
   ClusterDataSourceStepper,
   ClusterDataSourceStepperImpl,
   ClusterLookUpData,
+  ClusterLookUpStack,
+  ClusterLookUpStackImpl,
   ClusterRawData
 } from "./cluster-data-source.service.util";
 import {FILTER, Source} from "../cluster.util";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../../environments/environment";
+import {ClusterStorageService} from "../storage/cluster-storage.service";
 
 @Injectable()
 export class ClusterDataSourceService implements ClusterDataSourceStepper {
+  public lookUpDataStack: ClusterLookUpStack = new ClusterLookUpStackImpl(5);
   private rawDataSubject: Subject<ClusterRawData[]> = new Subject<ClusterRawData[]>();
   public rawData$ = this.rawDataSubject.asObservable();
   private lookUpDataSubject: Subject<ClusterLookUpData> = new Subject<ClusterLookUpData>();
@@ -22,11 +26,17 @@ export class ClusterDataSourceService implements ClusterDataSourceStepper {
   private readonly dataSourceStepperImpl: ClusterDataSourceStepper = new ClusterDataSourceStepperImpl();
   private readonly fileParser: MyFileParser = new MyFileParser(FileType.CSV,
     ['id', 'filter', 'calibrated_mag', 'mag_error', 'ra_hours', 'dec_degs'])
+  private lookUpDataArraySubject: Subject<ClusterLookUpData[]> = new Subject<ClusterLookUpData[]>();
+  public lookUpDataArray$ = this.lookUpDataArraySubject.asObservable();
+
   private rawData: ClusterRawData[] = [];
   private sources: Source[] = [];
   private filters: FILTER[] = [];
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private storageService: ClusterStorageService) {
+    this.lookUpDataStack.load(this.storageService.getRecentSearches());
+    this.lookUpDataArraySubject.next(this.lookUpDataStack.list());
   }
 
   init() {
@@ -66,14 +76,22 @@ export class ClusterDataSourceService implements ClusterDataSourceStepper {
   public lookUpCluster(query: string): void {
     this.http.get(`${environment.apiUrl}/cluster/lookup`, {params: {'name': query}}).subscribe(
       (response: any) => {
-        this.lookUpDataSubject.next({
+        const data: ClusterLookUpData = {
           name: query,
           ra: parseFloat(response['ra']),
           dec: parseFloat(response['dec']),
-          radius: parseFloat(response['radius'])
-        });
+          radius: parseFloat(response['radius']) ? parseFloat(response['radius']) : 0,
+        }
+        this.pushRecentSearch(data);
+        this.lookUpDataSubject.next(data);
       }
     )
+  }
+
+  public pushRecentSearch(data: ClusterLookUpData): void {
+    this.lookUpDataStack.push(data);
+    this.lookUpDataArraySubject.next(this.lookUpDataStack.list());
+    this.storageService.setRecentSearches(this.lookUpDataStack.list());
   }
 
   private processData(): void {
@@ -84,7 +102,7 @@ export class ClusterDataSourceService implements ClusterDataSourceStepper {
     const filters: FILTER[] = [];
     let currentId = sortedData[0].id;
     let currentStar: Source = {
-      id : currentId,
+      id: currentId,
       astrometry: {
         ra: 0,
         dec: 0
@@ -103,7 +121,7 @@ export class ClusterDataSourceService implements ClusterDataSourceStepper {
         raSum = parseFloat(sortedData[i].ra_hours) * 15;
         decSum = parseFloat(sortedData[i].dec_degs);
         currentStar = {
-          id : currentId,
+          id: currentId,
           astrometry: {
             ra: 0,
             dec: 0

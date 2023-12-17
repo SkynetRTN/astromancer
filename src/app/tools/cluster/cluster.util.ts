@@ -1,5 +1,14 @@
 import {rad} from "../shared/data/utils";
 
+export enum ClusterStep {
+  DataSource = 0,
+  FSR = 1,
+  ArchiveFetching = 2,
+  IsochroneFitting = 3,
+  Result = 4,
+}
+
+
 export interface Source {
   id: string;
   astrometry: Astrometry;

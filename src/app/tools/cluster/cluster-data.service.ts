@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
 import {ClusterDataSourceService} from "./data-source/cluster-data-source.service";
-import {Astrometry, FILTER, FSR, Source} from "./cluster.util";
+import {Astrometry, Catalogs, FILTER, FSR, Source} from "./cluster.util";
 import {HttpClient} from "@angular/common/http";
 import {Subject} from "rxjs";
 import {Job} from "../../shared/job/job";
 
 import {environment} from "../../../environments/environment";
+import {appendFSRResults, sourceSerialization} from "./cluster-data.service.util";
 
 @Injectable()
 export class ClusterDataService {
@@ -46,7 +47,7 @@ export class ClusterDataService {
     return this.sources;
   }
 
-  public getAstrometry(): {id: string, astrometry: Astrometry }[] {
+  public getAstrometry(): { id: string, astrometry: Astrometry }[] {
     return this.sources.map((source) => {
       return {id: source.id, astrometry: source.astrometry, photometry: []};
     })
@@ -58,9 +59,29 @@ export class ClusterDataService {
     }).length;
   }
 
+
+  fetchCatalogFetch(ra: number, dec: number, radius: number, catalogs: Catalogs[]): Job {
+    const catalogJob = new Job('/cluster/catalog', this.http, 200);
+    let payload: any = {
+      ra: ra,
+      dec: dec,
+      radius: radius,
+      catalogs: catalogs,
+    }
+    if (this.sources.length > 0)
+      payload['sources'] = this.sources
+    catalogJob.createJob(payload);
+    catalogJob.complete$.subscribe(
+      (complete) => {
+        if (complete)
+          this.getCatalogResults(catalogJob.getJobId());
+      });
+    return catalogJob;
+  }
+
   fetchFieldStarRemoval(): Job {
     const fsrJob = new Job('/cluster/fsr', this.http, 200);
-    fsrJob.createJob(this.getAstrometry());
+    fsrJob.createJob({sources: this.getAstrometry()});
     fsrJob.complete$.subscribe(
       (complete) => {
         if (complete)
@@ -69,37 +90,29 @@ export class ClusterDataService {
     return fsrJob;
   }
 
+  private getCatalogResults(id: number | null) {
+    if (id !== null)
+      this.http.get(`${environment.apiUrl}/cluster/catalog`,
+        {params: {'id': id}}).subscribe(
+        (resp: any) => {
+          const {sources, filters} = sourceSerialization(resp['catalog']);
+          this.sources = sources;
+          this.filters = filters;
+          this.setHasFSR(true);
+          this.dataSubject.next(this.sources);
+        }
+      );
+  }
+
   private getFSRResults(id: number | null) {
     if (id !== null)
       this.http.get(`${environment.apiUrl}/cluster/fsr`,
         {params: {'id': id}}).subscribe(
         (resp: any) => {
-          this.appendFSRResults(resp['FSR']);
+          this.sources = appendFSRResults(this.sources, resp['FSR']);
+          this.dataSubject.next(this.sources);
+          console.log(this.sources);
         }
       );
-  }
-
-  private appendFSRResults(fsr: any[]) {
-    fsr = fsr.sort((a, b) => {
-      return a.id - b.id;
-    });
-    let i = 0, j = 0;
-    while (i < this.sources.length && j < fsr.length) {
-      const compare = this.sources[i].id.localeCompare(fsr[j].id);
-      if (compare === 0) {
-        this.sources[i].fsr = {
-          pm_ra: fsr[j].pm_ra,
-          pm_dec: fsr[j].pm_dec,
-          distance: fsr[j].distance,
-        }
-        i++;
-        j++;
-      } else if (compare < 0) {
-        i++;
-      } else {
-        j++;
-      }
-    }
-    this.dataSubject.next(this.sources);
   }
 }

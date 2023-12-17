@@ -28,7 +28,7 @@ export interface ClusterLookUpStack {
   clear(): void;
 }
 
-export class ClusterLookUpStackImpl {
+export class ClusterLookUpStackImpl implements ClusterLookUpStack {
   private data: ClusterLookUpData[] = []
   private maxDataSize: number;
 

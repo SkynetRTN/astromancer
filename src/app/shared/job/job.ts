@@ -31,7 +31,7 @@ export class Job {
   public createJob(payload: any): void {
     this.http.post(
       `${environment.apiUrl}${this.url}`,
-      JSON.stringify({'sources': payload}),
+      JSON.stringify(payload),
       {headers: {'content-type': 'application/json'}}).subscribe(
       (resp: any) => {
         resp = resp as JobResponse;

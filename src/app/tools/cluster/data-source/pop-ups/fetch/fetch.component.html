@@ -11,13 +11,13 @@
           <div class="col-6">
             <mat-form-field>
               <mat-label>Right Ascension</mat-label>
-              <input matInput [formControlName]="'ra'">
+              <input [formControlName]="'ra'" matInput>
             </mat-form-field>
           </div>
           <div class="col-6">
             <mat-form-field>
               <mat-label>Declination</mat-label>
-              <input matInput [formControlName]="'dec'">
+              <input [formControlName]="'dec'" matInput>
             </mat-form-field>
           </div>
         </div>
@@ -25,7 +25,7 @@
           <div class="col-6">
             <mat-form-field>
               <mat-label>Radius</mat-label>
-              <input matInput [formControlName]="'radius'">
+              <input [formControlName]="'radius'" matInput>
             </mat-form-field>
           </div>
           <div class="col-6">
@@ -46,8 +46,10 @@
 
     <mat-card-actions>
       <button mat-button mat-dialog-close>Cancel</button>
-      <button mat-button>Test Radius</button>
-      <button mat-button>Next</button>
+      <button (click)="testRadius()" [disabled]="loading" mat-button>Test Radius</button>
+      <button (click)="fetchCatalog()" [disabled]="!readyForNext||loading" mat-button>Next</button>
     </mat-card-actions>
+
+    <mat-progress-bar [hidden]="!loading" mode="query"></mat-progress-bar>
   </mat-card>
 </div>

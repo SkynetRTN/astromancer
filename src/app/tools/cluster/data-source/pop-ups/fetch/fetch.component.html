@@ -1,12 +1,20 @@
 <div class="cluster-data-source-pop-up">
   <mat-card class="cluster-data-source-pop-ups-card">
     <mat-card-header>
-      <mat-card-subtitle>{{data.name}}</mat-card-subtitle>
+      <mat-card-subtitle *ngIf="data.name">{{data.name}}</mat-card-subtitle>
       <mat-card-title>Catalogue Fetching Preview</mat-card-title>
     </mat-card-header>
 
     <mat-card-content>
       <form [formGroup]="formGroup">
+        <div *ngIf="!data.name" class="row">
+          <div class="col-12">
+            <mat-form-field>
+              <mat-label>Cluster Name</mat-label>
+              <input [formControlName]="'name'" matInput>
+            </mat-form-field>
+          </div>
+        </div>
         <div class="row">
           <div class="col-6">
             <mat-form-field>

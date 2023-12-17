@@ -6,7 +6,8 @@
     <form (submit)="submit()" [formGroup]="lookUpFrom">
       <mat-form-field class="search-bar">
         <input formControlName="name" matInput placeholder="NGC, Messier, or MWSC Catalog Number" type="text">
-        <button (click)="lookUpFrom.controls['name'].setValue('')" *ngIf="lookUpFrom.controls['name'].value" aria-label="clear" mat-icon-button
+        <button (click)="lookUpFrom.controls['name'].setValue('')" *ngIf="lookUpFrom.controls['name'].value"
+                aria-label="clear" mat-icon-button
                 matSuffix type="button">
           <mat-icon>clear</mat-icon>
         </button>
@@ -20,7 +21,7 @@
     <h3><i>or</i></h3>
   </div>
   <div class="row center-content">
-    <button class="coordinates" color="primary" mat-flat-button>Type in Coordinates</button>
+    <button (click)="typeCoordinates()" class="coordinates" color="primary" mat-flat-button>Type in Coordinates</button>
   </div>
   <div class="row">
     <div class="recent-searches">

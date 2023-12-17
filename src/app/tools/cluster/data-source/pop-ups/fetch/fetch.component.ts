@@ -15,6 +15,7 @@ import {ClusterDataService} from "../../../cluster-data.service";
 export class FetchComponent {
   public catalogs = Object.values(Catalogs);
   public formGroup: FormGroup = new FormGroup({
+    name: new FormControl(this.data.name, [Validators.required]),
     ra: new FormControl(this.data.ra,
       [Validators.required, Validators.min(0), Validators.max(360)]),
     dec: new FormControl(this.data.dec,
@@ -32,6 +33,9 @@ export class FetchComponent {
   }
 
   testRadius() {
+    if (this.formGroup.invalid) {
+      return;
+    }
     this.loading = true;
     this.readyForNext = false;
     this.http.post(`${environment.apiUrl}/cluster/catalog/test-radius`, {
@@ -43,8 +47,6 @@ export class FetchComponent {
       this.loading = false;
       if (res) {
         this.readyForNext = true;
-        // this.formGroup.controls['radius'].setValidators([Validators.required,
-        //   Validators.min(0), Validators.max(5)]);
       }
     }, error => {
       this.loading = false;

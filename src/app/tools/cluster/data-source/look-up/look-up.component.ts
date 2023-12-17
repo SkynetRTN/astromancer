@@ -29,4 +29,16 @@ export class LookUpComponent {
   submit() {
     this.dataSourceService.lookUpCluster(this.lookUpFrom.controls['name'].value!);
   }
+
+  typeCoordinates() {
+    this.dialog.open(FetchComponent,
+      {
+        data: {
+          name: null,
+          ra: null,
+          dec: null,
+          radius: null,
+        }
+      });
+  }
 }

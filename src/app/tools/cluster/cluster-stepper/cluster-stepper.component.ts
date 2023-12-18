@@ -5,7 +5,7 @@ import {FormControl} from "@angular/forms";
 @Component({
   selector: 'app-cluster-stepper',
   templateUrl: './cluster-stepper.component.html',
-  styleUrls: ['./cluster-stepper.component.scss']
+  styleUrls: ['./cluster-stepper.component.scss', '../../shared/interface/tools.scss']
 })
 export class ClusterStepperComponent {
   protected dataSourceFormControl: FormControl;

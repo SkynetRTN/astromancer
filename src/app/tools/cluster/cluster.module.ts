@@ -26,6 +26,7 @@ import {MatListModule} from "@angular/material/list";
 import {FetchComponent} from './data-source/pop-ups/fetch/fetch.component';
 import {MatSelectModule} from "@angular/material/select";
 import {ClusterStorageService} from "./storage/cluster-storage.service";
+import {MatTabsModule} from "@angular/material/tabs";
 
 const routes: Routes = [
   {path: '', component: ClusterComponent, title: 'Cluster'}
@@ -50,6 +51,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     MatListModule,
     MatSelectModule,
+    MatTabsModule,
   ],
   exports: [ClusterComponent, RouterModule],
   providers: [ClusterDataSourceService, ClusterService, ClusterDataService, ClusterStorageService]

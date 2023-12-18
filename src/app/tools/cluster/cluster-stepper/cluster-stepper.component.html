@@ -1,15 +1,35 @@
-<mat-stepper #stepper linear orientation="horizontal">
-  <mat-step [stepControl]="dataSourceFormControl" label="Data Source">
+<mat-tab-group>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">upload</mat-icon>
+      Data Source
+    </ng-template>
     <div class="my-full-stepper-container">
       <app-data-source></app-data-source>
     </div>
-  </mat-step>
-  <mat-step [optional]="true" label="Field Star Removal">
-  </mat-step>
-  <mat-step [optional]="true" label="Archive Fetching">
-  </mat-step>
-  <mat-step label="Isochrone Fitting">
-  </mat-step>
-  <mat-step label="Result Summary">
-  </mat-step>
-</mat-stepper>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">star_half</mat-icon>
+      Field Star Removal
+    </ng-template>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">cloud_download</mat-icon>
+      Archive Fetching
+    </ng-template>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">timeline</mat-icon>
+      Isochrone Fitting
+    </ng-template>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">list</mat-icon>
+      Result Summary
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>

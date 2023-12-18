@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
-import {ClusterDataSourceService} from "../data-source/cluster-data-source.service";
-import {FormControl} from "@angular/forms";
+import {ClusterDataService} from "../cluster-data.service";
+import {ClusterService} from "../cluster.service";
 
 @Component({
   selector: 'app-cluster-stepper',
@@ -8,10 +8,16 @@ import {FormControl} from "@angular/forms";
   styleUrls: ['./cluster-stepper.component.scss', '../../shared/interface/tools.scss']
 })
 export class ClusterStepperComponent {
-  protected dataSourceFormControl: FormControl;
+  hasFSR: boolean = this.dataService.getHasFSR();
+  index: number = 0;
 
-  constructor(private dataSourceService: ClusterDataSourceService) {
-    this.dataSourceFormControl = this.dataSourceService.getFormControl();
+  constructor(private service: ClusterService,
+              private dataService: ClusterDataService,) {
+    this.dataService.data$.subscribe(data => {
+      this.hasFSR = this.dataService.getHasFSR();
+    });
+    this.service.tabIndex$.subscribe(index => {
+      this.index = index;
+    });
   }
-
 }

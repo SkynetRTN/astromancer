@@ -27,13 +27,14 @@ import {FetchComponent} from './data-source/pop-ups/fetch/fetch.component';
 import {MatSelectModule} from "@angular/material/select";
 import {ClusterStorageService} from "./storage/cluster-storage.service";
 import {MatTabsModule} from "@angular/material/tabs";
+import {InProgressComponent} from './data-source/pop-ups/in-progress/in-progress.component';
 
 const routes: Routes = [
   {path: '', component: ClusterComponent, title: 'Cluster'}
 ];
 
 @NgModule({
-  declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent],
+  declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent],
   imports: [
     RouterModule.forChild(routes),
     CommonModule,

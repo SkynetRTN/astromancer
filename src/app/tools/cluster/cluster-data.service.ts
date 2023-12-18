@@ -58,6 +58,7 @@ export class ClusterDataService {
 
   public setSources(sources: Source[]) {
     this.sources = sources;
+    this.filters = this.generateFilterList();
     this.dataSubject.next(this.sources);
     this.storageService.setSources(this.sources);
   }
@@ -90,7 +91,6 @@ export class ClusterDataService {
         if (complete) {
           this.getCatalogResults(catalogJob.getJobId());
         }
-
       });
     return catalogJob;
   }
@@ -108,19 +108,7 @@ export class ClusterDataService {
     return fsrJob;
   }
 
-  private generateFilterList(): FILTER[] {
-    const filters: FILTER[] = [];
-    this.sources.forEach((source) => {
-      source.photometries.forEach((photometry) => {
-        if (!filters.includes(photometry.filter)) {
-          filters.push(photometry.filter);
-        }
-      });
-    });
-    return filters;
-  }
-
-  private getCatalogResults(id: number | null) {
+  public getCatalogResults(id: number | null) {
     if (id !== null)
       this.http.get(`${environment.apiUrl}/cluster/catalog`,
         {params: {'id': id}}).subscribe(
@@ -132,14 +120,25 @@ export class ClusterDataService {
       );
   }
 
-  private getFSRResults(id: number | null) {
+  public getFSRResults(id: number | null) {
     if (id !== null)
       this.http.get(`${environment.apiUrl}/cluster/fsr`,
         {params: {'id': id}}).subscribe(
         (resp: any) => {
           this.setSources(appendFSRResults(this.sources, resp['FSR']));
-          console.log(this.sources);
         }
       );
+  }
+
+  private generateFilterList(): FILTER[] {
+    const filters: FILTER[] = [];
+    this.sources.forEach((source) => {
+      source.photometries.forEach((photometry) => {
+        if (!filters.includes(photometry.filter)) {
+          filters.push(photometry.filter);
+        }
+      });
+    });
+    return filters;
   }
 }

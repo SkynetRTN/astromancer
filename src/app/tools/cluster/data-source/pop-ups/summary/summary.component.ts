@@ -1,5 +1,5 @@
 import {Component, Inject} from '@angular/core';
-import {MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
 import {ClusterService} from "../../../cluster.service";
 import {ClusterDataService} from "../../../cluster-data.service";
 import {ProgressBarMode} from "@angular/material/progress-bar";
@@ -24,7 +24,8 @@ export class SummaryComponent {
                 { source: string, filters: string[], starCounts: number, clusterName: string },
               private service: ClusterService,
               private dataService: ClusterDataService,
-              private storageService: ClusterStorageService) {
+              private storageService: ClusterStorageService,
+              public dialog: MatDialog) {
     this.dataService.data$.subscribe(
       () => {
         this.hasFSR = this.dataService.getHasFSR();
@@ -33,13 +34,15 @@ export class SummaryComponent {
   }
 
   next() {
-    this.service.setClusterName(this.clusterName);
     if (!this.dataService.getHasFSR()) {
+      this.service.setClusterName(this.clusterName);
       this.loadGaia = true;
       const job = this.dataService.fetchFieldStarRemoval();
       job.update$.subscribe(
         (job) => {
-          this.storageService.setFSRJob(job.getStorageObject());
+          const storageObject = job.getStorageObject();
+          storageObject.payload = this.dataService.getSources();
+          this.storageService.setFSRJob(storageObject);
         });
       job.statusUpdate$.subscribe(
         (status) => {
@@ -65,6 +68,9 @@ export class SummaryComponent {
           this.loadGaia = false;
         }
       )
+    } else {
+      this.service.setTabIndex(1);
+      this.dialog.closeAll();
     }
   }
 

@@ -5,6 +5,8 @@ import {SummaryComponent} from "../pop-ups/summary/summary.component";
 import {filterWavelength} from "../../cluster.util";
 import {delay, interval, throttle} from "rxjs";
 import {ClusterDataService} from "../../cluster-data.service";
+import {ClusterStorageService} from "../../storage/cluster-storage.service";
+import {InProgressComponent} from "../pop-ups/in-progress/in-progress.component";
 
 @Component({
   selector: 'app-data-source',
@@ -14,6 +16,7 @@ import {ClusterDataService} from "../../cluster-data.service";
 export class DataSourceComponent {
   constructor(
     private dataService: ClusterDataService,
+    private storageService: ClusterStorageService,
     private dataSourceService: ClusterDataSourceService,
     private dialog: MatDialog,) {
     this.dataSourceService.rawData$.pipe(
@@ -34,6 +37,20 @@ export class DataSourceComponent {
             }
           });
       }
-    )
+    );
+    if (this.jobInProgress()) {
+      this.dialog.open(InProgressComponent,
+        {
+          width: 'fit-content',
+        });
+    }
   }
+
+  private jobInProgress(): boolean {
+    const jobNotConfirmed: boolean = this.storageService.getHasFSR() && this.storageService.getTabIndex() === 0;
+    const jobs = this.storageService.getDataSource()
+    const jobNotComplete: boolean = jobs.FSRJob !== null || jobs.lookUpJob !== null;
+    return jobNotComplete || jobNotConfirmed;
+  }
+
 }

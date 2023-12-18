@@ -1,0 +1,40 @@
+<div class="cluster-data-source-pop-up">
+  <mat-card class="cluster-data-source-pop-ups-card">
+    <mat-card-header>
+      <mat-card-subtitle>{{jobType?'User\'s uploaded data' : 'Catalog Fetching'}}</mat-card-subtitle>
+      <mat-card-title>Previous Job</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="row">
+        <p>
+          <strong>Cluster</strong>: {{clusterName}}
+        </p>
+      </div>
+      <div class="row" [hidden]="!isJobComplete">
+        <div class="col-6">
+          <p>
+            <strong>Filters</strong>: {{filters.join(', ')}}
+          </p>
+        </div>
+        <div class="col-6">
+          <p>
+            <strong>Number of Stars</strong>: {{sources.length}}
+          </p>
+        </div>
+      </div>
+    </mat-card-content>
+
+    <div [hidden]="isJobComplete">
+      <mat-card-footer>
+        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+      </mat-card-footer>
+    </div>
+
+    <mat-divider></mat-divider>
+    <mat-card-actions>
+      <button (click)="cancel()" mat-button mat-dialog-close>Cancel</button>
+      <button (click)="next()" [disabled]="!isJobComplete" mat-button>Next</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

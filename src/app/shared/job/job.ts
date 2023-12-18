@@ -51,7 +51,13 @@ export class Job {
   public reincarnate(object: JobStorageObject): void {
     this.id = object.id;
     this.status = object.status;
-    this.updateJob();
+    interval(this.updateInterval).pipe(
+      takeUntil(this.complete$)
+    ).subscribe(
+      () => {
+        this.updateJob();
+      }
+    );
   }
 
   public getStorageObject(): JobStorageObject {
@@ -93,7 +99,8 @@ export interface JobStorageObject {
   id: number;
   url: string;
   updateInterval: number;
-  status: JobStatus
+  status: JobStatus;
+  payload?: any;
 }
 
 export enum JobStatus {

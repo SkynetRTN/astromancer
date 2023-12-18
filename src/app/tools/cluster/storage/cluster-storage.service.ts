@@ -80,6 +80,19 @@ export class ClusterStorageService {
     this.save();
   }
 
+  public getDataSource() {
+    return this.storageObject.dataSource;
+  }
+
+  public getTabIndex() {
+    return this.storageObject.step;
+  }
+
+  public setTabIndex(index: number) {
+    this.storageObject.step = index;
+    this.save();
+  }
+
   private init(): ClusterStorageObject {
     return {
       step: 0,

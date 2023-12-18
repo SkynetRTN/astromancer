@@ -1,4 +1,4 @@
-<mat-tab-group>
+<mat-tab-group [selectedIndex]="index">
   <mat-tab>
     <ng-template mat-tab-label>
       <mat-icon class="tab-icon">upload</mat-icon>
@@ -8,25 +8,25 @@
       <app-data-source></app-data-source>
     </div>
   </mat-tab>
-  <mat-tab>
+  <mat-tab [disabled]="!hasFSR">
     <ng-template mat-tab-label>
       <mat-icon class="tab-icon">star_half</mat-icon>
       Field Star Removal
     </ng-template>
   </mat-tab>
-  <mat-tab>
+  <mat-tab [disabled]="!hasFSR">
     <ng-template mat-tab-label>
       <mat-icon class="tab-icon">cloud_download</mat-icon>
       Archive Fetching
     </ng-template>
   </mat-tab>
-  <mat-tab>
+  <mat-tab [disabled]="!hasFSR">
     <ng-template mat-tab-label>
       <mat-icon class="tab-icon">timeline</mat-icon>
       Isochrone Fitting
     </ng-template>
   </mat-tab>
-  <mat-tab>
+  <mat-tab [disabled]="!hasFSR">
     <ng-template mat-tab-label>
       <mat-icon class="tab-icon">list</mat-icon>
       Result Summary

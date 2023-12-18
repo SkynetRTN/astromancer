@@ -1,8 +1,8 @@
 import {Component, Inject} from '@angular/core';
-import {MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
 import {ClusterLookUpData} from "../../cluster-data-source.service.util";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {Catalogs} from "../../../cluster.util";
+import {Catalogs, FILTER, Source} from "../../../cluster.util";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../../../../environments/environment";
 import {ClusterDataService} from "../../../cluster-data.service";
@@ -30,9 +30,12 @@ export class FetchComponent {
   });
   loading: boolean = false;
   readyForNext: boolean = false;
+  fetchData: Source[] = [];
+  filters: FILTER[] = [];
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: ClusterLookUpData,
               private http: HttpClient,
+              private dialog: MatDialog,
               private service: ClusterService,
               private dataSourceService: ClusterDataSourceService,
               private dataService: ClusterDataService,
@@ -67,20 +70,29 @@ export class FetchComponent {
   }
 
   fetchCatalog() {
-    this.loading = true;
-    this.service.setClusterName(this.formGroup.controls['name'].value);
-    let job: Job = this.dataService.fetchCatalogFetch(
-      this.formGroup.controls['ra'].value,
-      this.formGroup.controls['dec'].value,
-      this.formGroup.controls['radius'].value,
-      [this.formGroup.controls['catalog'].value]
-    );
-    job.update$.subscribe((job) => {
-      this.clusterStorageService.setLookUpJob(job.getStorageObject());
-    });
-    job.complete$.subscribe((complete) => {
-      this.loading = false;
-    });
+    if (!this.dataService.getHasFSR()) {
+      this.loading = true;
+      this.service.setClusterName(this.formGroup.controls['name'].value);
+      let job: Job = this.dataService.fetchCatalogFetch(
+        this.formGroup.controls['ra'].value,
+        this.formGroup.controls['dec'].value,
+        this.formGroup.controls['radius'].value,
+        [this.formGroup.controls['catalog'].value]
+      );
+      job.update$.subscribe((job) => {
+        this.clusterStorageService.setLookUpJob(job.getStorageObject());
+      });
+      job.complete$.subscribe((complete) => {
+        this.loading = false;
+      });
+      this.dataService.data$.subscribe((data) => {
+        this.fetchData = data;
+        this.filters = this.dataService.getFilters();
+      });
+    } else {
+      this.service.setTabIndex(1);
+      this.dialog.closeAll();
+    }
   }
 
   cancel() {

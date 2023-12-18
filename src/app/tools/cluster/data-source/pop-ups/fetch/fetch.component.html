@@ -5,7 +5,7 @@
       <mat-card-title>Catalogue Fetching Preview</mat-card-title>
     </mat-card-header>
 
-    <mat-card-content>
+    <mat-card-content *ngIf="fetchData.length === 0">
       <form [formGroup]="formGroup">
         <div *ngIf="!data.name" class="row">
           <div class="col-12">
@@ -50,12 +50,38 @@
       </form>
     </mat-card-content>
 
+    <mat-card-content *ngIf="fetchData.length > 0">
+      <div class="row">
+        <div class="col-6">
+          <p>
+            <strong>Cluster</strong>: {{formGroup.controls['name'].value}}
+            <br>
+            <strong>Radius</strong>: {{formGroup.controls['radius'].value}}
+          </p>
+        </div>
+        <div class="col-6">
+          <p>
+            <strong>Number of Stars</strong>: {{fetchData.length}}
+            <br>
+            <strong>Filters</strong>: {{filters.join(', ')}}
+          </p>
+        </div>
+      </div>
+    </mat-card-content>
+
     <mat-divider></mat-divider>
 
     <mat-card-actions>
       <button (click)="cancel()" mat-button mat-dialog-close>Cancel</button>
-      <button (click)="testRadius()" [disabled]="loading" mat-button>Test Radius</button>
-      <button (click)="fetchCatalog()" [disabled]="!readyForNext||loading" mat-button>Next</button>
+      <button (click)="testRadius()"
+              [disabled]="loading"
+              [hidden]="fetchData.length > 0"
+              mat-button>Test Radius
+      </button>
+      <button (click)="fetchCatalog()"
+              [disabled]="!readyForNext||loading"
+              mat-button>Next
+      </button>
     </mat-card-actions>
 
     <mat-progress-bar [hidden]="!loading" mode="query"></mat-progress-bar>

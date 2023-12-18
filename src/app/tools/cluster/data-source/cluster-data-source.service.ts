@@ -1,11 +1,8 @@
 import {Injectable} from '@angular/core';
-import {FormControl} from "@angular/forms";
 import {MyFileParser} from "../../shared/data/FileParser/FileParser";
 import {FileType} from "../../shared/data/FileParser/FileParser.util";
 import {Subject} from "rxjs";
 import {
-  ClusterDataSourceStepper,
-  ClusterDataSourceStepperImpl,
   ClusterLookUpData,
   ClusterLookUpStack,
   ClusterLookUpStackImpl,
@@ -17,13 +14,12 @@ import {environment} from "../../../../environments/environment";
 import {ClusterStorageService} from "../storage/cluster-storage.service";
 
 @Injectable()
-export class ClusterDataSourceService implements ClusterDataSourceStepper {
+export class ClusterDataSourceService {
   public lookUpDataStack: ClusterLookUpStack = new ClusterLookUpStackImpl(5);
   private rawDataSubject: Subject<ClusterRawData[]> = new Subject<ClusterRawData[]>();
   public rawData$ = this.rawDataSubject.asObservable();
   private lookUpDataSubject: Subject<ClusterLookUpData> = new Subject<ClusterLookUpData>();
   public lookUpData$ = this.lookUpDataSubject.asObservable();
-  private readonly dataSourceStepperImpl: ClusterDataSourceStepper = new ClusterDataSourceStepperImpl();
   private readonly fileParser: MyFileParser = new MyFileParser(FileType.CSV,
     ['id', 'filter', 'calibrated_mag', 'mag_error', 'ra_hours', 'dec_degs'])
   private lookUpDataArraySubject: Subject<ClusterLookUpData[]> = new Subject<ClusterLookUpData[]>();
@@ -43,14 +39,6 @@ export class ClusterDataSourceService implements ClusterDataSourceStepper {
     this.rawData = [];
     this.sources = [];
     this.filters = [];
-  }
-
-  getFormControl(): FormControl {
-    return this.dataSourceStepperImpl.getFormControl();
-  }
-
-  setFormControlStatus(isValid: boolean): void {
-    this.dataSourceStepperImpl.setFormControlStatus(isValid);
   }
 
   onFileUpload(file: File): void {

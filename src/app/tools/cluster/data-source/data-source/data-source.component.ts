@@ -4,9 +4,10 @@ import {MatDialog} from "@angular/material/dialog";
 import {SummaryComponent} from "../pop-ups/summary/summary.component";
 import {filterWavelength} from "../../cluster.util";
 import {delay, interval, throttle} from "rxjs";
-import {ClusterDataService} from "../../cluster-data.service";
 import {ClusterStorageService} from "../../storage/cluster-storage.service";
 import {InProgressComponent} from "../pop-ups/in-progress/in-progress.component";
+import {ClusterService} from "../../cluster.service";
+import {ResetComponent} from "../pop-ups/reset/reset.component";
 
 @Component({
   selector: 'app-data-source',
@@ -15,7 +16,7 @@ import {InProgressComponent} from "../pop-ups/in-progress/in-progress.component"
 })
 export class DataSourceComponent {
   constructor(
-    private dataService: ClusterDataService,
+    private service: ClusterService,
     private storageService: ClusterStorageService,
     private dataSourceService: ClusterDataSourceService,
     private dialog: MatDialog,) {
@@ -27,6 +28,7 @@ export class DataSourceComponent {
         this.dialog.open(SummaryComponent,
           {
             width: 'fit-content',
+            disableClose: true,
             data: {
               source: "File Upload",
               filters: this.dataSourceService.getFilters().sort((a, b) => {
@@ -42,8 +44,17 @@ export class DataSourceComponent {
       this.dialog.open(InProgressComponent,
         {
           width: 'fit-content',
+          disableClose: true,
         });
     }
+    this.service.tabIndex$.subscribe(index => {
+      if (index === 0 && this.resetPrompt()) {
+        this.dialog.open(ResetComponent,
+          {
+            width: 'fit-content',
+          });
+      }
+    });
   }
 
   private jobInProgress(): boolean {
@@ -51,6 +62,11 @@ export class DataSourceComponent {
     const jobs = this.storageService.getDataSource()
     const jobNotComplete: boolean = jobs.FSRJob !== null || jobs.lookUpJob !== null;
     return jobNotComplete || jobNotConfirmed;
+  }
+
+  private resetPrompt(): boolean {
+    const jobs = this.storageService.getDataSource()
+    return this.storageService.getHasFSR() && jobs.FSRJob == null && jobs.lookUpJob == null;
   }
 
 }

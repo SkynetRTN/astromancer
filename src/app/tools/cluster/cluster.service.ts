@@ -28,6 +28,7 @@ export class ClusterService {
   setTabIndex(index: number) {
     this.tabIndexSubject.next(index);
     this.storageService.setTabIndex(index);
+    this.storageService.clearJobs();
   }
 
 }

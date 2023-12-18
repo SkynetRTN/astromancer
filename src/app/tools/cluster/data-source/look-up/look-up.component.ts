@@ -26,7 +26,11 @@ export class LookUpComponent {
     this.dataSourceService.lookUpData$.subscribe(
       data => {
         this.dialog.open(FetchComponent,
-          {data: data});
+          {
+            width: 'fit-content',
+            disableClose: true,
+            data: data
+          });
       });
   }
 
@@ -37,6 +41,8 @@ export class LookUpComponent {
   typeCoordinates() {
     this.dialog.open(FetchComponent,
       {
+        width: 'fit-content',
+        disableClose: true,
         data: {
           name: null,
           ra: null,
@@ -49,6 +55,8 @@ export class LookUpComponent {
   searchRecent(lookup: ClusterLookUpData) {
     this.dataSourceService.pushRecentSearch(lookup);
     this.dialog.open(FetchComponent, {
+      width: 'fit-content',
+      disableClose: true,
       data: lookup
     });
   }

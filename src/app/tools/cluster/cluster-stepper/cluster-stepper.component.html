@@ -1,4 +1,4 @@
-<mat-tab-group [selectedIndex]="index">
+<mat-tab-group (selectedTabChange)="changeIndex($event)" [selectedIndex]="index">
   <mat-tab>
     <ng-template mat-tab-label>
       <mat-icon class="tab-icon">upload</mat-icon>

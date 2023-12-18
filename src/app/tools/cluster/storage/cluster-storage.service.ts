@@ -61,6 +61,12 @@ export class ClusterStorageService {
     this.save();
   }
 
+  public clearJobs() {
+    this.storageObject.dataSource.lookUpJob = null;
+    this.storageObject.dataSource.FSRJob = null;
+    this.save();
+  }
+
   public getSources(): Source[] {
     return this.storageObject.sources;
   }

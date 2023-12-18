@@ -29,13 +29,14 @@ import {ClusterStorageService} from "./storage/cluster-storage.service";
 import {MatTabsModule} from "@angular/material/tabs";
 import {InProgressComponent} from './data-source/pop-ups/in-progress/in-progress.component';
 import {ResetComponent} from './data-source/pop-ups/reset/reset.component';
+import { FieldStarRemovalComponent } from './FSR/field-star-removal/field-star-removal.component';
 
 const routes: Routes = [
   {path: '', component: ClusterComponent, title: 'Cluster'}
 ];
 
 @NgModule({
-  declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent],
+  declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent, FieldStarRemovalComponent],
   imports: [
     RouterModule.forChild(routes),
     CommonModule,

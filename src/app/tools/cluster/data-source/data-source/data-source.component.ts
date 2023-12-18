@@ -52,6 +52,7 @@ export class DataSourceComponent {
         this.dialog.open(ResetComponent,
           {
             width: 'fit-content',
+            disableClose: true,
           });
       }
     });

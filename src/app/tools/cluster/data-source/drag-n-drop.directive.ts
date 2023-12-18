@@ -1,5 +1,7 @@
 import {Directive, HostBinding, HostListener} from '@angular/core';
 import {ClusterDataSourceService} from "./cluster-data-source.service";
+import {ClusterDataService} from "../cluster-data.service";
+import {ClusterService} from "../cluster.service";
 
 @Directive({
   selector: '[clusterDragNDrop]'
@@ -7,7 +9,9 @@ import {ClusterDataSourceService} from "./cluster-data-source.service";
 export class DragNDropDirective {
   @HostBinding('class.fileOver') fileOver: boolean;
 
-  constructor(private clusterDataSourceService: ClusterDataSourceService) {
+  constructor(private clusterDataSourceService: ClusterDataSourceService,
+              private dataService: ClusterDataService,
+              private service: ClusterService) {
     this.fileOver = false;
   }
 
@@ -26,6 +30,8 @@ export class DragNDropDirective {
 
   @HostListener('drop', ['$event'])
   public onDrop(evt: any) {
+    this.service.reset();
+    this.dataService.reset();
     evt.preventDefault();
     evt.stopPropagation();
     this.fileOver = false;

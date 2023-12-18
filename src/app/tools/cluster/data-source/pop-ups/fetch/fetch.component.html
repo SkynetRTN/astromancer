@@ -53,7 +53,7 @@
     <mat-divider></mat-divider>
 
     <mat-card-actions>
-      <button mat-button mat-dialog-close>Cancel</button>
+      <button (click)="cancel()" mat-button mat-dialog-close>Cancel</button>
       <button (click)="testRadius()" [disabled]="loading" mat-button>Test Radius</button>
       <button (click)="fetchCatalog()" [disabled]="!readyForNext||loading" mat-button>Next</button>
     </mat-card-actions>

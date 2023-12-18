@@ -19,6 +19,7 @@ export class Job {
   private completeSubject = new Subject<Boolean>();
   public complete$ = this.completeSubject.asObservable();
 
+
   constructor(url: string, private http: HttpClient, updateInterval: number = 1000) {
     this.url = url;
     this.updateInterval = updateInterval;
@@ -47,6 +48,21 @@ export class Job {
     )
   }
 
+  public reincarnate(object: JobStorageObject): void {
+    this.id = object.id;
+    this.status = object.status;
+    this.updateJob();
+  }
+
+  public getStorageObject(): JobStorageObject {
+    return {
+      id: this.id!,
+      url: this.url,
+      updateInterval: this.updateInterval,
+      status: this.status,
+    }
+  }
+
   private updateJob(): void {
     if (this.id === null)
       return;
@@ -54,7 +70,6 @@ export class Job {
       {params: {'id': this.id.toString()}}).subscribe(
       (resp: any) => {
         resp = resp as JobResponse;
-        console.log(resp);
         if (resp.status !== this.status) {
           this.status = resp.status;
           this.statusUpdateSubject.next(this.status);
@@ -74,6 +89,13 @@ export class Job {
   }
 }
 
+export interface JobStorageObject {
+  id: number;
+  url: string;
+  updateInterval: number;
+  status: JobStatus
+}
+
 export enum JobStatus {
   PENDING = "PENDING",
   RUNNING = "RUNNING",
@@ -83,7 +105,7 @@ export enum JobStatus {
 }
 
 export interface JobResponse {
-  id: number;
+  id: number
   type: string;
   status: JobStatus;
   progress: number;

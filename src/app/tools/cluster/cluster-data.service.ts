@@ -16,29 +16,32 @@ export class ClusterDataService {
   private dataSubject = new Subject<Source[]>();
   public data$ = this.dataSubject.asObservable();
 
-  private hasFSR: boolean = false;
+  private hasFSR: boolean = this.storageService.getHasFSR();
 
   constructor(
     private http: HttpClient,
     private dataSourceService: ClusterDataSourceService,
     private storageService: ClusterStorageService) {
+    this.setSources(this.storageService.getSources());
+    this.setHasFSR(this.storageService.getHasFSR());
     this.dataSourceService.rawData$.subscribe(
       () => {
         this.sources = this.dataSourceService.getSources();
         this.filters = this.dataSourceService.getFilters();
       }
-    )
+    );
   }
 
-  public init() {
-    this.sources = [];
-    this.filters = [];
-    this.hasFSR = false;
-    this.dataSourceService.init();
+  public reset() {
+    this.setSources([]);
+    this.filters = this.generateFilterList();
+    this.setHasFSR(false);
   }
 
   public setHasFSR(hasFSR: boolean) {
     this.hasFSR = hasFSR;
+    this.storageService.setHasFSR(hasFSR);
+    this.dataSubject.next(this.sources);
   }
 
   public getHasFSR(): boolean {
@@ -47,6 +50,16 @@ export class ClusterDataService {
 
   public getSources(): Source[] {
     return this.sources;
+  }
+
+  public getFilters(): FILTER[] {
+    return this.filters;
+  }
+
+  public setSources(sources: Source[]) {
+    this.sources = sources;
+    this.dataSubject.next(this.sources);
+    this.storageService.setSources(this.sources);
   }
 
   public getAstrometry(): { id: string, astrometry: Astrometry }[] {
@@ -61,7 +74,6 @@ export class ClusterDataService {
     }).length;
   }
 
-
   fetchCatalogFetch(ra: number, dec: number, radius: number, catalogs: Catalogs[]): Job {
     const catalogJob = new Job('/cluster/catalog', this.http, 200);
     let payload: any = {
@@ -75,8 +87,10 @@ export class ClusterDataService {
     catalogJob.createJob(payload);
     catalogJob.complete$.subscribe(
       (complete) => {
-        if (complete)
+        if (complete) {
           this.getCatalogResults(catalogJob.getJobId());
+        }
+
       });
     return catalogJob;
   }
@@ -86,10 +100,24 @@ export class ClusterDataService {
     fsrJob.createJob({sources: this.getAstrometry()});
     fsrJob.complete$.subscribe(
       (complete) => {
-        if (complete)
+        if (complete) {
           this.getFSRResults(fsrJob.getJobId());
+          this.setHasFSR(true);
+        }
       });
     return fsrJob;
+  }
+
+  private generateFilterList(): FILTER[] {
+    const filters: FILTER[] = [];
+    this.sources.forEach((source) => {
+      source.photometries.forEach((photometry) => {
+        if (!filters.includes(photometry.filter)) {
+          filters.push(photometry.filter);
+        }
+      });
+    });
+    return filters;
   }
 
   private getCatalogResults(id: number | null) {
@@ -97,11 +125,9 @@ export class ClusterDataService {
       this.http.get(`${environment.apiUrl}/cluster/catalog`,
         {params: {'id': id}}).subscribe(
         (resp: any) => {
-          const {sources, filters} = sourceSerialization(resp['catalog']);
-          this.sources = sources;
-          this.filters = filters;
+          const {sources, filters} = sourceSerialization(resp['output_sources']);
+          this.setSources(sources);
           this.setHasFSR(true);
-          this.dataSubject.next(this.sources);
         }
       );
   }
@@ -111,8 +137,7 @@ export class ClusterDataService {
       this.http.get(`${environment.apiUrl}/cluster/fsr`,
         {params: {'id': id}}).subscribe(
         (resp: any) => {
-          this.sources = appendFSRResults(this.sources, resp['FSR']);
-          this.dataSubject.next(this.sources);
+          this.setSources(appendFSRResults(this.sources, resp['FSR']));
           console.log(this.sources);
         }
       );

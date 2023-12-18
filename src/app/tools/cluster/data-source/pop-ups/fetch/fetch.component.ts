@@ -7,6 +7,9 @@ import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../../../../environments/environment";
 import {ClusterDataService} from "../../../cluster-data.service";
 import {ClusterDataSourceService} from "../../cluster-data-source.service";
+import {ClusterStorageService} from "../../../storage/cluster-storage.service";
+import {Job} from "../../../../../shared/job/job";
+import {ClusterService} from "../../../cluster.service";
 
 @Component({
   selector: 'app-fetch',
@@ -30,8 +33,10 @@ export class FetchComponent {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: ClusterLookUpData,
               private http: HttpClient,
+              private service: ClusterService,
               private dataSourceService: ClusterDataSourceService,
-              private dataService: ClusterDataService) {
+              private dataService: ClusterDataService,
+              private clusterStorageService: ClusterStorageService) {
   }
 
   testRadius() {
@@ -63,14 +68,24 @@ export class FetchComponent {
 
   fetchCatalog() {
     this.loading = true;
-    let job = this.dataService.fetchCatalogFetch(
+    this.service.setClusterName(this.formGroup.controls['name'].value);
+    let job: Job = this.dataService.fetchCatalogFetch(
       this.formGroup.controls['ra'].value,
       this.formGroup.controls['dec'].value,
       this.formGroup.controls['radius'].value,
       [this.formGroup.controls['catalog'].value]
     );
+    job.update$.subscribe((job) => {
+      this.clusterStorageService.setLookUpJob(job.getStorageObject());
+    });
     job.complete$.subscribe((complete) => {
       this.loading = false;
     });
+  }
+
+  cancel() {
+    this.service.reset();
+    this.dataService.reset();
+    this.clusterStorageService.resetDataSource();
   }
 }

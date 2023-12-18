@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { LookUpComponent } from './look-up.component';
+import {LookUpComponent} from './look-up.component';
 
 describe('LookUpComponent', () => {
   let component: LookUpComponent;

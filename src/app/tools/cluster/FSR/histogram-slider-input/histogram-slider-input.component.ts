@@ -1,7 +1,6 @@
-import {AfterViewInit, Component, Output} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import * as Highcharts from "highcharts";
 import HC_histogram from 'highcharts/modules/histogram-bellcurve';
-import {ClusterDataService} from "../../cluster-data.service";
 import {debounceTime, Subject} from "rxjs";
 import {FormControl, FormGroup} from "@angular/forms";
 
@@ -12,26 +11,39 @@ HC_histogram(Highcharts);
   templateUrl: './histogram-slider-input.component.html',
   styleUrls: ['./histogram-slider-input.component.scss', '../../../shared/interface/tools.scss']
 })
-export class HistogramSliderInputComponent implements AfterViewInit {
+export class HistogramSliderInputComponent implements OnInit, AfterViewInit {
   Highcharts: typeof Highcharts = Highcharts;
   updateFlag: boolean = true;
   chartConstructor: any = "chart";
   chartObject!: Highcharts.Chart;
 
-  title: string = "Distance";
-  unit: string = "kilo-parsec";
-  data = this.dataService.getDistance();
+  @Input()
+  title!: string;
+  @Input()
+  unit!: string;
+  @Input()
+  initData!: number[];
+  @Input()
+  $data!: Subject<number[]>;
+  @Output()
+  public $range: EventEmitter<range> = new EventEmitter<range>();
+  @Output()
+  public $histogramRange: EventEmitter<range> = new EventEmitter<range>();
+  @Output()
+  public $bin: EventEmitter<number> = new EventEmitter<number>();
+
+  data: number[] = [];
 
   fullDataRange!: range;
 
   histogramRange!: range;
   histogramBin: number = 10;
 
-  histogramFormGroup: FormGroup;
+  histogramFormGroup!: FormGroup;
 
   dataRange!: range;
 
-  dataFormGroup: FormGroup;
+  dataFormGroup!: FormGroup;
   chartOptions: Highcharts.Options = {
     chart: {
       animation: false,
@@ -72,7 +84,7 @@ export class HistogramSliderInputComponent implements AfterViewInit {
       {
         id: 'data',
         type: 'scatter',
-        data: this.data,
+        data: this.initData,
         visible: false,
         xAxis: 1,
       },
@@ -105,28 +117,13 @@ export class HistogramSliderInputComponent implements AfterViewInit {
       }
     }
   };
-  private rangeSubject: Subject<range> = new Subject<range>();
-  @Output()
-  range$ = this.rangeSubject.asObservable();
-  private histogramRangeSubject: Subject<range> = new Subject<range>();
-  @Output()
-  histogramRange$ = this.histogramRangeSubject.asObservable();
-  private histogramBinSubject: Subject<number> = new Subject<number>();
-  @Output()
-  histogramBin$ = this.histogramBinSubject.asObservable();
-  private histogramIsLogSubject: Subject<boolean> = new Subject<boolean>();
 
-  constructor(private dataService: ClusterDataService) {
-    this.dataService.data$.subscribe(
-      () => {
-        this.data = this.dataService.getDistance();
-        this.updateHistogramRange();
-        this.updateHistogramBin(this.histogramBin);
-        this.updateArea();
-        this.updateXAxis();
-        this.resetInputValues();
-      }
-    );
+
+  constructor() {
+  }
+
+  ngOnInit() {
+    this.data = this.initData;
     this.setExtremes();
     this.histogramFormGroup = new FormGroup({
       sliderMin: new FormControl(this.histogramRange.min),
@@ -143,6 +140,17 @@ export class HistogramSliderInputComponent implements AfterViewInit {
     });
     this.linkHistogramSliderInput();
     this.linkDataSliderInput();
+    this.$data.subscribe(
+      (data) => {
+        this.data = data;
+        this.setExtremes();
+        this.updateHistogramRange();
+        this.updateHistogramBin(this.getDefaultBin());
+        this.updateArea();
+        this.updateXAxis();
+        this.resetInputValues();
+      }
+    );
     this.histogramFormGroup.controls['bin'].valueChanges.pipe(
       debounceTime(25)
     ).subscribe(
@@ -159,7 +167,7 @@ export class HistogramSliderInputComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.updateHistogramRange();
-    this.updateHistogramBin(10);
+    this.updateHistogramBin(this.getDefaultBin());
     this.updateArea();
   }
 
@@ -185,7 +193,7 @@ export class HistogramSliderInputComponent implements AfterViewInit {
     let min: number;
     let max: number;
     if (this.data.length > 0) {
-      min = this.data[0] < 0 ? 0 : this.data[0];
+      min = this.data[0];
       max = this.data[this.data.length - 1];
     } else {
       min = 0;
@@ -207,7 +215,19 @@ export class HistogramSliderInputComponent implements AfterViewInit {
     this.dataFormGroup.controls['inputMax'].setValue(this.histogramRange.max, {emitEvent: false});
   }
 
+  private getDefaultBin(plotData?: number[]): number {
+    if (plotData == null)
+      plotData = this.data;
+    if (plotData.length === 0)
+      return 10;
+    const n = plotData.length;
+    const iqr = plotData[Math.floor(n * 0.75)] - plotData[Math.floor(n * 0.25)];
+    const binWidth = 2 * iqr * Math.pow(n, -1 / 3);
+    return Math.ceil((plotData[plotData.length - 1] - plotData[0]) / binWidth);
+  }
+
   private updateHistogramBin(value: number) {
+    this.histogramBin = value;
     this.chartObject.series[0].update(
       {
         name: '#Stars in Bin',
@@ -216,6 +236,8 @@ export class HistogramSliderInputComponent implements AfterViewInit {
         pointPlacement: 'on',
         binsNumber: value > 0 ? value : 10,
       });
+    this.histogramFormGroup.controls['bin'].setValue(value, {emitEvent: false});
+    this.$bin.next(value);
   }
 
   private updateHistogramRange() {
@@ -227,6 +249,7 @@ export class HistogramSliderInputComponent implements AfterViewInit {
     if (plotData.length !== 0) {
       this.chartObject.series[1].setData(plotData);
     }
+    this.updateHistogramBin(this.getDefaultBin(plotData));
   }
 
   private updateXAxis() {
@@ -273,8 +296,7 @@ export class HistogramSliderInputComponent implements AfterViewInit {
       this.setDataRange(formSource.HISTOGRAM);
     }
     this.updateHistogramRange();
-    this.updateHistogramBin(this.histogramBin);
-    this.histogramRangeSubject.next(this.histogramRange);
+    this.$histogramRange.next(this.histogramRange);
   }
 
   private linkHistogramSliderInput() {
@@ -331,6 +353,7 @@ export class HistogramSliderInputComponent implements AfterViewInit {
       }
     }
     this.updateArea();
+    this.$range.next(this.dataRange);
   }
 
   private linkDataSliderInput() {

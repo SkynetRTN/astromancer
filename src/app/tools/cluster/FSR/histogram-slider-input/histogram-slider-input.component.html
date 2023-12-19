@@ -50,19 +50,19 @@
         <input [formControlName]="'sliderMax'" matSliderEndThumb>
       </mat-slider>
     </div>
-    <div class="component" style="width: 150px">
+    <div class="component" style="width: 200px">
       <h4>Cluster {{title}}</h4>
       <i>({{unit}})</i>
     </div>
-    <div class="component" style="width: calc((100% - 150px) / 2); padding: 5px">
+    <div class="component" style="width: calc((100% - 200px) / 2); padding: 5px">
       <mat-form-field>
-        <mat-label>{{title}} Min</mat-label>
+        <mat-label>Min {{title}}</mat-label>
         <input [formControlName]="'inputMin'" [step]="0.01" matInput type="number">
       </mat-form-field>
     </div>
-    <div class="component" style="width: calc((100% - 150px) / 2); padding: 5px">
+    <div class="component" style="width: calc((100% - 200px) / 2); padding: 5px">
       <mat-form-field>
-        <mat-label>{{title}} Max</mat-label>
+        <mat-label>Max {{title}}</mat-label>
         <input [formControlName]="'inputMax'" [step]="0.01" matInput type="number">
       </mat-form-field>
     </div>

@@ -1,13 +1,37 @@
 <div class="row tool-container">
   <div class="row histogram-row">
     <div class="col-4 histogram-col">
-      <app-histogram-slider-input style="height: 100%"></app-histogram-slider-input>
+      <app-histogram-slider-input
+        ($bin)="pmraBinsHandler($event)"
+        ($histogramRange)="pmraHistogramRangeHandler($event)"
+        ($range)="pmraRangeHandler($event)"
+        [$data]="$pmra"
+        [initData]="pmraInitData"
+        [title]="'Proper Motion RA'"
+        [unit]="'mas/yr'"
+      ></app-histogram-slider-input>
     </div>
     <div class="col-4 histogram-col">
-      <h1>pmra histogram</h1>
+      <app-histogram-slider-input
+        ($bin)="pmdecBinsHandler($event)"
+        ($histogramRange)="pmdecHistogramRangeHandler($event)"
+        ($range)="pmdecRangeHandler($event)"
+        [$data]="$pmdec"
+        [initData]="pmdecInitData"
+        [title]="'Proper Motion DEC'"
+        [unit]="'mas/yr'"
+      ></app-histogram-slider-input>
     </div>
     <div class="col-4 histogram-col">
-      <h1>pmdec histogram</h1>
+      <app-histogram-slider-input
+        ($bin)="distanceBinsHandler($event)"
+        ($histogramRange)="distanceHistogramRangeHandler($event)"
+        ($range)="distanceRangeHandler($event)"
+        [$data]="$distance"
+        [initData]="distanceInitData"
+        [title]="'Distance'"
+        [unit]="'kilo-parsec'"
+      ></app-histogram-slider-input>
     </div>
   </div>
   <div class="row others-row">

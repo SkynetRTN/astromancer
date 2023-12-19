@@ -57,7 +57,6 @@ export class ClusterDataService {
   }
 
   public setSources(sources: Source[]) {
-    console.log('setSources', sources);
     this.sources = sources;
     this.filters = this.generateFilterList();
     this.dataSubject.next(this.sources);
@@ -135,10 +134,34 @@ export class ClusterDataService {
   getDistance(): (number)[] {
     return this.sources.filter(
       (source) => {
-        return source.fsr && source.fsr.distance;
+        return source.fsr && source.fsr.distance && source.fsr.distance > 0;
       }
     ).map((source) => {
       return parseFloat((source.fsr!.distance / 1000).toFixed(2));
+    }).sort((a, b) => {
+      return a - b;
+    });
+  }
+
+  getPmra(): number[] {
+    return this.sources.filter(
+      (source) => {
+        return source.fsr && source.fsr.pm_ra;
+      }
+    ).map((source) => {
+      return parseFloat((source.fsr!.pm_ra).toFixed(2));
+    }).sort((a, b) => {
+      return a - b;
+    });
+  }
+
+  getPmdec(): number[] {
+    return this.sources.filter(
+      (source) => {
+        return source.fsr && source.fsr.pm_dec;
+      }
+    ).map((source) => {
+      return parseFloat((source.fsr!.pm_dec).toFixed(2));
     }).sort((a, b) => {
       return a - b;
     });

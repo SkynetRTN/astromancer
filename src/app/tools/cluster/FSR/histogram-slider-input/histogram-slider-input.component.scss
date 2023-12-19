@@ -1,0 +1,43 @@
+
+.combo-container {
+  display: flex;
+  width: 100%;
+  height: min-content;
+  flex-direction: column;
+}
+
+.title {
+  width: 250px;
+  margin: 0;
+  display: inline;
+  align-self: baseline;
+}
+
+.component {
+  display: inline-block;
+  padding: 0px;
+  align-self: baseline;
+}
+
+mat-slider {
+  width: 100%;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+h4 {
+  margin: 0;
+  padding: 0;
+}
+
+.histogram-container {
+  height: 250px;
+  width: 100%;
+}
+
+.histogram-control-container {
+  height: min-content;
+  width: 100%;
+}

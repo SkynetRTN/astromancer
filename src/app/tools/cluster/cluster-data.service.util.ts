@@ -22,8 +22,8 @@ export function sourceSerialization(sources: any[]): { 'sources': Source[], 'fil
         dec: entry['astrometry']['dec'],
       },
       fsr: {
-        pm_ra: entry['fsr']['pm_ra'],
-        pm_dec: entry['fsr']['pm_dec'],
+        pm_ra: entry['fsr']['pmra'],
+        pm_dec: entry['fsr']['pmdec'],
         distance: entry['fsr']['distance'],
       },
       photometries: photometries,

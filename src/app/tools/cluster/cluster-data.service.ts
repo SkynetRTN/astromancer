@@ -57,6 +57,7 @@ export class ClusterDataService {
   }
 
   public setSources(sources: Source[]) {
+    console.log('setSources', sources);
     this.sources = sources;
     this.filters = this.generateFilterList();
     this.dataSubject.next(this.sources);
@@ -130,6 +131,19 @@ export class ClusterDataService {
       );
   }
 
+  // in kparsec not parsec
+  getDistance(): (number)[] {
+    return this.sources.filter(
+      (source) => {
+        return source.fsr && source.fsr.distance;
+      }
+    ).map((source) => {
+      return parseFloat((source.fsr!.distance / 1000).toFixed(2));
+    }).sort((a, b) => {
+      return a - b;
+    });
+  }
+
   private generateFilterList(): FILTER[] {
     const filters: FILTER[] = [];
     this.sources.forEach((source) => {
@@ -141,4 +155,5 @@ export class ClusterDataService {
     });
     return filters;
   }
+
 }

@@ -1,8 +1,26 @@
 
 .histogram-row {
-  height: calc(50% + 56px);
+  height: min-content;
+  margin: 0;
+  padding: 0;
 }
 
+
 .others-row {
-  height: calc(50% - 56px);
+  height: 300px;
+  @media screen and (min-height: 800px) {
+    height: calc(100% - 530px);
+  }
+  margin: 0;
+  padding: 0;
+}
+
+.histogram-col {
+  height: min-content;
+  margin: 0;
+  padding: 0;
+}
+
+.tool-container {
+  overflow: scroll;
 }

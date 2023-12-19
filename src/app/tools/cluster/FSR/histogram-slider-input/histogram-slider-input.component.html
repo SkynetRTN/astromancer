@@ -1,0 +1,68 @@
+<div class="combo-container">
+  <div [formGroup]="histogramFormGroup" class="histogram-control-container">
+    <div class="component" style="width: 120px">
+      <mat-label>Histogram Range</mat-label>
+    </div>
+    <div class="component"
+         style="width: calc(100% - 120px); padding-left: 0px; padding-right: 25px">
+      <mat-slider [discrete]="false" [max]="fullDataRange.max" [min]="fullDataRange.min" [step]="0.01">
+        <input [formControlName]="'sliderMin'" matSliderStartThumb>
+        <input [formControlName]="'sliderMax'" matSliderEndThumb>
+      </mat-slider>
+    </div>
+    <div class="row">
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>Histogram Min</mat-label>
+          <input [formControlName]="'inputMin'" [step]="0.01" matInput type="number">
+        </mat-form-field>
+      </div>
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>Histogram Max</mat-label>
+          <input [formControlName]="'inputMax'" [step]="0.01" matInput type="number">
+        </mat-form-field>
+      </div>
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>Number of Bins</mat-label>
+          <input [formControlName]="'bin'" matInput type="number">
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <div class="histogram-container">
+    <highcharts-chart
+      (chartInstance)="chartInitialized($event)"
+      [(update)]="updateFlag"
+      [Highcharts]="Highcharts"
+      [constructorType]="chartConstructor"
+      [options]="chartOptions"
+      style="width: 100%; height: 100%; display: block;"
+    ></highcharts-chart>
+  </div>
+  <div [formGroup]="dataFormGroup" class="histogram-control-container">
+    <div class="component" style="width: 100%; padding-left: 43px; padding-right: 18px">
+      <mat-slider [discrete]="true" [max]="histogramRange.max" [min]="histogramRange.min" [step]="0.01">
+        <input [formControlName]="'sliderMin'" matSliderStartThumb>
+        <input [formControlName]="'sliderMax'" matSliderEndThumb>
+      </mat-slider>
+    </div>
+    <div class="component" style="width: 150px">
+      <h4>Cluster {{title}}</h4>
+      <i>({{unit}})</i>
+    </div>
+    <div class="component" style="width: calc((100% - 150px) / 2); padding: 5px">
+      <mat-form-field>
+        <mat-label>{{title}} Min</mat-label>
+        <input [formControlName]="'inputMin'" [step]="0.01" matInput type="number">
+      </mat-form-field>
+    </div>
+    <div class="component" style="width: calc((100% - 150px) / 2); padding: 5px">
+      <mat-form-field>
+        <mat-label>{{title}} Max</mat-label>
+        <input [formControlName]="'inputMax'" [step]="0.01" matInput type="number">
+      </mat-form-field>
+    </div>
+  </div>
+</div>

@@ -29,14 +29,19 @@ import {ClusterStorageService} from "./storage/cluster-storage.service";
 import {MatTabsModule} from "@angular/material/tabs";
 import {InProgressComponent} from './data-source/pop-ups/in-progress/in-progress.component';
 import {ResetComponent} from './data-source/pop-ups/reset/reset.component';
-import { FieldStarRemovalComponent } from './FSR/field-star-removal/field-star-removal.component';
+import {FieldStarRemovalComponent} from './FSR/field-star-removal/field-star-removal.component';
+import {HistogramSliderInputComponent} from './FSR/histogram-slider-input/histogram-slider-input.component';
+import {NgChartsModule} from "ng2-charts";
+import {HighchartsChartModule} from "highcharts-angular";
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
+import {MatSliderModule} from "@angular/material/slider";
 
 const routes: Routes = [
   {path: '', component: ClusterComponent, title: 'Cluster'}
 ];
 
 @NgModule({
-  declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent, FieldStarRemovalComponent],
+  declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent, FieldStarRemovalComponent, HistogramSliderInputComponent],
   imports: [
     RouterModule.forChild(routes),
     CommonModule,
@@ -55,6 +60,10 @@ const routes: Routes = [
     MatListModule,
     MatSelectModule,
     MatTabsModule,
+    NgChartsModule,
+    HighchartsChartModule,
+    MatSlideToggleModule,
+    MatSliderModule,
   ],
   exports: [ClusterComponent, RouterModule],
   providers: [ClusterDataSourceService, ClusterService, ClusterDataService, ClusterStorageService]

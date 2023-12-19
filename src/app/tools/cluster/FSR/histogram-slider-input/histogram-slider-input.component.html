@@ -5,7 +5,8 @@
     </div>
     <div class="component"
          style="width: calc(100% - 120px); padding-left: 0px; padding-right: 25px">
-      <mat-slider [discrete]="false" [max]="fullDataRange.max" [min]="fullDataRange.min" [step]="0.01">
+      <mat-slider [discrete]="false" [max]="fullDataRange.max" [min]="fullDataRange.min" [step]="0.01"
+                  class="histogram-slider">
         <input [formControlName]="'sliderMin'" matSliderStartThumb>
         <input [formControlName]="'sliderMax'" matSliderEndThumb>
       </mat-slider>
@@ -42,8 +43,9 @@
     ></highcharts-chart>
   </div>
   <div [formGroup]="dataFormGroup" class="histogram-control-container">
-    <div class="component" style="width: 100%; padding-left: 43px; padding-right: 18px">
-      <mat-slider [discrete]="true" [max]="histogramRange.max" [min]="histogramRange.min" [step]="0.01">
+    <div class="component" style="width: 100%; padding-left: 43px; padding-right: 10px">
+      <mat-slider [discrete]="false" [max]="histogramRange.max" [min]="histogramRange.min" [step]="0.01"
+                  class="data-slider">
         <input [formControlName]="'sliderMin'" matSliderStartThumb>
         <input [formControlName]="'sliderMax'" matSliderEndThumb>
       </mat-slider>

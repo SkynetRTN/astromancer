@@ -96,6 +96,7 @@ export class DefaultAppearanceSettings {
 export class ChartColor {
   private static readonly lineColorLightArray: string[] = ["red", "orange", "green", "blue"];
   private static readonly lineColorDarkArray: string[] = ["red", "orange", "green", "blue"];
+  private static readonly areaColor: string[] = ['#464646']
 
   public static getFontColor(mode: ChartColorMode): string {
     return mode === ChartColorMode.LIGHT ? '#2b4162' : '#f5f0f6';
@@ -111,6 +112,10 @@ export class ChartColor {
     else
       // return mode === ChartColorMode.LIGHT ? this.lineColorLightArray[index] : this.lineColorDarkArray[index];
       return this.lineColorLightArray[index];
+  }
+
+  public static getAreaColor(mode: ChartColorMode): string {
+    return this.areaColor[0];
   }
 
 

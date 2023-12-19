@@ -19,8 +19,12 @@
   align-self: baseline;
 }
 
-mat-slider {
-  width: 100%;
+.data-slider {
+  width: calc(100% - 7px);
+}
+
+.histogram-slider {
+  width: calc(100% - 20px);
 }
 
 mat-form-field {
@@ -40,4 +44,9 @@ h4 {
 .histogram-control-container {
   height: min-content;
   width: 100%;
+}
+
+::ng-deep.highcharts-area {
+  fill: grey !important;
+  stroke: grey !important;
 }

@@ -36,6 +36,7 @@ export class HistogramSliderInputComponent implements AfterViewInit {
     chart: {
       animation: false,
       styledMode: true,
+      marginRight: 10,
     },
     credits: {
       enabled: false,
@@ -46,15 +47,21 @@ export class HistogramSliderInputComponent implements AfterViewInit {
     legend: {
       enabled: false,
     },
-    xAxis: {
-      tickInterval: 1,
+    xAxis: [{
       alignTicks: false,
-    },
+      startOnTick: false,
+      endOnTick: false,
+      type: 'linear',
+      tickInterval: 0.5,
+    }, {
+      visible: false,
+    }],
     yAxis: {
       title: {
         text: undefined,
       },
       tickInterval: 100,
+      min: 0,
     },
     series: [
       {
@@ -67,7 +74,23 @@ export class HistogramSliderInputComponent implements AfterViewInit {
         type: 'scatter',
         data: this.data,
         visible: false,
-
+        xAxis: 1,
+      },
+      {
+        id: 'areaLeft',
+        type: 'area',
+        opacity: 0.3,
+        data: [],
+        threshold: Infinity,
+        xAxis: 0,
+      },
+      {
+        id: 'areaRight',
+        type: 'area',
+        opacity: 0.3,
+        data: [],
+        threshold: Infinity,
+        xAxis: 0,
       }
     ],
     tooltip: {
@@ -97,10 +120,10 @@ export class HistogramSliderInputComponent implements AfterViewInit {
     this.dataService.data$.subscribe(
       () => {
         this.data = this.dataService.getDistance();
-        console.log(this.data);
-        this.setExtremes();
         this.updateHistogramRange();
         this.updateHistogramBin(this.histogramBin);
+        this.updateArea();
+        this.updateXAxis();
         this.resetInputValues();
       }
     );
@@ -137,10 +160,25 @@ export class HistogramSliderInputComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.updateHistogramRange();
     this.updateHistogramBin(10);
+    this.updateArea();
   }
 
   chartInitialized($event: Highcharts.Chart) {
     this.chartObject = $event;
+  }
+
+  private updateArea(): void {
+    const data = {
+      left: [
+        [this.fullDataRange.min, -10],
+        [this.dataRange.min, -10],
+      ], right: [
+        [this.dataRange.max, -10],
+        [this.fullDataRange.max, -10],
+      ]
+    };
+    this.chartObject.series[2].setData(data.left);
+    this.chartObject.series[3].setData(data.right);
   }
 
   private setExtremes() {
@@ -170,18 +208,18 @@ export class HistogramSliderInputComponent implements AfterViewInit {
   }
 
   private updateHistogramBin(value: number) {
-    this.histogramBin = value;
-    const width = (this.histogramRange.max - this.histogramRange.min) / value;
     this.chartObject.series[0].update(
       {
         name: '#Stars in Bin',
         type: 'histogram',
         baseSeries: 'data',
-        binWidth: width <= 0 ? 1 : width,
+        pointPlacement: 'on',
+        binsNumber: value > 0 ? value : 10,
       });
   }
 
   private updateHistogramRange() {
+    this.updateXAxis();
     let plotData = this.data;
     plotData = plotData.filter((point) => {
       return point >= this.histogramRange.min && point <= this.histogramRange.max;
@@ -189,18 +227,11 @@ export class HistogramSliderInputComponent implements AfterViewInit {
     if (plotData.length !== 0) {
       this.chartObject.series[1].setData(plotData);
     }
-    this.updateXAxis();
   }
 
   private updateXAxis() {
-    let interval = (this.histogramRange.max - this.histogramRange.min) / 10;
-    this.chartObject.xAxis[0].update(
-      {
-        alignTicks: false,
-        tickInterval: parseFloat(interval.toFixed(1)),
-        min: this.histogramRange.min,
-        max: this.histogramRange.max
-      });
+    this.chartObject.xAxis[0].setExtremes(this.histogramRange.min,
+      this.histogramRange.max);
   }
 
   private setHistogramRange(source: formSource) {
@@ -299,6 +330,7 @@ export class HistogramSliderInputComponent implements AfterViewInit {
         this.dataFormGroup.controls['inputMax'].setValue(this.dataRange.max, {emitEvent: false});
       }
     }
+    this.updateArea();
   }
 
   private linkDataSliderInput() {

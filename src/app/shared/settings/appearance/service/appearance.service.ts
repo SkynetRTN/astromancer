@@ -76,6 +76,10 @@ export class AppearanceService {
     return ChartColor.getBackgroundColor(this.getChartColorMode());
   }
 
+  public getChartAreaColor(): string {
+    return ChartColor.getAreaColor(this.getChartColorMode());
+  }
+
   private getFontSizeClassname(fontSize: FontSizes): string {
     return 'fontSize-' + fontSize;
   }

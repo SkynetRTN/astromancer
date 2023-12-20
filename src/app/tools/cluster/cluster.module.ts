@@ -36,13 +36,14 @@ import {HighchartsChartModule} from "highcharts-angular";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MatSliderModule} from "@angular/material/slider";
 import {PieChartComponent} from './FSR/pie-chart/pie-chart.component';
+import { PmChartComponent } from './FSR/pm-chart/pm-chart.component';
 
 const routes: Routes = [
   {path: '', component: ClusterComponent, title: 'Cluster'}
 ];
 
 @NgModule({
-  declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent, FieldStarRemovalComponent, HistogramSliderInputComponent, PieChartComponent],
+  declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent, FieldStarRemovalComponent, HistogramSliderInputComponent, PieChartComponent, PmChartComponent],
   imports: [
     RouterModule.forChild(routes),
     CommonModule,

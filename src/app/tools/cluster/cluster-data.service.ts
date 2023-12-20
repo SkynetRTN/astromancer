@@ -194,6 +194,12 @@ export class ClusterDataService {
     });
   }
 
+  get2DpmChartData(): number[][] {
+    return this.getSources(true).map((source) => {
+      return [source.fsr!.pm_ra, source.fsr!.pm_dec];
+    });
+  }
+
   private generateFilterList(): FILTER[] {
     const filters: FILTER[] = [];
     this.sources.forEach((source) => {

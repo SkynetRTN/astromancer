@@ -60,10 +60,7 @@ export class FieldStarRemovalComponent {
   }
 
   pmraRangeHandler($event: range) {
-    this.pmraParams.range = $event;
-    this.setFSRParams();
-    this.$pmdec.next({data: this.dataService.getPmdec(), emit: false});
-    this.$distance.next({data: this.dataService.getDistance(), emit: false});
+    console.log($event);
   }
 
   pmraBinsHandler($event: number) {
@@ -95,6 +92,10 @@ export class FieldStarRemovalComponent {
       pmra: this.pmraParams.range,
       pmdec: this.pmdecParams.range
     });
+  }
+
+  pmraInit() {
+    this.$pmra.next({data: this.dataService.getPmra(), emit: true});
   }
 }
 

@@ -3,6 +3,7 @@ import {range} from "../histogram-slider-input/histogram-slider-input.component"
 import {ClusterDataService} from "../../cluster-data.service";
 import {Subject} from "rxjs";
 import {FsrComponents} from "../fsr.util";
+import {ClusterService} from "../../cluster.service";
 
 @Component({
   selector: 'app-field-star-removal',
@@ -28,65 +29,93 @@ export class FieldStarRemovalComponent {
     histogramRange: {min: 0, max: 0}
   }
 
-  $pmra: Subject<{ data: number[], emit: boolean }> = new Subject<{ data: number[], emit: boolean }>;
+  $pmra: Subject<{ data: number[], isNew: boolean }> = new Subject<{ data: number[], isNew: boolean }>;
   pmraInitData: number[] = this.dataService.getPmra();
-  $pmdec: Subject<{ data: number[], emit: boolean }> = new Subject<{ data: number[], emit: boolean }>;
+  $pmdec: Subject<{ data: number[], isNew: boolean }> = new Subject<{ data: number[], isNew: boolean }>;
   pmdecInitData: number[] = this.dataService.getPmdec();
-  $distance: Subject<{ data: number[], emit: boolean }> = new Subject<{ data: number[], emit: boolean }>;
+  $distance: Subject<{ data: number[], isNew: boolean }> = new Subject<{ data: number[], isNew: boolean }>;
   distanceInitData: number[] = this.dataService.getDistance();
 
-  constructor(public dataService: ClusterDataService) {
+  constructor(private service: ClusterService,
+              public dataService: ClusterDataService) {
     this.dataService.data$.subscribe(
       () => {
-        this.$distance.next({data: this.dataService.getDistance(), emit: true});
-        this.$pmra.next({data: this.dataService.getPmra(), emit: true});
-        this.$pmdec.next({data: this.dataService.getPmdec(), emit: true});
+        this.dataService.setFSRCriteria({
+          distance: null,
+          pmra: null,
+          pmdec: null
+        });
+        this.$distance.next({data: this.dataService.getDistance(), isNew: true});
+        this.$pmra.next({data: this.dataService.getPmra(), isNew: true});
+        this.$pmdec.next({data: this.dataService.getPmdec(), isNew: true});
+      });
+    this.dataService.fsrFiltered$.subscribe(
+      (data) => {
+        this.$pmra.next({data: this.dataService.getPmra(), isNew: false});
+        this.$pmdec.next({data: this.dataService.getPmdec(), isNew: false});
+        this.$distance.next({data: this.dataService.getDistance(), isNew: false});
       });
   }
 
   distanceRangeHandler($event: range) {
     this.distanceParams.range = $event;
     this.setFSRParams();
-    this.$pmra.next({data: this.dataService.getPmra(), emit: false});
-    this.$pmdec.next({data: this.dataService.getPmdec(), emit: false});
   }
 
   distanceBinsHandler($event: number) {
-    this.distanceParams.bin = $event;
   }
 
   distanceHistogramRangeHandler($event: range) {
     this.distanceParams.histogramRange = $event;
+    this.setFSRFraming();
   }
 
   pmraRangeHandler($event: range) {
-    console.log($event);
+    this.pmraParams.range = $event;
+    this.setFSRParams();
   }
 
   pmraBinsHandler($event: number) {
-    this.pmraParams.bin = $event;
+    // this.setFSRParams()
   }
 
   pmraHistogramRangeHandler($event: range) {
     this.pmraParams.histogramRange = $event;
+    this.setFSRFraming();
   }
 
   pmdecRangeHandler($event: range) {
     this.pmdecParams.range = $event;
     this.setFSRParams();
-    this.$pmra.next({data: this.dataService.getPmra(), emit: false});
-    this.$distance.next({data: this.dataService.getDistance(), emit: false});
   }
 
   pmdecBinsHandler($event: number) {
-    this.pmdecParams.bin = $event;
+    // this.setFSRParams()
   }
 
   pmdecHistogramRangeHandler($event: range) {
     this.pmdecParams.histogramRange = $event;
+    this.setFSRFraming();
+  }
+
+  pmraInit() {
+    this.$pmra.next({data: this.dataService.getPmra(), isNew: true});
+  }
+
+  pmdecInit() {
+    this.$pmdec.next({data: this.dataService.getPmdec(), isNew: true});
+  }
+
+  distanceInit() {
+    this.$distance.next({data: this.dataService.getDistance(), isNew: true});
   }
 
   private setFSRParams() {
+    this.service.setFsrParams({
+      distance: this.distanceParams.range,
+      pmra: this.pmraParams.range,
+      pmdec: this.pmdecParams.range,
+    });
     this.dataService.setFSRCriteria({
       distance: this.distanceParams.range,
       pmra: this.pmraParams.range,
@@ -94,8 +123,12 @@ export class FieldStarRemovalComponent {
     });
   }
 
-  pmraInit() {
-    this.$pmra.next({data: this.dataService.getPmra(), emit: true});
+  private setFSRFraming() {
+    this.service.setFsrFraming({
+      distance: this.distanceParams.histogramRange,
+      pmra: this.pmraParams.histogramRange,
+      pmdec: this.pmdecParams.histogramRange
+    });
   }
 }
 

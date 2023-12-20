@@ -26,12 +26,12 @@ export class CmdFsrComponent implements AfterViewInit {
     },
     xAxis: {
       title: {
-        text: this.blueFilter + " - " + this.redFilter + " (mag)"
+        text: "",
       },
     },
     yAxis: {
       title: {
-        text: this.blueFilter + " (mag)"
+        text: ""
       },
       reversed: true,
     },
@@ -56,11 +56,13 @@ export class CmdFsrComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.setData();
+    this.setAxisLabels();
     this.dataService.fsrFiltered$.pipe(
       debounceTime(500)
     ).subscribe(
       () => {
         this.setData();
+        this.setAxisLabels();
       });
   }
 
@@ -76,6 +78,15 @@ export class CmdFsrComponent implements AfterViewInit {
       marker: {
         radius: 1,
       }
+    });
+  }
+
+  private setAxisLabels() {
+    this.chartObject.xAxis[0].setTitle({
+      text: this.blueFilter + " - " + this.redFilter + " (mag)"
+    });
+    this.chartObject.yAxis[0].setTitle({
+      text: this.blueFilter + " (mag)"
     });
   }
 

@@ -14,6 +14,7 @@ import {FsrParameters} from "./FSR/fsr.util";
 export class ClusterDataService {
   private sources: Source[] = []; // always sorted in ascending order by id
   private sources_fsr: Source[] = [];
+  private sources_not_fsr: Source[] = [];
   private filters: FILTER[] = [];
   private hasFSR: boolean = this.storageService.getHasFSR();
   private dataSubject = new Subject<Source[]>();
@@ -60,17 +61,18 @@ export class ClusterDataService {
 
   public setFSRCriteria(fsr: FsrParameters) {
     this.sources_fsr = [];
+    this.sources_not_fsr = [];
     if (this.hasFSR) {
       const pmBoolGlobal = fsr.pmra === null || fsr.pmdec === null;
-      let pmra = 0;
-      let pmdec = 0;
-      let pmCriteria = 0;
+      let a: number
+      let b: number;
+      let center_ra: number;
+      let center_dec: number;
       if (!pmBoolGlobal) {
-        const pmra_err = (fsr.pmra!.max - fsr.pmra!.min) / 2
-        const pmdec_err = (fsr.pmdec!.max - fsr.pmdec!.min) / 2
-        pmra = (fsr.pmra!.max + fsr.pmra!.min) / 2
-        pmdec = (fsr.pmdec!.max + fsr.pmdec!.min) / 2
-        pmCriteria = Math.pow(pmra_err, 2) + Math.pow(pmdec_err, 2);
+        a = (fsr.pmra!.max - fsr.pmra!.min) / 2;
+        b = (fsr.pmdec!.max - fsr.pmdec!.min) / 2;
+        center_ra = (fsr.pmra!.max + fsr.pmra!.min) / 2
+        center_dec = (fsr.pmdec!.max + fsr.pmdec!.min) / 2
       }
       for (const data of this.sources) {
         const distanceBool
@@ -78,15 +80,18 @@ export class ClusterDataService {
           (data.fsr && data.fsr.distance && data.fsr.distance >= fsr.distance.min * 1000 && data.fsr.distance <= fsr.distance.max * 1000);
         let pmBool: boolean = pmBoolGlobal;
         if (!pmBool && data.fsr && data.fsr.pm_ra && data.fsr.pm_dec) {
-          const pmDistance = Math.pow(data.fsr.pm_ra - pmra, 2)
-            + Math.pow(data.fsr.pm_dec - pmdec, 2);
-          pmBool = pmDistance <= pmCriteria;
+          const decDiff = b! * Math.sqrt(
+            1 - Math.pow((data.fsr.pm_ra - center_ra!) / a!, 2));
+          pmBool = data.fsr.pm_dec >= center_dec! - decDiff
+            && data.fsr.pm_dec <= center_dec! + decDiff;
         } else if (pmBoolGlobal &&
           (data.fsr == null || data.fsr.pm_ra == null || data.fsr.pm_dec == null)) {
           pmBool = false;
         }
         if (distanceBool && pmBool) {
           this.sources_fsr.push(data);
+        } else {
+          this.sources_not_fsr.push(data);
         }
       }
     }
@@ -173,7 +178,11 @@ export class ClusterDataService {
 
   // in kparsec not parsec
   getDistance(): (number)[] {
-    return this.getSources(true).map((source) => {
+    return this.sources_fsr.filter(
+      (source) => {
+        return source.fsr !== null && source.fsr.distance !== null;
+      }
+    ).map((source) => {
       return parseFloat((source.fsr!.distance / 1000).toFixed(2));
     }).sort((a, b) => {
       return a - b;
@@ -181,7 +190,11 @@ export class ClusterDataService {
   }
 
   getPmra(): number[] {
-    return this.getSources(true).map((source) => {
+    return this.sources_fsr.filter(
+      (source) => {
+        return source.fsr !== null && source.fsr.pm_ra !== null;
+      }
+    ).map((source) => {
       return parseFloat((source.fsr!.pm_ra).toFixed(2));
     }).sort((a, b) => {
       return a - b;
@@ -189,17 +202,31 @@ export class ClusterDataService {
   }
 
   getPmdec(): number[] {
-    return this.getSources(true).map((source) => {
+    return this.sources_fsr.filter(
+      (source) => {
+        return source.fsr !== null && source.fsr.pm_dec !== null;
+      }
+    ).map((source) => {
       return parseFloat((source.fsr!.pm_dec).toFixed(2));
     }).sort((a, b) => {
       return a - b;
     });
   }
 
-  get2DpmChartData(): number[][] {
-    return this.getSources(true).map((source) => {
+  get2DpmChartData(): { cluster: number[][], field: number[][] } {
+    const cluster = this.sources_fsr.filter(
+      (source) => {
+        return source.fsr !== null && source.fsr.pm_ra !== null && source.fsr.pm_dec !== null;
+      }
+    ).map((source) => {
       return [source.fsr!.pm_ra, source.fsr!.pm_dec];
     });
+    const field = this.sources_not_fsr.filter((source) => {
+      return source.fsr !== null && source.fsr.pm_ra !== null && source.fsr.pm_dec !== null;
+    }).map((source) => {
+      return [source.fsr!.pm_ra, source.fsr!.pm_dec];
+    });
+    return {cluster: cluster, field: field};
   }
 
   private generateFilterList(): FILTER[] {

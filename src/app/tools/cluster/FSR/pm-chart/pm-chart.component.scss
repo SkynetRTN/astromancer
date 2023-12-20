@@ -1,4 +1,27 @@
 .pm-chart-container {
+  height: 480px;
   width: 100%;
-  height: 100%;
 }
+
+
+::ng-deep .highcharts-color-2 {
+  fill: grey;
+  stroke: grey;
+}
+
+::ng-deep .highcharts-color-3 {
+  fill: grey;
+  stroke: grey;
+}
+
+
+//:host ::ng-deep .highcharts-color-2 .highcharts-tracker-line {
+//  fill: grey;
+//  stroke: grey;
+//  stroke-width: 3px;
+//}
+//
+//:host ::ng-deep .highcharts-legend-item .highcharts-line-series .highcharts-color-2 .highcharts-series-2 {
+//  fill: grey;
+//  stroke: grey;
+//}

@@ -6,19 +6,19 @@
   padding: 10px;
 }
 
-:host ::ng-deep .highcharts-color-1 .highcharts-area {
+::ng-deep .highcharts-color-1 .highcharts-area {
   fill-opacity: 0.35;
 }
 
-:host ::ng-deep .highcharts-color-2 {
+::ng-deep .highcharts-color-2 {
   stroke: var(--highcharts-color-1);
   fill: var(--highcharts-background-color);
 }
 
-:host ::ng-deep .highcharts-color-2 .highcharts-area {
+::ng-deep .highcharts-color-2 .highcharts-area {
   fill-opacity: 1;
 }
 
-:host ::ng-deep .highcharts-series-inactive {
+::ng-deep .highcharts-series-inactive {
   opacity: 1 !important;
 }

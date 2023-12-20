@@ -26,7 +26,7 @@ export class PieChartComponent implements AfterViewInit {
         dataLabels: {
           enabled: true,
           format: '{point.name} {point.percentage:.1f} %',
-          distance: -80,
+          // distance: -80,
         },
       }
     },

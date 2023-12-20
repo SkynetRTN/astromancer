@@ -16,18 +16,27 @@
         <mat-form-field>
           <mat-label>Histogram Min</mat-label>
           <input [formControlName]="'inputMin'" [step]="0.01" matInput type="number">
+          <mat-error *ngIf="histogramFormGroup.controls['inputMin'].hasError('invalid')">
+            {{fullDataRange.min}} < min < {{histogramRange.max}}
+          </mat-error>
         </mat-form-field>
       </div>
       <div class="col-4">
         <mat-form-field>
           <mat-label>Histogram Max</mat-label>
           <input [formControlName]="'inputMax'" [step]="0.01" matInput type="number">
+          <mat-error *ngIf="histogramFormGroup.controls['inputMax'].hasError('invalid')">
+            {{histogramRange.min}} < max < {{fullDataRange.max}}
+          </mat-error>
         </mat-form-field>
       </div>
       <div class="col-4">
         <mat-form-field>
           <mat-label>Number of Bins</mat-label>
           <input [formControlName]="'bin'" matInput type="number">
+          <mat-error *ngIf="histogramFormGroup.controls['bin'].hasError('invalid')">
+            bin > 0
+          </mat-error>
         </mat-form-field>
       </div>
     </div>
@@ -50,20 +59,26 @@
         <input [formControlName]="'sliderMax'" matSliderEndThumb>
       </mat-slider>
     </div>
-    <div class="component" style="width: 200px">
+    <div class="component" style="width: 150px">
       <h4>{{title}}</h4>
       <i>({{unit}})</i>
     </div>
-    <div class="component" style="width: calc((100% - 200px) / 2); padding: 5px">
+    <div class="component" style="width: calc((100% - 150px) / 2); padding: 5px">
       <mat-form-field>
         <mat-label>Min</mat-label>
         <input [formControlName]="'inputMin'" [step]="0.05" matInput type="number">
+        <mat-error *ngIf="dataFormGroup.controls['inputMin'].hasError('invalid')">
+          {{histogramRange.min}} < min < {{dataRange.max}}
+        </mat-error>
       </mat-form-field>
     </div>
-    <div class="component" style="width: calc((100% - 200px) / 2); padding: 5px">
+    <div class="component" style="width: calc((100% - 150px) / 2); padding: 5px">
       <mat-form-field>
         <mat-label>Max</mat-label>
         <input [formControlName]="'inputMax'" [step]="0.05" matInput type="number">
+        <mat-error *ngIf="dataFormGroup.controls['inputMax'].hasError('invalid')">
+          {{dataRange.min}} < max < {{histogramRange.max}}
+        </mat-error>
       </mat-form-field>
     </div>
   </div>

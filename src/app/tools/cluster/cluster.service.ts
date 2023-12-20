@@ -12,9 +12,15 @@ export class ClusterService {
     pmra: null,
     pmdec: null,
   };
+  private fsrFraming: FsrParameters = {
+    distance: null,
+    pmra: null,
+    pmdec: null,
+  }
   private fsrParamsSubject: Subject<FsrParameters> = new Subject<FsrParameters>();
   fsrParams$ = this.fsrParamsSubject.asObservable();
-
+  private fsrFramingSubject: Subject<FsrParameters> = new Subject<FsrParameters>();
+  fsrFraming$ = this.fsrFramingSubject.asObservable();
   private tabIndexSubject: Subject<number> = new Subject<number>();
   tabIndex$ = this.tabIndexSubject.asObservable();
 
@@ -33,6 +39,15 @@ export class ClusterService {
     this.fsrParams = params;
     this.dataService.setFSRCriteria(params);
     this.fsrParamsSubject.next(params);
+  }
+
+  setFsrFraming(params: FsrParameters) {
+    this.fsrFraming = params;
+    this.fsrFramingSubject.next(params);
+  }
+
+  getFsrFraming(): FsrParameters {
+    return this.fsrFraming;
   }
 
   reset() {

@@ -81,6 +81,9 @@ export class ClusterDataService {
           const pmDistance = Math.pow(data.fsr.pm_ra - pmra, 2)
             + Math.pow(data.fsr.pm_dec - pmdec, 2);
           pmBool = pmDistance <= pmCriteria;
+        } else if (pmBoolGlobal &&
+          (data.fsr == null || data.fsr.pm_ra == null || data.fsr.pm_dec == null)) {
+          pmBool = false;
         }
         if (distanceBool && pmBool) {
           this.sources_fsr.push(data);
@@ -170,11 +173,7 @@ export class ClusterDataService {
 
   // in kparsec not parsec
   getDistance(): (number)[] {
-    return this.sources.filter(
-      (source) => {
-        return source.fsr && source.fsr.distance && source.fsr.distance > 0;
-      }
-    ).map((source) => {
+    return this.getSources(true).map((source) => {
       return parseFloat((source.fsr!.distance / 1000).toFixed(2));
     }).sort((a, b) => {
       return a - b;
@@ -182,11 +181,7 @@ export class ClusterDataService {
   }
 
   getPmra(): number[] {
-    return this.sources.filter(
-      (source) => {
-        return source.fsr && source.fsr.pm_ra;
-      }
-    ).map((source) => {
+    return this.getSources(true).map((source) => {
       return parseFloat((source.fsr!.pm_ra).toFixed(2));
     }).sort((a, b) => {
       return a - b;
@@ -194,11 +189,7 @@ export class ClusterDataService {
   }
 
   getPmdec(): number[] {
-    return this.sources.filter(
-      (source) => {
-        return source.fsr && source.fsr.pm_dec;
-      }
-    ).map((source) => {
+    return this.getSources(true).map((source) => {
       return parseFloat((source.fsr!.pm_dec).toFixed(2));
     }).sort((a, b) => {
       return a - b;

@@ -28,25 +28,27 @@ export class FieldStarRemovalComponent {
     histogramRange: {min: 0, max: 0}
   }
 
-  $pmra: Subject<number[]> = new Subject<number[]>;
+  $pmra: Subject<{ data: number[], emit: boolean }> = new Subject<{ data: number[], emit: boolean }>;
   pmraInitData: number[] = this.dataService.getPmra();
-  $pmdec: Subject<number[]> = new Subject<number[]>;
+  $pmdec: Subject<{ data: number[], emit: boolean }> = new Subject<{ data: number[], emit: boolean }>;
   pmdecInitData: number[] = this.dataService.getPmdec();
-  $distance: Subject<number[]> = new Subject<number[]>;
+  $distance: Subject<{ data: number[], emit: boolean }> = new Subject<{ data: number[], emit: boolean }>;
   distanceInitData: number[] = this.dataService.getDistance();
 
   constructor(public dataService: ClusterDataService) {
     this.dataService.data$.subscribe(
       () => {
-        this.$distance.next(this.dataService.getDistance());
-        this.$pmra.next(this.dataService.getPmra());
-        this.$pmdec.next(this.dataService.getPmdec());
+        this.$distance.next({data: this.dataService.getDistance(), emit: true});
+        this.$pmra.next({data: this.dataService.getPmra(), emit: true});
+        this.$pmdec.next({data: this.dataService.getPmdec(), emit: true});
       });
   }
 
   distanceRangeHandler($event: range) {
     this.distanceParams.range = $event;
     this.setFSRParams();
+    this.$pmra.next({data: this.dataService.getPmra(), emit: false});
+    this.$pmdec.next({data: this.dataService.getPmdec(), emit: false});
   }
 
   distanceBinsHandler($event: number) {
@@ -60,6 +62,8 @@ export class FieldStarRemovalComponent {
   pmraRangeHandler($event: range) {
     this.pmraParams.range = $event;
     this.setFSRParams();
+    this.$pmdec.next({data: this.dataService.getPmdec(), emit: false});
+    this.$distance.next({data: this.dataService.getDistance(), emit: false});
   }
 
   pmraBinsHandler($event: number) {
@@ -73,6 +77,8 @@ export class FieldStarRemovalComponent {
   pmdecRangeHandler($event: range) {
     this.pmdecParams.range = $event;
     this.setFSRParams();
+    this.$pmra.next({data: this.dataService.getPmra(), emit: false});
+    this.$distance.next({data: this.dataService.getDistance(), emit: false});
   }
 
   pmdecBinsHandler($event: number) {

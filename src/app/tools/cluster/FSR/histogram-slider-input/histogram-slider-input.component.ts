@@ -24,7 +24,7 @@ export class HistogramSliderInputComponent implements OnInit, AfterViewInit {
   @Input()
   initData!: number[];
   @Input()
-  $data!: Subject<number[]>;
+  $data!: Subject<{ data: number[], emit: boolean }>;
   @Output()
   public $range: EventEmitter<range> = new EventEmitter<range>();
   @Output()
@@ -142,8 +142,9 @@ export class HistogramSliderInputComponent implements OnInit, AfterViewInit {
     this.linkDataSliderInput();
     this.$data.subscribe(
       (data) => {
-        this.data = data;
-        this.setExtremes();
+        this.data = data.data;
+        if (data.emit)
+          this.setExtremes();
         this.updateHistogramRange();
         this.updateHistogramBin(this.getDefaultBin());
         this.updateArea();
@@ -394,5 +395,5 @@ export enum formSource {
 
 export interface range {
   min: number,
-  max: number
+  max: number,
 }

@@ -22,6 +22,7 @@ export class ClusterService {
     private dataService: ClusterDataService,
     private storageService: ClusterStorageService) {
     this.clusterName = this.storageService.getName();
+    this.dataService.setFSRCriteria(this.fsrParams);
   }
 
   getFsrParams(): FsrParameters {

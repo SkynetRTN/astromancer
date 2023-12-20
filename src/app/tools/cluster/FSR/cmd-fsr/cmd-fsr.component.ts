@@ -1,0 +1,113 @@
+import {AfterViewInit, Component} from '@angular/core';
+import {ClusterDataService} from "../../cluster-data.service";
+import {FILTER} from "../../cluster.util";
+import * as Highcharts from "highcharts";
+import {debounceTime} from "rxjs";
+
+@Component({
+  selector: 'app-cmd-fsr',
+  templateUrl: './cmd-fsr.component.html',
+  styleUrls: ['./cmd-fsr.component.scss']
+})
+export class CmdFsrComponent implements AfterViewInit {
+  Highcharts: typeof Highcharts = Highcharts;
+  updateFlag: boolean = true;
+  chartConstructor: any = "chart";
+  chartObject!: Highcharts.Chart;
+  blueFilter: FILTER = FILTER.BP;
+  redFilter: FILTER = FILTER.RP;
+
+  chartOptions: Highcharts.Options = {
+    chart: {
+      type: "scatter",
+    },
+    title: {
+      text: undefined,
+    },
+    xAxis: {
+      title: {
+        text: this.blueFilter + " - " + this.redFilter + " (mag)"
+      },
+    },
+    yAxis: {
+      title: {
+        text: this.blueFilter + " (mag)"
+      },
+      reversed: true,
+    },
+    legend: {
+      enabled: false,
+    },
+    series: [{
+      name: "Color-Magnitude",
+      type: "scatter",
+      data: [],
+      marker: {
+        radius: 1,
+      }
+    }],
+    credits: {
+      enabled: false,
+    }
+  }
+
+  constructor(private dataService: ClusterDataService) {
+  }
+
+  ngAfterViewInit() {
+    this.setData();
+    this.dataService.fsrFiltered$.pipe(
+      debounceTime(500)
+    ).subscribe(
+      () => {
+        this.setData();
+      });
+  }
+
+  chartInitialized($event: Highcharts.Chart) {
+    this.chartObject = $event;
+  }
+
+  private setData() {
+    this.chartObject.series[0].update({
+      name: "Color-Magnitude",
+      type: "scatter",
+      data: this.getCmdData(),
+      marker: {
+        radius: 1,
+      }
+    });
+  }
+
+  private getCmdData()
+    :
+    number[][] {
+    const sources = this.dataService.getSources(true);
+    const filters = this.dataService.getFilters();
+    this.redFilter = FILTER.RP
+    this.blueFilter = FILTER.BP
+    if (!filters.includes(FILTER.RP) || !filters.includes(FILTER.BP)) {
+      this.redFilter = filters[filters.length - 1]
+      this.blueFilter = filters[0]
+    }
+    const result = []
+    for (const source of sources) {
+      if (source.photometries) {
+        let redMag;
+        let blueMag;
+        source.photometries.forEach(photometry => {
+          if (photometry.filter === this.redFilter) {
+            redMag = photometry.mag;
+          }
+          if (photometry.filter === this.blueFilter) {
+            blueMag = photometry.mag;
+          }
+        });
+        if (redMag && blueMag) {
+          result.push([blueMag - redMag, blueMag]);
+        }
+      }
+    }
+    return result;
+  }
+}

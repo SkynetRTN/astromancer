@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ClusterDataSourceService} from "./data-source/cluster-data-source.service";
-import {Astrometry, Catalogs, FILTER, FSR, Source} from "./cluster.util";
+import {Astrometry, Catalogs, FILTER, filterWavelength, FSR, Source} from "./cluster.util";
 import {HttpClient} from "@angular/common/http";
 import {Subject} from "rxjs";
 import {Job} from "../../shared/job/job";
@@ -212,7 +212,7 @@ export class ClusterDataService {
   }
 
   private generateFilterList(): FILTER[] {
-    const filters: FILTER[] = [];
+    let filters: FILTER[] = [];
     this.sources.forEach((source) => {
       source.photometries.forEach((photometry) => {
         if (!filters.includes(photometry.filter)) {
@@ -220,6 +220,9 @@ export class ClusterDataService {
         }
       });
     });
+    filters = filters.sort((a, b) => {
+      return filterWavelength[a] - filterWavelength[b];
+    })
     return filters;
   }
 

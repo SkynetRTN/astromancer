@@ -152,7 +152,7 @@ export class HistogramSliderInputComponent implements OnInit, AfterViewInit {
       }
     );
     this.histogramFormGroup.controls['bin'].valueChanges.pipe(
-      debounceTime(25)
+      debounceTime(50)
     ).subscribe(
       (value) => {
         if (value > 0) {
@@ -360,25 +360,25 @@ export class HistogramSliderInputComponent implements OnInit, AfterViewInit {
 
   private linkDataSliderInput() {
     this.dataFormGroup.controls['sliderMin'].valueChanges.pipe(
-      debounceTime(25)
+      debounceTime(50)
     ).subscribe(
       () => {
         this.setDataRange(formSource.SLIDER);
       });
     this.dataFormGroup.controls['sliderMax'].valueChanges.pipe(
-      debounceTime(25)
+      debounceTime(50)
     ).subscribe(
       () => {
         this.setDataRange(formSource.SLIDER);
       });
     this.dataFormGroup.controls['inputMin'].valueChanges.pipe(
-      debounceTime(25)
+      debounceTime(50)
     ).subscribe(
       () => {
         this.setDataRange(formSource.INPUT);
       });
     this.dataFormGroup.controls['inputMax'].valueChanges.pipe(
-      debounceTime(25)
+      debounceTime(50)
     ).subscribe(
       () => {
         this.setDataRange(formSource.INPUT);

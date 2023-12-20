@@ -20,7 +20,7 @@ export class PmChartComponent implements AfterViewInit {
       type: "scatter",
     },
     title: {
-      text: "2D Proper Motion of " + this.service.getClusterName(),
+      text: undefined,
     },
     xAxis: {
       title: {

@@ -61,17 +61,28 @@ export class ClusterDataService {
   public setFSRCriteria(fsr: FsrParameters) {
     this.sources_fsr = [];
     if (this.hasFSR) {
+      const pmBoolGlobal = fsr.pmra === null || fsr.pmdec === null;
+      let pmra = 0;
+      let pmdec = 0;
+      let pmCriteria = 0;
+      if (!pmBoolGlobal) {
+        const pmra_err = (fsr.pmra!.max - fsr.pmra!.min) / 2
+        const pmdec_err = (fsr.pmdec!.max - fsr.pmdec!.min) / 2
+        pmra = (fsr.pmra!.max + fsr.pmra!.min) / 2
+        pmdec = (fsr.pmdec!.max + fsr.pmdec!.min) / 2
+        pmCriteria = Math.pow(pmra_err, 2) + Math.pow(pmdec_err, 2);
+      }
       for (const data of this.sources) {
         const distanceBool
           = fsr.distance === null ||
           (data.fsr && data.fsr.distance && data.fsr.distance >= fsr.distance.min * 1000 && data.fsr.distance <= fsr.distance.max * 1000);
-        const pmraBool
-          = fsr.pmra === null ||
-          (data.fsr && data.fsr.pm_ra && data.fsr.pm_ra >= fsr.pmra.min && data.fsr.pm_ra <= fsr.pmra.max);
-        const pmdecBool
-          = fsr.pmdec === null ||
-          (data.fsr && data.fsr.pm_dec && data.fsr.pm_dec >= fsr.pmdec.min && data.fsr.pm_dec <= fsr.pmdec.max)
-        if (distanceBool && pmraBool && pmdecBool) {
+        let pmBool: boolean = pmBoolGlobal;
+        if (!pmBool && data.fsr && data.fsr.pm_ra && data.fsr.pm_dec) {
+          const pmDistance = Math.pow(data.fsr.pm_ra - pmra, 2)
+            + Math.pow(data.fsr.pm_dec - pmdec, 2);
+          pmBool = pmDistance <= pmCriteria;
+        }
+        if (distanceBool && pmBool) {
           this.sources_fsr.push(data);
         }
       }

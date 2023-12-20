@@ -8,15 +8,18 @@ import {Job} from "../../shared/job/job";
 import {environment} from "../../../environments/environment";
 import {appendFSRResults, sourceSerialization} from "./cluster-data.service.util";
 import {ClusterStorageService} from "./storage/cluster-storage.service";
+import {FsrParameters} from "./FSR/fsr.util";
 
 @Injectable()
 export class ClusterDataService {
   private sources: Source[] = []; // always sorted in ascending order by id
+  private sources_fsr: Source[] = [];
   private filters: FILTER[] = [];
+  private hasFSR: boolean = this.storageService.getHasFSR();
   private dataSubject = new Subject<Source[]>();
   public data$ = this.dataSubject.asObservable();
-
-  private hasFSR: boolean = this.storageService.getHasFSR();
+  private fsrFilteredSubject = new Subject<Source[]>();
+  public fsrFiltered$ = this.fsrFilteredSubject.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -48,8 +51,32 @@ export class ClusterDataService {
     return this.hasFSR;
   }
 
-  public getSources(): Source[] {
-    return this.sources;
+  public getSources(isFSR: boolean = false): Source[] {
+    if (!isFSR || !this.hasFSR)
+      return this.sources;
+    else
+      return this.sources_fsr;
+  }
+
+  public setFSRCriteria(fsr: FsrParameters) {
+    this.sources_fsr = [];
+    if (this.hasFSR) {
+      for (const data of this.sources) {
+        const distanceBool
+          = fsr.distance === null ||
+          (data.fsr && data.fsr.distance && data.fsr.distance >= fsr.distance.min * 1000 && data.fsr.distance <= fsr.distance.max * 1000);
+        const pmraBool
+          = fsr.pmra === null ||
+          (data.fsr && data.fsr.pm_ra && data.fsr.pm_ra >= fsr.pmra.min && data.fsr.pm_ra <= fsr.pmra.max);
+        const pmdecBool
+          = fsr.pmdec === null ||
+          (data.fsr && data.fsr.pm_dec && data.fsr.pm_dec >= fsr.pmdec.min && data.fsr.pm_dec <= fsr.pmdec.max)
+        if (distanceBool && pmraBool && pmdecBool) {
+          this.sources_fsr.push(data);
+        }
+      }
+    }
+    this.fsrFilteredSubject.next(this.sources_fsr);
   }
 
   public getFilters(): FILTER[] {

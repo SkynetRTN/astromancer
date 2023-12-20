@@ -202,6 +202,8 @@ export class HistogramSliderInputComponent implements OnInit, AfterViewInit {
     this.fullDataRange = {min: min, max: max};
     this.histogramRange = {min: min, max: max};
     this.dataRange = {min: min, max: max};
+    this.$range.next(this.dataRange);
+    this.$histogramRange.next(this.histogramRange);
   }
 
   private resetInputValues() {

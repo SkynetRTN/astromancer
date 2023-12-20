@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {range} from "../histogram-slider-input/histogram-slider-input.component";
 import {ClusterDataService} from "../../cluster-data.service";
 import {Subject} from "rxjs";
+import {FsrComponents} from "../fsr.util";
 
 @Component({
   selector: 'app-field-star-removal',
@@ -9,19 +10,19 @@ import {Subject} from "rxjs";
   styleUrls: ['./field-star-removal.component.scss', '../../../shared/interface/tools.scss']
 })
 export class FieldStarRemovalComponent {
-  distanceParams: FsrParameters = {
+  distanceParams: FsrComponents = {
     bin: 0,
     range: {min: 0, max: 0},
     histogramRange: {min: 0, max: 0}
   }
 
-  pmraParams: FsrParameters = {
+  pmraParams: FsrComponents = {
     bin: 0,
     range: {min: 0, max: 0},
     histogramRange: {min: 0, max: 0}
   }
 
-  pmdecParams: FsrParameters = {
+  pmdecParams: FsrComponents = {
     bin: 0,
     range: {min: 0, max: 0},
     histogramRange: {min: 0, max: 0}
@@ -45,6 +46,7 @@ export class FieldStarRemovalComponent {
 
   distanceRangeHandler($event: range) {
     this.distanceParams.range = $event;
+    this.setFSRParams();
   }
 
   distanceBinsHandler($event: number) {
@@ -57,6 +59,7 @@ export class FieldStarRemovalComponent {
 
   pmraRangeHandler($event: range) {
     this.pmraParams.range = $event;
+    this.setFSRParams();
   }
 
   pmraBinsHandler($event: number) {
@@ -69,6 +72,7 @@ export class FieldStarRemovalComponent {
 
   pmdecRangeHandler($event: range) {
     this.pmdecParams.range = $event;
+    this.setFSRParams();
   }
 
   pmdecBinsHandler($event: number) {
@@ -78,10 +82,13 @@ export class FieldStarRemovalComponent {
   pmdecHistogramRangeHandler($event: range) {
     this.pmdecParams.histogramRange = $event;
   }
+
+  private setFSRParams() {
+    this.dataService.setFSRCriteria({
+      distance: this.distanceParams.range,
+      pmra: this.pmraParams.range,
+      pmdec: this.pmdecParams.range
+    });
+  }
 }
 
-export interface FsrParameters {
-  bin: number,
-  range: range,
-  histogramRange: range
-}

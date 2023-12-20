@@ -1,15 +1,37 @@
 import {Injectable} from '@angular/core';
 import {ClusterStorageService} from "./storage/cluster-storage.service";
 import {Subject} from "rxjs";
+import {FsrParameters} from "./FSR/fsr.util";
+import {ClusterDataService} from "./cluster-data.service";
 
 @Injectable()
 export class ClusterService {
   private clusterName: string = '';
+  private fsrParams: FsrParameters = {
+    distance: null,
+    pmra: null,
+    pmdec: null,
+  };
+  private fsrParamsSubject: Subject<FsrParameters> = new Subject<FsrParameters>();
+  fsrParams$ = this.fsrParamsSubject.asObservable();
+
   private tabIndexSubject: Subject<number> = new Subject<number>();
   tabIndex$ = this.tabIndexSubject.asObservable();
 
-  constructor(private storageService: ClusterStorageService) {
+  constructor(
+    private dataService: ClusterDataService,
+    private storageService: ClusterStorageService) {
     this.clusterName = this.storageService.getName();
+  }
+
+  getFsrParams(): FsrParameters {
+    return this.fsrParams;
+  }
+
+  setFsrParams(params: FsrParameters) {
+    this.fsrParams = params;
+    this.dataService.setFSRCriteria(params);
+    this.fsrParamsSubject.next(params);
   }
 
   reset() {

@@ -55,7 +55,7 @@ export class PmChartComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.updateData();
     this.dataService.fsrFiltered$.pipe(
-      debounceTime(300)
+      debounceTime(500)
     ).subscribe(
       () => {
         this.updateData();
@@ -68,6 +68,28 @@ export class PmChartComponent implements AfterViewInit {
 
   private updateData() {
     this.chartObject.series[0].setData(this.dataService.get2DpmChartData());
+    this.updateFraming();
+  }
+
+  // 2 sigma clipping
+  private updateFraming() {
+    const data = this.dataService.getSources(true);
+    const pmRa = data.map((source) => {
+      return source.fsr!.pm_ra
+    }).sort((a, b) => {
+      return a - b
+    });
+    const pmDec = data.map((source) => {
+      return source.fsr!.pm_dec
+    }).sort((a, b) => {
+      return a - b
+    });
+    const pmRaMin = pmRa[Math.floor(pmRa.length * 0.05)];
+    const pmRaMax = pmRa[Math.ceil(pmRa.length * 0.95)];
+    const pmDecMin = pmDec[Math.floor(pmDec.length * 0.05)];
+    const pmDecMax = pmDec[Math.ceil(pmDec.length * 0.95)];
+    this.chartObject.xAxis[0].setExtremes(pmRaMin, pmRaMax);
+    this.chartObject.yAxis[0].setExtremes(pmDecMin, pmDecMax);
   }
 
 

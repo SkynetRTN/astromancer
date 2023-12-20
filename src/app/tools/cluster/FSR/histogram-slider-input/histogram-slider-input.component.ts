@@ -20,6 +20,8 @@ export class HistogramSliderInputComponent implements OnInit, AfterViewInit {
   @Input()
   title!: string;
   @Input()
+  shortTitle!: string;
+  @Input()
   unit!: string;
   @Input()
   $data!: Subject<{ data: number[], isNew: boolean }>;
@@ -156,6 +158,8 @@ export class HistogramSliderInputComponent implements OnInit, AfterViewInit {
         }
       });
     this.$OnInit.emit();
+    if (this.shortTitle == undefined)
+      this.shortTitle = this.title;
   }
 
   init(data: number[]) {

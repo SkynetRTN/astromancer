@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
-import {ClusterStorageObject} from "./cluster-storage.service.util";
+import {ClusterStorageObject, fsrHistogramBin} from "./cluster-storage.service.util";
 import {JobStorageObject} from "../../../shared/job/job";
 import {Source} from "../cluster.util";
+import {FsrParameters} from "../FSR/fsr.util";
 
 @Injectable()
 export class ClusterStorageService {
@@ -15,7 +16,6 @@ export class ClusterStorageService {
     } else {
       this.storageObject = this.init();
     }
-    console.log(this.storageObject)
   }
 
   public save() {
@@ -77,12 +77,7 @@ export class ClusterStorageService {
   }
 
   public resetDataSource() {
-    this.storageObject.step = 0;
-    this.storageObject.name = '';
-    this.storageObject.sources = [];
-    this.storageObject.hasFSR = false;
-    this.storageObject.dataSource.FSRJob = null;
-    this.storageObject.dataSource.lookUpJob = null;
+    this.init();
     this.save();
   }
 
@@ -99,6 +94,34 @@ export class ClusterStorageService {
     this.save();
   }
 
+  public setFsrParams(params: FsrParameters) {
+    this.storageObject.fsrValues.parameters = params;
+    this.save();
+  }
+
+  public getFsrParams() {
+    return this.storageObject.fsrValues.parameters;
+  }
+
+  public setFsrFraming(params: FsrParameters) {
+    this.storageObject.fsrValues.framing = params;
+    this.save();
+  }
+
+  public getFsrFraming() {
+    return this.storageObject.fsrValues.framing;
+  }
+
+  public setFsrBins(bins: fsrHistogramBin) {
+    this.storageObject.fsrValues.bin = bins;
+    this.save();
+  }
+
+  public getFsrBins() {
+    return this.storageObject.fsrValues.bin;
+  }
+
+
   private init(): ClusterStorageObject {
     return {
       step: 0,
@@ -109,6 +132,23 @@ export class ClusterStorageService {
         recentSearches: [],
         FSRJob: null,
         lookUpJob: null
+      },
+      fsrValues: {
+        parameters: {
+          distance: null,
+          pmra: null,
+          pmdec: null,
+        },
+        framing: {
+          distance: null,
+          pmra: null,
+          pmdec: null,
+        },
+        bin: {
+          distance: null,
+          pmra: null,
+          pmdec: null,
+        }
       }
     };
   }

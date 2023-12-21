@@ -28,6 +28,7 @@ export class ClusterDataService {
     private storageService: ClusterStorageService) {
     this.setSources(this.storageService.getSources());
     this.setHasFSR(this.storageService.getHasFSR());
+    this.setFSRCriteria(this.storageService.getFsrParams());
     this.dataSourceService.rawData$.subscribe(
       () => {
         this.sources = this.dataSourceService.getSources();
@@ -96,6 +97,7 @@ export class ClusterDataService {
       }
     }
     this.fsrFilteredSubject.next(this.sources_fsr);
+    this.storageService.setFsrParams(fsr);
   }
 
   public getFilters(): FILTER[] {
@@ -177,8 +179,9 @@ export class ClusterDataService {
   }
 
   // in kparsec not parsec
-  getDistance(): (number)[] {
-    return this.sources_fsr.filter(
+  getDistance(full: boolean = false): (number)[] {
+    const data = full ? this.sources : this.sources_fsr;
+    return data.filter(
       (source) => {
         return source.fsr !== null && source.fsr.distance !== null;
       }
@@ -189,8 +192,9 @@ export class ClusterDataService {
     });
   }
 
-  getPmra(): number[] {
-    return this.sources_fsr.filter(
+  getPmra(full: boolean = false): number[] {
+    const data = full ? this.sources : this.sources_fsr;
+    return data.filter(
       (source) => {
         return source.fsr !== null && source.fsr.pm_ra !== null;
       }
@@ -201,8 +205,9 @@ export class ClusterDataService {
     });
   }
 
-  getPmdec(): number[] {
-    return this.sources_fsr.filter(
+  getPmdec(full: boolean = false): number[] {
+    const data = full ? this.sources : this.sources_fsr;
+    return data.filter(
       (source) => {
         return source.fsr !== null && source.fsr.pm_dec !== null;
       }

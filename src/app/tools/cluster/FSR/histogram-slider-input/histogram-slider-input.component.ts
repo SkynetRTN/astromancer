@@ -3,6 +3,7 @@ import * as Highcharts from "highcharts";
 import HC_histogram from 'highcharts/modules/histogram-bellcurve';
 import {debounceTime, Subject} from "rxjs";
 import {FormControl, FormGroup} from "@angular/forms";
+import {FsrHistogramPayload} from "../fsr.util";
 
 HC_histogram(Highcharts);
 
@@ -24,7 +25,8 @@ export class HistogramSliderInputComponent implements OnInit, AfterViewInit {
   @Input()
   unit!: string;
   @Input()
-  $data!: Subject<{ data: number[], isNew: boolean }>;
+  $initEvent!: Subject<FsrHistogramPayload>;
+  @Input()
   @Output()
   $OnInit: EventEmitter<void> = new EventEmitter<void>();
   @Output()
@@ -36,7 +38,7 @@ export class HistogramSliderInputComponent implements OnInit, AfterViewInit {
   data!: number[];
   fullDataRange!: range;
   histogramRange!: range;
-  histogramBin: number = 10;
+  histogramBin!: number;
   histogramFormGroup!: FormGroup;
   dataRange!: range;
   dataFormGroup!: FormGroup;
@@ -128,32 +130,15 @@ export class HistogramSliderInputComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.$data.subscribe(
-      (data) => {
-        if (this.data === undefined) {
-          this.init(data.data);
+    this.$initEvent.subscribe(
+      (payload: FsrHistogramPayload) => {
+        if (this.data === undefined || payload.isNew) {
+          this.init(payload);
           this.rangeBufferSubject.next(this.dataRange);
           this.histogramBufferSubject.next(this.histogramRange);
           this.binBufferSubject.next(this.histogramBin);
-        } else if (data.isNew) {
-          this.data = data.data;
-          this.init(data.data);
-          // this.setExtremes();
-          // this.histogramFormGroup.setValue({
-          //   sliderMin: this.histogramRange.min,
-          //   sliderMax: this.histogramRange.max,
-          //   inputMin: this.histogramRange.min,
-          //   inputMax: this.histogramRange.max,
-          //   bin: this.histogramBin,
-          // });
-          // this.dataFormGroup.setValue({
-          //   sliderMin: this.dataRange.min,
-          //   sliderMax: this.dataRange.max,
-          //   inputMin: this.dataRange.min,
-          //   inputMax: this.dataRange.max,
-          // });
         } else {
-          this.data = data.data;
+          this.data = payload.data;
           this.plotHistogram();
         }
       });
@@ -162,9 +147,9 @@ export class HistogramSliderInputComponent implements OnInit, AfterViewInit {
       this.shortTitle = this.title;
   }
 
-  init(data: number[]) {
-    this.data = data;
-    this.setExtremes();
+  init(payload: FsrHistogramPayload) {
+    this.data = payload.data;
+    this.setExtremes(payload);
     this.histogramFormGroup = new FormGroup({
       sliderMin: new FormControl(this.histogramRange.min),
       sliderMax: new FormControl(this.histogramRange.max),
@@ -184,29 +169,36 @@ export class HistogramSliderInputComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.plotHistogram();
+    this.plotHistogram(this.histogramBin);
   }
 
   chartInitialized($event: Highcharts.Chart) {
     this.chartObject = $event;
   }
 
-  private setExtremes() {
+  private setExtremes(payload: FsrHistogramPayload) {
     let min: number;
     let max: number;
+    const data = payload.fullData != null ? payload.fullData : payload.data;
     const sigma = 0.9876; // 2.5 sigma
-    const lower = Math.ceil(this.data.length * (0.5 - sigma / 2));
-    const upper = Math.floor(this.data.length * (0.5 + sigma / 2));
-    if (this.data.length > 0) {
-      min = this.data[lower];
-      max = this.data[upper];
+    const lower = Math.ceil(data.length * (0.5 - sigma / 2));
+    const upper = Math.floor(data.length * (0.5 + sigma / 2));
+    if (payload.data.length > 0) {
+      min = data[lower];
+      max = data[upper];
     } else {
-      min = 0;
-      max = 1;
+      min = -999;
+      max = 999;
     }
     this.fullDataRange = {min: min, max: max};
     this.histogramRange = {min: min, max: max};
     this.dataRange = {min: min, max: max};
+    this.histogramBin = this.getDefaultBin();
+    if (payload.isNew) {
+      this.histogramRange = payload?.histogramRange != null ? payload.histogramRange : {min: min, max: max};
+      this.histogramBin = payload?.bin != null ? payload.bin : this.getDefaultBin();
+      this.dataRange = payload?.range != null ? payload.range : {min: min, max: max};
+    }
   }
 
   private initDebounce() {
@@ -272,6 +264,7 @@ export class HistogramSliderInputComponent implements OnInit, AfterViewInit {
         binsNumber: bin,
       });
     this.updateXAxis();
+    this.updateArea();
   }
 
   private updateXAxis() {
@@ -370,9 +363,6 @@ export class HistogramSliderInputComponent implements OnInit, AfterViewInit {
       this.dataFormGroup.controls['sliderMax'].setValue(this.dataRange.max, {emitEvent: false});
       this.onRangeInput();
     }
-    console.log(
-      this.histogramRange,
-      this.dataRange);
     this.plotHistogram();
   }
 

@@ -7,16 +7,8 @@ import {ClusterDataService} from "./cluster-data.service";
 @Injectable()
 export class ClusterService {
   private clusterName: string = '';
-  private fsrParams: FsrParameters = {
-    distance: null,
-    pmra: null,
-    pmdec: null,
-  };
-  private fsrFraming: FsrParameters = {
-    distance: null,
-    pmra: null,
-    pmdec: null,
-  }
+  private fsrParams: FsrParameters;
+  private fsrFraming: FsrParameters;
   private fsrParamsSubject: Subject<FsrParameters> = new Subject<FsrParameters>();
   fsrParams$ = this.fsrParamsSubject.asObservable();
   private fsrFramingSubject: Subject<FsrParameters> = new Subject<FsrParameters>();
@@ -28,7 +20,8 @@ export class ClusterService {
     private dataService: ClusterDataService,
     private storageService: ClusterStorageService) {
     this.clusterName = this.storageService.getName();
-    this.dataService.setFSRCriteria(this.fsrParams);
+    this.fsrParams = this.storageService.getFsrParams();
+    this.fsrFraming = this.storageService.getFsrFraming();
   }
 
   getFsrParams(): FsrParameters {
@@ -44,6 +37,7 @@ export class ClusterService {
   setFsrFraming(params: FsrParameters) {
     this.fsrFraming = params;
     this.fsrFramingSubject.next(params);
+    this.storageService.setFsrFraming(params);
   }
 
   getFsrFraming(): FsrParameters {
@@ -52,6 +46,17 @@ export class ClusterService {
 
   reset() {
     this.setClusterName('');
+    // this.setTabIndex(0);
+    this.setFsrParams({
+      distance: null,
+      pmra: null,
+      pmdec: null
+    });
+    this.setFsrFraming({
+      distance: null,
+      pmra: null,
+      pmdec: null
+    });
   }
 
   setClusterName(name: string) {

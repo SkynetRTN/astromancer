@@ -11,3 +11,12 @@ export interface FsrComponents {
   range: range,
   histogramRange: range
 }
+
+export interface FsrHistogramPayload {
+  data: number[],
+  isNew: boolean,
+  fullData?: number[],
+  histogramRange?: range | null,
+  range?: range | null,
+  bin?: number | null,
+}

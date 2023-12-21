@@ -28,3 +28,10 @@
 .small-plot {
   height: 300px;
 }
+
+button {
+  width: calc(100% - 20px);
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-up: 10px;
+}

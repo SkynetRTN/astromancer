@@ -105,7 +105,14 @@ export class ClusterDataService {
   }
 
   public setSources(sources: Source[]) {
-    this.sources = sources;
+    this.sources = sources.filter(
+      (source) => {
+        return (source.fsr !== null
+          && source.fsr.distance !== null
+          && source.fsr.pm_ra !== null
+          && source.fsr.pm_dec !== null)
+      }
+    );
     this.filters = this.generateFilterList();
     this.dataSubject.next(this.sources);
     this.storageService.setSources(this.sources);

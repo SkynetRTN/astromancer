@@ -1,0 +1,207 @@
+//@use '@angular/material' as mat;
+//@import "src/palette.scss";
+@import "color-change.scss";
+
+$fetch-size: 400px;
+$button-active-margin: 30px;
+$button-active-height: 180px;
+//$color-left: mat.get-color-from-palette($md-indigodye, A100);
+//$color-right: mat.get-color-from-palette($md-fireenginered, 300);
+
+.big-button {
+  position: absolute;
+  width: $fetch-size / 2;
+  height: $fetch-size;
+  top: calc((100% - $fetch-size) / 2);
+  z-index: 1;
+  cursor: pointer;
+  border: 4px black;
+}
+
+.big-button:hover ~ .arrow {
+  display: none;
+}
+
+.big-button-text {
+  position: absolute;
+  width: $fetch-size / 2;
+  height: $button-active-height;
+  top: calc(50% - $button-active-height / 2);
+  display: flex;
+  font-size: 18px;
+  justify-content: center;
+  align-items: center;
+  border: hidden;
+  overflow: auto;
+  z-index: 2;
+}
+
+
+.big-button-left {
+  left: calc((100% - $fetch-size) / 2 - 12px);
+  border-style: solid hidden hidden solid;
+  border-radius: calc($fetch-size / 2) 0 0 calc($fetch-size / 2);
+  background-color: $color-left;
+}
+
+.big-button-left:hover {
+  width: $fetch-size;
+  border-style: hidden;
+  border-radius: calc($fetch-size / 2);
+  animation: left-to-right 0.5s ease 1;
+
+  .big-button-text {
+    transform: translateX($fetch-size / 4) scale(1.4);
+    transition-property: all;
+    transition-duration: 0.5s;
+  }
+}
+
+.big-button-left:hover + .big-button-right {
+  display: none;
+}
+
+
+.big-button-right {
+  left: calc(50% - 12px);
+  border-style: hidden solid solid hidden;
+  border-radius: 0 calc($fetch-size / 2) calc($fetch-size / 2) 0;
+  background-color: $color-right
+}
+
+.big-button-right:hover {
+  width: $fetch-size;
+  left: calc(50% - $fetch-size / 2 - 12px);
+  border-style: hidden;
+  border-radius: calc($fetch-size / 2);
+  animation: right-to-left 0.5s ease 1;
+
+  .big-button-text {
+    left: calc(50% - 12px);
+    transform: translateX(-$fetch-size / 4 + 12px) scale(1.4);
+    transition-property: all;
+    transition-duration: 1s;
+  }
+}
+
+$arrow-size: 20px;
+
+.arrow {
+  position: absolute;
+  border: solid;
+  border-width: 0 5px 5px 0;
+  height: $arrow-size;
+  width: $arrow-size;
+  z-index: 4;
+}
+
+.top-arrow {
+  border-color: black;
+  top: calc(50% - $fetch-size / 2 - 9px);
+  left: calc(50% - 12px - 20px);
+  transform: rotate(-45deg);
+}
+
+.bottom-arrow {
+  border-color: black;
+  top: calc(50% + $fetch-size / 2 - 10px);
+  left: calc(50% - 11px);
+  transform: rotate(135deg);
+}
+
+
+.col-6 {
+  border-width: 5px;
+}
+
+.block-1 {
+  border-top: hidden;
+  border-bottom: solid;
+  border-right: solid;
+  border-left: hidden;
+}
+
+.block-2 {
+  border-top: hidden;
+  border-bottom: solid;
+  border-right: hidden;
+  border-left: solid;
+}
+
+.block-3 {
+  border-top: solid;
+  border-bottom: hidden;
+  border-right: hidden;
+  border-left: solid;
+}
+
+.block-4 {
+  border-top: solid;
+  border-bottom: hidden;
+  border-right: solid;
+  border-left: hidden;
+}
+
+$ordering-size: 30px;
+
+.ordering {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: $ordering-size;
+  height: $ordering-size;
+  border-width: 3px;
+  font-size: 18px;
+  z-index: 2;
+}
+
+.top {
+  top: 0px;
+  border-top: hidden;
+  border-bottom: solid;
+}
+
+.bottom {
+  top: calc(100% - $ordering-size);
+  border-top: solid;
+  border-bottom: hidden;
+}
+
+.left {
+  left: -12px;
+  border-right: solid;
+  border-left: hidden;
+}
+
+.right {
+  left: calc(100% + 12px - $ordering-size);
+  border-right: hidden;
+  border-left: solid;
+}
+
+$radius: 250px;
+$p-spacing: 40px;
+
+.prompt {
+  font-size: larger;
+  position: relative;
+  width: calc(100% - $radius);
+  height: 80px;
+}
+
+.top-p {
+  top: $p-spacing;
+}
+
+.bottom-p {
+  top: calc(100% - 2 * $ordering-size - 80px - $p-spacing);
+}
+
+.left-p {
+  left: $p-spacing;
+}
+
+.right-p {
+  left: calc($radius - $p-spacing);
+}

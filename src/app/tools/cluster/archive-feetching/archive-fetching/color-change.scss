@@ -1,0 +1,76 @@
+@use '@angular/material' as mat;
+@import "src/palette.scss";
+
+$color-left: mat.get-color-from-palette($md-indigodye, A100);
+$color-right: mat.get-color-from-palette($md-fireenginered, 300);
+
+@keyframes left-to-right {
+  0% {
+    background-image: linear-gradient(90deg, $color-left 50%, $color-right 100%);
+  }
+  10% {
+    background-image: linear-gradient(90deg, $color-left 65%, $color-right 100%);
+  }
+  20% {
+    background-image: linear-gradient(90deg, $color-left 75%, $color-right 100%);
+  }
+  30% {
+    background-image: linear-gradient(90deg, $color-left 80%, $color-right 100%);
+  }
+  40% {
+    background-image: linear-gradient(90deg, $color-left 88%, $color-right 100%);
+  }
+  50% {
+    background-image: linear-gradient(90deg, $color-left 92.5%, $color-right 100%);
+  }
+  60% {
+    background-image: linear-gradient(90deg, $color-left 95%, $color-right 100%);
+  }
+  70% {
+    background-image: linear-gradient(90deg, $color-left 97%, $color-right 100%);
+  }
+  80% {
+    background-image: linear-gradient(90deg, $color-left 99%, $color-right 100%);
+  }
+  90% {
+    background-image: linear-gradient(90deg, $color-left 99.5%, $color-right 100%);
+  }
+  100% {
+    background-image: linear-gradient(90deg, $color-left 100%, $color-right 100%);
+  }
+}
+
+@keyframes right-to-left {
+  10% {
+    background-image: linear-gradient(90deg, $color-left 0%, $color-right 50%);
+  }
+  20% {
+    background-image: linear-gradient(90deg, $color-left 0%, $color-right 35%);
+  }
+  30% {
+    background-image: linear-gradient(90deg, $color-left 0%, $color-right 25%);
+  }
+  40% {
+    background-image: linear-gradient(90deg, $color-left 0%, $color-right 20%);
+  }
+  50% {
+    background-image: linear-gradient(90deg, $color-left 0%, $color-right 7.5%);
+  }
+  60% {
+    background-image: linear-gradient(90deg, $color-left 0%, $color-right 5%);
+  }
+  70% {
+    background-image: linear-gradient(90deg, $color-left 0%, $color-right 3%);
+  }
+  80% {
+    background-image: linear-gradient(90deg, $color-left 0%, $color-right 1%);
+  }
+  90% {
+    background-image: linear-gradient(90deg, $color-left 0%, $color-right 0.5%);
+  }
+  100% {
+    background-image: linear-gradient(90deg, $color-left 0%, $color-right 0%);
+  }
+
+
+}

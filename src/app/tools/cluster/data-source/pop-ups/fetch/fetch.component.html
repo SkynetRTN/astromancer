@@ -21,22 +21,36 @@
         <div class="row">
           <div class="col-6">
             <mat-form-field>
-              <mat-label>Right Ascension</mat-label>
-              <input [formControlName]="'ra'" matInput>
+              <mat-label>Right Ascension (deg)</mat-label>
+              <input [formControlName]="'ra'" matInput type="number">
+              <mat-error *ngIf="this.formGroup.controls['ra'].hasError('min') ||
+                  this.formGroup.controls['ra'].hasError('max')">
+                Must be between 0 and 360.
+              </mat-error>
             </mat-form-field>
           </div>
           <div class="col-6">
             <mat-form-field>
-              <mat-label>Declination</mat-label>
-              <input [formControlName]="'dec'" matInput>
+              <mat-label>Declination (deg)</mat-label>
+              <input [formControlName]="'dec'" matInput type="number">
+              <mat-error *ngIf="this.formGroup.controls['dec'].hasError('min') ||
+                  this.formGroup.controls['dec'].hasError('max')">
+                Must be between -90 and 90.
+              </mat-error>
             </mat-form-field>
           </div>
         </div>
         <div class="row">
           <div class="col-6">
             <mat-form-field>
-              <mat-label>Radius</mat-label>
-              <input [formControlName]="'radius'" matInput>
+              <mat-label>Radius (deg)</mat-label>
+              <input [formControlName]="'radius'" matInput type="number">
+              <mat-error *ngIf="this.formGroup.controls['radius'].hasError('min')">
+                Must be greater than 0.
+              </mat-error>
+              <mat-error *ngIf="this.formGroup.controls['radius'].hasError('max')">
+                Must be smaller than 3.
+              </mat-error>
             </mat-form-field>
           </div>
           <div class="col-6">
@@ -74,6 +88,10 @@
 
     <mat-divider></mat-divider>
 
+    <div *ngIf="!readyForNext && testDirty && !loading" class="fetch-prompt">
+      Too many stars! Reduce Radius and try again.
+    </div>
+
     <mat-card-actions>
       <button (click)="cancel()" mat-button mat-dialog-close>Cancel</button>
       <button (click)="testRadius()"
@@ -83,6 +101,7 @@
       </button>
       <button (click)="fetchCatalog()"
               [disabled]="!readyForNext||loading"
+              color="accent"
               mat-button>Next
       </button>
     </mat-card-actions>

@@ -18,7 +18,7 @@ export class ClusterDataSourceService {
   public lookUpDataStack: ClusterLookUpStack = new ClusterLookUpStackImpl(5);
   private rawDataSubject: Subject<ClusterRawData[]> = new Subject<ClusterRawData[]>();
   public rawData$ = this.rawDataSubject.asObservable();
-  private lookUpDataSubject: Subject<ClusterLookUpData> = new Subject<ClusterLookUpData>();
+  private lookUpDataSubject: Subject<ClusterLookUpData | null> = new Subject<ClusterLookUpData | null>();
   public lookUpData$ = this.lookUpDataSubject.asObservable();
   private readonly fileParser: MyFileParser = new MyFileParser(FileType.CSV,
     ['id', 'filter', 'calibrated_mag', 'mag_error', 'ra_hours', 'dec_degs'])
@@ -30,7 +30,7 @@ export class ClusterDataSourceService {
   private filters: FILTER[] = [];
 
   constructor(private http: HttpClient,
-              private storageService: ClusterStorageService) {
+              private storageService: ClusterStorageService,) {
     this.lookUpDataStack.load(this.storageService.getRecentSearches());
     this.lookUpDataArraySubject.next(this.lookUpDataStack.list());
   }
@@ -72,6 +72,11 @@ export class ClusterDataSourceService {
         }
         this.pushRecentSearch(data);
         this.lookUpDataSubject.next(data);
+      },
+      (error) => {
+        if (error.status === 400) {
+          this.lookUpDataSubject.next(null);
+        }
       }
     )
   }

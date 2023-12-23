@@ -12,6 +12,9 @@
             <mat-form-field>
               <mat-label>Cluster Name</mat-label>
               <input [formControlName]="'name'" matInput>
+              <mat-error *ngIf="this.formGroup.controls['name'].hasError('required')">
+                Name your cluster!
+              </mat-error>
             </mat-form-field>
           </div>
         </div>

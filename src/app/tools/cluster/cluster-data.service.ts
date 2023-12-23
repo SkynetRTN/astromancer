@@ -241,6 +241,42 @@ export class ClusterDataService {
     return {cluster: cluster, field: field};
   }
 
+  getRa(full: boolean = false): number[] {
+    const data = full ? this.sources : this.sources_fsr;
+    return data.filter(
+      (source) => {
+        return source.astrometry !== null && source.astrometry.ra !== null;
+      }
+    ).map((source) => {
+      return parseFloat((source.astrometry!.ra).toFixed(2));
+    }).sort((a, b) => {
+      return a - b;
+    });
+  }
+
+  getClusterRa(): number | null {
+    const array = this.getRa();
+    return array.length === 0 ? null : array[Math.floor(array.length / 2)];
+  }
+
+  getDec(full: boolean = false): number[] {
+    const data = full ? this.sources : this.sources_fsr;
+    return data.filter(
+      (source) => {
+        return source.astrometry !== null && source.astrometry.dec !== null;
+      }
+    ).map((source) => {
+      return parseFloat((source.astrometry!.dec).toFixed(2));
+    }).sort((a, b) => {
+      return a - b;
+    });
+  }
+
+  getClusterDec(): number | null {
+    const array = this.getDec();
+    return array.length === 0 ? null : array[Math.floor(array.length / 2)];
+  }
+
   private generateFilterList(): FILTER[] {
     let filters: FILTER[] = [];
     this.sources.forEach((source) => {

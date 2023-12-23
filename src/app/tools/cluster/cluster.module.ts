@@ -35,17 +35,19 @@ import {NgChartsModule} from "ng2-charts";
 import {HighchartsChartModule} from "highcharts-angular";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MatSliderModule} from "@angular/material/slider";
+import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {PieChartComponent} from './FSR/pie-chart/pie-chart.component';
 import {PmChartComponent} from './FSR/pm-chart/pm-chart.component';
 import {CmdFsrComponent} from './FSR/cmd-fsr/cmd-fsr.component';
 import {ArchiveFetchingComponent} from './archive-feetching/archive-fetching/archive-fetching.component';
+import {FetchPopupComponent} from './archive-feetching/fetch-popup/fetch-popup.component';
 
 const routes: Routes = [
   {path: '', component: ClusterComponent, title: 'Cluster'}
 ];
 
 @NgModule({
-  declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent, FieldStarRemovalComponent, HistogramSliderInputComponent, PieChartComponent, PmChartComponent, CmdFsrComponent, ArchiveFetchingComponent],
+  declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent, FieldStarRemovalComponent, HistogramSliderInputComponent, PieChartComponent, PmChartComponent, CmdFsrComponent, ArchiveFetchingComponent, FetchPopupComponent],
   imports: [
     RouterModule.forChild(routes),
     CommonModule,
@@ -68,6 +70,7 @@ const routes: Routes = [
     HighchartsChartModule,
     MatSlideToggleModule,
     MatSliderModule,
+    MatSnackBarModule,
   ],
   exports: [ClusterComponent, RouterModule],
   providers: [ClusterDataSourceService, ClusterService, ClusterDataService, ClusterStorageService]

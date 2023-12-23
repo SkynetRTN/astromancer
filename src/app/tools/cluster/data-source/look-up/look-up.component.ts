@@ -4,6 +4,7 @@ import {ClusterDataSourceService} from "../cluster-data-source.service";
 import {ClusterLookUpData} from "../cluster-data-source.service.util";
 import {MatDialog} from "@angular/material/dialog";
 import {FetchComponent} from "../pop-ups/fetch/fetch.component";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-look-up',
@@ -17,7 +18,9 @@ export class LookUpComponent {
   })
   recentLookUps: ClusterLookUpData[];
 
-  constructor(private dataSourceService: ClusterDataSourceService, private dialog: MatDialog) {
+  constructor(private dataSourceService: ClusterDataSourceService,
+              private dialog: MatDialog,
+              private snackBar: MatSnackBar) {
     this.recentLookUps = this.dataSourceService.lookUpDataStack.list().slice().reverse();
     this.dataSourceService.lookUpDataArray$.subscribe(
       data => {
@@ -25,12 +28,16 @@ export class LookUpComponent {
       });
     this.dataSourceService.lookUpData$.subscribe(
       data => {
-        this.dialog.open(FetchComponent,
-          {
-            width: 'fit-content',
-            disableClose: true,
-            data: data
-          });
+        if (data !== null)
+          this.dialog.open(FetchComponent,
+            {
+              width: 'fit-content',
+              disableClose: true,
+              data: data
+            });
+        else
+          this.snackBar.open(`No Cluster Named "${this.lookUpFrom.controls['name'].value}" Found`,
+            "OK");
       });
   }
 

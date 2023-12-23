@@ -1,0 +1,55 @@
+.fetch-card {
+  width: 100%;
+  height: min-content;
+}
+
+.info {
+  width: 100%;
+  height: min-content;
+  margin: 10px;
+  align-content: baseline;
+
+  .title {
+    display: inline;
+    width: 20px;
+    font-size: large;
+    font-weight: 400;
+    margin: 0 10px 0 0;
+  }
+
+  .value {
+    display: inline;
+    font-size: medium;
+    font-weight: 300;
+    width: min-content;
+  }
+
+  .unit {
+    margin-left: 5px;
+    display: inline;
+    font-style: italic;
+    font-size: medium;
+    font-weight: 100;
+    width: min-content;
+  }
+}
+
+.usr-input {
+  margin: 10px 0;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}

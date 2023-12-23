@@ -42,6 +42,7 @@ $button-active-height: 180px;
   border-style: solid hidden hidden solid;
   border-radius: calc($fetch-size / 2) 0 0 calc($fetch-size / 2);
   background-color: $color-left;
+  z-index: 1;
 }
 
 .big-button-left:hover {
@@ -66,7 +67,8 @@ $button-active-height: 180px;
   left: calc(50% - 12px);
   border-style: hidden solid solid hidden;
   border-radius: 0 calc($fetch-size / 2) calc($fetch-size / 2) 0;
-  background-color: $color-right
+  background-color: $color-right;
+  z-index: 2;
 }
 
 .big-button-right:hover {

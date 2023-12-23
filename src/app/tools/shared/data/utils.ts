@@ -209,3 +209,19 @@ export enum UpdateSource {
   RESET = "reset",
   INTERFACE = "interface",
 }
+
+export function d2HMS(d: number): number[] {
+  const hours = Math.floor(d / 15);
+  const minutes = Math.floor((d - hours * 15) * 4);
+  const seconds = ((d - hours * 15) * 4 - minutes) * 60;
+  return [hours, minutes, seconds];
+}
+
+export function d2DMS(d: number): number[] {
+  const sign = d < 0 ? '-' : '+';
+  d = Math.abs(d);
+  const degrees = Math.floor(d);
+  const minutes = Math.floor((d - degrees) * 60);
+  const seconds = ((d - degrees) * 60 - minutes) * 60;
+  return [degrees, minutes, seconds];
+}

@@ -100,6 +100,5 @@ export class FetchComponent {
   cancel() {
     this.service.reset();
     this.dataService.reset();
-    this.clusterStorageService.resetDataSource();
   }
 }

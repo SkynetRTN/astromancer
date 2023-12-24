@@ -1,4 +1,5 @@
 import {FILTER, Photometry, Source} from "./cluster.util";
+import {FsrParameters} from "./FSR/fsr.util";
 
 export function sourceSerialization(sources: any[]): { 'sources': Source[], 'filters': FILTER[] } {
   let sourcesObj: Source[] = [];
@@ -56,4 +57,44 @@ export function appendFSRResults(sources: Source[], fsr: any[]) {
     }
   }
   return sources;
+}
+
+export function filterFSR(sources: Source[] | null, fsr: FsrParameters): { fsr: Source[], not_fsr: Source[] } {
+  if (sources == null) {
+    return {fsr: [], not_fsr: []};
+  }
+  const sources_fsr = [];
+  const sources_not_fsr = [];
+  const pmBoolGlobal = fsr.pmra === null || fsr.pmdec === null;
+  let a: number
+  let b: number;
+  let center_ra: number;
+  let center_dec: number;
+  if (!pmBoolGlobal) {
+    a = (fsr.pmra!.max - fsr.pmra!.min) / 2;
+    b = (fsr.pmdec!.max - fsr.pmdec!.min) / 2;
+    center_ra = (fsr.pmra!.max + fsr.pmra!.min) / 2
+    center_dec = (fsr.pmdec!.max + fsr.pmdec!.min) / 2
+  }
+  for (const data of sources) {
+    const distanceBool
+      = fsr.distance === null ||
+      (data.fsr && data.fsr.distance && data.fsr.distance >= fsr.distance.min * 1000 && data.fsr.distance <= fsr.distance.max * 1000);
+    let pmBool: boolean = pmBoolGlobal;
+    if (!pmBool && data.fsr && data.fsr.pm_ra && data.fsr.pm_dec) {
+      const decDiff = b! * Math.sqrt(
+        1 - Math.pow((data.fsr.pm_ra - center_ra!) / a!, 2));
+      pmBool = data.fsr.pm_dec >= center_dec! - decDiff
+        && data.fsr.pm_dec <= center_dec! + decDiff;
+    } else if (pmBoolGlobal &&
+      (data.fsr == null || data.fsr.pm_ra == null || data.fsr.pm_dec == null)) {
+      pmBool = false;
+    }
+    if (distanceBool && pmBool) {
+      sources_fsr.push(data);
+    } else {
+      sources_not_fsr.push(data);
+    }
+  }
+  return {fsr: sources_fsr, not_fsr: sources_not_fsr};
 }

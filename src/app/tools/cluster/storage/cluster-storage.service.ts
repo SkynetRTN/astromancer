@@ -16,6 +16,7 @@ export class ClusterStorageService {
     } else {
       this.storageObject = this.init();
     }
+    console.log(this.storageObject);
   }
 
   public save() {
@@ -76,8 +77,18 @@ export class ClusterStorageService {
     this.save();
   }
 
+
+  public getUserPhotometry(): Source[] | null {
+    return this.storageObject.userPhotometry;
+  }
+
+  public setUserPhotometry(sources: Source[]) {
+    this.storageObject.userPhotometry = sources;
+    this.save();
+  }
+
   public resetDataSource() {
-    this.init();
+    this.storageObject = this.init();
     this.save();
   }
 
@@ -127,6 +138,7 @@ export class ClusterStorageService {
       step: 0,
       name: '',
       sources: [],
+      userPhotometry: null,
       hasFSR: false,
       dataSource: {
         recentSearches: [],

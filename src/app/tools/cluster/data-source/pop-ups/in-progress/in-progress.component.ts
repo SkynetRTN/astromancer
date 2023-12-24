@@ -47,6 +47,7 @@ export class InProgressComponent {
           if (this.jobType) {
             this.dataService.setSources(jobStorage.payload);
             this.dataService.getFSRResults(job.getJobId());
+            this.dataService.syncUserPhotometry();
           } else {
             this.dataService.getCatalogResults(job.getJobId());
           }
@@ -69,6 +70,5 @@ export class InProgressComponent {
   cancel() {
     this.service.reset();
     this.dataService.reset();
-    this.storageService.resetDataSource();
   }
 }

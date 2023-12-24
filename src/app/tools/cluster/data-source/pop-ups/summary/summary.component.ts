@@ -77,7 +77,6 @@ export class SummaryComponent {
   cancel() {
     this.service.reset();
     this.dataService.reset();
-    this.storageService.resetDataSource();
     this.loadGaia = false;
   }
 }

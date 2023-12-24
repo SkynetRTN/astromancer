@@ -46,7 +46,6 @@ export class ClusterService {
 
   reset() {
     this.setClusterName('');
-    // this.setTabIndex(0);
     this.setFsrParams({
       distance: null,
       pmra: null,

@@ -22,7 +22,6 @@ export class ResetComponent {
   proceed() {
     this.service.reset();
     this.dataService.reset();
-    this.clusterStorageService.resetDataSource();
   }
 
 

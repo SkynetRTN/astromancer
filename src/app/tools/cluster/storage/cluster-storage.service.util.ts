@@ -7,6 +7,7 @@ export interface ClusterStorageObject {
   step: number;
   name: string;
   sources: Source[];
+  userPhotometry: Source[] | null;
   hasFSR: boolean;
   dataSource: DataSourceStorageObject;
   fsrValues: fsrUserValues;

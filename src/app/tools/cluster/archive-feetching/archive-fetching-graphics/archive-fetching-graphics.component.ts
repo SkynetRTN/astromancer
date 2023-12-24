@@ -3,6 +3,8 @@ import {MatDialog} from "@angular/material/dialog";
 import {FetchPopupComponent} from "../fetch-popup/fetch-popup.component";
 import * as Highcharts from "highcharts";
 import {ClusterService} from "../../cluster.service";
+import {ClusterDataService} from "../../cluster-data.service";
+import {filterFSR} from "../../cluster-data.service.util";
 
 @Component({
   selector: 'app-archive-fetching-graphics',
@@ -61,7 +63,14 @@ export class ArchiveFetchingGraphicsComponent {
 
   constructor(
     private service: ClusterService,
+    private dataService: ClusterDataService,
     private matDialog: MatDialog) {
+  }
+
+  refreshChart() {
+    this.chartObject.series[0].setData([this.getUserPhotometryData().unused, 1100]);
+    this.chartObject.series[1].setData([this.getUserPhotometryData().field, 400]);
+    this.chartObject.series[2].setData([this.getUserPhotometryData().cluster, 700]);
   }
 
   chartInitialized($event: Highcharts.Chart) {
@@ -81,5 +90,21 @@ export class ArchiveFetchingGraphicsComponent {
       width: '720px',
       disableClose: true,
     });
+    this.refreshChart();
   }
+
+  private getUserPhotometryData(): StarCountByType {
+    const data = this.dataService.getUserPhotometry();
+    if (!data) {
+      return {cluster: 0, field: 0, unused: 0};
+    }
+    const result = filterFSR(data, this.service.getFsrParams());
+    return {cluster: result.fsr.length, field: result.not_fsr.length, unused: 0};
+  }
+}
+
+interface StarCountByType {
+  cluster: number;
+  field: number;
+  unused: number;
 }

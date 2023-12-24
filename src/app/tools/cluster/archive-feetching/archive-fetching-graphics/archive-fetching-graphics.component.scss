@@ -1,0 +1,50 @@
+//@import "src/styles.scss";
+
+.massive-button {
+  width: 100%;
+  height: 10vh !important;
+  font-size: x-large;
+  font-weight: bolder !important;
+  margin: 3vh 0 10px 0;
+
+  :host ::ng-deep .mdc-button__label {
+    font-weight: bolder !important;
+  }
+}
+
+p {
+  font-size: larger;
+}
+
+.LIGHT_THEME {
+  :host .fsr {
+    color: white !important;
+    background-color: #2caffe !important;
+  }
+}
+
+.DARK_THEME {
+  :host .fsr {
+    color: white !important;
+    background-color: #2b908f !important;
+  }
+}
+
+
+.isochrone {
+  color: white !important;
+  background-color: #06b535 !important;
+}
+
+.star-column-chart {
+}
+
+:host ::ng-deep .highcharts-color-2, .highcharts-color-2 .highcharts-point {
+  fill: grey !important;
+  stroke: grey !important;
+}
+
+:host ::ng-deep .highcharts-color-2 .highcharts-point {
+  fill: grey !important;
+  stroke: grey !important;
+}

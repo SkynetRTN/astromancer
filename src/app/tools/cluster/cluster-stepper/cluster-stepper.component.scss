@@ -11,7 +11,7 @@ mat-tab-group {
   transition-property: none !important;
 }
 
-::ng-deep .mat-mdc-tab-body-wrapper {
+:host ::ng-deep .mat-mdc-tab-body-wrapper {
   height: calc(100% - 64px);
   flex: min-content;
 }
@@ -20,13 +20,13 @@ mat-tab-group {
   width: 100vw;
   height: 100%;
   //overflow: scroll;
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
   display: block;
 }
 
-::ng-deep .tool-container {
-  margin: 0px;
+:host ::ng-deep .tool-container {
+  margin: 0;
   height: 100% !important;
 }
 

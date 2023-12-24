@@ -4,6 +4,6 @@
   height: 100%;
 }
 
-::ng-deep.highcharts-label {
+:host ::ng-deep.highcharts-label {
   font-size: larger;
 }

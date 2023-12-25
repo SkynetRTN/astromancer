@@ -24,15 +24,15 @@ export class FetchComponent {
       [Validators.required, Validators.min(0), Validators.max(360)]),
     dec: new FormControl(this.data.dec,
       [Validators.required, Validators.min(-90), Validators.max(90)]),
-    radius: new FormControl(this.data.radius ? this.data.radius : 0.1,
+    radius: new FormControl(this.data.radius,
       [Validators.required, Validators.min(0), Validators.max(3)]),
-    catalog: new FormControl('', [Validators.required]),
+    catalog: new FormControl(Catalogs.GAIA, [Validators.required]),
   });
   loading: boolean = false;
   readyForNext: boolean = false;
-  testDirty: boolean = false;
   fetchData: Source[] = [];
   filters: FILTER[] = [];
+  error: number|null = null;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: ClusterLookUpData,
               private http: HttpClient,
@@ -45,11 +45,12 @@ export class FetchComponent {
 
   testRadius() {
     if (this.formGroup.invalid) {
+      this.formGroup.markAllAsTouched();
       return;
     }
     this.loading = true;
-    this.testDirty = true;
     this.readyForNext = false;
+    this.error = null;
     this.dataSourceService.pushRecentSearch({
       name: this.formGroup.controls['name'].value,
       ra: parseFloat(this.formGroup.controls['ra'].value),
@@ -68,6 +69,7 @@ export class FetchComponent {
       }
     }, error => {
       this.loading = false;
+      this.error = error.status;
     })
   }
 

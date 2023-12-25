@@ -88,8 +88,11 @@
 
     <mat-divider></mat-divider>
 
-    <div *ngIf="!readyForNext && testDirty && !loading" class="fetch-prompt">
+    <div *ngIf="error === 400" class="fetch-prompt">
       Too many stars! Reduce Radius and try again.
+    </div>
+    <div *ngIf="error === 404" class="fetch-prompt">
+      There's no cluster around the given coordinates.
     </div>
 
     <mat-card-actions>

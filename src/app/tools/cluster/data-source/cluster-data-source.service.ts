@@ -88,7 +88,11 @@ export class ClusterDataSourceService {
   }
 
   private processData(): void {
-    const sortedData = this.rawData.sort((a, b) => {
+    const sortedData = this.rawData.filter(
+      (entry) => {
+        return entry.id !== undefined && entry.filter !== undefined && entry.calibrated_mag !== undefined && entry.mag_error !== undefined && entry.ra_hours !== undefined && entry.dec_degs !== undefined
+      }
+    ).sort((a, b) => {
       return a.id.localeCompare(b.id);
     });
     const processedData: Source[] = [];

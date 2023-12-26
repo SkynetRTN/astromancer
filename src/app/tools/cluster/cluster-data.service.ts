@@ -71,14 +71,17 @@ export class ClusterDataService {
   }
 
   public setSources(sources: Source[], catalogJobId: number | null = null) {
-    this.sources = sources.filter(
-      (source) => {
-        return (source.fsr !== null
-          && source.fsr.distance !== null
-          && source.fsr.pm_ra !== null
-          && source.fsr.pm_dec !== null)
-      }
-    );
+    this.sources = [];
+    for (const source of sources) {
+      if (source.fsr == null || source.fsr.distance == null || source.fsr.pm_ra == null || source.fsr.pm_dec == null)
+        continue;
+      source.photometries = source.photometries.filter((photometry) => {
+        return (!isNaN(photometry.mag) && !isNaN(photometry.mag_error) && photometry.filter in FILTER);
+      }).sort((a, b) => {
+        return filterWavelength[a.filter] - filterWavelength[b.filter]
+      });
+      this.sources.push(source);
+    }
     this.filters = this.generateFilterList();
     this.dataSubject.next(this.sources);
     if (catalogJobId !== null)
@@ -100,7 +103,7 @@ export class ClusterDataService {
 
   public getAstrometry(): { id: string, astrometry: Astrometry }[] {
     return this.sources.map((source) => {
-      return {id: source.id, astrometry: source.astrometry, photometry: []};
+      return {id: source.id, astrometry: source.astrometry, photometries: []};
     })
   }
 

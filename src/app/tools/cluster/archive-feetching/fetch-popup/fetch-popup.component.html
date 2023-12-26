@@ -110,6 +110,10 @@
     </div>
     <mat-divider></mat-divider>
   </mat-card-content>
+  <mat-progress-bar [hidden]="hideProgressBar"
+                    [mode]="progressBar! < 0 ? 'indeterminate' : 'determinate'"
+                    [value]="progressBar ? progressBar : 0"
+  ></mat-progress-bar>
   <mat-card-actions>
     <button (click)="close()" mat-button mat-dialog-close type="button">Cancel</button>
     <button (click)="testRadius()" mat-button type="button">Test Radius</button>

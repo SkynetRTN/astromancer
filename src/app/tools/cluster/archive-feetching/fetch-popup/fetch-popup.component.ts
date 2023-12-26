@@ -5,6 +5,7 @@ import {ClusterDataService} from "../../cluster-data.service";
 import {d2DMS, d2HMS} from "../../../shared/data/utils";
 import {Catalogs} from "../../cluster.util";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {JobStatus} from "../../../../shared/job/job";
 
 @Component({
   selector: 'app-fetch-popup',
@@ -31,6 +32,9 @@ export class FetchPopupComponent {
   });
   isRadiusValid: boolean = false;
 
+  hideProgressBar: boolean = true;
+  progressBar: number = -1;
+
   constructor(private service: ClusterService,
               private dataService: ClusterDataService) {
     this.name = this.service.getClusterName();
@@ -42,7 +46,6 @@ export class FetchPopupComponent {
     this.pmdec = this.service.getFsrParams().pm_dec!;
     this.distance = this.service.getFsrParams().distance!;
     this.filters = this.dataService.getFilters().join(', ');
-    console.log(this.dataService.getClusterDec());
   }
 
   // TODO: cancel job on replacement
@@ -54,11 +57,23 @@ export class FetchPopupComponent {
   }
 
   fetchData() {
-    this.dataService.fetchCatalogFetch(
+    const job = this.dataService.fetchCatalogFetch(
       this.ra,
       this.dec,
       this.formGroup.controls['radius'].value,
       this.formGroup.controls['catalogs'].value
     )
+    this.hideProgressBar = false;
+    job.statusUpdate$.subscribe((status) => {
+      if (status === JobStatus.PENDING) {
+        this.progressBar = -1;
+      } else if (status === JobStatus.COMPLETED || status === JobStatus.FAILED) {
+        this.hideProgressBar = true;
+      }
+    });
+    job.progressUpdate$.subscribe((progress) => {
+      if (progress !== null)
+        this.progressBar = progress;
+    });
   }
 }

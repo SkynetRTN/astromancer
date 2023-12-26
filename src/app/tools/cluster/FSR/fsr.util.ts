@@ -2,8 +2,8 @@ import {range} from "./histogram-slider-input/histogram-slider-input.component";
 
 export interface FsrParameters {
   distance: range | null,
-  pmra: range | null,
-  pmdec: range | null,
+  pm_ra: range | null,
+  pm_dec: range | null,
 }
 
 export interface FsrComponents {

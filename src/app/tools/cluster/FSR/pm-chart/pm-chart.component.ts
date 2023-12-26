@@ -108,11 +108,11 @@ export class PmChartComponent implements AfterViewInit {
 
   private updateFraming() {
     const framing = this.service.getFsrFraming()
-    if (framing.pmra) {
-      this.chartObject.xAxis[0].setExtremes(framing.pmra.min, framing.pmra.max);
+    if (framing.pm_ra) {
+      this.chartObject.xAxis[0].setExtremes(framing.pm_ra.min, framing.pm_ra.max);
     }
-    if (framing.pmdec) {
-      this.chartObject.yAxis[0].setExtremes(framing.pmdec.min, framing.pmdec.max);
+    if (framing.pm_dec) {
+      this.chartObject.yAxis[0].setExtremes(framing.pm_dec.min, framing.pm_dec.max);
     }
   }
 
@@ -123,13 +123,13 @@ export class PmChartComponent implements AfterViewInit {
 
   private getCutData(): number[][] {
     const data: number[][] = [];
-    if (this.service.getFsrParams().pmdec == null || this.service.getFsrParams().pmra == null)
+    if (this.service.getFsrParams().pm_dec == null || this.service.getFsrParams().pm_ra == null)
       return [];
     const segments = 80;
-    const maxDec = this.service.getFsrParams().pmdec!.max;
-    const minDec = this.service.getFsrParams().pmdec!.min;
-    const maxRa = this.service.getFsrParams().pmra!.max;
-    const minRa = this.service.getFsrParams().pmra!.min;
+    const maxDec = this.service.getFsrParams().pm_dec!.max;
+    const minDec = this.service.getFsrParams().pm_dec!.min;
+    const maxRa = this.service.getFsrParams().pm_ra!.max;
+    const minRa = this.service.getFsrParams().pm_ra!.min;
     const delta = 2 * Math.PI / segments;
     const a = (maxRa - minRa) / 2;
     const b = (maxDec - minDec) / 2;

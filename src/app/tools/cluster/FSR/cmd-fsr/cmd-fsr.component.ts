@@ -101,6 +101,10 @@ export class CmdFsrComponent implements AfterViewInit {
       this.redFilter = filters[filters.length - 1]
       this.blueFilter = filters[0]
     }
+    if (filters.includes(FILTER.W1) && filters.includes(FILTER.W2)) {
+      this.redFilter = FILTER.W1
+      this.blueFilter = FILTER.W2
+    }
     const result = []
     for (const source of sources) {
       if (source.photometries) {

@@ -6,7 +6,7 @@ import {Subject} from "rxjs";
 import {Job} from "../../shared/job/job";
 
 import {environment} from "../../../environments/environment";
-import {appendFSRResults, filterFSR, sourceSerialization} from "./cluster-data.service.util";
+import {appendFSRResults, filterFSR} from "./cluster-data.service.util";
 import {ClusterStorageService} from "./storage/cluster-storage.service";
 import {FsrParameters} from "./FSR/fsr.util";
 
@@ -70,7 +70,7 @@ export class ClusterDataService {
     return this.filters;
   }
 
-  public setSources(sources: Source[]) {
+  public setSources(sources: Source[], catalogJobId: number | null = null) {
     this.sources = sources.filter(
       (source) => {
         return (source.fsr !== null
@@ -81,13 +81,17 @@ export class ClusterDataService {
     );
     this.filters = this.generateFilterList();
     this.dataSubject.next(this.sources);
-    this.storageService.setSources(this.sources);
+    if (catalogJobId !== null)
+      this.storageService.setFetchJobId(catalogJobId);
   }
 
-  public syncUserPhotometry() {
-    console.log('syncing user photometry');
+  public setFilters(filters: FILTER[]) {
+    this.filters = filters;
+  }
+
+  public syncUserPhotometry(jobId: number) {
     this.userPhotometry = this.sources;
-    this.storageService.setUserPhotometry(this.userPhotometry);
+    this.storageService.setFSRJobId(jobId);
   }
 
   public getUserPhotometry(): Source[] | null {
@@ -116,6 +120,8 @@ export class ClusterDataService {
     }
     if (this.userPhotometry !== null && this.userPhotometry.length > 0)
       payload['sources'] = this.userPhotometry
+    if (this.storageService.getFsrParams() !== null)
+      payload['constraints'] = this.storageService.getFsrParams();
     catalogJob.createJob(payload);
     catalogJob.complete$.subscribe(
       (complete) => {
@@ -144,8 +150,9 @@ export class ClusterDataService {
       this.http.get(`${environment.apiUrl}/cluster/catalog`,
         {params: {'id': id}}).subscribe(
         (resp: any) => {
-          const {sources, filters} = sourceSerialization(resp['output_sources']);
-          this.setSources(sources);
+          // const {sources, filters} = sourceSerialization(resp['output_sources']);
+          const sources: Source[] = resp['output_sources'];
+          this.setSources(sources, resp['id']);
           this.setHasFSR(true);
         }
       );
@@ -157,7 +164,7 @@ export class ClusterDataService {
         {params: {'id': id}}).subscribe(
         (resp: any) => {
           this.setSources(appendFSRResults(this.sources, resp['FSR']));
-          this.syncUserPhotometry();
+          this.syncUserPhotometry(resp['id']);
         }
       );
   }
@@ -255,25 +262,27 @@ export class ClusterDataService {
   }
 
   private initValues() {
-    this.setSources(this.storageService.getSources());
     this.setHasFSR(this.storageService.getHasFSR());
     this.setFSRCriteria(this.storageService.getFsrParams());
-    this.userPhotometry = this.storageService.getUserPhotometry();
+    if (this.storageService.getFetchJobId() !== null)
+      this.getCatalogResults(this.storageService.getFetchJobId());
+    if (this.storageService.getFSRJobId() !== null)
+      this.getFSRResults(this.storageService.getFSRJobId());
   }
 
   private generateFilterList(): FILTER[] {
-    let filters: FILTER[] = [];
+    let filter_list: FILTER[] = [];
     this.sources.forEach((source) => {
-      source.photometries.forEach((photometry) => {
-        if (!filters.includes(photometry.filter)) {
-          filters.push(photometry.filter);
+      source.photometries.forEach((photometry: any) => {
+        if (!filter_list.includes(photometry.filter)) {
+          filter_list.push(photometry.filter);
         }
       });
     });
-    filters = filters.sort((a, b) => {
+    filter_list.sort((a, b) => {
       return filterWavelength[a] - filterWavelength[b];
     })
-    return filters;
+    return filter_list;
   }
 
 }

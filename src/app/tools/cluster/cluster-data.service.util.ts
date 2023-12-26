@@ -6,7 +6,7 @@ export function sourceSerialization(sources: any[]): { 'sources': Source[], 'fil
   let filters: FILTER[] = [];
   for (let entry of sources) {
     let photometries: Photometry[] = [];
-    for (let photometry of entry['photometry']) {
+    for (let photometry of entry['photometries']) {
       if (!filters.includes(photometry['filter']))
         filters.push(photometry['filter']);
       let photometryObj: Photometry = {
@@ -23,8 +23,8 @@ export function sourceSerialization(sources: any[]): { 'sources': Source[], 'fil
         dec: entry['astrometry']['dec'],
       },
       fsr: {
-        pm_ra: entry['fsr']['pmra'],
-        pm_dec: entry['fsr']['pmdec'],
+        pm_ra: entry['fsr']['pm_ra'],
+        pm_dec: entry['fsr']['pm_dec'],
         distance: entry['fsr']['distance'],
       },
       photometries: photometries,
@@ -65,16 +65,16 @@ export function filterFSR(sources: Source[] | null, fsr: FsrParameters): { fsr: 
   }
   const sources_fsr = [];
   const sources_not_fsr = [];
-  const pmBoolGlobal = fsr.pmra === null || fsr.pmdec === null;
+  const pmBoolGlobal = fsr.pm_ra === null || fsr.pm_dec === null;
   let a: number
   let b: number;
   let center_ra: number;
   let center_dec: number;
   if (!pmBoolGlobal) {
-    a = (fsr.pmra!.max - fsr.pmra!.min) / 2;
-    b = (fsr.pmdec!.max - fsr.pmdec!.min) / 2;
-    center_ra = (fsr.pmra!.max + fsr.pmra!.min) / 2
-    center_dec = (fsr.pmdec!.max + fsr.pmdec!.min) / 2
+    a = (fsr.pm_ra!.max - fsr.pm_ra!.min) / 2;
+    b = (fsr.pm_dec!.max - fsr.pm_dec!.min) / 2;
+    center_ra = (fsr.pm_ra!.max + fsr.pm_ra!.min) / 2
+    center_dec = (fsr.pm_dec!.max + fsr.pm_dec!.min) / 2
   }
   for (const data of sources) {
     const distanceBool

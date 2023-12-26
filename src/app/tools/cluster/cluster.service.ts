@@ -48,13 +48,13 @@ export class ClusterService {
     this.setClusterName('');
     this.setFsrParams({
       distance: null,
-      pmra: null,
-      pmdec: null
+      pm_ra: null,
+      pm_dec: null
     });
     this.setFsrFraming({
       distance: null,
-      pmra: null,
-      pmdec: null
+      pm_ra: null,
+      pm_dec: null
     });
   }
 

@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ClusterStorageObject, fsrHistogramBin} from "./cluster-storage.service.util";
 import {JobStorageObject} from "../../../shared/job/job";
-import {Source} from "../cluster.util";
 import {FsrParameters} from "../FSR/fsr.util";
 
 @Injectable()
@@ -68,22 +67,22 @@ export class ClusterStorageService {
     this.save();
   }
 
-  public getSources(): Source[] {
-    return this.storageObject.sources;
+  public getFetchJobId(): number | null {
+    return this.storageObject.fetchJobId;
   }
 
-  public setSources(sources: Source[]) {
-    this.storageObject.sources = sources;
+  public setFetchJobId(id: number) {
+    this.storageObject.fetchJobId = id;
     this.save();
   }
 
 
-  public getUserPhotometry(): Source[] | null {
-    return this.storageObject.userPhotometry;
+  public getFSRJobId(): number | null {
+    return this.storageObject.fsrJobId;
   }
 
-  public setUserPhotometry(sources: Source[]) {
-    this.storageObject.userPhotometry = sources;
+  public setFSRJobId(id: number) {
+    this.storageObject.fsrJobId = id;
     this.save();
   }
 
@@ -137,8 +136,8 @@ export class ClusterStorageService {
     return {
       step: 0,
       name: '',
-      sources: [],
-      userPhotometry: null,
+      fetchJobId: null,
+      fsrJobId: null,
       hasFSR: false,
       dataSource: {
         recentSearches: [],
@@ -148,18 +147,18 @@ export class ClusterStorageService {
       fsrValues: {
         parameters: {
           distance: null,
-          pmra: null,
-          pmdec: null,
+          pm_ra: null,
+          pm_dec: null,
         },
         framing: {
           distance: null,
-          pmra: null,
-          pmdec: null,
+          pm_ra: null,
+          pm_dec: null,
         },
         bin: {
           distance: null,
-          pmra: null,
-          pmdec: null,
+          pm_ra: null,
+          pm_dec: null,
         }
       }
     };

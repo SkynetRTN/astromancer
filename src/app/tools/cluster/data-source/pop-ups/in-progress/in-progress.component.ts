@@ -44,10 +44,10 @@ export class InProgressComponent {
       job.complete$.subscribe(
         () => {
           this.isJobComplete = true;
-          if (this.jobType) {
+          if (this.jobType && job.getJobId()) {
             this.dataService.setSources(jobStorage.payload);
             this.dataService.getFSRResults(job.getJobId());
-            this.dataService.syncUserPhotometry();
+            this.dataService.syncUserPhotometry(job.getJobId()!);
           } else {
             this.dataService.getCatalogResults(job.getJobId());
           }

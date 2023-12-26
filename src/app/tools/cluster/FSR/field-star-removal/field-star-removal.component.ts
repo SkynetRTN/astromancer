@@ -50,8 +50,8 @@ export class FieldStarRemovalComponent implements AfterViewInit {
       () => {
         this.service.setFsrParams({
           distance: null,
-          pmra: null,
-          pmdec: null
+          pm_ra: null,
+          pm_dec: null
         });
         this.$distance.next(
           {
@@ -124,9 +124,9 @@ export class FieldStarRemovalComponent implements AfterViewInit {
       isNew: true
     }
     if (this.dataService.getHasFSR()) {
-      payload.range = this.storageService.getFsrParams().pmra;
-      payload.histogramRange = this.storageService.getFsrFraming().pmra;
-      payload.bin = this.storageService.getFsrBins().pmra;
+      payload.range = this.storageService.getFsrParams().pm_ra;
+      payload.histogramRange = this.storageService.getFsrFraming().pm_ra;
+      payload.bin = this.storageService.getFsrBins().pm_ra;
     }
     this.$pmra.next(payload);
   }
@@ -138,9 +138,9 @@ export class FieldStarRemovalComponent implements AfterViewInit {
       isNew: true
     }
     if (this.dataService.getHasFSR()) {
-      payload.range = this.storageService.getFsrParams().pmdec;
-      payload.histogramRange = this.storageService.getFsrFraming().pmdec;
-      payload.bin = this.storageService.getFsrBins().pmdec;
+      payload.range = this.storageService.getFsrParams().pm_dec;
+      payload.histogramRange = this.storageService.getFsrFraming().pm_dec;
+      payload.bin = this.storageService.getFsrBins().pm_dec;
     }
     this.$pmdec.next(payload);
   }
@@ -163,22 +163,22 @@ export class FieldStarRemovalComponent implements AfterViewInit {
     this.service.setFsrParams(
       {
         distance: null,
-        pmra: null,
-        pmdec: null
+        pm_ra: null,
+        pm_dec: null
       }
     );
     this.service.setFsrFraming(
       {
         distance: null,
-        pmra: null,
-        pmdec: null
+        pm_ra: null,
+        pm_dec: null
       }
     );
     this.storageService.setFsrBins(
       {
         distance: null,
-        pmra: null,
-        pmdec: null
+        pm_ra: null,
+        pm_dec: null
       }
     );
     this.distanceInit();
@@ -197,24 +197,24 @@ export class FieldStarRemovalComponent implements AfterViewInit {
   private setFSRParams() {
     this.service.setFsrParams({
       distance: this.distanceParams.range,
-      pmra: this.pmraParams.range,
-      pmdec: this.pmdecParams.range,
+      pm_ra: this.pmraParams.range,
+      pm_dec: this.pmdecParams.range,
     });
   }
 
   private setFSRFraming() {
     this.service.setFsrFraming({
       distance: this.distanceParams.histogramRange,
-      pmra: this.pmraParams.histogramRange,
-      pmdec: this.pmdecParams.histogramRange
+      pm_ra: this.pmraParams.histogramRange,
+      pm_dec: this.pmdecParams.histogramRange
     });
   }
 
   private setFsrBins() {
     this.storageService.setFsrBins({
       distance: this.distanceParams.bin,
-      pmra: this.pmraParams.bin,
-      pmdec: this.pmdecParams.bin
+      pm_ra: this.pmraParams.bin,
+      pm_dec: this.pmdecParams.bin
     });
   }
 }

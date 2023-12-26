@@ -13,14 +13,16 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 })
 export class FetchPopupComponent {
   name!: string;
-  ra: number[];
-  dec: number[];
+  ra: number;
+  display_ra: number[];
+  dec: number;
+  display_dec: number[];
   pmra!: range;
   pmdec!: range;
   distance!: range;
   filters!: string;
   catalogs = Object.values(Catalogs);
-  maximumRadius: number = 0.5;
+  maximumRadius: number = 5;
   formGroup: FormGroup = new FormGroup({
     radius: new FormControl(this.maximumRadius,
       [Validators.min(0),
@@ -32,10 +34,12 @@ export class FetchPopupComponent {
   constructor(private service: ClusterService,
               private dataService: ClusterDataService) {
     this.name = this.service.getClusterName();
-    this.ra = d2HMS(this.dataService.getClusterRa()!);
-    this.dec = d2DMS(this.dataService.getClusterDec()!);
-    this.pmra = this.service.getFsrParams().pmra!;
-    this.pmdec = this.service.getFsrParams().pmdec!;
+    this.ra = this.dataService.getClusterRa()!;
+    this.display_ra = d2HMS(this.ra);
+    this.dec = this.dataService.getClusterDec()!;
+    this.display_dec = d2DMS(this.dec);
+    this.pmra = this.service.getFsrParams().pm_ra!;
+    this.pmdec = this.service.getFsrParams().pm_dec!;
     this.distance = this.service.getFsrParams().distance!;
     this.filters = this.dataService.getFilters().join(', ');
     console.log(this.dataService.getClusterDec());
@@ -45,4 +49,16 @@ export class FetchPopupComponent {
   close() {
   }
 
+  testRadius() {
+    this.isRadiusValid = true;
+  }
+
+  fetchData() {
+    this.dataService.fetchCatalogFetch(
+      this.ra,
+      this.dec,
+      this.formGroup.controls['radius'].value,
+      this.formGroup.controls['catalogs'].value
+    )
+  }
 }

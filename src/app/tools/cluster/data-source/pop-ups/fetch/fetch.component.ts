@@ -41,6 +41,9 @@ export class FetchComponent {
                 private dataSourceService: ClusterDataSourceService,
                 private dataService: ClusterDataService,
                 private clusterStorageService: ClusterStorageService) {
+        this.formGroup.valueChanges.subscribe(() => {
+            this.readyForNext = false;
+        });
     }
 
     testRadius() {
@@ -74,24 +77,26 @@ export class FetchComponent {
     }
 
     fetchCatalog() {
-        this.loading = true;
-        this.service.setClusterName(this.formGroup.controls['name'].value);
-        let job: Job = this.dataService.fetchCatalog(
-            this.formGroup.controls['ra'].value,
-            this.formGroup.controls['dec'].value,
-            this.formGroup.controls['radius'].value,
-            [this.formGroup.controls['catalog'].value]
-        );
-        job.update$.subscribe((job) => {
-            this.clusterStorageService.setJob(job.getStorageObject());
-        });
-        job.complete$.subscribe((complete) => {
-            this.loading = false;
-        });
-        this.dataService.sources$.subscribe((data) => {
-            this.fetchData = data;
-            this.filters = this.dataService.getFilters();
-        });
+        if (this.dataService.getSources().length > 0) {
+            this.service.setTabIndex(1);
+            this.dialog.closeAll();
+        } else {
+            this.loading = true;
+            this.service.setClusterName(this.formGroup.controls['name'].value);
+            let job: Job = this.dataService.fetchCatalog(
+                this.formGroup.controls['ra'].value,
+                this.formGroup.controls['dec'].value,
+                this.formGroup.controls['radius'].value,
+                [this.formGroup.controls['catalog'].value]
+            );
+            job.complete$.subscribe((complete) => {
+                this.loading = false;
+            });
+            this.dataService.sources$.subscribe((data) => {
+                this.fetchData = data;
+                this.filters = this.dataService.getFilters();
+            });
+        }
     }
 
     cancel() {

@@ -8,6 +8,7 @@ import {ClusterStorageService} from "../../storage/cluster-storage.service";
 import {InProgressComponent} from "../pop-ups/in-progress/in-progress.component";
 import {ClusterService} from "../../cluster.service";
 import {ResetComponent} from "../pop-ups/reset/reset.component";
+import {JobStatus} from "../../../../shared/job/job";
 
 @Component({
     selector: 'app-data-source',
@@ -59,11 +60,13 @@ export class DataSourceComponent {
     }
 
     private jobInProgress(): boolean {
-        // const jobNotConfirmed: boolean = this.storageService.getHasFSR() && this.storageService.getTabIndex() === 0;
-        // const jobs = this.storageService.getDataSource()
-        // const jobNotComplete: boolean = jobs.FSRJob !== null || jobs.lookUpJob !== null;
-        // return jobNotComplete || jobNotConfirmed;
-        return false;
+        const job = this.storageService.getJob();
+        if (job === null) {
+            return false;
+        }
+        const jobNotConfirmed: boolean = job.status === JobStatus.COMPLETED && this.storageService.getTabIndex() === 0;
+        const jobNotComplete: boolean = job.status !== JobStatus.COMPLETED;
+        return jobNotComplete || jobNotConfirmed;
     }
 
     private resetPrompt(): boolean {

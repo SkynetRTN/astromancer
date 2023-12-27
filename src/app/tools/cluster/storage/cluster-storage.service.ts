@@ -100,7 +100,7 @@ export class ClusterStorageService {
             step: 0,
             name: '',
             dataSource: {
-                recentSearches: [],
+                recentSearches: this.getRecentSearches() ?? [],
                 dataJob: null,
             },
             fsrValues: {

@@ -10,14 +10,15 @@ import {MatTabChangeEvent} from "@angular/material/tabs";
     styleUrls: ['./cluster-stepper.component.scss', '../../shared/interface/tools.scss']
 })
 export class ClusterStepperComponent {
-    hasFSR: boolean = false;
+    hasFSR: boolean;
     index: number = this.storageService.getTabIndex();
 
     constructor(private service: ClusterService,
                 private storageService: ClusterStorageService,
                 private dataService: ClusterDataService,) {
+        this.hasFSR = this.storageService.getJob() !== null;
         this.dataService.sources$.subscribe(data => {
-            this.hasFSR = true;
+            this.hasFSR = this.storageService.getJob()?.status === 'COMPLETED';
         });
         this.service.tabIndex$.subscribe(index => {
             this.index = index;

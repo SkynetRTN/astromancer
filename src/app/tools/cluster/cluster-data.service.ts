@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {ClusterDataSourceService} from "./data-source/cluster-data-source.service";
 import {Astrometry, Catalogs, FILTER, filterWavelength, FSR, Source} from "./cluster.util";
 import {HttpClient} from "@angular/common/http";
-import {Subject} from "rxjs";
+import {Subject, takeUntil} from "rxjs";
 import {Job, JobType} from "../../shared/job/job";
 
 import {environment} from "../../../environments/environment";
@@ -87,14 +87,8 @@ export class ClusterDataService {
 
     public getAstrometry(): { id: string, astrometry: Astrometry }[] {
         return this.sources.map((source) => {
-            return {id: source.id, astrometry: source.astrometry, photometries: []};
+            return {id: source.id, astrometry: source.astrometry, photometries: source.photometries};
         })
-    }
-
-    public getFSRCount(): number {
-        return this.sources.filter((source) => {
-            return source.fsr
-        }).length;
     }
 
     fetchCatalog(ra: number, dec: number, radius: number, catalogs: Catalogs[]): Job {
@@ -110,10 +104,16 @@ export class ClusterDataService {
         if (this.storageService.getFsrParams() !== null)
             payload['constraints'] = this.storageService.getFsrParams();
         catalogJob.createJob(payload);
+        catalogJob.update$.pipe(
+            takeUntil(catalogJob.complete$)
+        ).subscribe((job) => {
+            this.storageService.setJob(job.getStorageObject());
+        });
         catalogJob.complete$.subscribe(
             (complete) => {
                 if (complete) {
                     this.getCatalogResults(catalogJob.getJobId());
+                    // this.storageService.setJob(catalogJob.getStorageObject());
                 }
             });
         return catalogJob;
@@ -122,6 +122,11 @@ export class ClusterDataService {
     fetchFieldStarRemoval(): Job {
         const fsrJob = new Job('/cluster/fsr', JobType.FIELD_STAR_REMOVAL, this.http, 200);
         fsrJob.createJob({sources: this.getAstrometry()});
+        fsrJob.update$.pipe(
+            takeUntil(fsrJob.complete$)
+        ).subscribe((job) => {
+            this.storageService.setJob(job.getStorageObject());
+        });
         fsrJob.complete$.subscribe(
             (complete) => {
                 if (complete) {
@@ -148,8 +153,9 @@ export class ClusterDataService {
             this.http.get(`${environment.apiUrl}/cluster/fsr`,
                 {params: {'id': id}}).subscribe(
                 (resp: any) => {
-                    this.setSources(appendFSRResults(this.sources, resp['FSR']));
+                    this.setSources(appendFSRResults(resp['sources'], resp['FSR']));
                     this.syncUserPhotometry(resp['id']);
+                    console.log(this.sources);
                 }
             );
     }
@@ -250,11 +256,12 @@ export class ClusterDataService {
 
     private initValues() {
         const stored_job = this.storageService.getJob();
-        if (stored_job !== null)
+        if (stored_job !== null && stored_job.status === 'COMPLETED')
             if (stored_job.type === JobType.FETCH_CATALOG) {
                 this.getCatalogResults(stored_job.id);
             } else if (stored_job.type === JobType.FIELD_STAR_REMOVAL) {
                 this.getFSRResults(stored_job.id);
+                console.log(this.sources);
             }
     }
 

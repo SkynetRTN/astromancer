@@ -41,7 +41,7 @@ export class ClusterDataService {
     }
 
     public getSources(isCluster: boolean = false): Source[] {
-        if (isCluster && this.clusterSources !== null)
+        if (isCluster && this.cluster_sources !== null)
             return this.cluster_sources!;
         return this.sources;
     }
@@ -51,6 +51,7 @@ export class ClusterDataService {
         this.cluster_sources = result.fsr;
         this.field_sources = result.not_fsr;
         this.clusterSourcesSubject.next(this.cluster_sources);
+        this.storageService.setFsrParams(fsr);
     }
 
     public getFilters(): FILTER[] {
@@ -70,6 +71,7 @@ export class ClusterDataService {
             this.sources.push(source);
         }
         this.filters = this.generateFilterList();
+        this.setFSRCriteria(this.storageService.getFsrParams());
         this.sourcesSubject.next(this.sources);
     }
 
@@ -113,7 +115,7 @@ export class ClusterDataService {
             (complete) => {
                 if (complete) {
                     this.getCatalogResults(catalogJob.getJobId());
-                    // this.storageService.setJob(catalogJob.getStorageObject());
+                    this.storageService.setJob(catalogJob.getStorageObject());
                 }
             });
         return catalogJob;
@@ -155,7 +157,6 @@ export class ClusterDataService {
                 (resp: any) => {
                     this.setSources(appendFSRResults(resp['sources'], resp['FSR']));
                     this.syncUserPhotometry(resp['id']);
-                    console.log(this.sources);
                 }
             );
     }
@@ -256,13 +257,18 @@ export class ClusterDataService {
 
     private initValues() {
         const stored_job = this.storageService.getJob();
-        if (stored_job !== null && stored_job.status === 'COMPLETED')
+        if (stored_job !== null && stored_job.status === 'COMPLETED') {
             if (stored_job.type === JobType.FETCH_CATALOG) {
                 this.getCatalogResults(stored_job.id);
             } else if (stored_job.type === JobType.FIELD_STAR_REMOVAL) {
                 this.getFSRResults(stored_job.id);
-                console.log(this.sources);
             }
+        } else {
+            this.sources = [];
+            this.cluster_sources = null;
+            this.field_sources = null;
+            this.filters = [];
+        }
     }
 
     private generateFilterList(): FILTER[] {

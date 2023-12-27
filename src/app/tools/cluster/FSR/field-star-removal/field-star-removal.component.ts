@@ -39,37 +39,25 @@ export class FieldStarRemovalComponent implements AfterViewInit {
                 public storageService: ClusterStorageService) {
         this.dataService.clusterSources.subscribe(
             (data) => {
-                this.$pmra.next({data: this.dataService.getPmra(), isNew: false});
-                this.$pmdec.next({data: this.dataService.getPmdec(), isNew: false});
-                this.$distance.next({data: this.dataService.getDistance(), isNew: false});
+                this.$pmra.next({
+                    fullData: this.dataService.getPmra(true),
+                    data: this.dataService.getPmra(),
+                    isNew: false
+                });
+                this.$pmdec.next({
+                    fullData: this.dataService.getPmdec(true),
+                    data: this.dataService.getPmdec(),
+                    isNew: false
+                });
+                this.$distance.next({
+                    fullData: this.dataService.getDistance(true),
+                    data: this.dataService.getDistance(),
+                    isNew: false
+                });
             });
     }
 
     ngAfterViewInit() {
-        this.dataService.sources$.subscribe(
-            () => {
-                this.service.setFsrParams({
-                    distance: null,
-                    pm_ra: null,
-                    pm_dec: null
-                });
-                this.$distance.next(
-                    {
-                        data: this.dataService.getDistance(),
-                        fullData: this.dataService.getDistance(true),
-                        isNew: true
-                    });
-                this.$pmra.next({
-                    data: this.dataService.getPmra(),
-                    fullData: this.dataService.getPmra(true),
-                    isNew: true
-                });
-                this.$pmdec.next({
-                    data: this.dataService.getPmdec(),
-                    fullData: this.dataService.getPmdec(true),
-                    isNew: true
-                });
-            });
     }
 
     distanceRangeHandler($event: range) {
@@ -182,10 +170,6 @@ export class FieldStarRemovalComponent implements AfterViewInit {
 
     public toFetchArchive() {
         this.service.setTabIndex(2);
-    }
-
-    public toFitIsochrone() {
-        this.service.setTabIndex(3);
     }
 
     private setFSRParams() {

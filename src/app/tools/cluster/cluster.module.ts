@@ -46,37 +46,37 @@ import {
 } from './archive-feetching/archive-fetching-graphics/archive-fetching-graphics.component';
 
 const routes: Routes = [
-  {path: '', component: ClusterComponent, title: 'Cluster'}
+    {path: '', component: ClusterComponent, title: 'Cluster'}
 ];
 
 @NgModule({
-  declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent, FieldStarRemovalComponent, HistogramSliderInputComponent, PieChartComponent, PmChartComponent, CmdFsrComponent, ArchiveFetchingComponent, FetchPopupComponent, ArchiveFetchingGraphicsComponent],
-  imports: [
-    RouterModule.forChild(routes),
-    CommonModule,
-    MatStepperModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDialogModule,
-    MatCardModule,
-    MatDividerModule,
-    MatInputModule,
-    FormsModule,
-    HttpClientModule,
-    MatProgressSpinnerModule,
-    MatProgressBarModule,
-    ReactiveFormsModule,
-    MatListModule,
-    MatSelectModule,
-    MatTabsModule,
-    NgChartsModule,
-    HighchartsChartModule,
-    MatSlideToggleModule,
-    MatSliderModule,
-    MatSnackBarModule,
-  ],
-  exports: [ClusterComponent, RouterModule],
-  providers: [ClusterDataSourceService, ClusterService, ClusterDataService, ClusterStorageService]
+    declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent, FieldStarRemovalComponent, HistogramSliderInputComponent, PieChartComponent, PmChartComponent, CmdFsrComponent, ArchiveFetchingComponent, FetchPopupComponent, ArchiveFetchingGraphicsComponent],
+    imports: [
+        RouterModule.forChild(routes),
+        CommonModule,
+        MatStepperModule,
+        MatButtonModule,
+        MatIconModule,
+        MatDialogModule,
+        MatCardModule,
+        MatDividerModule,
+        MatInputModule,
+        FormsModule,
+        HttpClientModule,
+        MatProgressSpinnerModule,
+        MatProgressBarModule,
+        ReactiveFormsModule,
+        MatListModule,
+        MatSelectModule,
+        MatTabsModule,
+        NgChartsModule,
+        HighchartsChartModule,
+        MatSlideToggleModule,
+        MatSliderModule,
+        MatSnackBarModule,
+    ],
+    exports: [ClusterComponent, RouterModule],
+    providers: [ClusterStorageService, ClusterDataSourceService, ClusterService, ClusterDataService]
 })
 export class ClusterModule {
 }

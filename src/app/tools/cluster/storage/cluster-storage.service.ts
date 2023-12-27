@@ -5,17 +5,16 @@ import {FsrParameters} from "../FSR/fsr.util";
 
 @Injectable()
 export class ClusterStorageService {
-    storageObject: ClusterStorageObject;
+    storageObject!: ClusterStorageObject;
     key: string = 'cluster-storage';
 
     constructor() {
         const stored: ClusterStorageObject = JSON.parse(localStorage.getItem(this.key)!);
-        if (stored) {
+        if (stored !== null) {
             this.storageObject = stored;
         } else {
-            this.storageObject = this.init();
+            this.init();
         }
-        console.log(this.storageObject);
     }
 
     public save() {
@@ -50,8 +49,7 @@ export class ClusterStorageService {
     }
 
     public resetDataSource() {
-        this.storageObject = this.init();
-        this.save();
+        this.init();
     }
 
     public getDataSource() {
@@ -95,12 +93,12 @@ export class ClusterStorageService {
     }
 
 
-    private init(): ClusterStorageObject {
-        return {
+    private init() {
+        this.storageObject = {
             step: 0,
             name: '',
             dataSource: {
-                recentSearches: this.getRecentSearches() ?? [],
+                recentSearches: this.storageObject?.dataSource?.recentSearches ?? [],
                 dataJob: null,
             },
             fsrValues: {
@@ -121,5 +119,6 @@ export class ClusterStorageService {
                 }
             }
         };
+        this.save();
     }
 }

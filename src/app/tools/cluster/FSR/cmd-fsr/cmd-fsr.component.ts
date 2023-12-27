@@ -86,7 +86,7 @@ export class CmdFsrComponent implements AfterViewInit {
             text: this.blueFilter + " - " + this.redFilter + " (mag)"
         });
         this.chartObject.yAxis[0].setTitle({
-            text: this.blueFilter + " (mag)"
+            text: this.redFilter + " (mag)"
         });
     }
 
@@ -95,15 +95,15 @@ export class CmdFsrComponent implements AfterViewInit {
         number[][] {
         const sources = this.dataService.getSources(true);
         const filters = this.dataService.getFilters();
-        this.redFilter = FILTER.RP
         this.blueFilter = FILTER.BP
+        this.redFilter = FILTER.RP
         if (!filters.includes(FILTER.RP) || !filters.includes(FILTER.BP)) {
-            this.redFilter = filters[filters.length - 1]
             this.blueFilter = filters[0]
+            this.redFilter = filters[1]
         }
         if (filters.includes(FILTER.W1) && filters.includes(FILTER.W2)) {
-            this.redFilter = FILTER.W1
-            this.blueFilter = FILTER.W2
+            this.blueFilter = FILTER.W1
+            this.redFilter = FILTER.W2
         }
         const result = []
         for (const source of sources) {
@@ -119,7 +119,7 @@ export class CmdFsrComponent implements AfterViewInit {
                     }
                 });
                 if (redMag && blueMag) {
-                    result.push([blueMag - redMag, blueMag]);
+                    result.push([blueMag - redMag, redMag]);
                 }
             }
         }

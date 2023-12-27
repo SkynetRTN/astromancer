@@ -1,10 +1,11 @@
-import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import * as Highcharts from "highcharts";
 import HC_histogram from 'highcharts/modules/histogram-bellcurve';
 import {debounceTime, Subject} from "rxjs";
 import {FormControl, FormGroup} from "@angular/forms";
 import {FsrHistogramPayload} from "../fsr.util";
 import {ClusterDataService} from "../../cluster-data.service";
+import {MatSlider} from "@angular/material/slider";
 
 HC_histogram(Highcharts);
 
@@ -36,6 +37,12 @@ export class HistogramSliderInputComponent implements OnInit, AfterViewInit {
     public $histogramRange: EventEmitter<range> = new EventEmitter<range>();
     @Output()
     public $bin: EventEmitter<number> = new EventEmitter<number>();
+
+    @ViewChild('histogramSlider')
+    histogramSlider!: MatSlider;
+    @ViewChild('rangeSlider')
+    rangeSlider!: MatSlider;
+
     data!: number[];
     fullDataRange: range = {min: 0, max: 0};
     histogramRange: range = {min: 0, max: 0};
@@ -204,10 +211,24 @@ export class HistogramSliderInputComponent implements OnInit, AfterViewInit {
         this.dataRange = {min: min, max: max};
         this.histogramBin = this.getDefaultBin();
         if (payload.isNew) {
-            this.histogramRange = payload?.histogramRange != null ? payload.histogramRange : {min: min, max: max};
+            if (payload?.histogramRange != null) {
+                if (payload.histogramRange.min == null || payload.histogramRange.min >= min)
+                    this.histogramRange.min = payload.histogramRange.min;
+                if (payload.histogramRange.max == null || payload.histogramRange.max <= max)
+                    this.histogramRange.max = payload.histogramRange.max;
+            }
+            if (payload?.range != null) {
+                if (payload.range.min == null || payload.range.min >= min)
+                    this.dataRange.min = payload.range.min;
+                if (payload.range.max == null || payload.range.max <= max)
+                    this.dataRange.max = payload.range.max;
+            }
             this.histogramBin = payload?.bin != null ? payload.bin : this.getDefaultBin();
-            this.dataRange = payload?.range != null ? payload.range : {min: min, max: max};
         }
+        this.histogramSlider.min = this.fullDataRange.min;
+        this.histogramSlider.max = this.fullDataRange.max;
+        this.rangeSlider.min = this.histogramRange.min;
+        this.rangeSlider.max = this.histogramRange.max;
     }
 
     private initDebounce() {

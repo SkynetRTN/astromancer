@@ -151,7 +151,6 @@ export class ClusterDataSourceService {
         currentStar.astrometry.dec = decSum / currentStar.photometries.length;
         processedData.push(currentStar);
         this.sources = processedData;
-        console.log(this.sources);
         this.filters = filters;
     }
 

@@ -1,5 +1,6 @@
 import {FILTER, Photometry, Source} from "./cluster.util";
 import {FsrParameters} from "./FSR/fsr.util";
+import {StarCount} from "./storage/cluster-storage.service.util";
 
 export function sourceSerialization(sources: any[]): { 'sources': Source[], 'filters': FILTER[] } {
     let sourcesObj: Source[] = [];
@@ -97,4 +98,33 @@ export function updateClusterFieldSources(sources: Source[] | null, fsr: FsrPara
         }
     }
     return {fsr: sources_fsr, not_fsr: sources_not_fsr};
+}
+
+export function getStarCountsByFilter(clusterSources: Source[], fieldSources: Source[],
+                                      filters: FILTER[], fsr: FsrParameters, starCount: StarCount, totalStarsCount: number): StarCount {
+    let cluster_stars = 0;
+    let field_stars = 0;
+    cluster_stars = sourceByCatalog(clusterSources, filters).length;
+    field_stars = sourceByCatalog(fieldSources, filters).length;
+    if (cluster_stars === 0 && field_stars === 0) {
+        return {cluster_stars: 0, field_stars: 0, unused_stars: totalStarsCount};
+    } else {
+        field_stars += starCount.field_stars;
+        let unused_stars = totalStarsCount - cluster_stars - field_stars;
+        unused_stars = unused_stars < 0 ? 0 : unused_stars;
+        return {cluster_stars: cluster_stars, field_stars: field_stars, unused_stars: unused_stars};
+    }
+}
+
+function sourceByCatalog(sources: Source[], filters: FILTER[]): Source[] {
+    return sources.filter(source => {
+        return source.photometries.some(photometry => {
+            return filters.includes(photometry.filter);
+        });
+        // return filters.every(filter => {
+        //     return source.photometries.some(photometry => {
+        //         return filter === photometry.filter;
+        //     });
+        // });
+    });
 }

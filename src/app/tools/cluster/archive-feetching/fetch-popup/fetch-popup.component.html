@@ -1,122 +1,131 @@
 <mat-card [formGroup]="formGroup" class="fetch-card">
-  <mat-card-header>
-    <mat-card-title>Fetch Catalog</mat-card-title>
-  </mat-card-header>
-  <mat-divider></mat-divider>
-  <mat-card-content>
-    <div class="row">
-      <div class="row">
-        <div class="col-4">
-          <div class="info">
-            <div class="title">Name:</div>
-            <div class="value">{{name}}</div>
-          </div>
-        </div>
-        <div class="col-4">
-          <div class="info">
-            <div class="title">RA:</div>
-            <div class="value">{{display_ra[0]}}<sup>h</sup>
-              {{display_ra[1]}}<sup>m</sup>
-              {{display_ra[2].toFixed(2)}}<sup>s</sup></div>
-          </div>
-        </div>
-        <div class="col-4">
-          <div class="info">
-            <div class="title">DEC:</div>
-            <div class="value">{{display_dec[0]}}&deg; {{display_dec[1]}}'
-              {{display_dec[2].toFixed(2)}}"
+    <mat-card-header>
+        <mat-card-title>Fetch Catalog</mat-card-title>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+        <div class="row">
+            <div class="row">
+                <div class="col-4">
+                    <div class="info">
+                        <div class="title">Name:</div>
+                        <div class="value">{{name}}</div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="info">
+                        <div class="title">RA:</div>
+                        <div class="value">{{display_ra[0]}}<sup>h</sup>
+                            {{display_ra[1]}}<sup>m</sup>
+                            {{display_ra[2].toFixed(2)}}<sup>s</sup></div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="info">
+                        <div class="title">DEC:</div>
+                        <div class="value">{{display_dec[0]}}&deg; {{display_dec[1]}}'
+                            {{display_dec[2].toFixed(2)}}"
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="info">
+                        <div class="title">PM RA:</div>
+                        <div class="value">{{pmra.min}} – {{pmra.max}}</div>
+                        <div class="unit">mas/yr</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="info">
+                        <div class="title">PM DEC:</div>
+                        <div class="value">{{pmdec.min}} – {{pmdec.max}}</div>
+                        <div class="unit">mas/yr</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <div class="info">
+                        <div class="title">Distance</div>
+                        <div class="value">{{distance.min}} - {{distance.max}}</div>
+                        <div class="unit">kpc</div>
+                    </div>
+                </div>
+                <div class="col-8">
+                    <div class="info">
+                        <div class="title">Current Filters</div>
+                        <div class="value">{{filters}}</div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-6">
-          <div class="info">
-            <div class="title">PM RA:</div>
-            <div class="value">{{pmra.min}} – {{pmra.max}}</div>
-            <div class="unit">mas/yr</div>
-          </div>
+        <mat-divider></mat-divider>
+        <div class="row">
+            <div class="col-4">
+                <div class="usr-input">
+                    <mat-form-field>
+                        <mat-label>Radius</mat-label>
+                        <input [formControlName]="'radius'" [type]="'number'" matInput/>
+                        <button (click)="this.formGroup.controls['radius'].setValue(maximumRadius)"
+                                *ngIf="this.formGroup.controls['radius'].value != maximumRadius" aria-label="reset"
+                                mat-icon-button
+                                matSuffix>
+                            <mat-icon>close</mat-icon>
+                        </button>
+                        <mat-error *ngIf="this.formGroup.controls['radius'].hasError('min')">
+                            Must be greater than 0.
+                        </mat-error>
+                        <mat-error *ngIf="this.formGroup.controls['radius'].hasError('max')">
+                            Must be smaller than {{maximumRadius}}.
+                        </mat-error>
+                        <mat-hint *ngIf="!this.formGroup.controls['radius'].dirty">
+                            Default is the max radius.
+                        </mat-hint>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="col-8">
+                <div class="usr-input">
+                    <mat-form-field>
+                        <mat-label>Catalogues</mat-label>
+                        <mat-select [formControlName]="'catalogs'" multiple>
+                            <mat-option *ngFor="let catalog of catalogs" [value]="catalog">
+                                {{catalog}}
+                            </mat-option>
+                        </mat-select>
+                        <button (click)="this.formGroup.controls['catalogs'].setValue('')"
+                                *ngIf="this.formGroup.controls['catalogs'].value != ''" aria-label="Clear"
+                                mat-icon-button
+                                matSuffix>
+                            <mat-icon>close</mat-icon>
+                        </button>
+                        <mat-error *ngIf="formGroup.controls['catalogs'].hasError('required')">
+                            At least one catalogue must be selected.
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
         </div>
-        <div class="col-6">
-          <div class="info">
-            <div class="title">PM DEC:</div>
-            <div class="value">{{pmdec.min}} – {{pmdec.max}}</div>
-            <div class="unit">mas/yr</div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-4">
-          <div class="info">
-            <div class="title">Distance</div>
-            <div class="value">{{distance.min}} - {{distance.max}}</div>
-            <div class="unit">kpc</div>
-          </div>
-        </div>
-        <div class="col-8">
-          <div class="info">
-            <div class="title">Current Filters</div>
-            <div class="value">{{filters}}</div>
-          </div>
-        </div>
-      </div>
+        <mat-divider></mat-divider>
+    </mat-card-content>
+    <mat-progress-bar [hidden]="hideProgressBar"
+                      [mode]="progressBar! < 0 ? 'indeterminate' : 'determinate'"
+                      [value]="progressBar ? progressBar : 0"
+    ></mat-progress-bar>
+    <div *ngIf="error === 400" class="fetch-prompt">
+        Too many stars! Reduce Radius and try again.
     </div>
-    <mat-divider></mat-divider>
-    <div class="row">
-      <div class="col-4">
-        <div class="usr-input">
-          <!-- TODO: Maximum radius (from Vlad) by default-->
-          <mat-form-field>
-            <mat-label>Radius</mat-label>
-            <input [formControlName]="'radius'" [type]="'number'" matInput/>
-            <button (click)="this.formGroup.controls['radius'].setValue(maximumRadius)"
-                    *ngIf="this.formGroup.controls['radius'].value != maximumRadius" aria-label="reset"
-                    mat-icon-button
-                    matSuffix>
-              <mat-icon>close</mat-icon>
-            </button>
-            <mat-error *ngIf="this.formGroup.controls['radius'].hasError('min')">
-              Must be greater than 0.
-            </mat-error>
-            <mat-error *ngIf="this.formGroup.controls['radius'].hasError('max')">
-              Must be smaller than {{maximumRadius}}.
-            </mat-error>
-            <mat-hint *ngIf="!this.formGroup.controls['radius'].dirty">
-              Default is the max radius.
-            </mat-hint>
-          </mat-form-field>
-        </div>
-      </div>
-      <div class="col-8">
-        <div class="usr-input">
-          <mat-form-field>
-            <mat-label>Catalogues</mat-label>
-            <mat-select [formControlName]="'catalogs'" multiple>
-              <mat-option *ngFor="let catalog of catalogs" [value]="catalog">
-                {{catalog}}
-              </mat-option>
-            </mat-select>
-            <button (click)="this.formGroup.controls['catalogs'].setValue('')"
-                    *ngIf="this.formGroup.controls['catalogs'].value != ''" aria-label="Clear" mat-icon-button
-                    matSuffix>
-              <mat-icon>close</mat-icon>
-            </button>
-            <mat-error *ngIf="formGroup.controls['catalogs'].hasError('required')">
-              At least one catalogue must be selected.
-            </mat-error>
-          </mat-form-field>
-        </div>
-      </div>
+    <div *ngIf="error === 404" class="fetch-prompt">
+        There's no cluster around the given coordinates.
     </div>
-    <mat-divider></mat-divider>
-  </mat-card-content>
-  <mat-progress-bar [hidden]="hideProgressBar"
-                    [mode]="progressBar! < 0 ? 'indeterminate' : 'determinate'"
-                    [value]="progressBar ? progressBar : 0"
-  ></mat-progress-bar>
-  <mat-card-actions>
-    <button (click)="close()" mat-button mat-dialog-close type="button">Cancel</button>
-    <button (click)="testRadius()" mat-button type="button">Test Radius</button>
-    <button (click)="fetchData()" [disabled]="!isRadiusValid" mat-button type="button">Fetch Data</button>
-  </mat-card-actions>
+    <div *ngIf="error === 500" class="fetch-prompt">
+        Something went wrong. Please try again later.
+    </div>
+    <mat-card-actions>
+        <button (click)="close()" mat-button mat-dialog-close type="button">Cancel</button>
+        <button (click)="testRadius()" mat-button type="button">Test Radius</button>
+        <button (click)="fetchData()" [disabled]="!isRadiusValid" mat-button type="button">Fetch Data</button>
+    </mat-card-actions>
 </mat-card>

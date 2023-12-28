@@ -58,13 +58,14 @@ export class FetchComponent {
             name: this.formGroup.controls['name'].value,
             ra: parseFloat(this.formGroup.controls['ra'].value),
             dec: parseFloat(this.formGroup.controls['dec'].value),
-            radius: parseFloat(this.formGroup.controls['radius'].value)
+            radius: parseFloat(this.formGroup.controls['radius'].value),
         });
         this.http.post(`${environment.apiUrl}/cluster/catalog/test-radius`, {
             ra: this.formGroup.controls['ra'].value,
             dec: this.formGroup.controls['dec'].value,
             radius: this.formGroup.controls['radius'].value,
             catalogs: [this.formGroup.controls['catalog'].value],
+            constraints: null,
         }).subscribe((res: any) => {
             this.loading = false;
             if (res) {

@@ -6,6 +6,9 @@ import {d2DMS, d2HMS} from "../../../shared/data/utils";
 import {Catalogs} from "../../cluster.util";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {JobStatus} from "../../../../shared/job/job";
+import {HttpClient} from "@angular/common/http";
+import {environment} from "../../../../../environments/environment";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
     selector: 'app-fetch-popup',
@@ -23,7 +26,8 @@ export class FetchPopupComponent {
     distance!: range;
     filters!: string;
     catalogs = Object.values(Catalogs);
-    maximumRadius: number = 5;
+    maximumRadius: number = this.dataService.getCluster() ?
+        this.dataService.getCluster()!.radius * 2 : 1;
     formGroup: FormGroup = new FormGroup({
         radius: new FormControl(this.maximumRadius,
             [Validators.min(0),
@@ -35,7 +39,11 @@ export class FetchPopupComponent {
     hideProgressBar: boolean = true;
     progressBar: number = -1;
 
-    constructor(private service: ClusterService,
+    error: number | null = null;
+
+    constructor(private http: HttpClient,
+                private dialog: MatDialog,
+                private service: ClusterService,
                 private dataService: ClusterDataService) {
         this.name = this.service.getClusterName();
         this.ra = this.dataService.getClusterRa()!;
@@ -45,7 +53,8 @@ export class FetchPopupComponent {
         this.pmra = this.service.getFsrParams().pm_ra!;
         this.pmdec = this.service.getFsrParams().pm_dec!;
         this.distance = this.service.getFsrParams().distance!;
-        this.filters = this.dataService.getFilters().join(', ');
+        //@ts-ignore
+        this.filters = this.dataService.getFilters().join(', ').replaceAll("prime", "\'");
     }
 
     // TODO: cancel job on replacement
@@ -53,7 +62,24 @@ export class FetchPopupComponent {
     }
 
     testRadius() {
-        this.isRadiusValid = true;
+        this.error = null;
+        if (!this.formGroup.valid) {
+            this.formGroup.markAllAsTouched();
+            return;
+        }
+        this.hideProgressBar = false;
+        this.http.post(`${environment.apiUrl}/cluster/catalog/test-radius`, {
+            ra: this.ra,
+            dec: this.dec,
+            radius: this.formGroup.controls['radius'].value,
+            constraints: this.service.getFsrParams(),
+        }).subscribe(() => {
+            this.isRadiusValid = true;
+            this.hideProgressBar = true;
+        }, error => {
+            this.error = error.status;
+            this.hideProgressBar = true;
+        });
     }
 
     fetchData() {
@@ -67,8 +93,12 @@ export class FetchPopupComponent {
         job.statusUpdate$.subscribe((status) => {
             if (status === JobStatus.PENDING) {
                 this.progressBar = -1;
-            } else if (status === JobStatus.COMPLETED || status === JobStatus.FAILED) {
+            } else if (status === JobStatus.COMPLETED) {
                 this.hideProgressBar = true;
+                this.dialog.closeAll();
+            } else if (status === JobStatus.FAILED) {
+                this.hideProgressBar = true;
+                this.error = 500;
             }
         });
         job.progressUpdate$.subscribe((progress) => {

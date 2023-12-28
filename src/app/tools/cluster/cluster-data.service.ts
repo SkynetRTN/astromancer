@@ -1,14 +1,25 @@
 import {Injectable} from '@angular/core';
 import {ClusterDataSourceService} from "./data-source/cluster-data-source.service";
-import {Astrometry, Catalogs, FILTER, filterWavelength, FSR, Source} from "./cluster.util";
+import {
+    APASS_FILTERS,
+    Astrometry,
+    Catalogs,
+    FILTER,
+    filterWavelength,
+    FSR,
+    Source,
+    TWO_MASS_FILTERS,
+    WISE_FILTERS
+} from "./cluster.util";
 import {HttpClient} from "@angular/common/http";
 import {Subject, takeUntil} from "rxjs";
 import {Job, JobType} from "../../shared/job/job";
 
 import {environment} from "../../../environments/environment";
-import {appendFSRResults, updateClusterFieldSources} from "./cluster-data.service.util";
+import {appendFSRResults, getStarCountsByFilter, updateClusterFieldSources} from "./cluster-data.service.util";
 import {ClusterStorageService} from "./storage/cluster-storage.service";
 import {FsrParameters} from "./FSR/fsr.util";
+import {ClusterMWSC, StarCounts} from "./storage/cluster-storage.service.util";
 
 @Injectable()
 export class ClusterDataService {
@@ -17,6 +28,8 @@ export class ClusterDataService {
     private cluster_sources: Source[] | null = [];
     private field_sources: Source[] | null = [];
     private filters: FILTER[] = [];
+    private cluster: ClusterMWSC | null = null;
+    private starCounts: StarCounts | null = null;
     private sourcesSubject = new Subject<Source[]>();
     public sources$ = this.sourcesSubject.asObservable();
     private clusterSourcesSubject = new Subject<Source[]>();
@@ -38,7 +51,6 @@ export class ClusterDataService {
     public reset() {
         this.storageService.resetDataSource();
         this.initValues();
-        console.log(this.sources)
         this.sourcesSubject.next(this.sources);
     }
 
@@ -60,13 +72,13 @@ export class ClusterDataService {
         return this.filters;
     }
 
-    public setSources(sources: Source[], catalogJobId: number | null = null) {
+    public setSources(sources: Source[]) {
         this.sources = [];
         for (const source of sources) {
             if (source.fsr == null || source.fsr.distance == null || source.fsr.pm_ra == null || source.fsr.pm_dec == null)
                 continue;
             source.photometries = source.photometries.filter((photometry) => {
-                return (!isNaN(photometry.mag) && !isNaN(photometry.mag_error) && photometry.filter in FILTER);
+                return (!isNaN(photometry.mag) && !isNaN(photometry.mag_error) && Object.values(FILTER).includes(photometry.filter));
             }).sort((a, b) => {
                 return filterWavelength[a.filter] - filterWavelength[b.filter]
             });
@@ -77,9 +89,6 @@ export class ClusterDataService {
         this.sourcesSubject.next(this.sources);
     }
 
-    public setFilters(filters: FILTER[]) {
-        this.filters = filters;
-    }
 
     public syncUserPhotometry(jobId: number) {
         this.userSources = this.sources;
@@ -147,7 +156,10 @@ export class ClusterDataService {
                 (resp: any) => {
                     // const {sources, filters} = sourceSerialization(resp['output_sources']);
                     const sources: Source[] = resp['output_sources'];
-                    this.setSources(sources, resp['id']);
+                    this.setCluster(resp['cluster']);
+                    this.setStarCounts(resp['star_counts']);
+                    this.userSources = resp['input_sources'];
+                    this.setSources(sources);
                 }
             );
     }
@@ -157,8 +169,10 @@ export class ClusterDataService {
             this.http.get(`${environment.apiUrl}/cluster/fsr`,
                 {params: {'id': id}}).subscribe(
                 (resp: any) => {
-                    this.setSources(appendFSRResults(resp['sources'], resp['FSR']));
+                    this.setCluster(resp['cluster']);
                     this.syncUserPhotometry(resp['id']);
+                    this.userSources = resp['sources'];
+                    this.setSources(appendFSRResults(resp['sources'], resp['FSR']));
                 }
             );
     }
@@ -257,6 +271,53 @@ export class ClusterDataService {
         return array.length === 0 ? null : array[Math.floor(array.length / 2)];
     }
 
+    getCluster(): ClusterMWSC | null {
+        return this.cluster;
+    }
+
+    getStarCounts(): StarCounts | null {
+        return this.starCounts;
+    }
+
+    getInterfaceStarCounts() {
+        const starCounts: any = {};
+        if (this.getUserPhotometry() !== null) {
+            const userSources = updateClusterFieldSources(this.getUserPhotometry()!,
+                this.storageService.getFsrParams());
+            starCounts['user'] = {
+                field_stars: userSources.not_fsr.length,
+                cluster_stars: userSources.fsr.length,
+                unused_stars: 0,
+            }
+        }
+        if (this.starCounts !== null && this.cluster !== null) {
+            // starCounts['GAIA'] = getStarCountsByFilter(
+            //     this.cluster_sources!, this.field_sources!, [],
+            //     this.storageService.getFsrParams(), this.starCounts.GAIA, this.cluster.num_clusters_stars
+            // )
+            starCounts['APASS'] = getStarCountsByFilter(
+                this.cluster_sources!, this.field_sources!, APASS_FILTERS,
+                this.storageService.getFsrParams(), this.starCounts.APASS, this.cluster.num_APASS_stars);
+            starCounts['TWO_MASS'] = getStarCountsByFilter(
+                this.cluster_sources!, this.field_sources!, TWO_MASS_FILTERS,
+                this.storageService.getFsrParams(), this.starCounts.TWO_MASS, this.cluster.num_TWO_MASS_stars);
+            starCounts['WISE'] = getStarCountsByFilter(
+                this.cluster_sources!, this.field_sources!, WISE_FILTERS,
+                this.storageService.getFsrParams(), this.starCounts.WISE, this.cluster.num_WISE_stars);
+        }
+        return starCounts;
+    }
+
+    private setCluster(cluster: ClusterMWSC) {
+        this.cluster = cluster;
+        this.storageService.setCluster(cluster);
+    }
+
+    private setStarCounts(starCounts: StarCounts | null) {
+        this.starCounts = starCounts;
+        this.storageService.setStarCounts(starCounts);
+    }
+
     private initValues() {
         const stored_job = this.storageService.getJob();
         if (stored_job !== null && stored_job.status === 'COMPLETED') {
@@ -271,6 +332,8 @@ export class ClusterDataService {
             this.field_sources = null;
             this.filters = [];
             this.userSources = null;
+            this.cluster = null;
+            this.starCounts = null;
         }
     }
 

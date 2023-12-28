@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {ClusterStorageObject, fsrHistogramBin} from "./cluster-storage.service.util";
+import {ClusterMWSC, ClusterStorageObject, fsrHistogramBin, StarCounts} from "./cluster-storage.service.util";
 import {JobStorageObject} from "../../../shared/job/job";
 import {FsrParameters} from "../FSR/fsr.util";
 
@@ -15,6 +15,7 @@ export class ClusterStorageService {
         } else {
             this.init();
         }
+        console.log(this.storageObject);
     }
 
     public save() {
@@ -92,6 +93,24 @@ export class ClusterStorageService {
         return this.storageObject.fsrValues.bin;
     }
 
+    public setCluster(cluster: ClusterMWSC) {
+        this.storageObject.dataSource.cluster = cluster;
+        this.save();
+    }
+
+    public getCluster() {
+        return this.storageObject.dataSource.cluster;
+    }
+
+    public setStarCounts(starCounts: StarCounts | null) {
+        this.storageObject.dataSource.starCounts = starCounts;
+        this.save();
+    }
+
+    public getStarCounts(): StarCounts | null {
+        return this.storageObject.dataSource.starCounts;
+    }
+
 
     private init() {
         this.storageObject = {
@@ -100,6 +119,8 @@ export class ClusterStorageService {
             dataSource: {
                 recentSearches: this.storageObject?.dataSource?.recentSearches ?? [],
                 dataJob: null,
+                cluster: null,
+                starCounts: null,
             },
             fsrValues: {
                 parameters: {

@@ -44,11 +44,18 @@ export class PieChartComponent implements AfterViewInit {
                         name: 'Field Stars',
                         y: this.getFieldStarCount(),
                     },
+                    // {
+                    //     name: 'Unused Stars',
+                    //     y: this.getUnusedStarCount(),
+                    // }
                 ]
             }
         ],
         tooltip: {
             enabled: false
+        },
+        legend: {
+            enabled: true
         }
     }
 
@@ -76,6 +83,11 @@ export class PieChartComponent implements AfterViewInit {
         return this.dataService.getSources().length - this.getClusterStarCount();
     }
 
+    private getUnusedStarCount() {
+        const count = this.dataService.getCluster()?.num_total_stars! - this.dataService.getSources(false).length;
+        return count > 0 ? count : 0;
+    }
+
     private updateData() {
         this.chartObject.series[0].update(
             {
@@ -91,6 +103,10 @@ export class PieChartComponent implements AfterViewInit {
                         name: 'Field Stars',
                         y: this.getFieldStarCount(),
                     },
+                    // {
+                    //     name: 'Unused Stars',
+                    //     y: this.getUnusedStarCount(),
+                    // }
                 ]
             }
         );

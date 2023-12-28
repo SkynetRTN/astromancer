@@ -1,6 +1,6 @@
 import {AfterViewInit, Component} from '@angular/core';
 import {ClusterDataService} from "../../cluster-data.service";
-import {FILTER} from "../../cluster.util";
+import {CMDFilterSet, FILTER} from "../../cluster.util";
 import * as Highcharts from "highcharts";
 import {debounceTime} from "rxjs";
 
@@ -82,47 +82,54 @@ export class CmdFsrComponent implements AfterViewInit {
     }
 
     private setAxisLabels() {
-        this.chartObject.xAxis[0].setTitle({
-            text: this.blueFilter + " - " + this.redFilter + " (mag)"
-        });
-        this.chartObject.yAxis[0].setTitle({
-            text: this.redFilter + " (mag)"
-        });
+        this.chartObject.xAxis[0].setTitle({text: this.blueFilter + " - " + this.redFilter + " (mag)"} as any);
+        this.chartObject.yAxis[0].setTitle({text: this.redFilter + " (mag)"} as any);
     }
 
-    private getCmdData()
-        :
-        number[][] {
+    private getCmdData(): number[][] {
         const sources = this.dataService.getSources(true);
         const filters = this.dataService.getFilters();
-        this.blueFilter = FILTER.BP
-        this.redFilter = FILTER.RP
-        if (!filters.includes(FILTER.RP) || !filters.includes(FILTER.BP)) {
-            this.blueFilter = filters[0]
-            this.redFilter = filters[1]
+        const availableFilterSets: CMDFilterSet[] = []
+        const result: number[][][] = []
+        if (filters.includes(FILTER.BP) && filters.includes(FILTER.RP)) {
+            availableFilterSets.push({blue: FILTER.BP, red: FILTER.RP});
+            result.push([]);
         }
         if (filters.includes(FILTER.W1) && filters.includes(FILTER.W2)) {
-            this.blueFilter = FILTER.W1
-            this.redFilter = FILTER.W2
+            availableFilterSets.push({blue: FILTER.W1, red: FILTER.W2});
+            result.push([]);
         }
-        const result = []
+        if (filters.includes(FILTER.G_PRIME) && filters.includes(FILTER.I_PRIME)) {
+            availableFilterSets.push({blue: FILTER.G_PRIME, red: FILTER.I_PRIME});
+            result.push([]);
+        }
+        if (filters.includes(FILTER.J) && filters.includes(FILTER.H)) {
+            availableFilterSets.push({blue: FILTER.J, red: FILTER.H});
+            result.push([]);
+        }
+        if (availableFilterSets.length === 0) {
+            availableFilterSets.push({blue: filters[0], red: filters[1]});
+            result.push([]);
+        }
         for (const source of sources) {
             if (source.photometries) {
-                let redMag;
-                let blueMag;
-                source.photometries.forEach(photometry => {
-                    if (photometry.filter === this.redFilter) {
-                        redMag = photometry.mag;
+                const sourceFilters: FILTER[] = source.photometries.map(p => p.filter);
+                for (let i = 0; i < availableFilterSets.length; i++) {
+                    const filterSet = availableFilterSets[i];
+                    let blueMag: number | undefined;
+                    let redMag: number | undefined;
+                    if (sourceFilters.includes(filterSet.blue) && sourceFilters.includes(filterSet.red)) {
+                        blueMag = source.photometries.find(p => p.filter === filterSet.blue)?.mag;
+                        redMag = source.photometries.find(p => p.filter === filterSet.red)?.mag;
+                        result[i].push([blueMag! - redMag!, redMag!]);
                     }
-                    if (photometry.filter === this.blueFilter) {
-                        blueMag = photometry.mag;
-                    }
-                });
-                if (redMag && blueMag) {
-                    result.push([blueMag - redMag, redMag]);
                 }
             }
         }
-        return result;
+        const resultLengths = result.map(r => r.length);
+        const maxLengthIndex = resultLengths.indexOf(Math.max(...resultLengths));
+        this.blueFilter = availableFilterSets[maxLengthIndex].blue;
+        this.redFilter = availableFilterSets[maxLengthIndex].red;
+        return result[maxLengthIndex];
     }
 }

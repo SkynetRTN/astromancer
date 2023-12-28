@@ -4,7 +4,7 @@ import {FetchPopupComponent} from "../fetch-popup/fetch-popup.component";
 import * as Highcharts from "highcharts";
 import {ClusterService} from "../../cluster.service";
 import {ClusterDataService} from "../../cluster-data.service";
-import {updateClusterFieldSources} from "../../cluster-data.service.util";
+import {combineLatestWith, take} from "rxjs";
 
 @Component({
     selector: 'app-archive-fetching-graphics',
@@ -20,6 +20,7 @@ export class ArchiveFetchingGraphicsComponent {
     chartOptions: Highcharts.Options = {
         chart: {
             type: 'column',
+            animation: {duration: 500},
         },
         title: {
             text: undefined,
@@ -65,12 +66,57 @@ export class ArchiveFetchingGraphicsComponent {
         private service: ClusterService,
         private dataService: ClusterDataService,
         private matDialog: MatDialog) {
+        this.dataService.sources$.pipe(take(1)).subscribe(data => {
+            this.refreshChart();
+        });
+        this.service.tabIndex$.subscribe(index => {
+            if (index === 2) {
+                this.refreshChart();
+            }
+        });
     }
 
     refreshChart() {
-        this.chartObject.series[0].setData([this.getUserPhotometryData().unused, 1100]);
-        this.chartObject.series[1].setData([this.getUserPhotometryData().field, 400]);
-        this.chartObject.series[2].setData([this.getUserPhotometryData().cluster, 700]);
+        const axisLabels: string[] = [];
+        const unusedCounts: number[] = [];
+        const fieldCounts: number[] = [];
+        const clusterCounts: number[] = [];
+        const starCounts = this.dataService.getInterfaceStarCounts();
+        if (Object.keys(starCounts).includes('user')) {
+            axisLabels.push('User');
+            unusedCounts.push(0);
+            fieldCounts.push(this.dataService.getInterfaceStarCounts().user.field_stars);
+            clusterCounts.push(this.dataService.getInterfaceStarCounts().user.cluster_stars);
+        }
+        if (Object.keys(starCounts).includes('GAIA')) {
+            axisLabels.push('GAIA');
+            unusedCounts.push(0);
+            fieldCounts.push(this.dataService.getInterfaceStarCounts().GAIA.field_stars);
+            clusterCounts.push(this.dataService.getInterfaceStarCounts().GAIA.cluster_stars);
+        }
+        if (Object.keys(starCounts).includes('APASS')) {
+            axisLabels.push('APASS');
+            unusedCounts.push(this.dataService.getInterfaceStarCounts().APASS.unused_stars);
+            fieldCounts.push(this.dataService.getInterfaceStarCounts().APASS.field_stars);
+            clusterCounts.push(this.dataService.getInterfaceStarCounts().APASS.cluster_stars);
+        }
+        if (Object.keys(starCounts).includes('TWO_MASS')) {
+            axisLabels.push('2MASS');
+            unusedCounts.push(this.dataService.getInterfaceStarCounts().TWO_MASS.unused_stars);
+            fieldCounts.push(this.dataService.getInterfaceStarCounts().TWO_MASS.field_stars);
+            clusterCounts.push(this.dataService.getInterfaceStarCounts().TWO_MASS.cluster_stars);
+        }
+        if (Object.keys(starCounts).includes('WISE')) {
+            axisLabels.push('WISE');
+            unusedCounts.push(this.dataService.getInterfaceStarCounts().WISE.unused_stars);
+            fieldCounts.push(this.dataService.getInterfaceStarCounts().WISE.field_stars);
+            clusterCounts.push(this.dataService.getInterfaceStarCounts().WISE.cluster_stars);
+        }
+        this.chartObject.series[0].setData(unusedCounts);
+        this.chartObject.series[1].setData(fieldCounts);
+        this.chartObject.series[2].setData(clusterCounts);
+        this.chartObject.xAxis[0].update({categories: axisLabels});
+        this.chartObject.redraw();
     }
 
     chartInitialized($event: Highcharts.Chart) {
@@ -90,16 +136,13 @@ export class ArchiveFetchingGraphicsComponent {
             width: '720px',
             disableClose: true,
         });
-        this.refreshChart();
-    }
-
-    private getUserPhotometryData(): StarCountByType {
-        const data = this.dataService.getUserPhotometry();
-        if (!data) {
-            return {cluster: 0, field: 0, unused: 0};
-        }
-        const result = updateClusterFieldSources(data, this.service.getFsrParams());
-        return {cluster: result.fsr.length, field: result.not_fsr.length, unused: 0};
+        this.matDialog.afterAllClosed.pipe(
+            take(1),
+            combineLatestWith(this.dataService.sources$)
+        ).subscribe(
+            () => {
+                this.refreshChart();
+            });
     }
 }
 

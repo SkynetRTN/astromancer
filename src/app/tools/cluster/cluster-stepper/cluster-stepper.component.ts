@@ -19,6 +19,7 @@ export class ClusterStepperComponent {
         this.hasFSR = this.storageService.getJob() !== null;
         this.dataService.sources$.subscribe(data => {
             this.hasFSR = this.storageService.getJob()?.status === 'COMPLETED';
+            console.log(this.storageService.getJob());
         });
         this.service.tabIndex$.subscribe(index => {
             this.index = index;

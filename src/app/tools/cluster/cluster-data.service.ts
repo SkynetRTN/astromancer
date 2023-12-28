@@ -38,6 +38,8 @@ export class ClusterDataService {
     public reset() {
         this.storageService.resetDataSource();
         this.initValues();
+        console.log(this.sources)
+        this.sourcesSubject.next(this.sources);
     }
 
     public getSources(isCluster: boolean = false): Source[] {
@@ -268,6 +270,7 @@ export class ClusterDataService {
             this.cluster_sources = null;
             this.field_sources = null;
             this.filters = [];
+            this.userSources = null;
         }
     }
 

@@ -24,3 +24,38 @@
 .plot-list-container.cdk-drop-list-dragging .plot-list-entry:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
+
+$entry-height: 70px;
+
+.plot-list-entry {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: $entry-height;
+  border-bottom: solid 1px #ccc;
+}
+
+.plot-list-container .plot-list-entry:last-child {
+  border-bottom: none;
+}
+
+.drag-icon {
+  margin-left: 5px;
+  font-size: x-large;
+  cursor: move;
+}
+
+.drag-icon:hover {
+  transform: scale(1.2);
+}
+
+
+.filter-information {
+  display: flex;
+  padding: 0 15px;
+  font-size: larger;
+  width: calc(100% - 48px - 91px - 24px);
+  height: $entry-height;
+  align-items: center;
+}

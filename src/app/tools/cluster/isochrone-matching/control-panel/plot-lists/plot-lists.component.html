@@ -1,5 +1,13 @@
-<div cdkDropList class="plot-list-container" (cdkDropListDropped)="drop($event)">
-    <div class="plot-list-entry" cdkDrag *ngFor="let config of plotConfigs">
-        <app-plot-list-entry [plotConfig]="config"></app-plot-list-entry>
+<div (cdkDropListDropped)="drop($event)" cdkDropList class="plot-list-container">
+    <div *ngFor="let plotConfig of plotConfigs" cdkDrag cdkDragLockAxis="y" class="plot-list-entry">
+        <mat-icon cdkDragHandle class="drag-icon">menu</mat-icon>
+        <div class="filter-information">
+            {{plotConfig.filters.blue}}-{{plotConfig.filters.red}} vs {{plotConfig.filters.lum}}</div>
+        <mat-button-toggle-group [value]="plotConfig.plotType" aria-label="Plot Type" name="plotType">
+            <mat-button-toggle *ngFor="let plotType of plotTypes" [value]="plotType">{{plotType}}</mat-button-toggle>
+        </mat-button-toggle-group>
+        <button aria-label="Delete Plot" color="warn" mat-icon-button>
+            <mat-icon>close</mat-icon>
+        </button>
     </div>
 </div>

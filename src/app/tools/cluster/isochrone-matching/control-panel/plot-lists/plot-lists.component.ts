@@ -8,6 +8,7 @@ import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
     styleUrls: ['./plot-lists.component.scss'],
 })
 export class PlotListsComponent {
+    plotTypes = Object.values(ClusterPlotType);
     plotConfigs: PlotConfig[] = [
         {
             filters: {

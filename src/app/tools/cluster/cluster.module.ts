@@ -52,10 +52,7 @@ import {
 import {FilterControlsComponent} from './isochrone-matching/control-panel/filter-controls/filter-controls.component';
 import {FilterSelectorComponent} from './isochrone-matching/control-panel/filter-selector/filter-selector.component';
 import {PlotListsComponent} from './isochrone-matching/control-panel/plot-lists/plot-lists.component';
-import {
-    PlotListEntryComponent
-} from './isochrone-matching/control-panel/plot-lists/plot-list-entry/plot-list-entry.component';
-import {CdkDrag, CdkDropList} from "@angular/cdk/drag-drop";
+import {CdkDrag, CdkDragHandle, CdkDropList} from "@angular/cdk/drag-drop";
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
 
 const routes: Routes = [
@@ -63,7 +60,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent, FieldStarRemovalComponent, HistogramSliderInputComponent, PieChartComponent, PmChartComponent, CmdFsrComponent, ArchiveFetchingComponent, FetchPopupComponent, ArchiveFetchingGraphicsComponent, IsochroneMatchingComponent, IsochronePlottingControlsComponent, FilterControlsComponent, FilterSelectorComponent, PlotListsComponent, PlotListEntryComponent],
+    declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent, FieldStarRemovalComponent, HistogramSliderInputComponent, PieChartComponent, PmChartComponent, CmdFsrComponent, ArchiveFetchingComponent, FetchPopupComponent, ArchiveFetchingGraphicsComponent, IsochroneMatchingComponent, IsochronePlottingControlsComponent, FilterControlsComponent, FilterSelectorComponent, PlotListsComponent],
     imports: [
         RouterModule.forChild(routes),
         CommonModule,
@@ -91,6 +88,7 @@ const routes: Routes = [
         CdkDropList,
         CdkDrag,
         MatButtonToggleModule,
+        CdkDragHandle,
     ],
     exports: [ClusterComponent, RouterModule],
     providers: [ClusterStorageService, ClusterDataSourceService, ClusterService, ClusterDataService]

@@ -5,7 +5,8 @@ $control-panel-width: 400px;
   flex-direction: column;
   width: $control-panel-width;
   height: min-content;
-  overflow: scroll;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .cmd-hrd-section {

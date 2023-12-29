@@ -1,7 +1,13 @@
 <div class="input-container">
-    <my-input-slider [label]="'Distance (kpc)'"></my-input-slider>
-    <my-input-slider [label]="'Age (billion yrs)'"></my-input-slider>
-    <my-input-slider [label]="'Metallicity'"></my-input-slider>
-    <my-input-slider [label]="'E(B-V)'"></my-input-slider>
-    <my-input-slider [label]="'Max Error (mag)'"></my-input-slider>
+    <my-input-slider [defaultValue]="defaultDistance"
+                     [isLog]="true" [label]="'Distance (kpc)'" [maxValue]="100"
+                     [minValue]="0.1"></my-input-slider>
+    <my-input-slider [defaultValue]="735"
+                     [isLog]="true" [label]="'Age (billion yrs)'" [maxValue]="26900" [minValue]="735"></my-input-slider>
+    <my-input-slider [defaultValue]="-2.2"
+                     [label]="'Metallicity (solar)'" [maxValue]="0.7" [minValue]="-2.2"></my-input-slider>
+    <my-input-slider [defaultValue]="0"
+                     [label]="'E(B-V)'" [maxValue]="1" [minValue]="0"></my-input-slider>
+    <my-input-slider [defaultValue]="0"
+                     [label]="'Max Error (mag)'" [maxValue]="1" [minValue]="0"></my-input-slider>
 </div>

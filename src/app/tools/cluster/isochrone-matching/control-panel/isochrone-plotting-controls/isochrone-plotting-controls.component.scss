@@ -1,6 +1,7 @@
 .input-container {
-  width: calc(100% - 15px);
+  width: 100%;
   height: min-content;
   margin: 0;
-  padding: 0;
+  padding: 0 5px;
+  overflow-x: hidden;
 }

@@ -42,15 +42,28 @@ import {CmdFsrComponent} from './FSR/cmd-fsr/cmd-fsr.component';
 import {ArchiveFetchingComponent} from './archive-feetching/archive-fetching/archive-fetching.component';
 import {FetchPopupComponent} from './archive-feetching/fetch-popup/fetch-popup.component';
 import {
-  ArchiveFetchingGraphicsComponent
+    ArchiveFetchingGraphicsComponent
 } from './archive-feetching/archive-fetching-graphics/archive-fetching-graphics.component';
+import {IsochroneMatchingComponent} from './isochrone-matching/isochrone-matching/isochrone-matching.component';
+import {InterfaceUtilModule} from "../shared/interface/util";
+import {
+    IsochronePlottingControlsComponent
+} from './isochrone-matching/control-panel/isochrone-plotting-controls/isochrone-plotting-controls.component';
+import {FilterControlsComponent} from './isochrone-matching/control-panel/filter-controls/filter-controls.component';
+import {FilterSelectorComponent} from './isochrone-matching/control-panel/filter-selector/filter-selector.component';
+import {PlotListsComponent} from './isochrone-matching/control-panel/plot-lists/plot-lists.component';
+import {
+    PlotListEntryComponent
+} from './isochrone-matching/control-panel/plot-lists/plot-list-entry/plot-list-entry.component';
+import {CdkDrag, CdkDropList} from "@angular/cdk/drag-drop";
+import {MatButtonToggleModule} from "@angular/material/button-toggle";
 
 const routes: Routes = [
     {path: '', component: ClusterComponent, title: 'Cluster'}
 ];
 
 @NgModule({
-    declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent, FieldStarRemovalComponent, HistogramSliderInputComponent, PieChartComponent, PmChartComponent, CmdFsrComponent, ArchiveFetchingComponent, FetchPopupComponent, ArchiveFetchingGraphicsComponent],
+    declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent, FieldStarRemovalComponent, HistogramSliderInputComponent, PieChartComponent, PmChartComponent, CmdFsrComponent, ArchiveFetchingComponent, FetchPopupComponent, ArchiveFetchingGraphicsComponent, IsochroneMatchingComponent, IsochronePlottingControlsComponent, FilterControlsComponent, FilterSelectorComponent, PlotListsComponent, PlotListEntryComponent],
     imports: [
         RouterModule.forChild(routes),
         CommonModule,
@@ -74,6 +87,10 @@ const routes: Routes = [
         MatSlideToggleModule,
         MatSliderModule,
         MatSnackBarModule,
+        InterfaceUtilModule,
+        CdkDropList,
+        CdkDrag,
+        MatButtonToggleModule,
     ],
     exports: [ClusterComponent, RouterModule],
     providers: [ClusterStorageService, ClusterDataSourceService, ClusterService, ClusterDataService]

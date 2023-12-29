@@ -1,0 +1,29 @@
+$entry-height: 70px;
+
+.plot-list-entry {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: $entry-height;
+  border-bottom: solid 1px #ccc;
+}
+
+.drag-icon {
+  font-size: x-large;
+  cursor: move;
+}
+
+.drag-icon:hover {
+  transform: scale(1.2);
+}
+
+
+.filter-information {
+  display: flex;
+  padding: 0 15px;
+  font-size: larger;
+  width: calc(100% - 48px - 91px - 24px);
+  height: $entry-height;
+  align-items: center;
+}

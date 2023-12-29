@@ -1,0 +1,24 @@
+.filter-selection-container {
+  margin: 10px;
+
+  .row {
+    margin: 0;
+    width: 100%;
+    padding: 0;
+  }
+
+  .col-4 {
+    padding: 0 5px;
+  }
+}
+
+:host ::ng-deep .filter-selectors {
+  width: 100%;
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+}
+
+button {
+  width: 100%;
+}

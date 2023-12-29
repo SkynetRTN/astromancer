@@ -1,41 +1,42 @@
 <mat-tab-group (selectedTabChange)="changeIndex($event)" [selectedIndex]="index">
-  <mat-tab>
-    <ng-template mat-tab-label>
-      <mat-icon class="tab-icon">upload</mat-icon>
-      Data Source
-    </ng-template>
-    <div class="my-full-stepper-container">
-      <app-data-source></app-data-source>
-    </div>
-  </mat-tab>
-  <mat-tab [disabled]="!hasFSR">
-    <ng-template mat-tab-label>
-      <mat-icon class="tab-icon">star_half</mat-icon>
-      Field Star Removal
-    </ng-template>
-    <div class="my-full-stepper-container">
-      <app-field-star-removal></app-field-star-removal>
-    </div>
-  </mat-tab>
-  <mat-tab [disabled]="!hasFSR">
-    <ng-template mat-tab-label>
-      <mat-icon class="tab-icon">cloud_download</mat-icon>
-      Archive Fetching
-    </ng-template>
-    <div class="my-full-stepper-container">
-      <app-archive-fetching-graphics></app-archive-fetching-graphics>
-    </div>
-  </mat-tab>
-  <mat-tab [disabled]="!hasFSR">
-    <ng-template mat-tab-label>
-      <mat-icon class="tab-icon">timeline</mat-icon>
-      Isochrone Matching
-    </ng-template>
-  </mat-tab>
-  <mat-tab [disabled]="!hasFSR">
-    <ng-template mat-tab-label>
-      <mat-icon class="tab-icon">list</mat-icon>
-      Result Summary
-    </ng-template>
-  </mat-tab>
+    <mat-tab>
+        <ng-template mat-tab-label>
+            <mat-icon class="tab-icon">upload</mat-icon>
+            Data Source
+        </ng-template>
+        <div class="my-full-stepper-container">
+            <app-data-source></app-data-source>
+        </div>
+    </mat-tab>
+    <mat-tab [disabled]="!hasFSR">
+        <ng-template mat-tab-label>
+            <mat-icon class="tab-icon">star_half</mat-icon>
+            Field Star Removal
+        </ng-template>
+        <div class="my-full-stepper-container">
+            <app-field-star-removal></app-field-star-removal>
+        </div>
+    </mat-tab>
+    <mat-tab [disabled]="!hasFSR">
+        <ng-template mat-tab-label>
+            <mat-icon class="tab-icon">cloud_download</mat-icon>
+            Archive Fetching
+        </ng-template>
+        <div class="my-full-stepper-container">
+            <app-archive-fetching-graphics></app-archive-fetching-graphics>
+        </div>
+    </mat-tab>
+    <mat-tab [disabled]="!hasFSR">
+        <ng-template mat-tab-label>
+            <mat-icon class="tab-icon">timeline</mat-icon>
+            Isochrone Matching
+        </ng-template>
+        <app-isochrone-matching></app-isochrone-matching>
+    </mat-tab>
+    <mat-tab [disabled]="!hasFSR">
+        <ng-template mat-tab-label>
+            <mat-icon class="tab-icon">list</mat-icon>
+            Result Summary
+        </ng-template>
+    </mat-tab>
 </mat-tab-group>

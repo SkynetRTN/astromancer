@@ -1,0 +1,5 @@
+<div cdkDropList class="plot-list-container" (cdkDropListDropped)="drop($event)">
+    <div class="plot-list-entry" cdkDrag *ngFor="let config of plotConfigs">
+        <app-plot-list-entry [plotConfig]="config"></app-plot-list-entry>
+    </div>
+</div>

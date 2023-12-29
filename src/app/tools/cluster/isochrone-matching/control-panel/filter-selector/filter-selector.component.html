@@ -1,0 +1,43 @@
+<div class="row filter-selection-container" [formGroup]="filterSelectionFormGroup">
+    <div class="row">
+        <div class="col-4">
+            <h3>Select Filters:</h3>
+        </div>
+        <div class="col-4">
+            <button mat-flat-button color="warn" [disabled]="!filterSelectionFormGroup.dirty"
+                    (click)="filterSelectionFormGroup.reset()">Clear</button>
+        </div>
+        <div class="col-4">
+            <button mat-flat-button color="primary" [disabled]="!filterSelectionFormGroup.valid">Add</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+            <mat-form-field class="filter-selectors">
+                <mat-label>Blue</mat-label>
+                <mat-select formControlName="blue">
+                    <mat-option *ngFor="let filter of filters" [value]="filter">
+                        {{filter.replace('prime', '\'')}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="col-4">
+            <mat-form-field class="filter-selectors">
+                <mat-label>Red</mat-label>
+                <mat-select formControlName="red">
+                    <mat-option *ngFor="let filter of filters" [value]="filter">
+                        {{filter.replace('prime', '\'')}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="col-4">
+            <mat-form-field class="filter-selectors">
+                <mat-label>Lum.</mat-label>
+                <mat-select formControlName="lum">
+                    <mat-option *ngFor="let filter of filters" [value]="filter">
+                        {{filter.replace('prime', '\'')}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+</div>

@@ -119,3 +119,17 @@ export interface CMDFilterSet {
     blue: FILTER;
     red: FILTER;
 }
+
+export enum ClusterPlotType {
+    CM = "CM",
+    HR = "HR",
+}
+
+export interface PlotConfig {
+    filters: {
+        blue: FILTER;
+        red: FILTER;
+        lum: FILTER;
+    },
+    plotType: ClusterPlotType;
+}

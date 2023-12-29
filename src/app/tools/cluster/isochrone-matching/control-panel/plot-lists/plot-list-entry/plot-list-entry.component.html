@@ -1,0 +1,12 @@
+<div class="plot-list-entry">
+    <mat-icon class="drag-icon" cdkDragHandle>menu</mat-icon>
+    <div class="filter-information">
+        {{plotConfig.filters.blue}}-{{plotConfig.filters.red}} vs {{plotConfig.filters.lum}}</div>
+    <mat-button-toggle-group name="plotType" aria-label="Plot Type" [value]="plotConfig.plotType">
+        <mat-button-toggle *ngFor="let plotType of plotTypes" [value]="plotType">{{plotType}}</mat-button-toggle>
+    </mat-button-toggle-group>
+    <button mat-icon-button color="warn" aria-label="Delete Plot">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+

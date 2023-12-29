@@ -1,0 +1,13 @@
+$control-panel-width: 400px;
+
+.isochrone-control {
+  display: flex;
+  flex-direction: column;
+  width: $control-panel-width;
+  height: min-content;
+  overflow: scroll;
+}
+
+.cmd-hrd-section {
+  width: calc(100% - $control-panel-width);
+}

@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
-import {ClusterPlotType, FILTER, PlotConfig} from "../../../cluster.util";
+import {ClusterPlotType, PlotConfig} from "../../../cluster.util";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
+import {ClusterIsochroneService} from "../../cluster-isochrone.service";
 
 @Component({
     selector: 'app-plot-lists',
@@ -9,30 +10,28 @@ import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 })
 export class PlotListsComponent {
     plotTypes = Object.values(ClusterPlotType);
-    plotConfigs: PlotConfig[] = [
-        {
-            filters: {
-                blue: FILTER.B,
-                red: FILTER.V,
-                lum: FILTER.V,
-            },
-            plotType: ClusterPlotType.CM,
-        },
-        {
-            filters: {
-                blue: FILTER.W1,
-                red: FILTER.W2,
-                lum: FILTER.W1,
-            },
-            plotType: ClusterPlotType.HR,
-        },
-    ]
+    plotConfigs: PlotConfig[] = this.isochroneService.getPlotConfigs();
 
-    constructor() {
+    constructor(private isochroneService: ClusterIsochroneService) {
+        this.isochroneService.plotConfig$.subscribe(
+            (plotConfigs) => {
+                this.plotConfigs = plotConfigs;
+            });
     }
 
     drop(event: CdkDragDrop<string[]>) {
         moveItemInArray(this.plotConfigs, event.previousIndex, event.currentIndex);
+        this.isochroneService.setPlotConfigs(this.plotConfigs);
+    }
+
+    typeToggle(type: ClusterPlotType, index: number) {
+        this.plotConfigs[index].plotType = type;
+        this.isochroneService.setPlotConfigs(this.plotConfigs);
+    }
+
+    remove(index: number) {
+        this.plotConfigs.splice(index, 1);
+        this.isochroneService.setPlotConfigs(this.plotConfigs);
     }
 
 

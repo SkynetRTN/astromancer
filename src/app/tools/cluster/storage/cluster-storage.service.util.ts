@@ -1,12 +1,14 @@
 import {ClusterLookUpData} from "../data-source/cluster-data-source.service.util";
 import {JobStorageObject} from "../../../shared/job/job";
 import {FsrParameters} from "../FSR/fsr.util";
+import {PlotConfig} from "../cluster.util";
 
 
 export interface ClusterStorageObject {
     step: number;
     name: string;
     dataSource: DataSourceStorageObject;
+    isochrone: IsochroneStorageObject;
     fsrValues: fsrUserValues;
 }
 
@@ -15,6 +17,10 @@ export interface DataSourceStorageObject {
     dataJob: JobStorageObject | null;
     cluster: ClusterMWSC | null;
     starCounts: StarCounts | null;
+}
+
+export interface IsochroneStorageObject {
+    plotConfigs: PlotConfig[];
 }
 
 export interface fsrUserValues {

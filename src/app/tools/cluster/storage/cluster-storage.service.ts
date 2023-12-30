@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {ClusterMWSC, ClusterStorageObject, fsrHistogramBin, StarCounts} from "./cluster-storage.service.util";
 import {JobStorageObject} from "../../../shared/job/job";
 import {FsrParameters} from "../FSR/fsr.util";
+import {PlotConfig} from "../cluster.util";
 
 @Injectable()
 export class ClusterStorageService {
@@ -111,6 +112,15 @@ export class ClusterStorageService {
         return this.storageObject.dataSource.starCounts;
     }
 
+    public setPlotConfigs(plotConfigs: PlotConfig[]) {
+        this.storageObject.isochrone.plotConfigs = plotConfigs;
+        this.save();
+    }
+
+    public getPlotConfigs(): PlotConfig[] {
+        return this.storageObject.isochrone.plotConfigs;
+    }
+
 
     private init() {
         this.storageObject = {
@@ -121,6 +131,9 @@ export class ClusterStorageService {
                 dataJob: null,
                 cluster: null,
                 starCounts: null,
+            },
+            isochrone: {
+                plotConfigs: []
             },
             fsrValues: {
                 parameters: {

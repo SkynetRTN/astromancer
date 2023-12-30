@@ -1,6 +1,8 @@
 import {Component} from '@angular/core';
 import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from "@angular/forms";
 import {ClusterDataService} from "../../../cluster-data.service";
+import {ClusterIsochroneService} from "../../cluster-isochrone.service";
+import {ClusterPlotType, PlotConfig} from "../../../cluster.util";
 
 @Component({
     selector: 'app-filter-selector',
@@ -9,6 +11,7 @@ import {ClusterDataService} from "../../../cluster-data.service";
 })
 export class FilterSelectorComponent {
     filters: string[] = this.dataService.getFilters();
+    plotConfigs: PlotConfig[] = this.isochroneService.getPlotConfigs();
 
     filterSelectionFormGroup: FormGroup = new FormGroup(
         {
@@ -19,11 +22,23 @@ export class FilterSelectorComponent {
         {validators: filterValidator});
 
 
-    constructor(private dataService: ClusterDataService) {
+    constructor(private dataService: ClusterDataService,
+                private isochroneService: ClusterIsochroneService) {
         this.dataService.sources$.subscribe(
-            (sources) => {
+            () => {
                 this.filters = this.dataService.getFilters();
             });
+    }
+
+    add() {
+        if (this.filterSelectionFormGroup.valid && this.isochroneService.getPlotConfigs().length < 4) {
+            this.isochroneService.addPlotConfigs({
+                filters: this.filterSelectionFormGroup.value,
+                plotType: ClusterPlotType.HR,
+            });
+            this.plotConfigs = this.isochroneService.getPlotConfigs();
+            this.filterSelectionFormGroup.reset();
+        }
     }
 }
 

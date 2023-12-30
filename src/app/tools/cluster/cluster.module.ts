@@ -54,6 +54,7 @@ import {FilterSelectorComponent} from './isochrone-matching/control-panel/filter
 import {PlotListsComponent} from './isochrone-matching/control-panel/plot-lists/plot-lists.component';
 import {CdkDrag, CdkDragHandle, CdkDropList} from "@angular/cdk/drag-drop";
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
+import {ClusterIsochroneService} from "./isochrone-matching/cluster-isochrone.service";
 
 const routes: Routes = [
     {path: '', component: ClusterComponent, title: 'Cluster'}
@@ -91,7 +92,8 @@ const routes: Routes = [
         CdkDragHandle,
     ],
     exports: [ClusterComponent, RouterModule],
-    providers: [ClusterStorageService, ClusterDataSourceService, ClusterService, ClusterDataService]
+    providers: [ClusterStorageService, ClusterDataSourceService,
+        ClusterService, ClusterDataService, ClusterIsochroneService]
 })
 export class ClusterModule {
 }

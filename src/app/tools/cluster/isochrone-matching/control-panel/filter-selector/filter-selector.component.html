@@ -1,14 +1,18 @@
-<div class="row filter-selection-container" [formGroup]="filterSelectionFormGroup">
+<div [formGroup]="filterSelectionFormGroup" class="row filter-selection-container">
     <div class="row">
         <div class="col-4">
             <h3>Select Filters:</h3>
         </div>
         <div class="col-4">
-            <button mat-flat-button color="warn" [disabled]="!filterSelectionFormGroup.dirty"
-                    (click)="filterSelectionFormGroup.reset()">Clear</button>
+            <button (click)="filterSelectionFormGroup.reset()" [disabled]="!filterSelectionFormGroup.dirty" color="warn"
+                    mat-flat-button>Clear
+            </button>
         </div>
         <div class="col-4">
-            <button mat-flat-button color="primary" [disabled]="!filterSelectionFormGroup.valid">Add</button>
+            <button (click)="add()" [disabled]="!(filterSelectionFormGroup.valid && plotConfigs.length < 4)"
+                    color="primary"
+                    mat-flat-button>Add
+            </button>
         </div>
     </div>
     <div class="row">

@@ -21,6 +21,7 @@ export class InputSliderComponent implements OnDestroy, AfterViewInit {
   @Input() label!: string;
   @Input() value$!: Subject<number>;
   @Input() inputPrecision: number = 2;
+  @Input() hintText: string | null = null;
   @Output() value: EventEmitter<InputSliderValue> = new EventEmitter<InputSliderValue>();
 
 
@@ -131,7 +132,7 @@ class SliderUtil {
     if (!isLog) {
       return stepNum;
     } else {
-      return ((Math.log(maxNum) - Math.log(minNum)) / ((maxNum - minNum) / stepNum))
+      return (Math.log(maxNum) - Math.log(minNum)) / ((maxNum - minNum) / stepNum)
     }
   }
 

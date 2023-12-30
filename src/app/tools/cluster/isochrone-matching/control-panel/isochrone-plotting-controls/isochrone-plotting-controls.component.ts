@@ -20,7 +20,7 @@ export class IsochronePlottingControlsComponent {
     private updateDistance() {
         const distance = this.service.getFsrParams().distance
         if (distance) {
-            this.defaultDistance = (distance.max + distance.min) / 2;
+            this.defaultDistance = parseFloat(((distance.max + distance.min) / 2).toFixed(1));
         } else {
             this.defaultDistance = 0.1;
         }

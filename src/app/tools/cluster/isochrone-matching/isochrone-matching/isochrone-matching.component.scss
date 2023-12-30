@@ -1,4 +1,4 @@
-$control-panel-width: 400px;
+$control-panel-width: 420px;
 
 .isochrone-control {
   display: flex;
@@ -7,8 +7,10 @@ $control-panel-width: 400px;
   height: min-content;
   overflow-y: auto;
   overflow-x: hidden;
+  padding: 0 10px 0 0;
 }
 
 .cmd-hrd-section {
   width: calc(100% - $control-panel-width);
+  padding: 0 0 0 10px;
 }

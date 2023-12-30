@@ -5,3 +5,12 @@
   padding: 0 5px;
   overflow-x: hidden;
 }
+
+my-input-slider {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.input-container my-input-slider:last-child {
+  margin-bottom: 0;
+}

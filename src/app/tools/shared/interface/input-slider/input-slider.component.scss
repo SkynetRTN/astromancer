@@ -3,5 +3,33 @@ mat-form-field {
 }
 
 mat-slider {
-  width: 90%;
+  width: 100%;
+}
+
+.mdc-slider__input {
+  padding-left: 0;
+  padding-right: 0;
+  width: 100% !important;
+}
+
+.input-slider-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: min-content;
+  align-items: center;
+}
+
+.input-slider-input {
+  display: flex;
+  width: 50%;
+  height: min-content;
+  padding: 0 10px 0 0;
+}
+
+.input-slider-slider {
+  display: flex;
+  width: 50%;
+  height: min-content;
+  padding: 0 0 8px 10px;
 }

@@ -1,0 +1,17 @@
+<div [ngClass]="'grid-container'
+    + (gridNumber === 1 ? ' grid-container-1' : '')
+    + (gridNumber === 2 ? ' grid-container-2' : '')
+    + (gridNumber >= 3 ? ' grid-container-4' : '')">
+    <div [ngClass]="'plot-container' + (gridNumber > 0 ? ' plot-container-visible' : '')">
+        {{plotConfigs[0]?.filters?.blue}} - {{plotConfigs[0]?.filters?.red}} v.s. {{plotConfigs[0]?.filters?.lum}}
+    </div>
+    <div [ngClass]="'plot-container' + (gridNumber > 1 ? ' plot-container-visible' : '')">
+        {{plotConfigs[1]?.filters?.blue}} - {{plotConfigs[1]?.filters?.red}} v.s. {{plotConfigs[0]?.filters?.lum}}
+    </div>
+    <div [ngClass]="'plot-container' + (gridNumber > 2 ? ' plot-container-visible' : '')">
+        {{plotConfigs[2]?.filters?.blue}} - {{plotConfigs[2]?.filters?.red}} v.s. {{plotConfigs[0]?.filters?.lum}}
+    </div>
+    <div [ngClass]="'plot-container' + (gridNumber > 3 ? ' plot-container-visible' : '')">
+        {{plotConfigs[3]?.filters?.blue}} - {{plotConfigs[3]?.filters?.red}} v.s. {{plotConfigs[0]?.filters?.lum}}
+    </div>
+</div>

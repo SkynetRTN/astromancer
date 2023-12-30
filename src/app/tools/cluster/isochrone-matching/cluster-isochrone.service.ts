@@ -6,6 +6,8 @@ import {Subject} from "rxjs";
 @Injectable()
 export class ClusterIsochroneService {
     private plotConfigs: PlotConfig[];
+    private addPlotConfigSubject: Subject<PlotConfig[]> = new Subject<PlotConfig[]>();
+    public addPlotConfig$ = this.addPlotConfigSubject.asObservable();
     private plotConfigSubject: Subject<PlotConfig[]> = new Subject<PlotConfig[]>();
     public plotConfig$ = this.plotConfigSubject.asObservable();
 
@@ -20,11 +22,13 @@ export class ClusterIsochroneService {
     public setPlotConfigs(plotConfigs: PlotConfig[]) {
         this.plotConfigs = plotConfigs;
         this.storageService.setPlotConfigs(plotConfigs);
+        this.plotConfigSubject.next(this.plotConfigs);
     }
 
     public addPlotConfigs(plotConfig: PlotConfig) {
         this.plotConfigs.push(plotConfig);
         this.storageService.setPlotConfigs(this.plotConfigs);
+        this.addPlotConfigSubject.next(this.plotConfigs);
         this.plotConfigSubject.next(this.plotConfigs);
     }
 }

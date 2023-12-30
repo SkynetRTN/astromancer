@@ -55,13 +55,15 @@ import {PlotListsComponent} from './isochrone-matching/control-panel/plot-lists/
 import {CdkDrag, CdkDragHandle, CdkDropList} from "@angular/cdk/drag-drop";
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import {ClusterIsochroneService} from "./isochrone-matching/cluster-isochrone.service";
+import {ClusterPlotGridComponent} from './isochrone-matching/plots/cluster-plot-grid/cluster-plot-grid.component';
+import {MatGridListModule} from "@angular/material/grid-list";
 
 const routes: Routes = [
     {path: '', component: ClusterComponent, title: 'Cluster'}
 ];
 
 @NgModule({
-    declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent, FieldStarRemovalComponent, HistogramSliderInputComponent, PieChartComponent, PmChartComponent, CmdFsrComponent, ArchiveFetchingComponent, FetchPopupComponent, ArchiveFetchingGraphicsComponent, IsochroneMatchingComponent, IsochronePlottingControlsComponent, FilterControlsComponent, FilterSelectorComponent, PlotListsComponent],
+    declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent, FieldStarRemovalComponent, HistogramSliderInputComponent, PieChartComponent, PmChartComponent, CmdFsrComponent, ArchiveFetchingComponent, FetchPopupComponent, ArchiveFetchingGraphicsComponent, IsochroneMatchingComponent, IsochronePlottingControlsComponent, FilterControlsComponent, FilterSelectorComponent, PlotListsComponent, ClusterPlotGridComponent],
     imports: [
         RouterModule.forChild(routes),
         CommonModule,
@@ -90,6 +92,7 @@ const routes: Routes = [
         CdkDrag,
         MatButtonToggleModule,
         CdkDragHandle,
+        MatGridListModule,
     ],
     exports: [ClusterComponent, RouterModule],
     providers: [ClusterStorageService, ClusterDataSourceService,

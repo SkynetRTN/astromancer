@@ -13,7 +13,7 @@ export class PlotListsComponent {
     plotConfigs: PlotConfig[] = this.isochroneService.getPlotConfigs();
 
     constructor(private isochroneService: ClusterIsochroneService) {
-        this.isochroneService.plotConfig$.subscribe(
+        this.isochroneService.addPlotConfig$.subscribe(
             (plotConfigs) => {
                 this.plotConfigs = plotConfigs;
             });

@@ -9,7 +9,8 @@ $control-panel-width: 420px;
   flex-direction: column;
   width: $control-panel-width;
   height: 100%;
-  overflow: scroll;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding: 0 10px 0 0;
 }
 

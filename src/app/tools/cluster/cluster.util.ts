@@ -162,6 +162,12 @@ export interface PlotConfig {
         lum: FILTER;
     },
     plotType: ClusterPlotType;
+    plotFraming: PlotFraming;
+}
+
+export enum PlotFraming {
+    STANDARD = "Standard View",
+    DATA = "Frame on Data",
 }
 
 export interface PlotParams {

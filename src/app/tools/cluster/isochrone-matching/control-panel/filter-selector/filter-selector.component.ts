@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from "@angular/forms";
 import {ClusterDataService} from "../../../cluster-data.service";
 import {ClusterIsochroneService} from "../../cluster-isochrone.service";
-import {ClusterPlotType, PlotConfig} from "../../../cluster.util";
+import {ClusterPlotType, PlotConfig, PlotFraming} from "../../../cluster.util";
 
 @Component({
     selector: 'app-filter-selector',
@@ -35,6 +35,7 @@ export class FilterSelectorComponent {
             this.isochroneService.addPlotConfigs({
                 filters: this.filterSelectionFormGroup.value,
                 plotType: ClusterPlotType.HR,
+                plotFraming: PlotFraming.STANDARD,
             });
             this.plotConfigs = this.isochroneService.getPlotConfigs();
             this.filterSelectionFormGroup.reset();

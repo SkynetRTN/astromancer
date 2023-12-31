@@ -2,10 +2,10 @@
     + (gridNumber === 1 ? ' grid-container-1' : '')
     + (gridNumber === 2 ? ' grid-container-2' : '')
     + (gridNumber >= 3 ? ' grid-container-4' : '')">
-    <app-plot [isVertical]="plotConfigs.length === 2"
+    <app-plot [isVertical]="plotConfigs.length === 2" [plotConfigIndex]="0"
               [plotConfig]="plotConfigs.length > 0 ? plotConfigs[0] : null"></app-plot>
-    <app-plot [isVertical]="plotConfigs.length === 2"
+    <app-plot [isVertical]="plotConfigs.length === 2" [plotConfigIndex]="1"
               [plotConfig]="plotConfigs.length > 1 ? plotConfigs[1] : null"></app-plot>
-    <app-plot [plotConfig]="plotConfigs.length > 2 ? plotConfigs[2] : null"></app-plot>
-    <app-plot [plotConfig]="plotConfigs.length > 3 ? plotConfigs[3] : null"></app-plot>
+    <app-plot [plotConfigIndex]="2" [plotConfig]="plotConfigs.length > 2 ? plotConfigs[2] : null"></app-plot>
+    <app-plot [plotConfigIndex]="3" [plotConfig]="plotConfigs.length > 3 ? plotConfigs[3] : null"></app-plot>
 </div>

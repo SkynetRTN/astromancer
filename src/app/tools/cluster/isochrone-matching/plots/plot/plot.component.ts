@@ -1,7 +1,8 @@
 import {Component, Input, OnChanges} from '@angular/core';
 import * as Highcharts from 'highcharts';
-import {FILTER, filterFramingValue, PlotConfig} from "../../../cluster.util";
+import {FILTER, filterFramingValue, PlotConfig, PlotFraming} from "../../../cluster.util";
 import {ClusterDataService} from "../../../cluster-data.service";
+import {ClusterIsochroneService} from "../../cluster-isochrone.service";
 
 @Component({
     selector: 'app-plot',
@@ -10,20 +11,16 @@ import {ClusterDataService} from "../../../cluster-data.service";
 })
 export class PlotComponent implements OnChanges {
     @Input() plotConfig: PlotConfig | null = null;
+    @Input() plotConfigIndex: number | null = null;
     @Input() isVertical: boolean = false;
     blueFilter: FILTER | null = null;
     redFilter: FILTER | null = null;
     lumFilter: FILTER | null = null;
     rawPlotData: number[][] = [];
-
-    private dataRange: PlotRange | null = null;
-    private standardViewRange: PlotRange | null = null;
-
     Highcharts: typeof Highcharts = Highcharts;
     updateFlag: boolean = true;
     chartConstructor: any = "chart";
     chartObject!: Highcharts.Chart;
-
     chartOptions: Highcharts.Options = {
         chart: {
             type: "scatter",
@@ -57,8 +54,12 @@ export class PlotComponent implements OnChanges {
             enabled: false,
         }
     }
+    protected readonly PlotFraming = PlotFraming;
+    private dataRange: PlotRange | null = null;
+    private standardViewRange: PlotRange | null = null;
 
-    constructor(private dataService: ClusterDataService) {
+    constructor(private dataService: ClusterDataService,
+                private isochroneService: ClusterIsochroneService) {
     }
 
     chartInitialized($event: Highcharts.Chart) {
@@ -67,19 +68,28 @@ export class PlotComponent implements OnChanges {
 
     ngOnChanges() {
         this.updateFilters();
-        this.updateChartMetaData();
         this.generateRawData();
         this.updateData();
+        this.updateChartAxis();
     }
 
     frameOnData() {
+        this.updatePlotConfig(PlotFraming.DATA);
         this.chartObject.xAxis[0].setExtremes(this.dataRange?.x.min ?? 0, this.dataRange?.x.max ?? 0);
         this.chartObject.yAxis[0].setExtremes(this.dataRange?.y.min ?? 0, this.dataRange?.y.max ?? 0);
     }
 
     standardView() {
+        this.updatePlotConfig(PlotFraming.STANDARD);
         this.chartObject.xAxis[0].setExtremes(this.standardViewRange?.x.min, this.standardViewRange?.x.max);
         this.chartObject.yAxis[0].setExtremes(this.standardViewRange?.y.min, this.standardViewRange?.y.max);
+    }
+
+    private updatePlotConfig(plotFraming: PlotFraming) {
+        if (this.plotConfig !== null && this.plotConfigIndex !== null) {
+            this.plotConfig.plotFraming = plotFraming;
+            this.isochroneService.updatePlotFraming(plotFraming, this.plotConfigIndex);
+        }
     }
 
     private updateFilters() {
@@ -94,24 +104,38 @@ export class PlotComponent implements OnChanges {
         }
     }
 
-    private updateChartMetaData() {
+    private updateChartAxis() {
         if (this.plotConfig !== null) {
             const xAxisTitle =
                 `${this.blueFilter?.replace("prime", "\'")} - ${this.redFilter?.replace("prime", "\'")}`;
             const yAxisTitle = `M_${this.lumFilter?.replace("prime", "\'")}`;
             this.updateStandardViewRange();
+            const plotFraming = this.plotConfig.plotFraming;
+            let frameRange: PlotRange;
+            if (plotFraming === PlotFraming.DATA) {
+                frameRange = this.dataRange!;
+            } else {
+                frameRange = this.standardViewRange!;
+            }
             try {
                 this.chartObject.xAxis[0].setTitle({text: xAxisTitle});
                 this.chartObject.yAxis[0].setTitle({text: yAxisTitle});
-                this.standardView();
+                if (plotFraming === PlotFraming.DATA) {
+                    this.frameOnData();
+                } else if (plotFraming === PlotFraming.STANDARD) {
+                    this.standardView();
+                }
             } catch (e) {
                 this.chartOptions.xAxis = {
                     title: {text: xAxisTitle},
-                    min: this.standardViewRange?.x.min, max: this.standardViewRange?.x.max
+                    min: frameRange.x.min,
+                    max: frameRange.x.max,
                 };
                 this.chartOptions.yAxis = {
                     title: {text: yAxisTitle},
-                    min: this.standardViewRange?.y.min, max: this.standardViewRange?.y.max, reversed: true
+                    reversed: true,
+                    min: frameRange.y.min,
+                    max: frameRange.y.max,
                 };
             }
         } else {
@@ -142,7 +166,9 @@ export class PlotComponent implements OnChanges {
     }
 
     private updateStandardViewRange() {
-        let filters: { [key: string]: string } = {
+        let filters: {
+            [key: string]: string
+        } = {
             'red': this.redFilter!,
             'blue': this.blueFilter!,
             'lum': this.lumFilter!

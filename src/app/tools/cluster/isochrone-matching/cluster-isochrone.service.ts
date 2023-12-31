@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {IsochroneParams, PlotConfig, PlotParams} from "../cluster.util";
+import {IsochroneParams, PlotConfig, PlotFraming, PlotParams} from "../cluster.util";
 import {ClusterStorageService} from "../storage/cluster-storage.service";
 import {Subject} from "rxjs";
 
@@ -72,5 +72,10 @@ export class ClusterIsochroneService {
         this.storageService.setPlotConfigs(this.plotConfigs);
         this.addPlotConfigSubject.next(this.plotConfigs);
         this.plotConfigSubject.next(this.plotConfigs);
+    }
+
+    public updatePlotFraming(plotFraming: PlotFraming, index: number) {
+        this.plotConfigs[index].plotFraming = plotFraming;
+        this.storageService.setPlotConfigs(this.plotConfigs);
     }
 }

@@ -1,5 +1,5 @@
 $button-height: 40px;
-$button-width: 80px;
+$button-width: 90px;
 
 .plot-container {
   width: 0;
@@ -48,17 +48,27 @@ $button-width: 80px;
   width: 100%;
 }
 
-.button-standard {
-  width: 100%;
-  padding: 5px 0;
-  height: min-content !important;
+:host ::ng-deep .toggle .mat-button-toggle-label-content {
+  white-space: pre-wrap;
   line-height: 1.2rem !important;
-  margin: 0 0 10px 0;
+  word-break: break-all !important;
 }
 
-.button-vertical {
-  height: 100% !important;
-  width: 120px !important;
-  padding: 0 5px;
-  margin: 0 10px 0 0;
+.toggle {
+  padding: 5px 0;
 }
+
+//.button-standard {
+//  width: 100%;
+//  padding: 5px 0;
+//  height: min-content !important;
+//  line-height: 1.2rem !important;
+//  margin: 0 0 10px 0;
+//}
+//
+//.button-vertical {
+//  height: 100% !important;
+//  width: 120px !important;
+//  padding: 0 5px;
+//  margin: 0 10px 0 0;
+//}

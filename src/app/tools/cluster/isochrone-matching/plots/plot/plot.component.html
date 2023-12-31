@@ -9,13 +9,19 @@
                       [options]="chartOptions">
     </highcharts-chart>
     <div [ngClass]="'control-containers' + (isVertical ? '-vertical' : '')">
-        <button [ngClass]="isVertical? 'button-vertical' : 'button-standard'" (click)="standardView()"
-                color="primary" mat-raised-button>
-            Standard View
-        </button>
-        <button [ngClass]="isVertical? 'button-vertical' : 'button-standard'" (click)="frameOnData()"
-                color="primary" mat-raised-button>
-            Frame on Data
-        </button>
+        <mat-button-toggle-group aria-label="Data Framing Method" [vertical]="!isVertical" [value]="0">
+            <mat-button-toggle class="toggle" [value]="0" (click)="standardView()">Standard View</mat-button-toggle>
+            <mat-button-toggle class="toggle" [value]="1" (click)="frameOnData()">Frame on Data</mat-button-toggle>
+        </mat-button-toggle-group>
     </div>
+<!--    <div [ngClass]="'control-containers' + (isVertical ? '-vertical' : '')">-->
+<!--        <button [ngClass]="isVertical? 'button-vertical' : 'button-standard'" (click)="standardView()"-->
+<!--                color="primary" mat-raised-button>-->
+<!--            Standard View-->
+<!--        </button>-->
+<!--        <button [ngClass]="isVertical? 'button-vertical' : 'button-standard'" (click)="frameOnData()"-->
+<!--                color="primary" mat-raised-button>-->
+<!--            Frame on Data-->
+<!--        </button>-->
+<!--    </div>-->
 </div>

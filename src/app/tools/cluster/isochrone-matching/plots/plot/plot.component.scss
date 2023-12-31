@@ -1,0 +1,64 @@
+$button-height: 40px;
+$button-width: 80px;
+
+.plot-container {
+  width: 0;
+  height: 0;
+  opacity: 0;
+  transition: none;
+  display: flex;
+  flex-direction: row;
+}
+
+.plot-container-vertical {
+  flex-direction: column;
+}
+
+.plot-container-visible {
+  transition: opacity 1s;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+}
+
+.plot {
+  display: flex;
+  width: calc(100% - $button-width);
+  height: 100%;
+}
+
+.plot-vertical {
+  width: 100%;
+  height: calc(100% - $button-height);
+}
+
+.control-containers {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: $button-width;
+}
+
+.control-container-vertical {
+  display: flex;
+  flex-direction: row;
+  height: $button-height;
+  width: 100%;
+}
+
+.button-standard {
+  width: 100%;
+  padding: 5px 0;
+  height: min-content !important;
+  line-height: 1.2rem !important;
+  margin: 0 0 10px 0;
+}
+
+.button-vertical {
+  height: 100% !important;
+  width: 120px !important;
+  padding: 0 5px;
+  margin: 0 10px 0 0;
+}

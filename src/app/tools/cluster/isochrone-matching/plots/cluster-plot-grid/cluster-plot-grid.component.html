@@ -2,16 +2,10 @@
     + (gridNumber === 1 ? ' grid-container-1' : '')
     + (gridNumber === 2 ? ' grid-container-2' : '')
     + (gridNumber >= 3 ? ' grid-container-4' : '')">
-    <div [ngClass]="'plot-container' + (gridNumber > 0 ? ' plot-container-visible' : '')">
-        {{plotConfigs[0]?.filters?.blue}} - {{plotConfigs[0]?.filters?.red}} v.s. {{plotConfigs[0]?.filters?.lum}}
-    </div>
-    <div [ngClass]="'plot-container' + (gridNumber > 1 ? ' plot-container-visible' : '')">
-        {{plotConfigs[1]?.filters?.blue}} - {{plotConfigs[1]?.filters?.red}} v.s. {{plotConfigs[0]?.filters?.lum}}
-    </div>
-    <div [ngClass]="'plot-container' + (gridNumber > 2 ? ' plot-container-visible' : '')">
-        {{plotConfigs[2]?.filters?.blue}} - {{plotConfigs[2]?.filters?.red}} v.s. {{plotConfigs[0]?.filters?.lum}}
-    </div>
-    <div [ngClass]="'plot-container' + (gridNumber > 3 ? ' plot-container-visible' : '')">
-        {{plotConfigs[3]?.filters?.blue}} - {{plotConfigs[3]?.filters?.red}} v.s. {{plotConfigs[0]?.filters?.lum}}
-    </div>
+    <app-plot [isVertical]="plotConfigs.length === 2"
+              [plotConfig]="plotConfigs.length > 0 ? plotConfigs[0] : null"></app-plot>
+    <app-plot [isVertical]="plotConfigs.length === 2"
+              [plotConfig]="plotConfigs.length > 1 ? plotConfigs[1] : null"></app-plot>
+    <app-plot [plotConfig]="plotConfigs.length > 2 ? plotConfigs[2] : null"></app-plot>
+    <app-plot [plotConfig]="plotConfigs.length > 3 ? plotConfigs[3] : null"></app-plot>
 </div>

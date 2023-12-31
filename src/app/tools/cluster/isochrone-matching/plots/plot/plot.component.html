@@ -1,0 +1,19 @@
+<div [ngClass]="'plot-container' + (isVertical ? ' plot-container-vertical' : '')
++ (plotConfig !== null ? ' plot-container-visible' : '')">
+    <highcharts-chart (chartInstance)="chartInitialized($event)"
+                      *ngIf="plotConfig !== null"
+                      [(update)]="updateFlag"
+                      [Highcharts]="Highcharts"
+                      [constructorType]="chartConstructor"
+                      [ngClass]="'plot' + (isVertical ? ' plot-vertical' : '')"
+                      [options]="chartOptions">
+    </highcharts-chart>
+    <div [ngClass]="'control-containers' + (isVertical ? '-vertical' : '')">
+        <button [ngClass]="isVertical? 'button-vertical' : 'button-standard'" color="primary" mat-raised-button>
+            Standard View
+        </button>
+        <button [ngClass]="isVertical? 'button-vertical' : 'button-standard'" color="primary" mat-raised-button>
+            Frame on Data
+        </button>
+    </div>
+</div>

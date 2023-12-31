@@ -25,8 +25,11 @@ export class PlotListsComponent {
     }
 
     typeToggle(type: ClusterPlotType, index: number) {
-        this.plotConfigs[index].plotType = type;
-        this.isochroneService.setPlotConfigs(this.plotConfigs);
+        if (type !== undefined) {
+            this.plotConfigs[index].plotType = type;
+            this.plotConfigs[index] = {...this.plotConfigs[index]};
+            this.isochroneService.setPlotConfigs(this.plotConfigs);
+        }
     }
 
     remove(index: number) {

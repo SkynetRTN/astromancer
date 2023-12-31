@@ -1,6 +1,6 @@
 import {Component, Input, OnChanges} from '@angular/core';
 import * as Highcharts from 'highcharts';
-import {FILTER, PlotConfig} from "../../../cluster.util";
+import {FILTER, filterFramingValue, PlotConfig} from "../../../cluster.util";
 import {ClusterDataService} from "../../../cluster-data.service";
 
 @Component({
@@ -15,6 +15,9 @@ export class PlotComponent implements OnChanges {
     redFilter: FILTER | null = null;
     lumFilter: FILTER | null = null;
     rawPlotData: number[][] = [];
+
+    private dataRange: PlotRange | null = null;
+    private standardViewRange: PlotRange | null = null;
 
     Highcharts: typeof Highcharts = Highcharts;
     updateFlag: boolean = true;
@@ -69,6 +72,16 @@ export class PlotComponent implements OnChanges {
         this.updateData();
     }
 
+    frameOnData() {
+        this.chartObject.xAxis[0].setExtremes(this.dataRange?.x.min ?? 0, this.dataRange?.x.max ?? 0);
+        this.chartObject.yAxis[0].setExtremes(this.dataRange?.y.min ?? 0, this.dataRange?.y.max ?? 0);
+    }
+
+    standardView() {
+        this.chartObject.xAxis[0].setExtremes(this.standardViewRange?.x.min, this.standardViewRange?.x.max);
+        this.chartObject.yAxis[0].setExtremes(this.standardViewRange?.y.min, this.standardViewRange?.y.max);
+    }
+
     private updateFilters() {
         if (this.plotConfig !== null) {
             this.blueFilter = this.plotConfig.filters.blue;
@@ -86,12 +99,20 @@ export class PlotComponent implements OnChanges {
             const xAxisTitle =
                 `${this.blueFilter?.replace("prime", "\'")} - ${this.redFilter?.replace("prime", "\'")}`;
             const yAxisTitle = `M_${this.lumFilter?.replace("prime", "\'")}`;
+            this.updateStandardViewRange();
             try {
                 this.chartObject.xAxis[0].setTitle({text: xAxisTitle});
                 this.chartObject.yAxis[0].setTitle({text: yAxisTitle});
+                this.standardView();
             } catch (e) {
-                this.chartOptions.xAxis = {title: {text: xAxisTitle}};
-                this.chartOptions.yAxis = {title: {text: yAxisTitle}, reversed: true};
+                this.chartOptions.xAxis = {
+                    title: {text: xAxisTitle},
+                    min: this.standardViewRange?.x.min, max: this.standardViewRange?.x.max
+                };
+                this.chartOptions.yAxis = {
+                    title: {text: yAxisTitle},
+                    min: this.standardViewRange?.y.min, max: this.standardViewRange?.y.max, reversed: true
+                };
             }
         } else {
             this.chartOptions.xAxis = {title: {text: undefined}};
@@ -102,8 +123,12 @@ export class PlotComponent implements OnChanges {
     private updateData() {
         if (this.plotConfig !== null) {
             try {
-                this.chartObject.series[0].setData(this.rawPlotData, true);
+                const data = this.rawPlotData;
+                this.updateDataRange(data);
+                this.chartObject.series[0].setData(data, true);
             } catch (e) {
+                const data = this.rawPlotData;
+                this.updateDataRange(data);
                 this.chartOptions.series = [{
                     name: "Photometry",
                     type: "scatter",
@@ -112,6 +137,58 @@ export class PlotComponent implements OnChanges {
                         radius: 1,
                     }
                 }];
+            }
+        }
+    }
+
+    private updateStandardViewRange() {
+        let filters: { [key: string]: string } = {
+            'red': this.redFilter!,
+            'blue': this.blueFilter!,
+            'lum': this.lumFilter!
+        }
+        let color_red: number = filterFramingValue[filters['blue']]['red'] - filterFramingValue[filters['red']]['red'];
+        let color_blue: number = filterFramingValue[filters['blue']]['blue'] - filterFramingValue[filters['red']]['blue'];
+
+        let minX = color_blue - (color_red - color_blue) / 8;
+        let maxX = color_red + (color_red - color_blue) / 8;
+        this.standardViewRange = {
+            x: {
+                min: minX <= maxX ? minX : maxX,
+                max: maxX >= minX ? maxX : minX,
+            },
+            y: {
+                min: filterFramingValue[filters['lum']]['bright']
+                    + (filterFramingValue[filters['lum']]['bright'] - filterFramingValue[filters['red']]['faint']) / 8,
+                max: filterFramingValue[filters['lum']]['faint']
+                    - (filterFramingValue[filters['lum']]['bright'] - filterFramingValue[filters['lum']]['faint']) / 8,
+            }
+        }
+    }
+
+    private updateDataRange(data: number[][]) {
+        this.dataRange = {
+            x: {
+                min: data[0][0],
+                max: data[0][0],
+            },
+            y: {
+                min: data[0][1],
+                max: data[0][1],
+            }
+        }
+        for (const point of data) {
+            if (point[0] < this.dataRange.x.min) {
+                this.dataRange.x.min = point[0];
+            }
+            if (point[0] > this.dataRange.x.max) {
+                this.dataRange.x.max = point[0];
+            }
+            if (point[1] < this.dataRange.y.min) {
+                this.dataRange.y.min = point[1];
+            }
+            if (point[1] > this.dataRange.y.max) {
+                this.dataRange.y.max = point[1];
             }
         }
     }
@@ -140,5 +217,16 @@ export class PlotComponent implements OnChanges {
                 }
             }
         }
+    }
+}
+
+interface PlotRange {
+    x: {
+        min: number,
+        max: number
+    },
+    y: {
+        min: number,
+        max: number
     }
 }

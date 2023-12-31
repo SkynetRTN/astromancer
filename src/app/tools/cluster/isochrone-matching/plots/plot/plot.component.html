@@ -9,10 +9,12 @@
                       [options]="chartOptions">
     </highcharts-chart>
     <div [ngClass]="'control-containers' + (isVertical ? '-vertical' : '')">
-        <button [ngClass]="isVertical? 'button-vertical' : 'button-standard'" color="primary" mat-raised-button>
+        <button [ngClass]="isVertical? 'button-vertical' : 'button-standard'" (click)="standardView()"
+                color="primary" mat-raised-button>
             Standard View
         </button>
-        <button [ngClass]="isVertical? 'button-vertical' : 'button-standard'" color="primary" mat-raised-button>
+        <button [ngClass]="isVertical? 'button-vertical' : 'button-standard'" (click)="frameOnData()"
+                color="primary" mat-raised-button>
             Frame on Data
         </button>
     </div>

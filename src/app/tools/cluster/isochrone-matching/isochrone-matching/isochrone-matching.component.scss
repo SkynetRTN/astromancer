@@ -1,12 +1,15 @@
 $control-panel-width: 420px;
 
+.tool-container {
+  overflow: hidden;
+}
+
 .isochrone-control {
   display: flex;
   flex-direction: column;
   width: $control-panel-width;
-  height: min-content;
-  overflow-y: auto;
-  overflow-x: hidden;
+  height: 100%;
+  overflow: scroll;
   padding: 0 10px 0 0;
 }
 

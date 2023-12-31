@@ -1,7 +1,7 @@
 import {ClusterLookUpData} from "../data-source/cluster-data-source.service.util";
 import {JobStorageObject} from "../../../shared/job/job";
 import {FsrParameters} from "../FSR/fsr.util";
-import {PlotConfig} from "../cluster.util";
+import {IsochroneParams, PlotConfig, PlotParams} from "../cluster.util";
 
 
 export interface ClusterStorageObject {
@@ -21,6 +21,9 @@ export interface DataSourceStorageObject {
 
 export interface IsochroneStorageObject {
     plotConfigs: PlotConfig[];
+    plotParams: PlotParams;
+    isochroneParams: IsochroneParams;
+    maxMagError: number;
 }
 
 export interface fsrUserValues {

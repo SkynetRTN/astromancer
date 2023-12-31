@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {ClusterMWSC, ClusterStorageObject, fsrHistogramBin, StarCounts} from "./cluster-storage.service.util";
 import {JobStorageObject} from "../../../shared/job/job";
 import {FsrParameters} from "../FSR/fsr.util";
-import {PlotConfig} from "../cluster.util";
+import {IsochroneParams, PlotConfig, PlotParams} from "../cluster.util";
 
 @Injectable()
 export class ClusterStorageService {
@@ -121,6 +121,33 @@ export class ClusterStorageService {
         return this.storageObject.isochrone.plotConfigs;
     }
 
+    public setPlotParams(plotParams: PlotParams) {
+        this.storageObject.isochrone.plotParams = plotParams;
+        this.save();
+    }
+
+    public getPlotParams(): PlotParams {
+        return this.storageObject.isochrone.plotParams;
+    }
+
+    public setIsochroneParams(isochroneParams: IsochroneParams) {
+        this.storageObject.isochrone.isochroneParams = isochroneParams;
+        this.save();
+    }
+
+    public getIsochroneParams(): IsochroneParams {
+        return this.storageObject.isochrone.isochroneParams;
+    }
+
+    public setMaxMagError(maxMagError: number) {
+        this.storageObject.isochrone.maxMagError = maxMagError;
+        this.save();
+    }
+
+    public getMaxMagError(): number {
+        return this.storageObject.isochrone.maxMagError;
+    }
+
 
     private init() {
         this.storageObject = {
@@ -133,7 +160,16 @@ export class ClusterStorageService {
                 starCounts: null,
             },
             isochrone: {
-                plotConfigs: []
+                plotConfigs: [],
+                plotParams: {
+                    distance: 0.1,
+                    reddening: 0,
+                },
+                isochroneParams: {
+                    age: 735,
+                    metallicity: -2.2,
+                },
+                maxMagError: 1,
             },
             fsrValues: {
                 parameters: {

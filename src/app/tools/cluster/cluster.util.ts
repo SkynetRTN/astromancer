@@ -133,3 +133,13 @@ export interface PlotConfig {
     },
     plotType: ClusterPlotType;
 }
+
+export interface PlotParams {
+    distance: number;
+    reddening: number;
+}
+
+export interface IsochroneParams {
+    age: number;
+    metallicity: number;
+}

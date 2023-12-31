@@ -1,13 +1,16 @@
 <div class="input-container">
-    <my-input-slider [defaultValue]="defaultDistance" [hintText]="'default value is from FSR'"
-                     [isLog]="true" [label]="'Distance (kpc)'" [maxValue]="100"
-                     [minValue]="0.1"></my-input-slider>
-    <my-input-slider [defaultValue]="735"
-                     [isLog]="true" [label]="'Age (billion yrs)'" [maxValue]="26900" [minValue]="735"></my-input-slider>
-    <my-input-slider [defaultValue]="-2.2"
-                     [label]="'Metallicity (solar)'" [maxValue]="0.7" [minValue]="-2.2"></my-input-slider>
-    <my-input-slider [defaultValue]="0"
+    <my-input-slider (value)="onDistanceChange($event)" [defaultValue]="defaultDistance"
+                     [hintText]="'default value is from FSR'" [inputPrecision]="1" [isLog]="true"
+                     [label]="'Distance (kpc)'" [maxValue]="100" [minValue]="0.1" [stepValue]="0.1"
+                     [step]="1"></my-input-slider>
+    <my-input-slider (value)="onAgeChange($event)" [defaultValue]="age" [inputPrecision]="0"
+                     [isLog]="true" [label]="'Age (million yrs)'" [maxValue]="26900"
+                     [minValue]="735" [stepValue]="1" [step]="1"></my-input-slider>
+    <my-input-slider (value)="onMetallicityChange($event)" [defaultValue]="metallicity"
+                     [inputPrecision]="2" [label]="'Metallicity (solar)'" [maxValue]="0.7"
+                     [minValue]="-2.2" [stepValue]="0.1" [step]="0.1"></my-input-slider>
+    <my-input-slider (value)="onReddeningChange($event)" [defaultValue]="reddening"
                      [label]="'E(B-V)'" [maxValue]="1" [minValue]="0"></my-input-slider>
-    <my-input-slider [defaultValue]="0"
+    <my-input-slider (value)="onMaxMagErrorChange($event)" [defaultValue]="maxMagError"
                      [label]="'Max Error (mag)'" [maxValue]="1" [minValue]="0"></my-input-slider>
 </div>

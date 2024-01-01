@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {IsochroneParams, PlotConfig, PlotFraming, PlotParams} from "../cluster.util";
 import {ClusterStorageService} from "../storage/cluster-storage.service";
 import {Subject} from "rxjs";
+import {HttpClient} from "@angular/common/http";
 
 @Injectable()
 export class ClusterIsochroneService {
@@ -20,7 +21,7 @@ export class ClusterIsochroneService {
     private plotConfigSubject: Subject<PlotConfig[]> = new Subject<PlotConfig[]>();
     public plotConfig$ = this.plotConfigSubject.asObservable();
 
-    constructor(private storageService: ClusterStorageService) {
+    constructor(private http: HttpClient, private storageService: ClusterStorageService) {
         this.plotConfigs = this.storageService.getPlotConfigs();
         this.plotParams = this.storageService.getPlotParams();
         this.isochroneParams = this.storageService.getIsochroneParams();

@@ -10,6 +10,9 @@ import {
 } from "../../../cluster.util";
 import {ClusterDataService} from "../../../cluster-data.service";
 import {ClusterIsochroneService} from "../../cluster-isochrone.service";
+import {HttpClient} from "@angular/common/http";
+import {environment} from "../../../../../../environments/environment";
+import {filter} from "rxjs";
 
 @Component({
     selector: 'app-plot',
@@ -53,8 +56,12 @@ export class PlotComponent implements OnChanges {
             name: "Photometry",
             type: "scatter",
             data: [],
+        }, {
+            name: "Isochrone",
+            type: "line",
+            data: [],
             marker: {
-                radius: 1,
+                enabled: false,
             }
         }],
         credits: {
@@ -66,7 +73,8 @@ export class PlotComponent implements OnChanges {
     private dataRange: PlotRange | null = null;
     private standardViewRange: PlotRange | null = null;
 
-    constructor(private dataService: ClusterDataService,
+    constructor(private http: HttpClient,
+                private dataService: ClusterDataService,
                 private isochroneService: ClusterIsochroneService) {
         this.isochroneService.plotParams$.subscribe(() => {
             this.updateChartAxis();
@@ -75,6 +83,11 @@ export class PlotComponent implements OnChanges {
         this.isochroneService.maxMagError$.subscribe(() => {
             this.updateChartAxis();
             this.updateData();
+        });
+        this.isochroneService.isochroneParams$.pipe(
+            filter(() => this.plotConfig !== null)
+        ).subscribe(() => {
+            this.setIsochrone();
         });
     }
 
@@ -87,6 +100,7 @@ export class PlotComponent implements OnChanges {
         this.generateRawData();
         this.updateData();
         this.updateChartAxis();
+        this.setIsochrone();
     }
 
     frameOnData() {
@@ -99,6 +113,47 @@ export class PlotComponent implements OnChanges {
         this.updatePlotConfig(PlotFraming.STANDARD);
         this.chartObject.xAxis[0].setExtremes(this.standardViewRange?.x.min, this.standardViewRange?.x.max);
         this.chartObject.yAxis[0].setExtremes(this.standardViewRange?.y.min, this.standardViewRange?.y.max);
+    }
+
+    private setIsochrone() {
+        if (this.plotConfig !== null) {
+            const params = this.isochroneService.getIsochroneParams();
+            const serverAge =
+                parseFloat(Math.log(params.age).toFixed(1));
+            this.http.get(`${environment.apiUrl}/cluster/isochrone`,
+                {
+                    params: {
+                        'age': serverAge,
+                        'metallicity': params.metallicity,
+                        'blue_filter': this.blueFilter!,
+                        'red_filter': this.redFilter!,
+                        'lum_filter': this.lumFilter!,
+                    }
+                }).subscribe((data: any | {
+                data: number[][],
+                iSkip: number
+            }) => {
+                let isochroneData = data.data;
+                if (data.iSkip > 0 && data.data.length > data.iSkip) {
+                    isochroneData = isochroneData.slice(0, data.iSkip - 1);
+                    isochroneData.push([null, null]);
+                    isochroneData = isochroneData.concat(data.data.slice(data.iSkip));
+                }
+                try {
+                    this.chartObject.series[1].setData([]);
+                    this.chartObject.series[1].setData(isochroneData);
+                } catch (e) {
+                    this.chartOptions.series![1] = {
+                        name: "Isochrone",
+                        type: "line",
+                        data: isochroneData,
+                        marker: {
+                            enabled: true,
+                        }
+                    };
+                }
+            });
+        }
     }
 
     private getPlotData(): number[][] {
@@ -193,14 +248,14 @@ export class PlotComponent implements OnChanges {
             } catch (e) {
                 const data = this.getPlotData();
                 this.updateDataRange(data);
-                this.chartOptions.series = [{
+                this.chartOptions.series![0] = {
                     name: "Photometry",
                     type: "scatter",
                     data: this.getPlotData(),
                     marker: {
-                        radius: 1,
+                        radius: 2,
                     }
-                }];
+                };
             }
         }
     }

@@ -1,0 +1,17 @@
+.summary-pair {
+  display: flex;
+  flex-direction: row;
+  width: min-content;
+  margin: 5px 0;
+
+  .summary-key {
+    font-weight: bold;
+    width: 140px;
+    margin-right: 5px;
+  }
+
+  .summary-value {
+    width: 120px;
+    margin-left: 5px;
+  }
+}

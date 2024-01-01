@@ -1,0 +1,36 @@
+
+.result-container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.result-drawer {
+  padding: 20px;
+}
+
+.result-content {
+  display: flex;
+  height: 100%;
+  align-content: center;
+  justify-content: center;
+}
+
+.summary-pair {
+  display: flex;
+  flex-direction: row;
+  width: min-content;
+  margin: 5px 0;
+
+  .summary-key {
+    font-weight: bold;
+    width: 140px;
+    margin-right: 5px;
+  }
+
+  .summary-value {
+    width: max-content;
+    margin-left: 5px;
+  }
+}
+

@@ -23,7 +23,7 @@ export class PlotComponent implements OnChanges {
     blueFilter: FILTER | null = null;
     redFilter: FILTER | null = null;
     lumFilter: FILTER | null = null;
-    rawPlotData: number[][] = [];
+    rawPlotData: rawDataPoint[] = [];
     Highcharts: typeof Highcharts = Highcharts;
     updateFlag: boolean = true;
     chartConstructor: any = "chart";
@@ -68,7 +68,11 @@ export class PlotComponent implements OnChanges {
 
     constructor(private dataService: ClusterDataService,
                 private isochroneService: ClusterIsochroneService) {
-        this.isochroneService.plotParams$.subscribe((params) => {
+        this.isochroneService.plotParams$.subscribe(() => {
+            this.updateChartAxis();
+            this.updateData();
+        });
+        this.isochroneService.maxMagError$.subscribe(() => {
             this.updateChartAxis();
             this.updateData();
         });
@@ -99,17 +103,18 @@ export class PlotComponent implements OnChanges {
 
     private getPlotData(): number[][] {
         if (this.plotConfig !== null) {
-            const data = this.rawPlotData;
+            const data = this.rawPlotData.filter(
+                (point) => point.maxMagError < this.isochroneService.getMaxMagError());
             if (this.plotConfig.plotType === ClusterPlotType.CM)
-                return data;
+                return data.map((point) => [point.x, point.y]);
             const result = [];
             const plotParams = this.isochroneService.getPlotParams();
             const blueExtinction = getExtinction(this.blueFilter!, plotParams.reddening);
             const redExtinction = getExtinction(this.redFilter!, plotParams.reddening);
             const lumExtinction = getExtinction(this.lumFilter!, plotParams.reddening);
             for (const point of data) {
-                let x = point[0] - blueExtinction + redExtinction;
-                let y = point[1] - lumExtinction - 5 * Math.log10(plotParams.distance * 1000) + 5;
+                let x = point.x - blueExtinction + redExtinction;
+                let y = point.y - lumExtinction - 5 * Math.log10(plotParams.distance * 1000) + 5;
                 result.push([x, y]);
             }
             return result;
@@ -228,6 +233,19 @@ export class PlotComponent implements OnChanges {
     }
 
     private updateDataRange(data: number[][]) {
+        if (data.length === 0) {
+            this.dataRange = {
+                x: {
+                    min: 0,
+                    max: 0,
+                },
+                y: {
+                    min: 0,
+                    max: 0,
+                }
+            }
+            return;
+        }
         this.dataRange = {
             x: {
                 min: data[0][0],
@@ -262,19 +280,35 @@ export class PlotComponent implements OnChanges {
                 let blueMag: number | null = null;
                 let redMag: number | null = null;
                 let lumMag: number | null = null;
+                let maxMagError: number = 0;
                 for (const photometry of source.photometries) {
                     if (photometry.filter === this.blueFilter) {
                         blueMag = photometry.mag;
+                        if (photometry.mag_error > maxMagError) {
+                            maxMagError = photometry.mag_error;
+                        } else if (maxMagError === null) {
+                            continue;
+                        }
                     }
                     if (photometry.filter === this.redFilter) {
                         redMag = photometry.mag;
+                        if (photometry.mag_error > maxMagError) {
+                            maxMagError = photometry.mag_error;
+                        } else if (maxMagError === null) {
+                            continue;
+                        }
                     }
                     if (photometry.filter === this.lumFilter) {
                         lumMag = photometry.mag;
+                        if (photometry.mag_error > maxMagError) {
+                            maxMagError = photometry.mag_error;
+                        } else if (maxMagError === null) {
+
+                        }
                     }
                 }
                 if (blueMag !== null && redMag !== null && lumMag !== null) {
-                    this.rawPlotData.push([blueMag - redMag, lumMag]);
+                    this.rawPlotData.push({x: blueMag - redMag, y: lumMag, maxMagError: maxMagError});
                 }
             }
         }
@@ -290,4 +324,10 @@ interface PlotRange {
         min: number,
         max: number
     }
+}
+
+interface rawDataPoint {
+    x: number,
+    y: number,
+    maxMagError: number,
 }

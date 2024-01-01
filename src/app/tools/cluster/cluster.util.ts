@@ -136,6 +136,16 @@ export enum Catalogs {
     WISE = "WISE",
 }
 
+export enum StellarClassification {
+    O = "O",
+    B = "B",
+    A = "A",
+    F = "F",
+    G = "G",
+    K = "K",
+    M = "M",
+}
+
 export function haversine(dec1: number, dec2: number, ra1: number, ra2: number): number {
     let dec1_rad = rad(dec1)
     let dec2_rad = rad(dec2)

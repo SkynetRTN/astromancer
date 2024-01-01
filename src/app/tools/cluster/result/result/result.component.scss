@@ -1,6 +1,5 @@
 
 .result-container {
-  display: flex;
   height: 100%;
   width: 100%;
 }
@@ -12,6 +11,20 @@
 .result-content {
   display: flex;
   height: 100%;
-  align-content: center;
-  justify-content: center;
+  flex-direction: column;
+  padding: 0 20px;
 }
+
+.result-tool-bar {
+  display: flex;
+  width: 100%;
+  height: min-content;
+  justify-content: center;
+  padding: 10px 0;
+
+  button {
+    width: 180px;
+    margin: 0 10px;
+  }
+}
+

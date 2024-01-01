@@ -1,0 +1,34 @@
+<div class="individual-graphic">
+    <div class="chart-container">
+        <app-plot [isVertical]="true" [plotConfig]="plotConfig"></app-plot>
+        <div *ngIf="plotConfig === null" class="hrd-placeholder">
+            <h2>Select Filters to Plot</h2>
+        </div>
+    </div>
+    <div [formGroup]="filterFormGroup" class="chart-control">
+        <mat-form-field class="filter-selectors">
+            <mat-label>Blue</mat-label>
+            <mat-select formControlName="blue">
+                <mat-option *ngFor="let filter of filters" [value]="filter">
+                    {{filter.replace('prime', '\'')}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field class="filter-selectors">
+            <mat-label>Red</mat-label>
+            <mat-select formControlName="red">
+                <mat-option *ngFor="let filter of filters" [value]="filter">
+                    {{filter.replace('prime', '\'')}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field class="filter-selectors">
+            <mat-label>Lum.</mat-label>
+            <mat-select formControlName="lum">
+                <mat-option *ngFor="let filter of filters" [value]="filter">
+                    {{filter.replace('prime', '\'')}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <button (click)="plot()" [disabled]="!filterFormGroup.valid" color="accent"
+                mat-raised-button>OK
+        </button>
+    </div>
+</div>

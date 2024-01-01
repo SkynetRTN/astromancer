@@ -60,14 +60,17 @@ import {MatGridListModule} from "@angular/material/grid-list";
 import {PlotComponent} from './isochrone-matching/plots/plot/plot.component';
 import {ResultComponent} from './result/result/result.component';
 import {MatSidenavModule} from "@angular/material/sidenav";
-import { ResultSummaryComponent } from './result/result-summary/result-summary.component';
+import {ResultSummaryComponent} from './result/result-summary/result-summary.component';
+import {MatToolbarModule} from "@angular/material/toolbar";
+import {ResultGraphicsComponent} from './result/result-graphics/result-graphics/result-graphics.component';
+import {HrdResultComponent} from './result/result-graphics/hrd-result/hrd-result.component';
 
 const routes: Routes = [
     {path: '', component: ClusterComponent, title: 'Cluster'}
 ];
 
 @NgModule({
-    declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent, FieldStarRemovalComponent, HistogramSliderInputComponent, PieChartComponent, PmChartComponent, CmdFsrComponent, ArchiveFetchingComponent, FetchPopupComponent, ArchiveFetchingGraphicsComponent, IsochroneMatchingComponent, IsochronePlottingControlsComponent, FilterControlsComponent, FilterSelectorComponent, PlotListsComponent, ClusterPlotGridComponent, PlotComponent, ResultComponent, ResultSummaryComponent],
+    declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent, FieldStarRemovalComponent, HistogramSliderInputComponent, PieChartComponent, PmChartComponent, CmdFsrComponent, ArchiveFetchingComponent, FetchPopupComponent, ArchiveFetchingGraphicsComponent, IsochroneMatchingComponent, IsochronePlottingControlsComponent, FilterControlsComponent, FilterSelectorComponent, PlotListsComponent, ClusterPlotGridComponent, PlotComponent, ResultComponent, ResultSummaryComponent, ResultGraphicsComponent, HrdResultComponent],
     imports: [
         RouterModule.forChild(routes),
         CommonModule,
@@ -98,6 +101,7 @@ const routes: Routes = [
         CdkDragHandle,
         MatGridListModule,
         MatSidenavModule,
+        MatToolbarModule,
     ],
     exports: [ClusterComponent, RouterModule],
     providers: [ClusterStorageService, ClusterDataSourceService,

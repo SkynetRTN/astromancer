@@ -43,6 +43,6 @@ export class FilterSelectorComponent {
     }
 }
 
-const filterValidator: ValidatorFn = (control: AbstractControl) => {
+export const filterValidator: ValidatorFn = (control: AbstractControl) => {
     return control.value.blue !== control.value.red ? null : {filter: true};
 }

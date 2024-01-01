@@ -1,0 +1,40 @@
+.result-graphics-container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-direction: row;
+  overflow-y: scroll;
+}
+
+.result-graphic {
+  display: block;
+  width: 33.3%;
+  height: min-content;
+  padding: 20px;
+  //border-style: dashed;
+}
+
+.individual-graphic {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: min-content;
+
+  .chart-container {
+    display: flex;
+    width: 100%;
+    aspect-ratio: 1;
+    //border-style: solid;
+    //border-color: red;
+  }
+
+  .chart-control {
+    display: flex;
+    margin-top: 10px;
+    width: 100%;
+    height: min-content;
+    justify-content: center;
+    align-items: baseline;
+  }
+}
+

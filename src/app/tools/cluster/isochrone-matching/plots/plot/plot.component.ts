@@ -1,6 +1,13 @@
 import {Component, Input, OnChanges} from '@angular/core';
 import * as Highcharts from 'highcharts';
-import {FILTER, filterFramingValue, PlotConfig, PlotFraming} from "../../../cluster.util";
+import {
+    ClusterPlotType,
+    FILTER,
+    filterFramingValue,
+    getExtinction,
+    PlotConfig,
+    PlotFraming
+} from "../../../cluster.util";
 import {ClusterDataService} from "../../../cluster-data.service";
 import {ClusterIsochroneService} from "../../cluster-isochrone.service";
 
@@ -55,11 +62,16 @@ export class PlotComponent implements OnChanges {
         }
     }
     protected readonly PlotFraming = PlotFraming;
+    protected readonly ClusterPlotType = ClusterPlotType;
     private dataRange: PlotRange | null = null;
     private standardViewRange: PlotRange | null = null;
 
     constructor(private dataService: ClusterDataService,
                 private isochroneService: ClusterIsochroneService) {
+        this.isochroneService.plotParams$.subscribe((params) => {
+            this.updateChartAxis();
+            this.updateData();
+        });
     }
 
     chartInitialized($event: Highcharts.Chart) {
@@ -85,6 +97,26 @@ export class PlotComponent implements OnChanges {
         this.chartObject.yAxis[0].setExtremes(this.standardViewRange?.y.min, this.standardViewRange?.y.max);
     }
 
+    private getPlotData(): number[][] {
+        if (this.plotConfig !== null) {
+            const data = this.rawPlotData;
+            if (this.plotConfig.plotType === ClusterPlotType.CM)
+                return data;
+            const result = [];
+            const plotParams = this.isochroneService.getPlotParams();
+            const blueExtinction = getExtinction(this.blueFilter!, plotParams.reddening);
+            const redExtinction = getExtinction(this.redFilter!, plotParams.reddening);
+            const lumExtinction = getExtinction(this.lumFilter!, plotParams.reddening);
+            for (const point of data) {
+                let x = point[0] - blueExtinction + redExtinction;
+                let y = point[1] - lumExtinction - 5 * Math.log10(plotParams.distance * 1000) + 5;
+                result.push([x, y]);
+            }
+            return result;
+        }
+        return []
+    }
+
     private updatePlotConfig(plotFraming: PlotFraming) {
         if (this.plotConfig !== null && this.plotConfigIndex !== null) {
             this.plotConfig.plotFraming = plotFraming;
@@ -106,13 +138,15 @@ export class PlotComponent implements OnChanges {
 
     private updateChartAxis() {
         if (this.plotConfig !== null) {
-            const xAxisTitle =
+            let xAxisTitle =
                 `${this.blueFilter?.replace("prime", "\'")} - ${this.redFilter?.replace("prime", "\'")}`;
-            const yAxisTitle = `M_${this.lumFilter?.replace("prime", "\'")}`;
+            if (this.plotConfig.plotType === ClusterPlotType.HR)
+                xAxisTitle += `_${this.isochroneService.getPlotParams().reddening}`;
+            const yAxisTitle = `'M'_${this.lumFilter?.replace("prime", "\'")}`;
             this.updateStandardViewRange();
             const plotFraming = this.plotConfig.plotFraming;
             let frameRange: PlotRange;
-            if (plotFraming === PlotFraming.DATA) {
+            if (plotFraming === PlotFraming.DATA || this.plotConfig.plotType === ClusterPlotType.CM) {
                 frameRange = this.dataRange!;
             } else {
                 frameRange = this.standardViewRange!;
@@ -120,8 +154,9 @@ export class PlotComponent implements OnChanges {
             try {
                 this.chartObject.xAxis[0].setTitle({text: xAxisTitle});
                 this.chartObject.yAxis[0].setTitle({text: yAxisTitle});
-                if (plotFraming === PlotFraming.DATA) {
+                if (plotFraming === PlotFraming.DATA || this.plotConfig.plotType === ClusterPlotType.CM) {
                     this.frameOnData();
+                    this.isochroneService.updatePlotFraming(PlotFraming.DATA, this.plotConfigIndex!);
                 } else if (plotFraming === PlotFraming.STANDARD) {
                     this.standardView();
                 }
@@ -147,16 +182,16 @@ export class PlotComponent implements OnChanges {
     private updateData() {
         if (this.plotConfig !== null) {
             try {
-                const data = this.rawPlotData;
+                const data = this.getPlotData();
                 this.updateDataRange(data);
                 this.chartObject.series[0].setData(data, true);
             } catch (e) {
-                const data = this.rawPlotData;
+                const data = this.getPlotData();
                 this.updateDataRange(data);
                 this.chartOptions.series = [{
                     name: "Photometry",
                     type: "scatter",
-                    data: this.rawPlotData,
+                    data: this.getPlotData(),
                     marker: {
                         radius: 1,
                     }

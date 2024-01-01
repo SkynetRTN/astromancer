@@ -179,3 +179,39 @@ export interface IsochroneParams {
     age: number;
     metallicity: number;
 }
+
+export function getExtinction(filter: FILTER, reddening: number, rv: number = 3.1): number {
+    const waveLength = filterWavelength[filter];
+    const x = (waveLength / 1) ** -1;
+    const y = x - 1.82;
+    let a = 0;
+    let b = 0;
+    if (x > 0.3 && x < 1.1) {
+        a = 0.574 * x ** 1.61;
+    } else if (x > 1.1 && x < 3.3) {
+        a =
+            1 +
+            0.17699 * y -
+            0.50447 * y ** 2 -
+            0.02427 * y ** 3 +
+            0.72085 * y ** 4 +
+            0.01979 * y ** 5 -
+            0.7753 * y ** 6 +
+            0.32999 * y ** 7;
+    }
+
+    if (x > 0.3 && x < 1.1) {
+        b = -0.527 * x ** 1.61;
+    } else if (x > 1.1 && x < 3.3) {
+        b =
+            1.41338 * y +
+            2.28305 * y ** 2 +
+            1.07233 * y ** 3 -
+            5.38434 * y ** 4 -
+            0.62251 * y ** 5 +
+            5.3026 * y ** 6 -
+            2.09002 * y ** 7;
+    }
+
+    return reddening * (a + b / rv);
+}

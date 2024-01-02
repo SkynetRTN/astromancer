@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://skynet.unc.edu/graph-api'
+  apiUrl: 'https://astromancer-dev.skynet.unc.edu/api'
 };

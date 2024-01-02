@@ -1,6 +1,5 @@
 import {Component, Input, OnChanges} from '@angular/core';
 import * as Highcharts from "highcharts";
-import {HttpClient} from "@angular/common/http";
 import {ClusterMWSC} from "../../../storage/cluster-storage.service.util";
 import {ClusterService} from "../../../cluster.service";
 import {ClusterIsochroneService} from "../../../isochrone-matching/cluster-isochrone.service";
@@ -123,8 +122,7 @@ export class DistanceComponent implements OnChanges {
         ]
     }
 
-    constructor(private http: HttpClient,
-                private service: ClusterService,
+    constructor(private service: ClusterService,
                 private isochroneService: ClusterIsochroneService) {
     }
 

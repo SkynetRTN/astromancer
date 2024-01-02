@@ -2,14 +2,14 @@ import {AfterViewInit, Component, Input, OnChanges} from '@angular/core';
 import * as Highcharts from "highcharts";
 import {ClusterMWSC} from "../../../storage/cluster-storage.service.util";
 import {ClusterService} from "../../../cluster.service";
-import {ClusterDataService} from "../../../cluster-data.service";
+import {ClusterIsochroneService} from "../../../isochrone-matching/cluster-isochrone.service";
 
 @Component({
-    selector: 'app-number-of-stars',
-    templateUrl: './number-of-stars.component.html',
-    styleUrls: ['./number-of-stars.component.scss', '../result-graphics/result-graphics.component.scss']
+    selector: 'app-metallicity',
+    templateUrl: './metallicity.component.html',
+    styleUrls: ['./metallicity.component.scss', '../result-graphics/result-graphics.component.scss']
 })
-export class NumberOfStarsComponent implements OnChanges, AfterViewInit {
+export class MetallicityComponent implements OnChanges, AfterViewInit {
 
     @Input() allClusters!: ClusterMWSC[];
 
@@ -23,13 +23,14 @@ export class NumberOfStarsComponent implements OnChanges, AfterViewInit {
             styledMode: true,
         },
         title: {
-            text: 'Number of Cluster Stars Among Milky Way Star Clusters'
+            text: 'Metallicity Among Milky Way Star Clusters'
         },
         xAxis: [{
             title: {
-                text: 'Number of Stars in each Cluster'
+                text: 'Metallicity (solar)'
             },
-            min: 0,
+            min: -2.3,
+            max: 0.8,
         },
             {
                 visible: false,
@@ -52,7 +53,7 @@ export class NumberOfStarsComponent implements OnChanges, AfterViewInit {
             {
                 id: 'data',
                 type: 'scatter',
-                data: [1,2,3,4],
+                data: [1, 2, 3, 4],
                 visible: false,
                 showInLegend: false,
                 xAxis: 1,
@@ -65,13 +66,13 @@ export class NumberOfStarsComponent implements OnChanges, AfterViewInit {
                 marker: {
                     symbol: 'circle',
                     radius: 10,
-                }
+                },
             },
-        ]
+        ],
     }
 
     constructor(private service: ClusterService,
-                private dataService: ClusterDataService) {
+                private isochroneService: ClusterIsochroneService) {
     }
 
     chartInitialized($event: Highcharts.Chart) {
@@ -81,21 +82,17 @@ export class NumberOfStarsComponent implements OnChanges, AfterViewInit {
     ngOnChanges(): void {
         if (this.chartObject === undefined)
             return;
-        let counts: number[] = [];
+        let metallicities: number[] = [];
         this.allClusters.forEach((cluster: ClusterMWSC) => {
-            if (cluster.num_cluster_stars && cluster.num_cluster_stars > 0)
-                counts.push(cluster.num_cluster_stars);
+            if (cluster.metallicity !== null && cluster.metallicity !== undefined
+                && cluster.metallicity > -2.3 && cluster.metallicity < 0.8)
+                metallicities.push(cluster.metallicity);
         });
-        counts.sort((a, b) => a - b);
-        counts = counts.slice(Math.floor(0.0015 * counts.length), Math.ceil(0.99985 * counts.length))
-        this.chartObject.series[1].setData(counts);
+        metallicities.sort((a, b) => a - b);
+        this.chartObject.series[1].setData(metallicities);
     }
 
     ngAfterViewInit(): void {
-        this.dataService.sources$.subscribe(() => {
-            const counts = this.dataService.getSources(true).length;
-            this.chartObject.series[2].setData([[counts, 0]]);
-        });
+        this.chartObject.series[2].setData([[this.isochroneService.getIsochroneParams().metallicity, 0]]);
     }
 }
-

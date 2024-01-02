@@ -55,7 +55,7 @@ export class VenusTableComponent implements AfterViewInit, OnDestroy {
   }
 
   public beforePaste = (data: any[], coords: any) => {
-    beforePaste(data, coords, this.table);
+    return beforePaste(data, coords, this.table);
   }
 
   private limitPrecision(data: VenusDataDict[], precision: number): VenusDataDict[] {

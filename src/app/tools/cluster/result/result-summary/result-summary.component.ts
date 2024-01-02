@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {ClusterService} from "../../cluster.service";
 import {ClusterDataService} from "../../cluster-data.service";
 import {ClusterIsochroneService} from "../../isochrone-matching/cluster-isochrone.service";
-import {getHalfLightRadius, getPhysicalRadius, getPmra} from "../result.utils";
+import {equatorial2Galactic, getHalfLightRadius, getPhysicalRadius, getPmra} from "../result.utils";
 import {d2DMS, d2HMS} from "../../../shared/data/utils";
 
 @Component({
@@ -45,10 +45,12 @@ export class ResultSummaryComponent {
             this.dec = this.dataService.getClusterDec()!;
             const decDMSarr = d2DMS(this.dec);
             this.decDMS = `${decDMSarr[0]}° ${decDMSarr[1]}' ${decDMSarr[2].toFixed(1)}"`
-            this.l = this.dataService.getCluster()?.galactic_latitude!;
+            const lb = equatorial2Galactic(this.ra, this.dec);
+            this.l = lb.l;
             const lDMSarr = d2DMS(this.l);
             this.lDMS = `${lDMSarr[0]}° ${lDMSarr[1]}' ${lDMSarr[2].toFixed(1)}"`
-            this.b = this.dataService.getCluster()?.galactic_longitude!;
+            this.b = lb.b;
+            console.log(equatorial2Galactic(this.ra, this.dec));
             const bDMSarr = d2DMS(this.b);
             this.bDMS = `${bDMSarr[0]}° ${bDMSarr[1]}' ${bDMSarr[2].toFixed(1)}"`
             const plotParams = this.isochroneService.getPlotParams();

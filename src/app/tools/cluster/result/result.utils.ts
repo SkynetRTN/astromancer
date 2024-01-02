@@ -1,5 +1,5 @@
 import {haversine, Source} from "../cluster.util";
-import {rad} from "../../shared/data/utils";
+import {deg, rad} from "../../shared/data/utils";
 
 /*
     * Returns the half-light radius of the cluster in degrees
@@ -16,16 +16,21 @@ export function getHalfLightRadius(sources: Source[], centerRa: number, centerDe
 
 // https://en.wikipedia.org/wiki/Galactic_coordinate_system#cite_note-5
 export function equatorial2Galactic(ra: number, dec: number): { l: number, b: number } {
-    const ra_ngp: number = rad(192.85);
-    const dec_ngp: number = rad(27.13);
+    const ra_ngp: number = rad(192.8595);
+    const dec_ngp: number = rad(27.1284);
     const l_ngp: number = rad(122.93314);
 
     const ra_rad: number = rad(ra);
     const dec_rad: number = rad(dec);
     const b = Math.asin(Math.sin(dec_ngp) * Math.sin(dec_rad)
         + Math.cos(dec_ngp) * Math.cos(dec_rad) * Math.cos(ra_rad - ra_ngp));
-
-    return {l: 0, b: b};
+    let temp = Math.cos(dec_rad) * Math.sin(ra_rad - ra_ngp) /
+        (Math.sin(dec_rad) * Math.cos(dec_ngp) - Math.cos(dec_rad) * Math.sin(dec_ngp) * Math.cos(ra_rad - ra_ngp));
+    temp = Math.atan(temp)
+    temp = temp < 0 ? temp + Math.PI : temp; //shift arctan to [0, 2pi]
+    let l = l_ngp - temp;
+    l = l < 0 ? l + 2 * Math.PI : l; //shift to [0, 2pi]
+    return {l: deg(l), b: deg(b)};
 }
 
 export function getPhysicalRadius(distance: number, angularRadius: number): number {

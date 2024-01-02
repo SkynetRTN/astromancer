@@ -13,6 +13,12 @@
   height: 100%;
   flex-direction: column;
   padding: 0 20px;
+  overflow: hidden;
+}
+
+.real-scrollable-content {
+  display: flex;
+  overflow-y: auto;
 }
 
 .result-tool-bar {

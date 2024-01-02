@@ -1,17 +1,35 @@
 .result-graphics-container {
   display: flex;
-  height: 100%;
+  height: min-content;
   width: 100%;
+  flex-direction: column;
+}
+
+.graphic-row {
+  display: flex;
+  width: 100%;
+  height: min-content;
   flex-direction: row;
-  overflow-y: scroll;
+  margin-bottom: 20px;
+}
+
+.result-graphics-container .graphic-row:last-child {
+  margin-bottom: 0;
 }
 
 .result-graphic {
   display: block;
-  width: 33.3%;
   height: min-content;
   padding: 20px;
   //border-style: dashed;
+}
+
+.one-third {
+  width: 33.3%;
+}
+
+.half {
+  width: 50%;
 }
 
 .individual-graphic {
@@ -23,9 +41,16 @@
   .chart-container {
     display: flex;
     width: 100%;
-    aspect-ratio: 1;
     //border-style: solid;
     //border-color: red;
+  }
+
+  .one-to-one {
+    aspect-ratio: 1;
+  }
+
+  .one-to-two {
+    aspect-ratio: 2/1;
   }
 
   .chart-control {

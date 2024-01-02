@@ -53,6 +53,7 @@ export interface ClusterMWSC {
     ra: number;
     dec: number;
     type: string;
+    distance: number;
 }
 
 export interface StarCounts {

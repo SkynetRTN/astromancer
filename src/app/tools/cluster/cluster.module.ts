@@ -66,13 +66,14 @@ import {ResultGraphicsComponent} from './result/result-graphics/result-graphics/
 import {HrdResultComponent} from './result/result-graphics/hrd-result/hrd-result.component';
 import {GalaxyFaceonComponent} from './result/result-graphics/galaxy-faceon/galaxy-faceon.component';
 import {GalaxyEdgeonComponent} from './result/result-graphics/galaxy-edgeon/galaxy-edgeon.component';
+import { DistanceComponent } from './result/result-graphics/distance/distance.component';
 
 const routes: Routes = [
     {path: '', component: ClusterComponent, title: 'Cluster'}
 ];
 
 @NgModule({
-    declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent, FieldStarRemovalComponent, HistogramSliderInputComponent, PieChartComponent, PmChartComponent, CmdFsrComponent, ArchiveFetchingComponent, FetchPopupComponent, ArchiveFetchingGraphicsComponent, IsochroneMatchingComponent, IsochronePlottingControlsComponent, FilterControlsComponent, FilterSelectorComponent, PlotListsComponent, ClusterPlotGridComponent, PlotComponent, ResultComponent, ResultSummaryComponent, ResultGraphicsComponent, HrdResultComponent, GalaxyFaceonComponent, GalaxyEdgeonComponent],
+    declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent, FieldStarRemovalComponent, HistogramSliderInputComponent, PieChartComponent, PmChartComponent, CmdFsrComponent, ArchiveFetchingComponent, FetchPopupComponent, ArchiveFetchingGraphicsComponent, IsochroneMatchingComponent, IsochronePlottingControlsComponent, FilterControlsComponent, FilterSelectorComponent, PlotListsComponent, ClusterPlotGridComponent, PlotComponent, ResultComponent, ResultSummaryComponent, ResultGraphicsComponent, HrdResultComponent, GalaxyFaceonComponent, GalaxyEdgeonComponent, DistanceComponent],
     imports: [
         RouterModule.forChild(routes),
         CommonModule,

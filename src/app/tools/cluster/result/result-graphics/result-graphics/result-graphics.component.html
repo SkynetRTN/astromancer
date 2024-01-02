@@ -11,8 +11,13 @@
         </div>
     </div>
     <div class="graphic-row">
-        <div class="result-graphic half">
+        <div class="result-graphic full">
             <app-cluster-summary-distance [allClusters]="allClusters"></app-cluster-summary-distance>
+        </div>
+    </div>
+    <div class="graphic-row">
+        <div class="result-graphic half">
+            <app-age [allClusters]="allClusters"></app-age>
         </div>
         <div class="result-graphic half">
             <app-number-of-stars [allClusters]="allClusters"></app-number-of-stars>
@@ -23,7 +28,7 @@
             <app-metallicity [allClusters]="allClusters"></app-metallicity>
         </div>
         <div class="result-graphic half">
-<!--            <app-number-of-stars [allClusters]="allClusters"></app-number-of-stars>-->
+            <app-reddening [allClusters]="allClusters"></app-reddening>
         </div>
     </div>
 

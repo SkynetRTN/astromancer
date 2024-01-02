@@ -41,12 +41,16 @@ export class GalaxyEdgeonComponent implements OnInit {
             drawStar(ctx, 'orange', 'yellow', center_x, center_y, 5, 10, 5)
 
 
-            const l: number = rad(this.dataService.getCluster()?.galactic_latitude!);
-            const b: number = rad(this.dataService.getCluster()?.galactic_longitude!);
+            const l: number = rad(this.dataService.getGalacticLongitude()!);
+            const b: number = rad(this.dataService.getGalacticLatitude()!);
             const distance: number = this.isochroneService.getPlotParams().distance;
             const d: number = distance * Math.cos(b);
             const delta_x: number = -d * Math.cos(l) * 32;
-            const delta_y: number = distance * Math.sin(b) * 32;
+            let delta_y: number = distance * Math.sin(b) * 16;
+            if (delta_y > 500)
+                delta_y = 500;
+            if (delta_y < -500)
+                delta_y = -500;
             drawStar(ctx, 'red', 'red', center_x + delta_x, center_y + delta_y,
                 25, 15, 10)
         });

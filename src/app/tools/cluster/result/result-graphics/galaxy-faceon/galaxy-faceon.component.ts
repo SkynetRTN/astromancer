@@ -39,11 +39,10 @@ export class GalaxyFaceonComponent implements OnInit {
             const center_x: number = 500;
             const center_y: number = 720;
 
-            drawStar(ctx, 'orange', 'yellow', center_x, center_y, 5, 10, 5)
+            drawStar(ctx, 'orange', 'yellow', center_x, center_y, 5, 10, 5);
 
-
-            const l: number = rad(this.dataService.getCluster()?.galactic_latitude!);
-            const b: number = rad(this.dataService.getCluster()?.galactic_longitude!);
+            const l: number = rad(this.dataService.getGalacticLongitude()!);
+            const b: number = rad(this.dataService.getGalacticLatitude()!);
             const distance: number = this.isochroneService.getPlotParams().distance;
             const d: number = distance * Math.cos(b) * 32; // one pixel is 32 kpc
             const delta_x: number = d * Math.sin(l);

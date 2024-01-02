@@ -66,16 +66,18 @@ import {ResultGraphicsComponent} from './result/result-graphics/result-graphics/
 import {HrdResultComponent} from './result/result-graphics/hrd-result/hrd-result.component';
 import {GalaxyFaceonComponent} from './result/result-graphics/galaxy-faceon/galaxy-faceon.component';
 import {GalaxyEdgeonComponent} from './result/result-graphics/galaxy-edgeon/galaxy-edgeon.component';
-import { DistanceComponent } from './result/result-graphics/distance/distance.component';
-import { NumberOfStarsComponent } from './result/result-graphics/number-of-stars/number-of-stars.component';
-import { MetallicityComponent } from './result/result-graphics/metallicity/metallicity.component';
+import {DistanceComponent} from './result/result-graphics/distance/distance.component';
+import {NumberOfStarsComponent} from './result/result-graphics/number-of-stars/number-of-stars.component';
+import {MetallicityComponent} from './result/result-graphics/metallicity/metallicity.component';
+import {ReddeningComponent} from './result/result-graphics/reddening/reddening.component';
+import {AgeComponent} from './result/result-graphics/age/age.component';
 
 const routes: Routes = [
     {path: '', component: ClusterComponent, title: 'Cluster'}
 ];
 
 @NgModule({
-    declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent, FieldStarRemovalComponent, HistogramSliderInputComponent, PieChartComponent, PmChartComponent, CmdFsrComponent, ArchiveFetchingComponent, FetchPopupComponent, ArchiveFetchingGraphicsComponent, IsochroneMatchingComponent, IsochronePlottingControlsComponent, FilterControlsComponent, FilterSelectorComponent, PlotListsComponent, ClusterPlotGridComponent, PlotComponent, ResultComponent, ResultSummaryComponent, ResultGraphicsComponent, HrdResultComponent, GalaxyFaceonComponent, GalaxyEdgeonComponent, DistanceComponent, NumberOfStarsComponent, MetallicityComponent],
+    declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent, FieldStarRemovalComponent, HistogramSliderInputComponent, PieChartComponent, PmChartComponent, CmdFsrComponent, ArchiveFetchingComponent, FetchPopupComponent, ArchiveFetchingGraphicsComponent, IsochroneMatchingComponent, IsochronePlottingControlsComponent, FilterControlsComponent, FilterSelectorComponent, PlotListsComponent, ClusterPlotGridComponent, PlotComponent, ResultComponent, ResultSummaryComponent, ResultGraphicsComponent, HrdResultComponent, GalaxyFaceonComponent, GalaxyEdgeonComponent, DistanceComponent, NumberOfStarsComponent, MetallicityComponent, ReddeningComponent, AgeComponent],
     imports: [
         RouterModule.forChild(routes),
         CommonModule,

@@ -55,6 +55,8 @@ export interface ClusterMWSC {
     type: string;
     distance: number;
     metallicity: number;
+    e_bv: number;
+    age: number;
 }
 
 export interface StarCounts {

@@ -20,6 +20,7 @@ import {appendFSRResults, getStarCountsByFilter, updateClusterFieldSources} from
 import {ClusterStorageService} from "./storage/cluster-storage.service";
 import {FsrParameters} from "./FSR/fsr.util";
 import {ClusterMWSC, StarCounts} from "./storage/cluster-storage.service.util";
+import {equatorial2Galactic} from "./result/result.utils";
 
 @Injectable()
 export class ClusterDataService {
@@ -30,10 +31,14 @@ export class ClusterDataService {
     private filters: FILTER[] = [];
     private cluster: ClusterMWSC | null = null;
     private starCounts: StarCounts | null = null;
+    private galacticLongitude: number | null = null;
+    private galacticLatitude: number | null = null;
+
     private sourcesSubject = new Subject<Source[]>();
     public sources$ = this.sourcesSubject.asObservable();
     private clusterSourcesSubject = new Subject<Source[]>();
     public clusterSources = this.clusterSourcesSubject.asObservable();
+
 
     constructor(
         private http: HttpClient,
@@ -306,6 +311,23 @@ export class ClusterDataService {
                 this.storageService.getFsrParams(), this.starCounts.WISE, this.cluster.num_WISE_stars);
         }
         return starCounts;
+    }
+
+    public computeGalacticCoordinates(): { l: number, b: number } {
+        if (this.cluster !== null) {
+            const {l, b} = equatorial2Galactic(this.getClusterRa()!, this.getClusterDec()!);
+            this.galacticLongitude = l;
+            this.galacticLatitude = b;
+        }
+        return {l: this.galacticLongitude!, b: this.galacticLatitude!};
+    }
+
+    public getGalacticLongitude(): number | null {
+        return this.galacticLongitude;
+    }
+
+    public getGalacticLatitude(): number | null {
+        return this.galacticLatitude;
     }
 
     private setCluster(cluster: ClusterMWSC) {

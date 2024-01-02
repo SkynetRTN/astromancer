@@ -1,7 +1,6 @@
-import {AfterViewInit, Component} from '@angular/core';
+import {Component, Input, OnChanges} from '@angular/core';
 import * as Highcharts from "highcharts";
 import {HttpClient} from "@angular/common/http";
-import {environment} from 'src/environments/environment';
 import {ClusterMWSC} from "../../../storage/cluster-storage.service.util";
 import {ClusterService} from "../../../cluster.service";
 import {ClusterIsochroneService} from "../../../isochrone-matching/cluster-isochrone.service";
@@ -11,7 +10,9 @@ import {ClusterIsochroneService} from "../../../isochrone-matching/cluster-isoch
     templateUrl: './distance.component.html',
     styleUrls: ['./distance.component.scss', '../result-graphics/result-graphics.component.scss']
 })
-export class DistanceComponent implements AfterViewInit {
+export class DistanceComponent implements OnChanges {
+
+    @Input() allClusters!: ClusterMWSC[];
 
     Highcharts: typeof Highcharts = Highcharts;
     chartConstructor: any = "chart";
@@ -128,16 +129,14 @@ export class DistanceComponent implements AfterViewInit {
         this.chartObject = $event;
     }
 
-    ngAfterViewInit(): void {
-        this.http.get(`${environment.apiUrl}/cluster/allMWSC`).subscribe((data: any | ClusterMWSC[]) => {
-            let distance: number[] = [];
-            data.forEach((cluster: ClusterMWSC) => {
-                if (cluster.distance > 0)
-                    distance.push(cluster.distance / 1000);
-            });
-            distance.sort((a, b) => a - b);
-            this.chartObject.series[1].setData(distance);
+    ngOnChanges(): void {
+        let distance: number[] = [];
+        this.allClusters.forEach((cluster: ClusterMWSC) => {
+            if (cluster.distance > 0)
+                distance.push(cluster.distance / 1000);
         });
+        distance.sort((a, b) => a - b);
+        this.chartObject.series[1].setData(distance);
     }
 
     toggleLogScale() {

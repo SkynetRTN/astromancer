@@ -7,7 +7,7 @@ import {ClusterService} from "../../../cluster.service";
 import {ClusterIsochroneService} from "../../../isochrone-matching/cluster-isochrone.service";
 
 @Component({
-    selector: 'cluster-summary-distance',
+    selector: 'app-cluster-summary-distance',
     templateUrl: './distance.component.html',
     styleUrls: ['./distance.component.scss', '../result-graphics/result-graphics.component.scss']
 })

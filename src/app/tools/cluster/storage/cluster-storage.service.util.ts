@@ -43,7 +43,7 @@ export interface ClusterMWSC {
     galactic_longitude: number;
     galactic_latitude: number;
     radius: number;
-    num_clusters_stars: number;
+    num_cluster_stars: number;
     num_total_stars: number;
     num_APASS_stars: number;
     num_TWO_MASS_stars: number;

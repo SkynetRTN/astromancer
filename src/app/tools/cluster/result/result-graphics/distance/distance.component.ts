@@ -38,6 +38,9 @@ export class DistanceComponent implements OnChanges {
                 visible: false,
             }],
         yAxis: [{
+            title: {
+                text: '# Clusters in Bin'
+            },
             min: 0,
         }],
         series: [
@@ -130,6 +133,8 @@ export class DistanceComponent implements OnChanges {
     }
 
     ngOnChanges(): void {
+        if (this.chartObject === undefined)
+            return;
         let distance: number[] = [];
         this.allClusters.forEach((cluster: ClusterMWSC) => {
             if (cluster.distance > 0)

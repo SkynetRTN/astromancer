@@ -11,6 +11,7 @@ import {HttpClient} from "@angular/common/http";
 export class ResultGraphicsComponent implements AfterViewInit{
     allClusters: ClusterMWSC[] = [];
 
+
     constructor(private http: HttpClient) {
     }
 

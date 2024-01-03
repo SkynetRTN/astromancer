@@ -119,7 +119,7 @@ export class PlotComponent implements OnChanges {
         if (this.plotConfig !== null) {
             const params = this.isochroneService.getIsochroneParams();
             const serverAge =
-                parseFloat(Math.log(params.age).toFixed(1));
+                parseFloat(Math.log10(params.age*1000000).toFixed(1));
             this.http.get(`${environment.apiUrl}/cluster/isochrone`,
                 {
                     params: {

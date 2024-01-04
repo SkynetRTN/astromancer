@@ -75,6 +75,16 @@ export class VariablePeriodFoldingFormComponent implements OnDestroy {
         this.phaseSubject.next(this.service.getPeriodFoldingPhase());
       }
     });
+    this.service.periodogramForm$.pipe(
+      takeUntil(this.destroy$),
+    ).subscribe(() => {
+      this.periodStep = this.getPeriodStep();
+    });
+    this.service.data$.pipe(
+      takeUntil(this.destroy$),
+    ).subscribe(() => {
+      this.periodStep = this.getPeriodStep();
+    });
   }
 
 

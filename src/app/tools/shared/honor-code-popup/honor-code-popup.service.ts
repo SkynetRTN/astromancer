@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HonorCodePopupComponent} from "./honor-code-popup.component";
-import {MatLegacyDialog as MatDialog} from "@angular/material/legacy-dialog";
+import {MatDialog} from "@angular/material/dialog";
 import {Observable} from "rxjs";
 import {MatButton} from "@angular/material/button";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
@@ -32,8 +32,7 @@ export class HonorCodePopupService {
   }
 
   public honored(): Observable<string> {
-    const modalRef = this.dialog.open(HonorCodePopupComponent,
-      {width: '500px',});
+    const modalRef = this.dialog.open(HonorCodePopupComponent);
     return modalRef.afterClosed();
   }
 }

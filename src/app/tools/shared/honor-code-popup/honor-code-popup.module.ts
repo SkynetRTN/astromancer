@@ -1,11 +1,12 @@
 import {NgModule} from "@angular/core";
 import {HonorCodePopupComponent} from "./honor-code-popup.component";
 import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
-import {MatLegacyButtonModule as MatButtonModule} from "@angular/material/legacy-button";
 import {MatIconModule} from "@angular/material/icon";
-import {MatLegacyInputModule as MatInputModule} from "@angular/material/legacy-input";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {MatLegacyDialogModule as MatDialogModule} from "@angular/material/legacy-dialog";
+import {MatButtonModule} from "@angular/material/button";
+import {MatInputModule} from "@angular/material/input";
+import {MatDialogModule} from "@angular/material/dialog";
+import {NgIf} from "@angular/common";
 
 /**
  * Module encapsulating {@link HonorCodePopupComponent}
@@ -19,6 +20,7 @@ import {MatLegacyDialogModule as MatDialogModule} from "@angular/material/legacy
     ReactiveFormsModule,
     FormsModule,
     MatDialogModule,
+    NgIf,
   ],
   declarations: [HonorCodePopupComponent]
 })

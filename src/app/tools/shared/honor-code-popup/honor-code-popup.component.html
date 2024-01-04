@@ -1,23 +1,25 @@
-<div class="modal-header">
-  <h2 i18n>Honor Code Pledge</h2>
-  <button (click)="dismiss()" aria-label="Close" i18n-aria-label="close" mat-icon-button>
-    <mat-icon>close</mat-icon>
-  </button>
-</div>
-<form (ngSubmit)="submit()" [formGroup]="form">
-  <div class="modal-body">
-    <p i18n>REQUIRED FOR RECEIVING CREDIT</p>
-    <mat-form-field>
-      <mat-label i18n>Sign your name to attest to the fact that you made this graph yourself:</mat-label>
-      <input #signature formControlName="signature" i18n-placeholder matInput
-             maxlength="256" placeholder="Your signature here..." required>
-      <mat-hint align="end" i18n>Click to start typing</mat-hint>
-    </mat-form-field>
-  </div>
-  <div class="modal-footer" style="flex-direction: row-reverse; justify-content: space-between">
-    <button [disabled]="!form.valid"
-            [mat-dialog-close]="form.controls['signature'].value"
-            color="accent" i18n mat-flat-button>Submit
+<div class="honor-pop-container">
+  <div class="modal-header">
+    <h2 i18n>Honor Code Pledge</h2>
+    <button (click)="dismiss()" aria-label="Close" i18n-aria-label="close" mat-icon-button>
+      <mat-icon>close</mat-icon>
     </button>
   </div>
-</form>
+  <form (ngSubmit)="submit()" [formGroup]="form">
+    <div class="modal-body">
+      <p i18n>REQUIRED FOR RECEIVING CREDIT</p>
+      <mat-form-field>
+        <mat-label i18n>Sign your name to attest to the fact that you made this graph yourself:</mat-label>
+        <input #signature formControlName="signature" i18n-placeholder matInput
+               maxlength="256" placeholder="Your signature here..." required>
+        <mat-hint *ngIf="!form.controls['signature'].dirty" align="start" i18n>Click to start typing</mat-hint>
+      </mat-form-field>
+    </div>
+    <div class="modal-footer" style="flex-direction: row-reverse; justify-content: space-between">
+      <button [disabled]="!form.valid"
+              [mat-dialog-close]="form.controls['signature'].value"
+              color="accent" i18n mat-flat-button>Submit
+      </button>
+    </div>
+  </form>
+</div>

@@ -81,7 +81,7 @@ export class PlotComponent implements OnChanges {
       this.updateChartAxis();
       if (this.plotConfig?.plotType === ClusterPlotType.HR) {
         this.updateData();
-      } else {
+      } else if (this.plotConfig?.plotType === ClusterPlotType.CM) {
         this.setIsochrone();
       }
     });

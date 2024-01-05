@@ -1,4 +1,4 @@
-<mat-card [formGroup]="formGroup" class="fetch-card">
+<mat-card class="fetch-card">
     <mat-card-header>
         <mat-card-title>Fetch Catalog</mat-card-title>
     </mat-card-header>
@@ -62,12 +62,12 @@
             </div>
         </div>
         <mat-divider></mat-divider>
-        <div class="row">
+        <div class="row" [formGroup]="formGroup" [hidden]="!hideProgressBar">
             <div class="col-4">
                 <div class="usr-input">
                     <mat-form-field>
                         <mat-label>Radius</mat-label>
-                        <input [formControlName]="'radius'" [type]="'number'" matInput/>
+                        <input matInput [formControlName]="'radius'" [type]="'number'"/>
                         <button (click)="this.formGroup.controls['radius'].setValue(maximumRadius)"
                                 *ngIf="this.formGroup.controls['radius'].value != maximumRadius" aria-label="reset"
                                 mat-icon-button

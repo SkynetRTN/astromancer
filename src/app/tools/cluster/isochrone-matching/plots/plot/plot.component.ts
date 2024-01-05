@@ -79,7 +79,11 @@ export class PlotComponent implements OnChanges {
               private isochroneService: ClusterIsochroneService) {
     this.isochroneService.plotParams$.subscribe(() => {
       this.updateChartAxis();
-      this.updateData();
+      if (this.plotConfig?.plotType === ClusterPlotType.HR) {
+        this.updateData();
+      } else {
+        this.setIsochrone();
+      }
     });
     this.isochroneService.maxMagError$.subscribe(() => {
       this.updateChartAxis();
@@ -135,6 +139,12 @@ export class PlotComponent implements OnChanges {
         iSkip: number
       }) => {
         let isochroneData = data.data;
+        if (this.plotConfig!.plotType === ClusterPlotType.CM) {
+          const delta = this.computePlotDelta();
+          isochroneData = isochroneData.map((point: number[]) => {
+            return [point[0] - delta.x, point[1] - delta.y];
+          });
+        }
         if (data.iSkip > 0 && data.data.length > data.iSkip) {
           isochroneData = isochroneData.slice(0, data.iSkip - 1);
           isochroneData.push([null, null]);
@@ -161,21 +171,32 @@ export class PlotComponent implements OnChanges {
     if (this.plotConfig !== null) {
       const data = this.rawPlotData.filter(
         (point) => point.maxMagError < this.isochroneService.getMaxMagError());
-      if (this.plotConfig.plotType === ClusterPlotType.CM)
-        return data.map((point) => [point.x, point.y]);
-      const result = [];
-      const plotParams = this.isochroneService.getPlotParams();
-      const blueExtinction = getExtinction(this.blueFilter!, plotParams.reddening);
-      const redExtinction = getExtinction(this.redFilter!, plotParams.reddening);
-      const lumExtinction = getExtinction(this.lumFilter!, plotParams.reddening);
-      for (const point of data) {
-        let x = point.x - blueExtinction + redExtinction;
-        let y = point.y - lumExtinction - 5 * Math.log10(plotParams.distance * 1000) + 5;
-        result.push([x, y]);
+      let result: number[][] = [];
+      if (this.plotConfig.plotType === ClusterPlotType.CM) {
+        result = data.map((point) => [point.x, point.y]);
+      }
+      if (this.plotConfig.plotType === ClusterPlotType.HR) {
+        const delta = this.computePlotDelta();
+        for (const point of data) {
+          let x = point.x + delta.x;
+          let y = point.y + delta.y;
+          result.push([x, y]);
+        }
       }
       return result;
     }
     return []
+  }
+
+  private computePlotDelta(): { x: number, y: number } {
+    const plotParams = this.isochroneService.getPlotParams();
+    const blueExtinction = getExtinction(this.blueFilter!, plotParams.reddening);
+    const redExtinction = getExtinction(this.redFilter!, plotParams.reddening);
+    const lumExtinction = getExtinction(this.lumFilter!, plotParams.reddening);
+    return {
+      x: redExtinction - blueExtinction,
+      y: -lumExtinction - 5 * Math.log10(plotParams.distance * 1000) + 5,
+    }
   }
 
   private updatePlotConfig(plotFraming: PlotFraming) {

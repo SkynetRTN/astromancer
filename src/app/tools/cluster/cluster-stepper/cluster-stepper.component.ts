@@ -5,28 +5,28 @@ import {ClusterStorageService} from "../storage/cluster-storage.service";
 import {MatTabChangeEvent} from "@angular/material/tabs";
 
 @Component({
-    selector: 'app-cluster-stepper',
-    templateUrl: './cluster-stepper.component.html',
-    styleUrls: ['./cluster-stepper.component.scss', '../../shared/interface/tools.scss']
+  selector: 'app-cluster-stepper',
+  templateUrl: './cluster-stepper.component.html',
+  styleUrls: ['./cluster-stepper.component.scss', '../../shared/interface/tools.scss']
 })
 export class ClusterStepperComponent {
-    hasFSR: boolean;
-    index: number = this.storageService.getTabIndex();
+  hasFSR: boolean;
+  index: number = this.storageService.getTabIndex();
 
-    constructor(private service: ClusterService,
-                private storageService: ClusterStorageService,
-                private dataService: ClusterDataService,) {
-        this.hasFSR = this.storageService.getJob() !== null;
-        this.dataService.sources$.subscribe(data => {
-            this.hasFSR = this.storageService.getJob()?.status === 'COMPLETED';
-            console.log(this.storageService.getJob());
-        });
-        this.service.tabIndex$.subscribe(index => {
-            this.index = index;
-        });
-    }
+  constructor(private service: ClusterService,
+              private storageService: ClusterStorageService,
+              private dataService: ClusterDataService,) {
+    this.hasFSR = this.storageService.getJob() !== null;
+    this.dataService.sources$.subscribe(data => {
+      console.log(this.storageService.getJob());
+      this.hasFSR = this.storageService.getJob()?.status === 'COMPLETED';
+    });
+    this.service.tabIndex$.subscribe(index => {
+      this.index = index;
+    });
+  }
 
-    changeIndex($event: MatTabChangeEvent) {
-        this.service.setTabIndex($event.index);
-    }
+  changeIndex($event: MatTabChangeEvent) {
+    this.service.setTabIndex($event.index);
+  }
 }

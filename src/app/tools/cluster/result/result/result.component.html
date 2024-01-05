@@ -1,23 +1,23 @@
-<mat-drawer-container class="result-container">
-    <mat-drawer #drawer class="result-drawer" mode="side" opened>
-        <app-result-summary></app-result-summary>
-    </mat-drawer>
+<mat-sidenav-container class="result-container">
+  <mat-sidenav #drawer class="result-drawer" [mode]="'side'" [opened]="true" [disableClose]="true">
+    <app-result-summary></app-result-summary>
+  </mat-sidenav>
 
-    <div class="result-content">
-        <div class="result-tool-bar">
-            <button (click)="drawer.toggle()" color="primary" mat-flat-button>
-                {{drawer.opened ? "Hide" : "Show" }} Summary
-            </button>
-            <button color="accent" mat-flat-button>
-                Download Graphs
-            </button>
-            <button color="accent" mat-flat-button>
-                Download Data
-            </button>
-        </div>
-        <div class="real-scrollable-content">
-            <app-result-graphics></app-result-graphics>
-        </div>
+  <mat-sidenav-content>
+<!--    <div class="result-tool-bar">-->
+<!--      <button (click)="drawer.toggle()" color="primary" mat-flat-button>-->
+<!--        {{drawer.opened ? "Hide" : "Show" }} Summary-->
+<!--      </button>-->
+<!--      <button color="accent" mat-flat-button>-->
+<!--        Download Graphs-->
+<!--      </button>-->
+<!--      <button color="accent" mat-flat-button>-->
+<!--        Download Data-->
+<!--      </button>-->
+<!--    </div>-->
+    <div class="real-scrollable-content">
+      <app-result-graphics></app-result-graphics>
     </div>
+  </mat-sidenav-content>
 
-</mat-drawer-container>
+</mat-sidenav-container>

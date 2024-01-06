@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {ClusterService} from "../../cluster.service";
 import {ClusterDataService} from "../../cluster-data.service";
 import {ClusterIsochroneService} from "../../isochrone-matching/cluster-isochrone.service";
-import {getHalfLightRadius, getPhysicalRadius, getPmra} from "../result.utils";
+import {getHalfLightRadius, getMass, getPhysicalRadius, getPmra, getVelocityDispersion} from "../result.utils";
 import {d2DMS, d2HMS} from "../../../shared/data/utils";
 
 @Component({
@@ -28,6 +28,9 @@ export class ResultSummaryComponent {
   reddening!: number;
   pmra!: number;
   pmdec!: number;
+  numberOfStars!: number;
+  velocityDispersion!: number;
+  mass!: number;
 
   constructor(public service: ClusterService,
               public dataService: ClusterDataService,
@@ -45,6 +48,7 @@ export class ResultSummaryComponent {
 
   init() {
     const sources = this.dataService.getSources(true);
+    this.numberOfStars = sources.length;
     this.angularRadius = getHalfLightRadius(sources,
       this.dataService.getClusterRa()!, this.dataService.getClusterDec()!);
     const angularRadiusDMSarr = d2DMS(this.angularRadius);
@@ -73,5 +77,7 @@ export class ResultSummaryComponent {
     this.physicalRadius = getPhysicalRadius(this.distance, this.angularRadius);
     this.pmra = getPmra(this.dataService.getPmra());
     this.pmdec = getPmra(this.dataService.getPmdec());
+    this.velocityDispersion = getVelocityDispersion(this.dataService.getSources(true), this.pmra, this.pmdec);
+    this.mass = getMass(this.velocityDispersion, this.distance, this.physicalRadius);
   }
 }

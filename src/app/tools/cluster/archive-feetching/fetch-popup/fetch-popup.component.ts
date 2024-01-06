@@ -122,4 +122,6 @@ export class FetchPopupComponent {
         this.progressBar = progress;
     });
   }
+
+  protected readonly Catalogs = Catalogs;
 }

@@ -58,7 +58,7 @@
               <mat-label>Catalogues</mat-label>
               <mat-select [formControlName]="'catalog'">
                 <mat-option *ngFor="let catalog of catalogs" [value]="catalog">
-                  {{catalog}}
+                  {{catalog === Catalogs.TWOMASS ? '2MASS' : catalog}}
                 </mat-option>
               </mat-select>
             </mat-form-field>

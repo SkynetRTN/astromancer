@@ -130,7 +130,7 @@ export interface gaiaMatchQueryDataDict {
 }
 
 export enum Catalogs {
-    GAIA = "GAIA",
+    // GAIA = "GAIA",
     APASS = "APASS",
     TWOMASS = "TWO_MASS",
     WISE = "WISE",

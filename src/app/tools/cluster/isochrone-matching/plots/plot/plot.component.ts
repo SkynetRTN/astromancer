@@ -231,12 +231,6 @@ export class PlotComponent implements OnChanges {
       let frameRange: PlotRange;
       if (plotFraming === PlotFraming.DATA || this.plotConfig.plotType === ClusterPlotType.CM) {
         frameRange = this.dataRange!;
-        const x_delta = (frameRange.x.max - frameRange.x.min) * 0.1;
-        const y_delta = (frameRange.y.max - frameRange.y.min) * 0.1;
-        frameRange.x.min -= x_delta;
-        frameRange.x.max += x_delta;
-        frameRange.y.min -= y_delta;
-        frameRange.y.max += y_delta;
       } else {
         frameRange = this.standardViewRange!;
       }
@@ -353,6 +347,14 @@ export class PlotComponent implements OnChanges {
       if (point[1] > this.dataRange.y.max) {
         this.dataRange.y.max = point[1];
       }
+    }
+    const xDelta = (this.dataRange.x.max - this.dataRange.x.min) * 0.1;
+    const yDelta = (this.dataRange.y.max - this.dataRange.y.min) * 0.1;
+    if (xDelta > 0 && yDelta > 0) {
+      this.dataRange.x.min -= xDelta;
+      this.dataRange.x.max += xDelta;
+      this.dataRange.y.min -= yDelta;
+      this.dataRange.y.max += yDelta;
     }
   }
 

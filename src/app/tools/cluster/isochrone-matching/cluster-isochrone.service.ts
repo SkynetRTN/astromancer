@@ -34,7 +34,12 @@ export class ClusterIsochroneService {
   }
 
   public setIsochroneParams(isochroneParams: IsochroneParams) {
-    this.isochroneParams = isochroneParams;
+    if (isochroneParams) {
+      this.isochroneParams.age = parseFloat(isochroneParams.age as any);
+      this.isochroneParams.metallicity = parseFloat(isochroneParams.metallicity as any);
+    } else {
+      this.isochroneParams = isochroneParams;
+    }
     this.storageService.setIsochroneParams(isochroneParams);
     this.isochroneParamsSubject.next(this.isochroneParams);
   }
@@ -54,7 +59,12 @@ export class ClusterIsochroneService {
   }
 
   public setPlotParams(plotParams: PlotParams) {
-    this.plotParams = plotParams;
+    if (plotParams) {
+      this.plotParams.distance = parseFloat(plotParams.distance as any);
+      this.plotParams.reddening = parseFloat(plotParams.reddening as any);
+    } else {
+      this.plotParams = plotParams;
+    }
     this.storageService.setPlotParams(plotParams);
     this.plotParamsSubject.next(this.plotParams);
   }

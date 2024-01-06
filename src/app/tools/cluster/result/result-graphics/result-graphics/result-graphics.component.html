@@ -1,36 +1,39 @@
 <div class="result-graphics-container">
-    <div class="graphic-row">
-        <div class="result-graphic one-third">
-            <app-hrd-result></app-hrd-result>
-        </div>
-        <div class="result-graphic one-third">
-            <app-galaxy-faceon></app-galaxy-faceon>
-        </div>
-        <div class="result-graphic one-third">
-            <app-galaxy-edgeon></app-galaxy-edgeon>
-        </div>
+  <div class="graphic-row">
+    <div class="result-graphic one-third">
+      <app-hrd-result></app-hrd-result>
     </div>
-    <div class="graphic-row">
-        <div class="result-graphic full">
-            <app-cluster-summary-distance [allClusters]="allClusters"></app-cluster-summary-distance>
-        </div>
+    <div class="result-graphic one-third">
+      <app-galaxy-faceon [update$]="update$"></app-galaxy-faceon>
     </div>
-    <div class="graphic-row">
-        <div class="result-graphic half">
-            <app-age [allClusters]="allClusters"></app-age>
-        </div>
-        <div class="result-graphic half">
-            <app-number-of-stars [allClusters]="allClusters"></app-number-of-stars>
-        </div>
+    <div class="result-graphic one-third">
+      <app-galaxy-edgeon [update$]="update$"></app-galaxy-edgeon>
     </div>
-    <div class="graphic-row">
-        <div class="result-graphic half">
-            <app-metallicity [allClusters]="allClusters"></app-metallicity>
-        </div>
-        <div class="result-graphic half">
-            <app-reddening [allClusters]="allClusters"></app-reddening>
-        </div>
+  </div>
+  <div class="graphic-row">
+    <div class="result-graphic full">
+      <app-cluster-summary-distance
+        [allClusters]="allClusters" [update$]="update$">
+      </app-cluster-summary-distance>
     </div>
+  </div>
+  <div class="graphic-row">
+    <div class="result-graphic half">
+      <app-age [allClusters]="allClusters" [update$]="update$"></app-age>
+    </div>
+    <div class="result-graphic half">
+      <app-number-of-stars [allClusters]="allClusters" [update$]="update$">
+      </app-number-of-stars>
+    </div>
+  </div>
+  <div class="graphic-row">
+    <div class="result-graphic half">
+      <app-metallicity [allClusters]="allClusters" [update$]="update$"></app-metallicity>
+    </div>
+    <div class="result-graphic half">
+      <app-reddening [allClusters]="allClusters" [update$]="update$"></app-reddening>
+    </div>
+  </div>
 
 </div>
 

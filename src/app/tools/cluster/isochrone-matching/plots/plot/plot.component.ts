@@ -84,6 +84,7 @@ export class PlotComponent implements OnChanges {
       } else if (this.plotConfig?.plotType === ClusterPlotType.CM) {
         this.setIsochrone();
       }
+
     });
     this.isochroneService.maxMagError$.subscribe(() => {
       this.updateChartAxis();
@@ -230,6 +231,12 @@ export class PlotComponent implements OnChanges {
       let frameRange: PlotRange;
       if (plotFraming === PlotFraming.DATA || this.plotConfig.plotType === ClusterPlotType.CM) {
         frameRange = this.dataRange!;
+        const x_delta = (frameRange.x.max - frameRange.x.min) * 0.1;
+        const y_delta = (frameRange.y.max - frameRange.y.min) * 0.1;
+        frameRange.x.min -= x_delta;
+        frameRange.x.max += x_delta;
+        frameRange.y.min -= y_delta;
+        frameRange.y.max += y_delta;
       } else {
         frameRange = this.standardViewRange!;
       }

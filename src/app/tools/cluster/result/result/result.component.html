@@ -1,23 +1,35 @@
-<mat-sidenav-container class="result-container">
-  <mat-sidenav #drawer class="result-drawer" [mode]="'side'" [opened]="true" [disableClose]="true">
-    <app-result-summary></app-result-summary>
-  </mat-sidenav>
+<!--<mat-sidenav-container class="result-container">-->
+<!--  <mat-sidenav #drawer class="result-drawer" [mode]="'side'" [opened]="true" [disableClose]="true">-->
+<!--    <app-result-summary></app-result-summary>-->
+<!--  </mat-sidenav>-->
 
-  <mat-sidenav-content>
-<!--    <div class="result-tool-bar">-->
-<!--      <button (click)="drawer.toggle()" color="primary" mat-flat-button>-->
-<!--        {{drawer.opened ? "Hide" : "Show" }} Summary-->
-<!--      </button>-->
-<!--      <button color="accent" mat-flat-button>-->
-<!--        Download Graphs-->
-<!--      </button>-->
-<!--      <button color="accent" mat-flat-button>-->
-<!--        Download Data-->
-<!--      </button>-->
+<!--  <mat-sidenav-content>-->
+<!--&lt;!&ndash;    <div class="result-tool-bar">&ndash;&gt;-->
+<!--&lt;!&ndash;      <button (click)="drawer.toggle()" color="primary" mat-flat-button>&ndash;&gt;-->
+<!--&lt;!&ndash;        {{drawer.opened ? "Hide" : "Show" }} Summary&ndash;&gt;-->
+<!--&lt;!&ndash;      </button>&ndash;&gt;-->
+<!--&lt;!&ndash;      <button color="accent" mat-flat-button>&ndash;&gt;-->
+<!--&lt;!&ndash;        Download Graphs&ndash;&gt;-->
+<!--&lt;!&ndash;      </button>&ndash;&gt;-->
+<!--&lt;!&ndash;      <button color="accent" mat-flat-button>&ndash;&gt;-->
+<!--&lt;!&ndash;        Download Data&ndash;&gt;-->
+<!--&lt;!&ndash;      </button>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+<!--    <div class="real-scrollable-content">-->
+<!--      <app-result-graphics></app-result-graphics>-->
 <!--    </div>-->
-    <div class="real-scrollable-content">
-      <app-result-graphics></app-result-graphics>
-    </div>
-  </mat-sidenav-content>
+<!--  </mat-sidenav-content>-->
 
-</mat-sidenav-container>
+<!--</mat-sidenav-container>-->
+
+<div class="new-result-container">
+  <mat-card>
+    <div class="side-bar">
+      <app-result-summary></app-result-summary>
+    </div>
+  </mat-card>
+  <div class="real-scrollable-content">
+    <app-result-graphics></app-result-graphics>
+  </div>
+</div>
+

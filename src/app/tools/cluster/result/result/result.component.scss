@@ -1,3 +1,22 @@
+mat-card {
+  height: 100%;
+  width: 290px;
+  margin: 0;
+  padding: 0 10px;
+}
+
+.new-result-container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-direction: row;
+}
+
+.side-bar {
+  display: flex;
+  width: 290px;
+  height: 100%;
+}
 
 .result-container {
   height: 100%;
@@ -18,7 +37,8 @@
 
 .real-scrollable-content {
   display: flex;
-  width: 100%;
+  width: calc(100% - 270px);
+  height: 100%;
   overflow-y: auto;
 }
 

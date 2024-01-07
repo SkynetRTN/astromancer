@@ -41,6 +41,7 @@ export class PlotComponent implements OnChanges {
     },
     xAxis: {
       title: {
+        useHTML: true,
         text: "",
       },
     },
@@ -223,9 +224,13 @@ export class PlotComponent implements OnChanges {
     if (this.plotConfig !== null) {
       let xAxisTitle =
         `${this.blueFilter?.replace("prime", "\'")} - ${this.redFilter?.replace("prime", "\'")}`;
-      if (this.plotConfig.plotType === ClusterPlotType.HR)
-        xAxisTitle += `_${this.isochroneService.getPlotParams().reddening}`;
-      const yAxisTitle = `'M'_${this.lumFilter?.replace("prime", "\'")}`;
+      let yAxisTitle = ''
+      if (this.plotConfig.plotType === ClusterPlotType.HR) {
+        xAxisTitle = '(' + xAxisTitle + ')' + `<sub>0</sub>`;
+        yAxisTitle = 'M_'
+      }
+
+      yAxisTitle += `${this.lumFilter?.replace("prime", "\'")}`;
       this.updateStandardViewRange();
       const plotFraming = this.plotConfig.plotFraming;
       let frameRange: PlotRange;
@@ -235,7 +240,9 @@ export class PlotComponent implements OnChanges {
         frameRange = this.standardViewRange!;
       }
       try {
-        this.chartObject.xAxis[0].setTitle({text: xAxisTitle});
+
+        this.chartObject.xAxis[0].update({title: {useHTML: true, text: xAxisTitle}});
+        console.log(this.chartObject.xAxis[0]);
         this.chartObject.yAxis[0].setTitle({text: yAxisTitle});
         if (plotFraming === PlotFraming.DATA || this.plotConfig.plotType === ClusterPlotType.CM) {
           this.frameOnData();
@@ -245,7 +252,7 @@ export class PlotComponent implements OnChanges {
         }
       } catch (e) {
         this.chartOptions.xAxis = {
-          title: {text: xAxisTitle},
+          title: {useHTML: true, text: xAxisTitle},
           min: frameRange.x.min,
           max: frameRange.x.max,
         };

@@ -26,7 +26,7 @@ export class FetchComponent {
       [Validators.required, Validators.min(-90), Validators.max(90)]),
     radius: new FormControl(this.data.radius,
       [Validators.required, Validators.min(0), Validators.max(3)]),
-    catalog: new FormControl(Catalogs.APASS, [Validators.required]),
+    catalog: new FormControl(Catalogs.GAIA, [Validators.required]),
   });
   job: Job | null = null;
   loading: boolean = false;
@@ -34,6 +34,7 @@ export class FetchComponent {
   fetchData: Source[] = [];
   filters: FILTER[] = [];
   error: number | null = null;
+  protected readonly Catalogs = Catalogs;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: ClusterLookUpData,
               private http: HttpClient,
@@ -106,6 +107,4 @@ export class FetchComponent {
     this.service.reset();
     this.dataService.reset();
   }
-
-  protected readonly Catalogs = Catalogs;
 }

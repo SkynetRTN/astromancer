@@ -7,6 +7,7 @@ import {
   FILTER,
   filterWavelength,
   FSR,
+  GAIA_FILTERS,
   Source,
   TWO_MASS_FILTERS,
   WISE_FILTERS
@@ -191,7 +192,7 @@ export class ClusterDataService {
         return source.fsr !== null && source.fsr.distance !== null;
       }
     ).map((source) => {
-      return parseFloat((source.fsr!.distance / 1000).toFixed(2));
+      return parseFloat((source.fsr!.distance).toFixed(2));
     }).sort((a, b) => {
       return a - b;
     });
@@ -297,10 +298,9 @@ export class ClusterDataService {
       }
     }
     if (this.starCounts !== null && this.cluster !== null) {
-      // starCounts['GAIA'] = getStarCountsByFilter(
-      //     this.cluster_sources!, this.field_sources!, [],
-      //     this.storageService.getFsrParams(), this.starCounts.GAIA, this.cluster.num_clusters_stars
-      // )
+      starCounts['GAIA'] = getStarCountsByFilter(
+        this.cluster_sources!, this.field_sources!, GAIA_FILTERS,
+        this.storageService.getFsrParams(), this.starCounts.GAIA, this.cluster.num_total_stars);
       starCounts['APASS'] = getStarCountsByFilter(
         this.cluster_sources!, this.field_sources!, APASS_FILTERS,
         this.storageService.getFsrParams(), this.starCounts.APASS, this.cluster.num_APASS_stars);

@@ -212,9 +212,9 @@ export class HistogramSliderInputComponent implements OnInit, AfterViewInit {
     this.histogramBin = this.getDefaultBin();
     if (payload.isNew) {
       if (payload?.histogramRange != null) {
-        if (payload.histogramRange.min == null || payload.histogramRange.min >= min)
+        if (payload.histogramRange.min == null)
           this.histogramRange.min = payload.histogramRange.min;
-        if (payload.histogramRange.max == null || payload.histogramRange.max <= max)
+        if (payload.histogramRange.max == null)
           this.histogramRange.max = payload.histogramRange.max;
       }
       if (payload?.range != null) {
@@ -336,7 +336,7 @@ export class HistogramSliderInputComponent implements OnInit, AfterViewInit {
       });
     this.histogramFormGroup.controls['inputMin'].valueChanges.subscribe(
       (value) => {
-        if (typeof value !== 'number' || value < this.fullDataRange.min || value > this.histogramRange.max) {
+        if (typeof value !== 'number' || value > this.histogramRange.max) {
           this.histogramFormGroup.controls['inputMin'].setErrors({invalid: true});
         } else {
           this.histogramFormGroup.controls['sliderMin'].setValue(value, {emitEvent: false});
@@ -346,7 +346,7 @@ export class HistogramSliderInputComponent implements OnInit, AfterViewInit {
       });
     this.histogramFormGroup.controls['inputMax'].valueChanges.subscribe(
       (value) => {
-        if (typeof value !== 'number' || value > this.fullDataRange.max || value < this.histogramRange.min) {
+        if (typeof value !== 'number' || value < this.histogramRange.min) {
           this.histogramFormGroup.controls['inputMax'].setErrors({invalid: true});
         } else {
           this.histogramFormGroup.controls['sliderMax'].setValue(value, {emitEvent: false});
@@ -446,11 +446,11 @@ export class HistogramSliderInputComponent implements OnInit, AfterViewInit {
   private updateArea(): void {
     const data = {
       left: [
-        [this.fullDataRange.min, -10],
+        [this.histogramRange.min, -10],
         [this.dataRange.min, -10],
       ], right: [
         [this.dataRange.max, -10],
-        [this.fullDataRange.max, -10],
+        [this.histogramRange.max, -10],
       ]
     };
     this.chartObject.series[2].setData(data.left);

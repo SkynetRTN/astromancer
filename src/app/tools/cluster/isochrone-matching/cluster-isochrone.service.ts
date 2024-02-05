@@ -94,7 +94,7 @@ export class ClusterIsochroneService {
   public resetDistance() {
     const distance = this.service.getFsrParams().distance
     if (distance) {
-      this.plotParams.distance = parseFloat(((distance.max + distance.min) / 2).toFixed(1));
+      this.plotParams.distance = parseFloat(((distance.max + distance.min) / 2).toFixed(2));
     } else {
       this.plotParams.distance = 0.1;
     }

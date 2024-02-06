@@ -223,5 +223,5 @@ export function getExtinction(filter: FILTER, reddening: number, rv: number = 3.
       2.09002 * y ** 7;
   }
 
-  return reddening * (a + b / rv);
+  return 3.1 * reddening * (a + b / rv);
 }

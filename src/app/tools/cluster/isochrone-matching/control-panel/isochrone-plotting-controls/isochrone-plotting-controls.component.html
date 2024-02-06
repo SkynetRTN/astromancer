@@ -11,7 +11,7 @@
                    [inputPrecision]="2" [label]="'Metallicity (solar)'" [maxValue]="0.7"
                    [minValue]="-2.2" [stepValue]="0.05" [step]="0.05"></my-input-slider>
   <my-input-slider (value)="onReddeningChange($event)" [defaultValue]="reddening"
-                   [label]="'E(B-V)'" [maxValue]="1" [minValue]="0"></my-input-slider>
+                   [label]="'E(B-V)'" [maxValue]="1" [minValue]="0" [numOverride]="true"></my-input-slider>
   <my-input-slider (value)="onMaxMagErrorChange($event)" [defaultValue]="maxMagError"
                    [label]="'Max Error (mag)'" [maxValue]="1" [minValue]="0"></my-input-slider>
 </div>

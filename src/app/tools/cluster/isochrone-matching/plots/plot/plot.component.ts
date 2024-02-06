@@ -125,12 +125,10 @@ export class PlotComponent implements OnChanges {
   private setIsochrone() {
     if (this.plotConfig !== null) {
       const params = this.isochroneService.getIsochroneParams();
-      const serverAge =
-        parseFloat(Math.log10(params.age * 1000000).toFixed(1));
       this.http.get(`${environment.apiUrl}/cluster/isochrone`,
         {
           params: {
-            'age': serverAge,
+            'age': params.age,
             'metallicity': params.metallicity,
             'blue_filter': this.blueFilter!,
             'red_filter': this.redFilter!,

@@ -29,7 +29,7 @@ export class IsochronePlottingControlsComponent {
   }
 
   init() {
-    this.isochroneService.resetDistance();
+    // this.isochroneService.resetDistance();
     const isochroneParams = this.isochroneService.getIsochroneParams();
     this.age = isochroneParams.age ?? 6.60;
     this.metallicity = isochroneParams.metallicity ?? -2.2;

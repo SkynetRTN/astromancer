@@ -80,4 +80,6 @@ export class ResultSummaryComponent {
     this.velocityDispersion = getVelocityDispersion(this.dataService.getSources(true), this.pmra, this.pmdec);
     this.mass = getMass(this.velocityDispersion, this.distance, this.physicalRadius);
   }
+
+  protected readonly Math = Math;
 }

@@ -75,8 +75,12 @@
   <div class="summary-value">{{distance}} (kpc)</div>
 </div>
 <div class="summary-pair">
+  <div class="summary-key">Log Age:</div>
+  <div class="summary-value">{{age}} log(yrs)</div>
+</div>
+<div class="summary-pair">
   <div class="summary-key">Age:</div>
-  <div class="summary-value">{{age}} (million yrs)</div>
+  <div class="summary-value">{{(Math.pow(10, age)/1000000).toFixed(2)}} (Myrs)</div>
 </div>
 <div class="summary-pair">
   <div class="summary-key">Metallicity:</div>

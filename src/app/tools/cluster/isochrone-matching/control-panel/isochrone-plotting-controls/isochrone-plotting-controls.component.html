@@ -5,7 +5,7 @@
                    [maxValue]="100" [minValue]="0.1" [stepValue]="0.01" [step]="0.01"
                    [value$]="distance$"></my-input-slider>
   <my-input-slider (value)="onAgeChange($event)" [defaultValue]="age" [inputPrecision]="2"
-                   [isLog]="false" [label]="'log[Age (million yrs)]'" [maxValue]="10.20"
+                   [isLog]="false" [label]="'log(Age (yrs))'" [maxValue]="10.20"
                    [minValue]="6.60" [stepValue]="0.05" [step]="0.05"></my-input-slider>
   <my-input-slider (value)="onMetallicityChange($event)" [defaultValue]="metallicity"
                    [inputPrecision]="2" [label]="'Metallicity (solar)'" [maxValue]="0.7"

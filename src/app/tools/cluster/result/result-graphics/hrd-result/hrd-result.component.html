@@ -1,6 +1,6 @@
 <div class="individual-graphic">
     <div class="chart-container one-to-one">
-        <app-plot [isVertical]="true" [plotConfig]="plotConfig"></app-plot>
+        <app-plot *ngIf="plotConfig !== null" [isVertical]="true" [plotConfig]="plotConfig"></app-plot>
         <div *ngIf="plotConfig === null" class="hrd-placeholder">
             <h2>Select Filters to Plot</h2>
         </div>

@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output, ViewChild} from '@angular/core';
-import {FormControl, Validators} from "@angular/forms";
+import {FormControl, FormControlOptions, Validators} from "@angular/forms";
 import {debounceTime, Subject, takeUntil, throttleTime} from "rxjs";
 import {MatInput} from "@angular/material/input";
 
@@ -31,29 +31,30 @@ export class InputSliderComponent implements OnDestroy, AfterViewInit {
   protected formControl!: FormControl;
   private slider$ = this.sliderSubject.asObservable();
   private destroy$ = new Subject<void>();
+  private validators: Validators[] = [Validators.min(this.minValue), Validators.max(this.maxValue), Validators.required];
 
   constructor() {
-    this.formControl = new FormControl(
-      this.defaultValue,
-      [Validators.min(this.minValue), Validators.max(this.maxValue)],
-    );
+    this.formControl = new FormControl(this.defaultValue, this.validators as FormControlOptions);
   }
 
   ngAfterViewInit(): void {
-    this.formControl = new FormControl(
-      this.defaultValue,
-      [Validators.min(this.minValue), Validators.max(this.maxValue), Validators.required],
-    );
+    this.validators = this.numOverride ? [Validators.required] : this.validators;
+    console.log(this.label, this.numOverride, this.validators)
+    this.formControl = new FormControl(this.defaultValue, this.validators as FormControlOptions);
     this.formControl.statusChanges.pipe(
       takeUntil(this.destroy$),
-      debounceTime(2000)
+      debounceTime(this.numOverride ? 0 : 2000)
     ).subscribe(
       (status) => {
         if (status === "INVALID") {
-          if (this.formControl.hasError('min') && !this.numOverride) {
-            this.formControl.setValue(this.minValue);
-          } else if (this.formControl.hasError('max') && !this.numOverride) {
-            this.formControl.setValue(this.maxValue);
+          if (this.numOverride) {
+            this.formControl.setErrors(null);
+          } else {
+            if (this.formControl.hasError('min')) {
+              this.formControl.setValue(this.minValue);
+            } else if (this.formControl.hasError('max')) {
+              this.formControl.setValue(this.maxValue);
+            }
           }
         }
       }

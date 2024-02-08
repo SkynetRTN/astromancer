@@ -31,6 +31,7 @@ export class ResultSummaryComponent {
   numberOfStars!: number;
   velocityDispersion!: number;
   mass!: number;
+  protected readonly Math = Math;
 
   constructor(public service: ClusterService,
               public dataService: ClusterDataService,
@@ -81,5 +82,7 @@ export class ResultSummaryComponent {
     this.mass = getMass(this.velocityDispersion, this.distance, this.physicalRadius);
   }
 
-  protected readonly Math = Math;
+  downloadData() {
+    this.dataService.downloadSources();
+  }
 }

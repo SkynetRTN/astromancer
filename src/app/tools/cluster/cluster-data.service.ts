@@ -22,6 +22,7 @@ import {ClusterStorageService} from "./storage/cluster-storage.service";
 import {FsrParameters} from "./FSR/fsr.util";
 import {ClusterMWSC, StarCounts} from "./storage/cluster-storage.service.util";
 import {equatorial2Galactic} from "./result/result.utils";
+import {getDateString} from "../shared/charts/utils";
 
 @Injectable()
 export class ClusterDataService {
@@ -329,6 +330,51 @@ export class ClusterDataService {
 
   public getGalacticLatitude(): number | null {
     return this.galacticLatitude;
+  }
+
+  public downloadSources() {
+    // Creating a Blob for having a csv file format
+    // and passing the data with type
+    const csvColumns = ['id', 'ra', 'dec', 'distance', 'pm_ra', 'pm_dec'];
+    for (const filter of this.filters) {
+      csvColumns.push(filter);
+      csvColumns.push(filter + '_error');
+    }
+    let csvData = [csvColumns.join(',')];
+    for (const source of this.sources) {
+      let row = [source.id, source.astrometry.ra, source.astrometry.dec,
+        source.fsr?.distance, source.fsr?.pm_ra, source.fsr?.pm_dec];
+      for (const filter of this.filters) {
+        const photometry = source.photometries.find((photometry) => {
+          return photometry.filter === filter;
+        });
+        if (photometry !== undefined) {
+          row.push(photometry.mag);
+          row.push(photometry.mag_error);
+        } else {
+          row.push('');
+          row.push('');
+        }
+      }
+      csvData.push(row.join(','));
+    }
+    const blob = new Blob([csvData.join('\n')], {type: 'text/csv'});
+    // Creating an object for downloading url
+    const url = window.URL.createObjectURL(blob);
+
+    // Creating an anchor(a) tag of HTML
+    const a = document.createElement('a');
+
+    // Passing the blob downloading url
+    a.setAttribute('href', url);
+
+    // Setting the anchor tag attribute for downloading
+    // and passing the download file name
+    a.setAttribute('download', getDateString() + '.csv');
+
+    a.click();
+
+    a.remove();
   }
 
   private setCluster(cluster: ClusterMWSC) {

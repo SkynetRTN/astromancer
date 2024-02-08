@@ -58,12 +58,22 @@ export class PlotComponent implements OnChanges {
       name: "Photometry",
       type: "scatter",
       data: [],
+      tooltip: {
+        headerFormat: '<b>Source ID:<b><br>',
+        pointFormatter: function () {
+          return `<br>$x: ${this.x.toFixed(2)}, y: ${this.y!.toFixed(2)}`;
+        },
+      }
     }, {
       name: "Isochrone",
       type: "line",
       data: [],
       marker: {
         enabled: false,
+      },
+      tooltip: {
+        headerFormat: 'Isochrone<br>',
+        pointFormat: "{point.x:.2f}, {point.y:.2f}"
       }
     }],
     credits: {
@@ -167,13 +177,15 @@ export class PlotComponent implements OnChanges {
     }
   }
 
-  private getPlotData(): number[][] {
+  private getPlotData(): [number[][], string[]] {
     if (this.plotConfig !== null) {
       const data = this.rawPlotData.filter(
         (point) => point.maxMagError < this.isochroneService.getMaxMagError());
       let result: number[][] = [];
+      let ids: string[] = [];
       if (this.plotConfig.plotType === ClusterPlotType.CM) {
         result = data.map((point) => [point.x, point.y]);
+        ids = data.map(point => point.id)
       }
       if (this.plotConfig.plotType === ClusterPlotType.HR) {
         const delta = this.computePlotDelta();
@@ -181,11 +193,12 @@ export class PlotComponent implements OnChanges {
           let x = point.x + delta.x;
           let y = point.y + delta.y;
           result.push([x, y]);
+          ids.push(point.id);
         }
       }
-      return result;
+      return [result, ids];
     }
-    return []
+    return [[], []]
   }
 
   private computePlotDelta(): { x: number, y: number } {
@@ -240,7 +253,7 @@ export class PlotComponent implements OnChanges {
       try {
 
         this.chartObject.xAxis[0].update({title: {useHTML: true, text: xAxisTitle}});
-        console.log(this.chartObject.xAxis[0]);
+        // console.log(this.chartObject.xAxis[0]);
         this.chartObject.yAxis[0].setTitle({text: yAxisTitle});
         if (plotFraming === PlotFraming.DATA || this.plotConfig.plotType === ClusterPlotType.CM) {
           this.frameOnData();
@@ -271,17 +284,23 @@ export class PlotComponent implements OnChanges {
     if (this.plotConfig !== null) {
       try {
         const data = this.getPlotData();
-        this.updateDataRange(data);
+        this.updateDataRange(data[0]);
         this.chartObject.series[0].setData(data, true);
       } catch (e) {
         const data = this.getPlotData();
-        this.updateDataRange(data);
+        this.updateDataRange(data[0]);
         this.chartOptions.series![0] = {
           name: "Photometry",
           type: "scatter",
-          data: this.getPlotData(),
+          data: this.getPlotData()[0],
           marker: {
             radius: 2,
+          },
+          tooltip: {
+            headerFormat: '<b>Source ID:<b><br>',
+            pointFormatter: function () {
+              return `<br>${data[1][this.index]}<br> x: ${this.x.toFixed(2)}, y: ${this.y!.toFixed(2)}`;
+            },
           }
         };
       }
@@ -399,7 +418,7 @@ export class PlotComponent implements OnChanges {
           }
         }
         if (blueMag !== null && redMag !== null && lumMag !== null) {
-          this.rawPlotData.push({x: blueMag - redMag, y: lumMag, maxMagError: maxMagError});
+          this.rawPlotData.push({id: source.id, x: blueMag - redMag, y: lumMag, maxMagError: maxMagError});
         }
       }
     }
@@ -418,6 +437,7 @@ interface PlotRange {
 }
 
 interface rawDataPoint {
+  id: string,
   x: number,
   y: number,
   maxMagError: number,

@@ -39,7 +39,6 @@ export class InputSliderComponent implements OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.validators = this.numOverride ? [Validators.required] : this.validators;
-    console.log(this.label, this.numOverride, this.validators)
     this.formControl = new FormControl(this.defaultValue, this.validators as FormControlOptions);
     this.formControl.statusChanges.pipe(
       takeUntil(this.destroy$),

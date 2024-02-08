@@ -285,7 +285,7 @@ export class PlotComponent implements OnChanges {
       try {
         const data = this.getPlotData();
         this.updateDataRange(data[0]);
-        this.chartObject.series[0].setData(data, true);
+        this.chartObject.series[0].setData(data[0], true);
       } catch (e) {
         const data = this.getPlotData();
         this.updateDataRange(data[0]);

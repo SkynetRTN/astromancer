@@ -88,7 +88,6 @@ export function getVelocityDispersion(sources: Source[], pmra: number, pmdec: nu
   });
   dispersion.sort((a, b) => a - b);
   const percentile = 0.683
-  console.log(dispersion);
   const dispersionSliced = dispersion.slice(
     Math.floor(dispersion.length * (1 - percentile) / 2),
     Math.ceil(dispersion.length * (1 - percentile / 2)));

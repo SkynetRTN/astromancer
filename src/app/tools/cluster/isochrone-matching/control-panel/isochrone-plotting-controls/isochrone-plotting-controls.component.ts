@@ -64,7 +64,6 @@ export class IsochronePlottingControlsComponent {
 
   onMaxMagErrorChange($event: InputSliderValue) {
     this.maxMagError = $event.value;
-    console.log(this.maxMagError);
     this.isochroneService.setMaxMagError(this.maxMagError);
   }
 

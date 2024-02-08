@@ -132,7 +132,6 @@ export class AgeComponent implements OnChanges, AfterViewInit {
           ages.push(age);
       }
     });
-    console.log(ages);
     ages.sort((a, b) => a - b);
     this.chartObject.series[1].setData(ages);
   }
@@ -145,6 +144,6 @@ export class AgeComponent implements OnChanges, AfterViewInit {
   }
 
   updateData() {
-    this.chartObject.series[3].setData([[this.isochroneService.getIsochroneParams().age / 1000, 0]]);
+    this.chartObject.series[3].setData([[Math.pow(10, this.isochroneService.getIsochroneParams().age) / 1000000000, 0]]);
   }
 }

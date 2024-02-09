@@ -71,13 +71,14 @@ import {NumberOfStarsComponent} from './result/result-graphics/number-of-stars/n
 import {MetallicityComponent} from './result/result-graphics/metallicity/metallicity.component';
 import {ReddeningComponent} from './result/result-graphics/reddening/reddening.component';
 import {AgeComponent} from './result/result-graphics/age/age.component';
+import { ErrorComponent } from './data-source/pop-ups/error/error.component';
 
 const routes: Routes = [
     {path: '', component: ClusterComponent, title: 'Cluster'}
 ];
 
 @NgModule({
-    declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent, FieldStarRemovalComponent, HistogramSliderInputComponent, PieChartComponent, PmChartComponent, CmdFsrComponent, ArchiveFetchingComponent, FetchPopupComponent, ArchiveFetchingGraphicsComponent, IsochroneMatchingComponent, IsochronePlottingControlsComponent, FilterControlsComponent, FilterSelectorComponent, PlotListsComponent, ClusterPlotGridComponent, PlotComponent, ResultComponent, ResultSummaryComponent, ResultGraphicsComponent, HrdResultComponent, GalaxyFaceonComponent, GalaxyEdgeonComponent, DistanceComponent, NumberOfStarsComponent, MetallicityComponent, ReddeningComponent, AgeComponent],
+    declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent, FieldStarRemovalComponent, HistogramSliderInputComponent, PieChartComponent, PmChartComponent, CmdFsrComponent, ArchiveFetchingComponent, FetchPopupComponent, ArchiveFetchingGraphicsComponent, IsochroneMatchingComponent, IsochronePlottingControlsComponent, FilterControlsComponent, FilterSelectorComponent, PlotListsComponent, ClusterPlotGridComponent, PlotComponent, ResultComponent, ResultSummaryComponent, ResultGraphicsComponent, HrdResultComponent, GalaxyFaceonComponent, GalaxyEdgeonComponent, DistanceComponent, NumberOfStarsComponent, MetallicityComponent, ReddeningComponent, AgeComponent, ErrorComponent],
     imports: [
         RouterModule.forChild(routes),
         CommonModule,

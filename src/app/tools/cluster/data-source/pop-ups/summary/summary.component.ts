@@ -5,6 +5,7 @@ import {ClusterDataService} from "../../../cluster-data.service";
 import {ProgressBarMode} from "@angular/material/progress-bar";
 import {Job, JobStatus} from "../../../../../shared/job/job";
 import {ClusterStorageService} from "../../../storage/cluster-storage.service";
+import {ErrorComponent} from "../error/error.component";
 
 @Component({
   selector: 'app-summary',
@@ -61,6 +62,15 @@ export class SummaryComponent {
         (progress) => {
           if (progress !== null) {
             this.progress_value = progress;
+          }
+        });
+      this.job.complete$.subscribe(
+        (complete) => {
+          if (!complete && this.job?.getError()) {
+            this.dialog.closeAll();
+            this.dialog.open(ErrorComponent, {
+              data: {error: this.job?.getError()}
+            });
           }
         });
       this.dataService.sources$.pipe(

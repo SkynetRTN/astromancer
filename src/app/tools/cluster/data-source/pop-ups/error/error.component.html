@@ -1,0 +1,10 @@
+<div class="cluster-data-source-pop-up">
+  <div class="error-container">
+    <h1>File Upload Error: <i>{{data.error.status}}</i></h1>
+    <h2>Error Message:</h2>
+    <pre>{{data.error.error.errors | json}}</pre>
+    <button mat-dialog-close mat-raised-button color="warn">OK</button> <br>
+    <a [href]="'mailto:rfugithub@outlook.com?Subject=Clustermancer File Upload Help&body=Error log:'
+      +JSON.stringify(data.error)">Email the Clustermancer-mancer for help</a>
+  </div>
+</div>

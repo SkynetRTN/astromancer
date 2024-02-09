@@ -1,4 +1,4 @@
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {interval, Subject, takeUntil} from "rxjs";
 
@@ -19,6 +19,7 @@ export class Job {
   public update$ = this.updateSubject.asObservable();
   private completeSubject = new Subject<Boolean>();
   public complete$ = this.completeSubject.asObservable();
+  private error: HttpErrorResponse | null = null;
 
 
   constructor(url: string, type: JobType, private http: HttpClient, updateInterval: number = 1000) {
@@ -29,6 +30,10 @@ export class Job {
 
   public getJobId(): number | null {
     return this.id;
+  }
+
+  public getError(): HttpErrorResponse | null {
+    return this.error;
   }
 
   public createJob(payload: any): void {
@@ -46,6 +51,10 @@ export class Job {
             this.updateJob();
           }
         )
+      },
+      (error: HttpErrorResponse) => {
+        this.error = error;
+        this.completeSubject.next(false);
       }
     )
   }

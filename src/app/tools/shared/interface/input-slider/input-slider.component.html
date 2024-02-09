@@ -6,7 +6,7 @@
                    [min]="minValue"
                    [step]="stepValue" matInput type="number">
             <mat-hint *ngIf="hintText !== null">{{hintText}}</mat-hint>
-            <mat-error>range: {{minValue}}-{{maxValue}}</mat-error>
+            <mat-error>{{numOverride ? "suggested " : ""}} range: {{minValue}}-{{maxValue}}</mat-error>
         </mat-form-field>
     </div>
     <div class="input-slider-slider">

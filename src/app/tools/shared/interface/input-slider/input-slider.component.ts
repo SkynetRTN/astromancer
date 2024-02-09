@@ -46,9 +46,7 @@ export class InputSliderComponent implements OnDestroy, AfterViewInit {
     ).subscribe(
       (status) => {
         if (status === "INVALID") {
-          if (this.numOverride) {
-            this.formControl.setErrors(null);
-          } else {
+          if (!this.numOverride) {
             if (this.formControl.hasError('min')) {
               this.formControl.setValue(this.minValue);
             } else if (this.formControl.hasError('max')) {

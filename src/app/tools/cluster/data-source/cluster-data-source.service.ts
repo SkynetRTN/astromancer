@@ -110,7 +110,7 @@ export class ClusterDataSourceService {
         let raSum: number = 0;
         let decSum: number = 0;
         let entryCounter: number = 0;
-        for (let i = 0; i < sortedData.length; i++) {
+        for (let i = 0; i < sortedData.length; i++) {1
             if (sortedData[i].id !== currentId) {
                 currentStar.astrometry.ra = raSum / entryCounter;
                 currentStar.astrometry.dec = decSum / entryCounter;
@@ -147,11 +147,14 @@ export class ClusterDataSourceService {
                 }
             }
         }
-        currentStar.astrometry.ra = raSum / currentStar.photometries.length;
-        currentStar.astrometry.dec = decSum / currentStar.photometries.length;
+        currentStar.astrometry.ra = raSum / entryCounter;
+        currentStar.astrometry.dec = decSum / entryCounter;
         processedData.push(currentStar);
-        this.sources = processedData;
+        this.sources = processedData.filter((entry) =>
+          entry.id && entry.astrometry.ra !== undefined &&
+          entry.astrometry.dec !== undefined && entry.photometries.length > 0);
         this.filters = filters;
+        console.log(this.sources);
     }
 
     private setRawData(rawData: ClusterRawData[]): void {

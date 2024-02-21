@@ -166,7 +166,7 @@ export class ClusterStorageService {
           reddening: 0,
         },
         isochroneParams: {
-          age: 3.98,
+          age: 6.60,
           metallicity: -2.2,
         },
         maxMagError: 1,

@@ -20,6 +20,7 @@ export class InputSliderComponent implements OnDestroy, AfterViewInit {
   @Input() name!: string;
   @Input() label!: string;
   @Input() value$!: Subject<number>;
+  @Input() range$!: Subject<{ min: number, max: number }>;
   @Input() inputPrecision: number = 2;
   @Input() hintText: string | null = null;
   @Output() value: EventEmitter<InputSliderValue> = new EventEmitter<InputSliderValue>();
@@ -76,6 +77,21 @@ export class InputSliderComponent implements OnDestroy, AfterViewInit {
     ).subscribe(
       (value) => {
         this.formControl.setValue(value, {emitEvent: false});
+      });
+    this.range$?.pipe(
+      takeUntil(this.destroy$),
+    ).subscribe(
+      (range) => {
+        this.minValue = range.min;
+        this.maxValue = range.max;
+        const value = this.formControl.value;
+        if (value < this.minValue) {
+          this.formControl.setValue(this.minValue, {emitEvent: false});
+          this.valueChange(this.minValue);
+        } else if (value > this.maxValue) {
+          this.formControl.setValue(this.maxValue, {emitEvent: false});
+          this.valueChange(this.maxValue);
+        }
       });
   }
 

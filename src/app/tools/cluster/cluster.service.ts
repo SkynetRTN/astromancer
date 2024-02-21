@@ -71,5 +71,4 @@ export class ClusterService {
         this.tabIndexSubject.next(index);
         this.storageService.setTabIndex(index);
     }
-
 }

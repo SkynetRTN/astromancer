@@ -1,9 +1,9 @@
 <div class="input-container">
-  <my-input-slider (value)="onDistanceChange($event)" [defaultValue]="distance"
-                   [hintText]="'default value is from FSR'"
+  <my-input-slider (value)="onDistanceChange($event)" [defaultValue]="defaultDistance"
+                   [hintText]="'FSR Value is ' + fsrDistance?.toFixed(2)"
                    [inputPrecision]="2" [isLog]="true" [label]="'Distance (kpc)'"
                    [maxValue]="100" [minValue]="0.1" [stepValue]="0.01" [step]="0.01"
-                   [value$]="distance$"></my-input-slider>
+                   [value$]="distance$" [range$]="distanceRange$"></my-input-slider>
   <my-input-slider (value)="onAgeChange($event)" [defaultValue]="age" [inputPrecision]="2"
                    [isLog]="false" [label]="'log(Age (yrs))'" [maxValue]="10.20"
                    [minValue]="6.60" [stepValue]="0.05" [step]="0.05"></my-input-slider>

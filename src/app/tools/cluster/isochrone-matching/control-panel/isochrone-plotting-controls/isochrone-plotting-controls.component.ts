@@ -2,7 +2,11 @@ import {Component} from '@angular/core';
 import {ClusterService} from "../../../cluster.service";
 import {ClusterIsochroneService} from "../../cluster-isochrone.service";
 import {InputSliderValue} from "../../../../shared/interface/input-slider/input-slider.component";
-import {Subject} from "rxjs";
+import {skip, Subject, take} from "rxjs";
+import {range} from "../../../FSR/histogram-slider-input/histogram-slider-input.component";
+import {ClusterDataService} from "../../../cluster-data.service";
+import {FsrParameters} from "../../../FSR/fsr.util";
+
 
 @Component({
   selector: 'app-isochrone-plotting-controls',
@@ -11,6 +15,9 @@ import {Subject} from "rxjs";
 })
 export class IsochronePlottingControlsComponent {
   distance!: number;
+  defaultDistance: number = 0.1;
+  fsrDistance: number = 0.1;
+  distanceRange$: Subject<range> = new Subject<range>();
   distance$: Subject<number> = new Subject<number>();
   age!: number;
   metallicity!: number;
@@ -18,14 +25,24 @@ export class IsochronePlottingControlsComponent {
   maxMagError!: number;
 
   constructor(private service: ClusterService,
+              private dataService: ClusterDataService,
               private isochroneService: ClusterIsochroneService) {
     this.init();
     this.service.tabIndex$.subscribe(
       (index) => {
         if (index === 3) {
           this.init();
+          this.assignDistance(this.service.getFsrParams());
         }
       });
+    this.service.fsrParams$.pipe(
+      skip(2),
+      take(1)
+    ).subscribe(
+      (params) => {
+        this.assignDistance(params);
+      }
+    );
   }
 
   init() {
@@ -35,11 +52,10 @@ export class IsochronePlottingControlsComponent {
     this.metallicity = isochroneParams.metallicity ?? -2.2;
     const plotParams = this.isochroneService.getPlotParams();
     this.reddening = plotParams.reddening ?? 0;
-    this.distance = plotParams.distance ?? 0.1;
+    this.defaultDistance = plotParams.distance ?? 0.1;
     this.maxMagError = this.isochroneService.getMaxMagError() ?? 0;
     this.updatePlotParams();
     this.updateIsochroneParams();
-    this.distance$.next(this.distance);
   }
 
   onDistanceChange($event: InputSliderValue) {
@@ -79,5 +95,19 @@ export class IsochronePlottingControlsComponent {
       age: this.age,
       metallicity: this.metallicity,
     });
+  }
+
+  private assignDistance(fsrParameters: FsrParameters) {
+    const range = {min: 0.1, max: 100};
+    if (fsrParameters.distance && fsrParameters.distance.min < fsrParameters.distance.max) {
+      if (fsrParameters.distance.min > 0.1) {
+        range.min = fsrParameters.distance.min;
+      }
+      range.max = fsrParameters.distance.max;
+    }
+    this.distanceRange$.next(fsrParameters.distance!);
+    const distances = this.dataService.getDistance();
+    this.fsrDistance = distances[Math.floor((distances.length - 1) / 2)];
+    this.updatePlotParams();
   }
 }

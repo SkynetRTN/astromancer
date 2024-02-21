@@ -9,7 +9,7 @@ mat-slider {
 .mdc-slider__input {
   padding-left: 0;
   padding-right: 0;
-  width: 100% !important;
+  //width: 100% !important;
 }
 
 .input-slider-container {
@@ -31,5 +31,5 @@ mat-slider {
   display: flex;
   width: 50%;
   height: min-content;
-  padding: 0 0 8px 10px;
+  padding: 0 10px 8px 10px;
 }

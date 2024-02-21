@@ -62,12 +62,12 @@
       </div>
     </div>
     <mat-divider></mat-divider>
-    <div class="row" [formGroup]="formGroup" [hidden]="!hideProgressBar">
+    <div [formGroup]="formGroup" [hidden]="!hideProgressBar" class="row">
       <div class="col-4">
         <div class="usr-input">
           <mat-form-field>
             <mat-label>Radius</mat-label>
-            <input matInput [formControlName]="'radius'" [type]="'number'"/>
+            <input [formControlName]="'radius'" [type]="'number'" matInput/>
             <button (click)="this.formGroup.controls['radius'].setValue(maximumRadius)"
                     *ngIf="this.formGroup.controls['radius'].value != maximumRadius" aria-label="reset"
                     mat-icon-button
@@ -114,18 +114,26 @@
                     [mode]="progressBar! < 0 ? 'indeterminate' : 'determinate'"
                     [value]="progressBar ? progressBar : 0"
   ></mat-progress-bar>
-  <div *ngIf="error === 400" class="fetch-prompt">
+  <div *ngIf="status === 400" class="fetch-prompt">
     Too many stars! Reduce Radius and try again.
   </div>
-  <div *ngIf="error === 404" class="fetch-prompt">
+  <div *ngIf="status === 404" class="fetch-prompt">
     There's no cluster around the given coordinates.
   </div>
-  <div *ngIf="error === 500" class="fetch-prompt">
+  <div *ngIf="status === 500" class="fetch-prompt">
     Something went wrong. Please try again later.
   </div>
+  <div *ngIf="status === 200" class="fetch-prompt">
+    {{testStarCount}} star were found! Max limit is {{testLimit}} stars.
+  </div>
+
   <mat-card-actions>
     <button (click)="close()" mat-button mat-dialog-close type="button">Cancel</button>
-    <button (click)="testRadius()" mat-button type="button">Test Radius</button>
-    <button (click)="fetchData()" [disabled]="!isRadiusValid" mat-button type="button">Fetch Data</button>
+    <button (click)="testRadius()" [disabled]="!hideProgressBar" mat-button type="button">
+      Test Radius
+    </button>
+    <button (click)="fetchData()" [disabled]="!isRadiusValid || !hideProgressBar" mat-button
+            type="button">Fetch Data
+    </button>
   </mat-card-actions>
 </mat-card>

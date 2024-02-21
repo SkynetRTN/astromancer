@@ -10,6 +10,8 @@ import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../../../environments/environment";
 import {MatDialog} from "@angular/material/dialog";
 import {ClusterStorageService} from "../../storage/cluster-storage.service";
+import {delay} from "rxjs";
+import {hide} from "@popperjs/core";
 
 @Component({
   selector: 'app-fetch-popup',
@@ -40,9 +42,13 @@ export class FetchPopupComponent {
   hideProgressBar: boolean = true;
   progressBar: number = -1;
 
-  error: number | null = null;
+  status: number | null = null;
+  testStarCount: number = 0;
+  testLimit: number = 100;
   job: Job | null = null;
   previousJob: JobStorageObject | null = null;
+  protected readonly Catalogs = Catalogs;
+  protected readonly hide = hide;
 
   constructor(private http: HttpClient,
               private dialog: MatDialog,
@@ -77,7 +83,7 @@ export class FetchPopupComponent {
   }
 
   testRadius() {
-    this.error = null;
+    this.status = null;
     if (!this.formGroup.valid) {
       this.formGroup.markAllAsTouched();
       return;
@@ -88,11 +94,14 @@ export class FetchPopupComponent {
       dec: this.dec,
       radius: this.formGroup.controls['radius'].value,
       constraints: this.service.getFsrParams(),
-    }).subscribe(() => {
+    }).subscribe((res: any) => {
       this.isRadiusValid = true;
       this.hideProgressBar = true;
+      this.status = 200;
+      this.testStarCount = res['counts'];
+      this.testLimit = res['limit'];
     }, error => {
-      this.error = error.status;
+      this.status = error.status;
       this.hideProgressBar = true;
     });
   }
@@ -106,15 +115,17 @@ export class FetchPopupComponent {
       this.formGroup.controls['catalogs'].value
     )
     this.hideProgressBar = false;
-    this.job.statusUpdate$.subscribe((status) => {
+    this.status = null;
+    this.job.statusUpdate$.pipe(delay(500)).subscribe((status) => {
       if (status === JobStatus.PENDING) {
         this.progressBar = -1;
       } else if (status === JobStatus.COMPLETED) {
         this.hideProgressBar = true;
+        this.status = null;
         this.dialog.closeAll();
       } else if (status === JobStatus.FAILED) {
         this.hideProgressBar = true;
-        this.error = 500;
+        this.status = 500;
       }
     });
     this.job.progressUpdate$.subscribe((progress) => {
@@ -122,6 +133,4 @@ export class FetchPopupComponent {
         this.progressBar = progress;
     });
   }
-
-  protected readonly Catalogs = Catalogs;
 }

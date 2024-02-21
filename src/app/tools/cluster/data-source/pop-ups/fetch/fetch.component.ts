@@ -10,6 +10,7 @@ import {ClusterDataSourceService} from "../../cluster-data-source.service";
 import {ClusterStorageService} from "../../../storage/cluster-storage.service";
 import {Job} from "../../../../../shared/job/job";
 import {ClusterService} from "../../../cluster.service";
+import {delay} from "rxjs";
 
 @Component({
   selector: 'app-fetch',
@@ -33,7 +34,9 @@ export class FetchComponent {
   readyForNext: boolean = false;
   fetchData: Source[] = [];
   filters: FILTER[] = [];
-  error: number | null = null;
+  status: number | null = null;
+  testStarCount: number = 0;
+  testLimit: number = 100;
   protected readonly Catalogs = Catalogs;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: ClusterLookUpData,
@@ -55,7 +58,7 @@ export class FetchComponent {
     }
     this.loading = true;
     this.readyForNext = false;
-    this.error = null;
+    this.status = null;
     this.dataSourceService.pushRecentSearch({
       name: this.formGroup.controls['name'].value,
       ra: parseFloat(this.formGroup.controls['ra'].value),
@@ -72,10 +75,13 @@ export class FetchComponent {
       this.loading = false;
       if (res) {
         this.readyForNext = true;
+        this.status = 200;
+        this.testStarCount = res['counts'];
+        this.testLimit = res['limit'];
       }
     }, error => {
       this.loading = false;
-      this.error = error.status;
+      this.status = error.status;
     })
   }
 
@@ -85,6 +91,7 @@ export class FetchComponent {
       this.dialog.closeAll();
     } else {
       this.loading = true;
+      this.status = null;
       this.service.setClusterName(this.formGroup.controls['name'].value);
       this.job = this.dataService.fetchCatalog(
         this.formGroup.controls['ra'].value,
@@ -92,7 +99,7 @@ export class FetchComponent {
         this.formGroup.controls['radius'].value,
         [this.formGroup.controls['catalog'].value]
       );
-      this.job.complete$.subscribe((complete) => {
+      this.job.complete$.pipe(delay(300)).subscribe((complete) => {
         this.loading = false;
       });
       this.dataService.sources$.subscribe((data) => {

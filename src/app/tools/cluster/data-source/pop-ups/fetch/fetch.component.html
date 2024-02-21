@@ -88,12 +88,16 @@
 
     <mat-divider></mat-divider>
 
-    <div *ngIf="error === 400" class="fetch-prompt">
+    <div *ngIf="status === 400" class="fetch-prompt">
       Too many stars! Reduce Radius and try again.
     </div>
-    <div *ngIf="error === 404" class="fetch-prompt">
+    <div *ngIf="status === 404" class="fetch-prompt">
       There's no cluster around the given coordinates.
     </div>
+    <div *ngIf="status === 200" class="fetch-prompt">
+      {{testStarCount}} star were found! Max limit is {{testLimit}} stars.
+    </div>
+
 
     <mat-card-actions>
       <button (click)="cancel()" mat-button mat-dialog-close>Cancel</button>

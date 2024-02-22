@@ -1,93 +1,106 @@
 <div class="summary-pair">
-  <div class="summary-key">Name:</div>
-  <div class="summary-value">{{service.getClusterName()}}</div>
+    <div class="summary-key">Name:</div>
+    <div class="summary-value">{{service.getClusterName()}}</div>
 </div>
 <div class="summary-pair">
-  <div class="summary-key">Classification:</div>
-  <div class="summary-value">{{dataService.getCluster()?.type}}</div>
+    <div class="summary-key">Classification:</div>
+    <div class="summary-value">{{dataService.getCluster()?.type}}</div>
 </div>
 <div class="summary-pair">
-  <div class="summary-key">Number of stars:</div>
-  <div class="summary-value">{{numberOfStars}}</div>
+    <div class="summary-key">Number of stars:</div>
+    <div class="summary-value">{{numberOfStars}}</div>
 </div>
 <div class="summary-pair">
-  <div class="summary-key">Mass:</div>
-  <div class="summary-value">{{mass?.toFixed(0)}} (solar)</div>
+    <div class="summary-key">Mass:</div>
+    <div class="summary-value">{{mass?.toFixed(0)}} (solar)</div>
 </div>
 <div class="summary-pair">
-  <div class="summary-key">Physical Radius:</div>
-  <div class="summary-value">{{physicalRadius?.toFixed(2)}} (ly)</div>
+    <div class="summary-key">Physical Radius:</div>
+    <div class="summary-value">{{physicalRadius?.toFixed(2)}} (ly)</div>
 </div>
 <mat-divider></mat-divider>
 <div class="summary-pair">
-  <div class="summary-key">RA:</div>
-  <div class="summary-value-col">
-    <div class="summary-value">{{ra}}&deg;</div>
-    <div class="summary-value">{{raHMS}}</div>
-  </div>
+    <div class="summary-key">RA:</div>
+    <div class="summary-value-col">
+        <div class="summary-value">{{ra}}&deg;</div>
+        <div class="summary-value">{{raHMS}}</div>
+    </div>
 </div>
 <div class="summary-pair">
-  <div class="summary-key">Dec:</div>
-  <div class="summary-value-col">
-    <div class="summary-value">{{dec}}&deg;</div>
-    <div class="summary-value">{{decDMS}}</div>
-  </div>
+    <div class="summary-key">Dec:</div>
+    <div class="summary-value-col">
+        <div class="summary-value">{{dec}}&deg;</div>
+        <div class="summary-value">{{decDMS}}</div>
+    </div>
 </div>
 <div class="summary-pair">
-  <div class="summary-key">Galactic Longitude:</div>
-  <div class="summary-value-col">
-    <div class="summary-value">{{l?.toFixed(3)}}&deg;</div>
-    <div class="summary-value">{{lDMS}}</div>
-  </div>
+    <div class="summary-key">Galactic Longitude:</div>
+    <div class="summary-value-col">
+        <div class="summary-value">{{l?.toFixed(3)}}&deg;</div>
+        <div class="summary-value">{{lDMS}}</div>
+    </div>
 </div>
 <div class="summary-pair">
-  <div class="summary-key">Galactic Latitude:</div>
-  <div class="summary-value-col">
-    <div class="summary-value">{{b?.toFixed(3)}}&deg;</div>
-    <div class="summary-value">{{bDMS}}</div>
-  </div>
+    <div class="summary-key">Galactic Latitude:</div>
+    <div class="summary-value-col">
+        <div class="summary-value">{{b?.toFixed(3)}}&deg;</div>
+        <div class="summary-value">{{bDMS}}</div>
+    </div>
 </div>
 <div class="summary-pair">
-  <div class="summary-key">Angular Radius:</div>
-  <div class="summary-value-col">
-    <div class="summary-value">{{angularRadius?.toFixed(3)}}&deg;</div>
-    <div class="summary-value">{{angularRadiusDMS}}</div>
-  </div>
+    <div class="summary-key">Angular Radius:</div>
+    <div class="summary-value-col">
+        <div class="summary-value">{{angularRadius?.toFixed(3)}}&deg;</div>
+        <div class="summary-value">{{angularRadiusDMS}}</div>
+    </div>
 </div>
 <mat-divider></mat-divider>
 <div class="summary-pair">
-  <div class="summary-key">Proper Motion RA:</div>
-  <div class="summary-value">{{pmra}} (mas/yr)</div>
+    <div class="summary-key">Proper Motion RA:</div>
+    <div class="summary-value">{{pmra}} (mas/yr)</div>
 </div>
 <div class="summary-pair">
-  <div class="summary-key">Proper Motion Dec:</div>
-  <div class="summary-value">{{pmdec}} (mas/yr)</div>
+    <div class="summary-key">Proper Motion Dec:</div>
+    <div class="summary-value">{{pmdec}} (mas/yr)</div>
 </div>
 <div class="summary-pair">
-  <div class="summary-key">Velocity Dispersion:</div>
-  <div class="summary-value">
-    {{velocityDispersion?.toFixed(2)}} (mas/yr)
-  </div>
+    <div class="summary-key">Velocity Dispersion:</div>
+    <div class="summary-value">
+        {{velocityDispersion?.toFixed(2)}} (mas/yr)
+    </div>
 </div>
 <mat-divider></mat-divider>
 <div class="summary-pair">
-  <div class="summary-key">Distance:</div>
-  <div class="summary-value">{{distance}} (kpc)</div>
+    <div class="summary-key">Distance:</div>
+    <div class="summary-value">{{distance}} (kpc)</div>
 </div>
 <div class="summary-pair">
-  <div class="summary-key">Log Age:</div>
-  <div class="summary-value">{{age}} log(yrs)</div>
+    <div class="summary-key">Log Age:</div>
+    <div class="summary-value">{{age}} log(yrs)</div>
 </div>
 <div class="summary-pair">
-  <div class="summary-key">Age:</div>
-  <div class="summary-value">{{(Math.pow(10, age) / 1000000).toFixed(2)}} (Myrs)</div>
+    <div class="summary-key">Age:</div>
+    <div class="summary-value">{{(Math.pow(10, age) / 1000000).toFixed(2)}} (Myrs)</div>
 </div>
 <div class="summary-pair">
-  <div class="summary-key">Metallicity:</div>
-  <div class="summary-value">{{metallicity}} (solar)</div>
+    <div class="summary-key">Metallicity:</div>
+    <div class="summary-value">{{metallicity}} (solar)</div>
 </div>
 <div class="summary-pair">
-  <div class="summary-key">Reddening:</div>
-  <div class="summary-value">{{reddening}} (mag)</div>
+    <div class="summary-key">Reddening:</div>
+    <div class="summary-value">{{reddening}} (mag)</div>
 </div>
-<button (click)="downloadData()" color="primary" mat-raised-button>Download Data</button>
+<mat-divider></mat-divider>
+<div class="row download-button">
+    <h3>Download Summary</h3>
+    <button class="half-button left" color="primary" mat-raised-button (click)="downloadSummary()">CSV</button>
+    <button class="half-button right" color="primary" mat-raised-button [disabled]="true">PDF</button>
+</div>
+<mat-divider></mat-divider>
+<div class="row download-button">
+    <button class="full-button" color="primary" mat-raised-button [disabled]="true">Download Plots</button>
+</div>
+<mat-divider></mat-divider>
+<div class="row download-button">
+    <button class="full-button" color="primary" mat-raised-button (click)="downloadData()">Download Sources</button>
+</div>

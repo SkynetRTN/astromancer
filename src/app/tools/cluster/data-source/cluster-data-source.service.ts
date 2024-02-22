@@ -154,7 +154,7 @@ export class ClusterDataSourceService {
           entry.id && entry.astrometry.ra !== undefined &&
           entry.astrometry.dec !== undefined && entry.photometries.length > 0);
         this.filters = filters;
-        console.log(this.sources);
+        // console.log(this.sources);
     }
 
     private setRawData(rawData: ClusterRawData[]): void {

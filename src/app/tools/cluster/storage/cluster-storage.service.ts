@@ -16,7 +16,7 @@ export class ClusterStorageService {
     } else {
       this.init();
     }
-    console.log(this.storageObject);
+    // console.log(this.storageObject);
   }
 
   public save() {

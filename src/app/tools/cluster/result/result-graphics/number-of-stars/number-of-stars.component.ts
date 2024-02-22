@@ -105,7 +105,7 @@ export class NumberOfStarsComponent implements OnChanges, AfterViewInit {
   updateData(): void {
     const counts = this.dataService.getSources(true).length;
     this.chartObject.series[2].setData([[counts, 0]]);
-    console.log(this.chartObject.series[2].data);
+    // console.log(this.chartObject.series[2].data);
   }
 }
 

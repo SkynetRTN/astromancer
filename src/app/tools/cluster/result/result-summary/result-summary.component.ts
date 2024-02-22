@@ -2,9 +2,17 @@ import {Component} from '@angular/core';
 import {ClusterService} from "../../cluster.service";
 import {ClusterDataService} from "../../cluster-data.service";
 import {ClusterIsochroneService} from "../../isochrone-matching/cluster-isochrone.service";
-import {getHalfLightRadius, getMass, getPhysicalRadius, getPmra, getVelocityDispersion} from "../result.utils";
+import {
+    downloadCsv,
+    getHalfLightRadius,
+    getMass,
+    getPhysicalRadius,
+    getPmra,
+    getVelocityDispersion
+} from "../result.utils";
 import {d2DMS, d2HMS} from "../../../shared/data/utils";
 import {filter} from "rxjs";
+import {getDateString} from "../../../shared/charts/utils";
 
 @Component({
     selector: 'app-result-summary',
@@ -93,7 +101,24 @@ export class ResultSummaryComponent {
         this.mass = getMass(this.velocityDispersion, this.distance, this.physicalRadius);
     }
 
+    downloadSummary() {
+        const name = this.service.getClusterName();
+        downloadCsv(
+            ['name', 'classification', 'star_counts', 'mass', 'physical_radius',
+                'ra', 'dec', 'l', 'b', 'angular_radius',
+                'pmr_ra', 'pm_dec', 'velocity_dispersion',
+                'distance', 'log_age', 'metallicity', 'e(b-v)'],
+            [[
+                name, this.dataService.getCluster()?.type, this.numberOfStars, this.mass, this.physicalRadius,
+                this.ra, this.dec, this.l, this.b, this.angularRadius,
+                this.pmra, this.pmdec, this.velocityDispersion,
+                this.distance, this.age, this.metallicity, this.reddening]],
+            `${name}_summary_${getDateString()}`
+        );
+    }
+
     downloadData() {
         this.dataService.downloadSources();
     }
+
 }

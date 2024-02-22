@@ -134,7 +134,7 @@ export class DistanceComponent implements OnChanges, OnInit {
 
   updateDistance() {
     const data: number[][] = [[this.isochroneService.getPlotParams().distance, 0]];
-    console.log(data);
+    // console.log(data);
     this.chartObject.series[3].setData(data);
   }
 

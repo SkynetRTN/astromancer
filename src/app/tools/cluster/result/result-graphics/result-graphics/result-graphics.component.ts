@@ -2,8 +2,10 @@ import {AfterViewInit, Component} from '@angular/core';
 import {environment} from "../../../../../../environments/environment";
 import {ClusterMWSC} from "../../../storage/cluster-storage.service.util";
 import {HttpClient} from "@angular/common/http";
-import {Subject} from "rxjs";
+import {combineLatestWith, Subject} from "rxjs";
 import {ClusterService} from "../../../cluster.service";
+import {ClusterIsochroneService} from "../../../isochrone-matching/cluster-isochrone.service";
+import {ClusterDataService} from "../../../cluster-data.service";
 
 @Component({
     selector: 'app-result-graphics',
@@ -15,9 +17,20 @@ export class ResultGraphicsComponent implements AfterViewInit {
     update$: Subject<void> = new Subject<void>();
 
 
-    constructor(private service: ClusterService, private http: HttpClient) {
+    constructor(
+        private service: ClusterService,
+        private isochroneService: ClusterIsochroneService,
+        private dataService: ClusterDataService,
+        private http: HttpClient) {
         this.service.tabIndex$.subscribe((index: number) => {
             if (index === 4) {
+                this.update$.next();
+            }
+        });
+        this.dataService.sources$.pipe(
+            combineLatestWith(this.isochroneService.plotParams$)
+        ).subscribe(() => {
+            if (this.service.getTabIndex() === 4) {
                 this.update$.next();
             }
         });

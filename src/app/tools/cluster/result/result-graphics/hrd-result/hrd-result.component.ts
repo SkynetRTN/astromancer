@@ -3,6 +3,7 @@ import {ClusterPlotType, FILTER, PlotConfig, PlotFraming} from "../../../cluster
 import {ClusterDataService} from "../../../cluster-data.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {filterValidator} from "../../../isochrone-matching/control-panel/filter-selector/filter-selector.component";
+import {ClusterService} from "../../../cluster.service";
 
 @Component({
     selector: 'app-hrd-result',
@@ -18,9 +19,13 @@ export class HrdResultComponent {
         lum: new FormControl("", [Validators.required]),
     }, {validators: filterValidator});
 
-    constructor(private dataService: ClusterDataService) {
+    constructor(private service: ClusterService, private dataService: ClusterDataService) {
         this.dataService.sources$.subscribe(() => {
             this.filters = this.dataService.getFilters();
+        });
+        this.service.reset$.subscribe(() => {
+            this.filterFormGroup.reset();
+            this.plotConfig = null;
         });
     }
 

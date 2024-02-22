@@ -28,6 +28,11 @@ export class FilterSelectorComponent {
             () => {
                 this.filters = this.dataService.getFilters();
             });
+        this.isochroneService.resetPlotConfig$.subscribe(
+            (configs) => {
+                this.filterSelectionFormGroup.reset();
+                this.plotConfigs = configs;
+            });
     }
 
     add() {

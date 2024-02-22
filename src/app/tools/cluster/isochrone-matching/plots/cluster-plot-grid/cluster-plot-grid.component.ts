@@ -28,5 +28,9 @@ export class ClusterPlotGridComponent {
             this.plotConfigs = this.isochroneService.getPlotConfigs();
             this.gridNumber = this.isochroneService.getPlotConfigs().length;
         });
+        this.isochroneService.resetPlotConfig$.subscribe(
+            (plotConfigs) => {
+                this.plotConfigs = plotConfigs;
+            });
     }
 }

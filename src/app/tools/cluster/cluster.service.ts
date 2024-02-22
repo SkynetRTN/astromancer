@@ -15,6 +15,8 @@ export class ClusterService {
     fsrFraming$ = this.fsrFramingSubject.asObservable();
     private tabIndexSubject: Subject<number> = new Subject<number>();
     tabIndex$ = this.tabIndexSubject.asObservable();
+    private resetSubject: Subject<void> = new Subject<void>();
+    reset$ = this.resetSubject.asObservable();
 
     constructor(
         private dataService: ClusterDataService,
@@ -56,6 +58,10 @@ export class ClusterService {
             pm_ra: null,
             pm_dec: null
         });
+    }
+
+    triggerReset() {
+        this.resetSubject.next();
     }
 
     setClusterName(name: string) {

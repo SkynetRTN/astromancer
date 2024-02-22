@@ -17,6 +17,10 @@ export class PlotListsComponent {
             (plotConfigs) => {
                 this.plotConfigs = plotConfigs;
             });
+        this.isochroneService.resetPlotConfig$.subscribe(
+            (plotConfigs) => {
+                this.plotConfigs = plotConfigs;
+            });
     }
 
     drop(event: CdkDragDrop<string[]>) {

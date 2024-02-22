@@ -5,28 +5,29 @@ import {ClusterStorageService} from "../../../storage/cluster-storage.service";
 import {MatDialog} from "@angular/material/dialog";
 
 @Component({
-  selector: 'app-reset',
-  templateUrl: './reset.component.html',
-  styleUrls: ['./reset.component.scss', '../cluster-data-source-pop-ups.scss']
+    selector: 'app-reset',
+    templateUrl: './reset.component.html',
+    styleUrls: ['./reset.component.scss', '../cluster-data-source-pop-ups.scss']
 })
 export class ResetComponent {
 
-  constructor(
-    private service: ClusterService,
-    private dataService: ClusterDataService,
-    private clusterStorageService: ClusterStorageService,
-    private dialog: MatDialog,
-  ) {
-  }
+    constructor(
+        private service: ClusterService,
+        private dataService: ClusterDataService,
+        private clusterStorageService: ClusterStorageService,
+        private dialog: MatDialog,
+    ) {
+    }
 
-  proceed() {
-    this.service.reset();
-    this.dataService.reset();
-  }
+    proceed() {
+        this.service.reset();
+        this.dataService.reset();
+        this.service.triggerReset();
+    }
 
 
-  cancel() {
-    this.service.setTabIndex(1);
-    this.dialog.closeAll();
-  }
+    cancel() {
+        this.service.setTabIndex(1);
+        this.dialog.closeAll();
+    }
 }

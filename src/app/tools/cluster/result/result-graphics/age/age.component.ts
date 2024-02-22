@@ -144,6 +144,6 @@ export class AgeComponent implements OnChanges, AfterViewInit {
   }
 
   updateData() {
-    this.chartObject.series[3].setData([[Math.pow(10, this.isochroneService.getIsochroneParams().age) / 1000000000, 0]]);
+    this.chartObject.series[3].setData([[Math.pow(10, this.isochroneService.getIsochroneParams().age) / 1000000, 0]]);
   }
 }

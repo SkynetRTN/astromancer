@@ -9,6 +9,7 @@ import {InProgressComponent} from "../pop-ups/in-progress/in-progress.component"
 import {ClusterService} from "../../cluster.service";
 import {ResetComponent} from "../pop-ups/reset/reset.component";
 import {JobStatus} from "../../../../shared/job/job";
+import {ErrorComponent} from "../pop-ups/error/error.component";
 
 @Component({
     selector: 'app-data-source',
@@ -26,6 +27,12 @@ export class DataSourceComponent {
             throttle(() => interval(1000)),
         ).subscribe(
             () => {
+                const count = this.dataSourceService.getSources().length;
+                if (count === 0) {
+                    this.dialog.open(ErrorComponent,
+                        {data: {error: null, message: "No sources or calibrated magnitude found in file."}});
+                    return;
+                }
                 this.dialog.open(SummaryComponent,
                     {
                         width: 'fit-content',

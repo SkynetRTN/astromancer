@@ -1,6 +1,7 @@
 import {Component, Inject} from '@angular/core';
 import {HttpErrorResponse} from "@angular/common/http";
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {ok} from "assert";
 
 @Component({
   selector: 'app-error',
@@ -10,7 +11,6 @@ import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 export class ErrorComponent {
   protected readonly JSON = JSON;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { error: HttpErrorResponse }) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { error: HttpErrorResponse | null, message: string | null }) {
   }
-
 }

@@ -44,15 +44,18 @@ export class HonorCodeChartService {
 
     public saveImageHighChartOffline(chart: Highcharts.Chart, ChartType: string, signature: string): void {
         if (ChartType && signature) {
-            html2canvas(chart.container, {}).then(
+            const container = chart.container.cloneNode(true) as HTMLElement;
+            document.body.appendChild(container);
+            html2canvas(container, {}).then(
                 (canvas) => {
                     this.saveCanvasAsJpg(canvas, signature, ChartType);
+                    document.body.removeChild(container);
                 }
             );
         }
     }
 
-    public saveImageHighChartsOffline(charts: Highcharts.Chart[], column: number, chartType: string): void {
+    public saveImageHighChartsOffline(charts: Highcharts.Chart[], column: number, chartType: string, callback: (any | null) = null): void {
         if (chartType) {
             const signature = "astromancer";
             if (charts.length === 1) {
@@ -61,17 +64,24 @@ export class HonorCodeChartService {
             }
             const canvasTile: HTMLCanvasElement[] = [];
             const canvasSubject: Subject<number> = new Subject<number>();
-            for (let i = 0; i < charts.length; i++) {
-                html2canvas(charts[i].container, {}).then(
+            const containers: HTMLElement[] = [];
+            charts.forEach((chart) => {
+                const copy = chart.container.cloneNode(true) as HTMLElement;
+                containers.push(copy);
+                document.body.appendChild(copy);
+                html2canvas(copy, {}).then(
                     (canvas) => {
                         canvasTile.push(canvas);
                         canvasSubject.next(canvasTile.length);
-                    }
-                );
-            }
+                        document.body.removeChild(copy);
+                    });
+            });
             canvasSubject.pipe(skip(charts.length - 1), take(1)).subscribe(
                 () => {
                     this.saveCanvasTilesAsJpg(canvasTile, column, signature, chartType);
+                    if (callback) {
+                        callback();
+                    }
                 });
         }
     }

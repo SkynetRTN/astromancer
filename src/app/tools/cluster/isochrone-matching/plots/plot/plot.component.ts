@@ -110,6 +110,7 @@ export class PlotComponent implements OnChanges {
 
   chartInitialized($event: Highcharts.Chart) {
     this.chartObject = $event;
+    this.isochroneService.setHighChart(this.chartObject, this.plotConfigIndex!);
   }
 
   ngOnChanges() {

@@ -98,7 +98,9 @@
 </div>
 <mat-divider></mat-divider>
 <div class="row download-button">
-    <button class="full-button" color="primary" mat-raised-button [disabled]="true">Download Plots</button>
+    <button class="full-button" color="primary" mat-raised-button
+            [disabled]="plotDownloading" (click)="downloadPlots()">Download Plots
+    </button>
 </div>
 <mat-divider></mat-divider>
 <div class="row download-button">

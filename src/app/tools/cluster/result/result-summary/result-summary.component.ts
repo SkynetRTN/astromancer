@@ -13,6 +13,7 @@ import {
 import {d2DMS, d2HMS} from "../../../shared/data/utils";
 import {filter} from "rxjs";
 import {getDateString} from "../../../shared/charts/utils";
+import {HonorCodeChartService} from "../../../shared/honor-code-popup/honor-code-chart.service";
 
 @Component({
     selector: 'app-result-summary',
@@ -41,10 +42,12 @@ export class ResultSummaryComponent {
     velocityDispersion!: number;
     mass!: number;
     protected readonly Math = Math;
+    plotDownloading = false;
 
     constructor(public service: ClusterService,
                 public dataService: ClusterDataService,
-                public isochroneService: ClusterIsochroneService) {
+                public isochroneService: ClusterIsochroneService,
+                private chartService: HonorCodeChartService) {
         this.service.tabIndex$.pipe(
             filter(index => index === 4)
         ).subscribe((index) => {
@@ -119,6 +122,15 @@ export class ResultSummaryComponent {
 
     downloadData() {
         this.dataService.downloadSources();
+    }
+
+    downloadPlots() {
+        this.plotDownloading = true;
+        this.chartService.saveImageHighChartsOffline(
+            this.isochroneService.getHighCharts(), 2, "cluster",
+            ()=>{
+                this.plotDownloading = false;
+            });
     }
 
 }

@@ -3,6 +3,7 @@ import {IsochroneParams, PlotConfig, PlotFraming, PlotParams} from "../cluster.u
 import {ClusterStorageService} from "../storage/cluster-storage.service";
 import {Subject} from "rxjs";
 import {ClusterService} from "../cluster.service";
+import * as Highcharts from "highcharts";
 
 @Injectable()
 export class ClusterIsochroneService {
@@ -22,6 +23,7 @@ export class ClusterIsochroneService {
     public plotConfig$ = this.plotConfigSubject.asObservable();
     private resetPlotConfigSubject: Subject<PlotConfig[]> = new Subject<PlotConfig[]>();
     public resetPlotConfig$ = this.resetPlotConfigSubject.asObservable();
+    public highCharts: (Highcharts.Chart | null)[] = [null, null, null, null];
 
     constructor(private service: ClusterService, private storageService: ClusterStorageService) {
         this.init();
@@ -98,6 +100,14 @@ export class ClusterIsochroneService {
     public updatePlotFraming(plotFraming: PlotFraming, index: number) {
         this.plotConfigs[index].plotFraming = plotFraming;
         this.storageService.setPlotConfigs(this.plotConfigs);
+    }
+
+    public setHighChart(chart: Highcharts.Chart, index: number) {
+        this.highCharts[index] = chart;
+    }
+
+    public getHighCharts(): Highcharts.Chart[] {
+        return this.highCharts.filter((chart) => chart !== null).slice(0, this.plotConfigs.length) as Highcharts.Chart[];
     }
 
     public resetDistance() {

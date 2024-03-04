@@ -104,5 +104,11 @@
 </div>
 <mat-divider></mat-divider>
 <div class="row download-button">
+    <button class="full-button" color="primary" mat-raised-button
+            [disabled]="plotDownloading" (click)="downloadPlotData()">Download Plot Data
+    </button>
+</div>
+<mat-divider></mat-divider>
+<div class="row download-button">
     <button class="full-button" color="primary" mat-raised-button (click)="downloadData()">Download Sources</button>
 </div>

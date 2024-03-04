@@ -107,35 +107,91 @@ export class ResultSummaryComponent {
     }
 
     downloadSummary() {
-        const name = this.service.getClusterName();
-        downloadCsv(
-            ['name', 'classification', 'star_counts', 'mass', 'physical_radius',
-                'ra', 'dec', 'l', 'b', 'angular_radius',
-                'pmr_ra', 'pm_dec', 'velocity_dispersion',
-                'distance', 'log_age', 'metallicity', 'e(b-v)'],
-            [[
-                name, this.dataService.getCluster()?.type, this.numberOfStars, this.mass, this.physicalRadius,
-                this.ra, this.dec, this.l, this.b, this.angularRadius,
-                this.pmra, this.pmdec, this.velocityDispersion,
-                this.distance, this.age, this.metallicity, this.reddening]],
-            `${name}_summary_${getDateString()}`
-        );
+        this.honorCodeService.honored().subscribe(() => {
+            const name = this.service.getClusterName();
+            downloadCsv(
+                ['name', 'classification', 'star_counts', 'mass', 'physical_radius',
+                    'ra', 'dec', 'l', 'b', 'angular_radius',
+                    'pmr_ra', 'pm_dec', 'velocity_dispersion',
+                    'distance', 'log_age', 'metallicity', 'e(b-v)'],
+                [[
+                    name, this.dataService.getCluster()?.type, this.numberOfStars, this.mass, this.physicalRadius,
+                    this.ra, this.dec, this.l, this.b, this.angularRadius,
+                    this.pmra, this.pmdec, this.velocityDispersion,
+                    this.distance, this.age, this.metallicity, this.reddening]],
+                `${name}_summary_${getDateString()}`
+            );
+        });
     }
 
     downloadData() {
-        this.dataService.downloadSources();
+        this.honorCodeService.honored().subscribe(() => {
+            this.dataService.downloadSources();
+        });
     }
 
     downloadPlots() {
         this.plotDownloading = true;
         this.honorCodeService.honored().subscribe((name: string) => {
             this.chartService.saveImageHighChartsOffline(
-                this.isochroneService.getHighCharts(), 2, name,"cluster",
+                this.isochroneService.getHighCharts(), 2, name, "cluster",
                 () => {
                     this.plotDownloading = false;
                 });
-        })
-
+        });
     }
 
+    downloadPlotData() {
+        this.honorCodeService.honored().subscribe(() => {
+            const name = this.service.getClusterName();
+            const plotConfig = this.isochroneService.getPlotConfigs();
+            const highCharts = this.isochroneService.getHighCharts();
+            const sources: (number | undefined)[][][] = [];
+            const isochrones: (number | undefined)[][][] = [];
+            for (let i = 0; i < plotConfig.length; i++) {
+                const seriesSources: (number | undefined)[][] = [];
+                for (let j = 0; j < highCharts[i].series[0].data.length; j++) {
+                    seriesSources.push([highCharts[i].series[0].data[j]['x'], highCharts[i].series[0].data[j]['y']]);
+                }
+                sources.push(seriesSources);
+                const seriesIsochrones: (number | undefined)[][] = [];
+                for (let j = 0; j < highCharts[i].series[1].data.length; j++) {
+                    seriesIsochrones.push([highCharts[i].series[1].data[j]['x'], highCharts[i].series[1].data[j]['y']]);
+                }
+                isochrones.push(seriesIsochrones);
+            }
+            const maxLength = Math.max(...sources.map(s => s.length),
+                ...isochrones.map(s => s.length));
+
+            const columns: string[] = [];
+            for (let i = 0; i < plotConfig.length; i++) {
+                columns.push(`source_${i}_x`);
+                columns.push(`source_${i}_y`);
+                columns.push(`isochrone_${i}_x`);
+                columns.push(`isochrone_${i}_y`);
+            }
+            const output: (number | undefined)[][] = [];
+            for (let i = 0; i < maxLength; i++) {
+                const row: (number | undefined)[] = [];
+                for (let j = 0; j < plotConfig.length; j++) {
+                    if (i < sources[j].length) {
+                        row.push(sources[j][i][0]);
+                        row.push(sources[j][i][1]);
+                    } else {
+                        row.push(undefined);
+                        row.push(undefined);
+                    }
+                    if (i < isochrones[j].length) {
+                        row.push(isochrones[j][i][0]);
+                        row.push(isochrones[j][i][1]);
+                    } else {
+                        row.push(undefined);
+                        row.push(undefined);
+                    }
+                }
+                output.push(row);
+            }
+            downloadCsv(columns, output, `${name}_plot_data_${getDateString()}`);
+        });
+    }
 }

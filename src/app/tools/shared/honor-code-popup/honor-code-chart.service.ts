@@ -42,7 +42,7 @@ export class HonorCodeChartService {
         }
     }
 
-    public saveImageHighChartOffline(chart: Highcharts.Chart, ChartType: string, signature: string): void {
+    public saveImageHighChartOffline(chart: Highcharts.Chart, ChartType: string, signature: string, callback: (any | null) = null): void {
         if (ChartType && signature) {
             const container = chart.container.cloneNode(true) as HTMLElement;
             document.body.appendChild(container);
@@ -50,16 +50,18 @@ export class HonorCodeChartService {
                 (canvas) => {
                     this.saveCanvasAsJpg(canvas, signature, ChartType);
                     document.body.removeChild(container);
+                    if (callback) {
+                        callback();
+                    }
                 }
             );
         }
     }
 
-    public saveImageHighChartsOffline(charts: Highcharts.Chart[], column: number, chartType: string, callback: (any | null) = null): void {
+    public saveImageHighChartsOffline(charts: Highcharts.Chart[], column: number, signature: string, chartType: string, callback: (any | null) = null): void {
         if (chartType) {
-            const signature = "astromancer";
             if (charts.length === 1) {
-                this.saveImageHighChartOffline(charts[0], chartType, signature);
+                this.saveImageHighChartOffline(charts[0], chartType, signature, callback);
                 return;
             }
             const canvasTile: HTMLCanvasElement[] = [];

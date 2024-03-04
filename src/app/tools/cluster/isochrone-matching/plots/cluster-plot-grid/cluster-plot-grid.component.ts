@@ -3,7 +3,6 @@ import {ClusterIsochroneService} from "../../cluster-isochrone.service";
 import {PlotConfig} from "../../../cluster.util";
 import {combineLatestWith, delay, take} from "rxjs";
 import {ClusterDataService} from "../../../cluster-data.service";
-import {HonorCodeChartService} from "../../../../shared/honor-code-popup/honor-code-chart.service";
 
 @Component({
     selector: 'app-cluster-plot-grid',

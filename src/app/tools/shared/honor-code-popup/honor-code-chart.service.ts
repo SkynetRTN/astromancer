@@ -44,12 +44,10 @@ export class HonorCodeChartService {
 
     public saveImageHighChartOffline(chart: Highcharts.Chart, ChartType: string, signature: string, callback: (any | null) = null): void {
         if (ChartType && signature) {
-            const container = chart.container.cloneNode(true) as HTMLElement;
-            document.body.appendChild(container);
+            const container = chart.container as HTMLElement;
             html2canvas(container, {}).then(
                 (canvas) => {
                     this.saveCanvasAsJpg(canvas, signature, ChartType);
-                    document.body.removeChild(container);
                     if (callback) {
                         callback();
                     }
@@ -66,16 +64,11 @@ export class HonorCodeChartService {
             }
             const canvasTile: HTMLCanvasElement[] = [];
             const canvasSubject: Subject<number> = new Subject<number>();
-            const containers: HTMLElement[] = [];
             charts.forEach((chart) => {
-                const copy = chart.container.cloneNode(true) as HTMLElement;
-                containers.push(copy);
-                document.body.appendChild(copy);
-                html2canvas(copy, {}).then(
+                html2canvas(chart.container, {}).then(
                     (canvas) => {
                         canvasTile.push(canvas);
                         canvasSubject.next(canvasTile.length);
-                        document.body.removeChild(copy);
                     });
             });
             canvasSubject.pipe(skip(charts.length - 1), take(1)).subscribe(

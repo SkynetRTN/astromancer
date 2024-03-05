@@ -131,7 +131,8 @@ export class ResultSummaryComponent {
     }
 
     downloadPlots() {
-        this.plotDownloading = true;
+        this.service.setTabIndex(3);
+        // this.plotDownloading = true;
         this.honorCodeService.honored().subscribe((name: string) => {
             this.chartService.saveImageHighChartsOffline(
                 this.isochroneService.getHighCharts(), 2, name, "cluster",

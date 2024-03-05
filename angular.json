@@ -82,6 +82,14 @@
               ],
               "outputHashing": "all"
             },
+            "local": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            },
             "cn": {
               "localize": [
                 "cn"
@@ -99,11 +107,14 @@
             "development": {
               "browserTarget": "astromancer:build:development"
             },
+            "local": {
+              "browserTarget": "astromancer:build:local"
+            },
             "cn": {
               "browserTarget": "astromancer:build:development,cn"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "local"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",

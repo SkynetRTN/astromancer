@@ -15,6 +15,9 @@ import {filter} from "rxjs";
 import {getDateString} from "../../../shared/charts/utils";
 import {HonorCodeChartService} from "../../../shared/honor-code-popup/honor-code-chart.service";
 import {HonorCodePopupService} from "../../../shared/honor-code-popup/honor-code-popup.service";
+import {HttpClient} from "@angular/common/http";
+import {environment} from "../../../../../environments/environment";
+import {Catalogs} from "../../cluster.util";
 
 @Component({
     selector: 'app-result-summary',
@@ -45,7 +48,8 @@ export class ResultSummaryComponent {
     protected readonly Math = Math;
     plotDownloading = false;
 
-    constructor(public service: ClusterService,
+    constructor(public http: HttpClient,
+                public service: ClusterService,
                 public dataService: ClusterDataService,
                 public isochroneService: ClusterIsochroneService,
                 private honorCodeService: HonorCodePopupService,
@@ -194,5 +198,42 @@ export class ResultSummaryComponent {
             }
             downloadCsv(columns, output, `${name}_plot_data_${getDateString()}`);
         });
+    }
+
+    submitData() {
+        // compute catalogs
+        const catalogs: string[] = [];
+        const starCounts = this.dataService.getInterfaceStarCounts()
+        for (const catalog in Catalogs) {
+            if (Object.keys(starCounts).includes(catalog) && starCounts[catalog].cluster_stars > 0) {
+                catalogs.push(catalog);
+            }
+        }
+
+
+        const payload = {
+            catalogs: catalogs.join(","),
+            ra: this.ra,
+            dec: this.dec,
+            radius: this.angularRadius,
+            constraints: this.service.getFsrParams(),
+            star_counts: this.dataService.getInterfaceStarCounts(),
+            isochrone_params: this.isochroneService.getIsochroneParams(),
+            plot_params: this.isochroneService.getPlotParams(),
+            sources: this.dataService.getSources(true),
+            // cluster: this.dataService.getCluster(),
+        };
+        // console.log(payload);
+        this.http.post(`${environment.astronomiconApiUrl}/submissions`, payload, {headers: {'content-type': 'application/json'}}).subscribe(
+            (response: any) => {
+                const submissionId = response['id'].toString();
+                console.log(`${environment.astronomiconUrl}/clusters/submissions/${submissionId}`);
+                window.open(`${environment.astronomiconUrl}/clusters/submissions/${submissionId}`, "_blank");
+            },
+            (error) => {
+                alert("Submission Failed");
+                console.log(error);
+            }
+        );
     }
 }

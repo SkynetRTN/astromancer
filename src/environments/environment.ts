@@ -3,8 +3,10 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false,
-  apiUrl: 'http://127.0.0.1:5001'
+    production: false,
+    apiUrl: 'http://127.0.0.1:5001',
+    astronomiconUrl: 'http://localhost:4200',
+    astronomiconApiUrl: 'http://127.0.0.1:5000'
 };
 
 /*

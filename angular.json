@@ -108,7 +108,8 @@
               "browserTarget": "astromancer:build:development"
             },
             "local": {
-              "browserTarget": "astromancer:build:local"
+              "browserTarget": "astromancer:build:local",
+              "port": 4201
             },
             "cn": {
               "browserTarget": "astromancer:build:development,cn"

@@ -157,9 +157,11 @@ export class PlotComponent implements OnChanges {
           });
         }
         if (data.iSkip > 0 && data.data.length > data.iSkip) {
-          isochroneData = isochroneData.slice(0, data.iSkip - 1);
-          isochroneData.push([null, null]);
-          isochroneData = isochroneData.concat(data.data.slice(data.iSkip));
+          isochroneData = [
+              ...isochroneData.slice(0, data.iSkip - 1),
+              [null, null],
+              ...isochroneData.slice(data.iSkip)
+          ];
         }
         try {
           this.chartObject.series[1].setData([]);

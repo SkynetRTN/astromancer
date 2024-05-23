@@ -1,30 +1,32 @@
 <mat-sidenav-container (backdropClick)="close()" class="tool-sidenav-container">
-  <mat-sidenav #toolsnav (keydown.escape)="close()">
-    <p class="prompt">Select a Tool</p>
-    <mat-nav-list>
-      <a (click)="close()" [routerLink]="['/curve']"
-         i18n="Curve" mat-list-item
-         routerLinkActive="active">Curve</a>
-      <a (click)="close()" [routerLink]="['/moon']"
-         i18n="Moon" mat-list-item
-         routerLinkActive="active">Moon</a>
-      <a (click)="close()" [routerLink]="['/venus']" i18n="Venus" mat-list-item
-         routerLinkActive="active">Venus</a>
-      <a (click)="close()" [routerLink]="['/variable']" i18n="Variable" mat-list-item
-         routerLinkActive="active">Variable</a>
-      <a (click)="close()" [routerLink]="['/scatter']" i18n="Scatter" mat-list-item
-         routerLinkActive="active">Scatter</a>
-      <a (click)="close()" [routerLink]="['/spectrum']" i18n="Spectrum" mat-list-item
-         routerLinkActive="active">Spectrum</a>
-      <a (click)="close()" [routerLink]="['/dual']" i18n="Dual" mat-list-item
-         routerLinkActive="active">Dual</a>
-      <a (click)="close()" [routerLink]="['/cluster']" i18n="Dual" mat-list-item
-         routerLinkActive="active">Cluster</a>
-    </mat-nav-list>
-  </mat-sidenav>
+    <mat-sidenav #toolsnav (keydown.escape)="close()">
+        <p class="prompt">Select a Tool</p>
+        <mat-nav-list>
+            <a (click)="close()" [routerLink]="['/curve']"
+               i18n="Curve" mat-list-item
+               routerLinkActive="active">Curve</a>
+            <a (click)="close()" [routerLink]="['/moon']"
+               i18n="Moon" mat-list-item
+               routerLinkActive="active">Moon</a>
+            <a (click)="close()" [routerLink]="['/venus']" i18n="Venus" mat-list-item
+               routerLinkActive="active">Venus</a>
+            <a (click)="close()" [routerLink]="['/variable']" i18n="Variable" mat-list-item
+               routerLinkActive="active">Variable</a>
+            <a (click)="close()" [routerLink]="['/scatter']" i18n="Scatter" mat-list-item
+               routerLinkActive="active">Scatter</a>
+            <a (click)="close()" [routerLink]="['/spectrum']" i18n="Spectrum" mat-list-item
+               routerLinkActive="active">Spectrum</a>
+            <a (click)="close()" [routerLink]="['/dual']" i18n="Dual" mat-list-item
+               routerLinkActive="active">Dual</a>
+            <a (click)="close()" [routerLink]="['/cluster']" i18n="Dual" mat-list-item
+               routerLinkActive="active">Cluster</a>
+            <a (click)="close()" [routerLink]="['/rc']" i18n="Radio Cartographer" mat-list-item
+               routerLinkActive="active">Radio Cartographer</a>
+        </mat-nav-list>
+    </mat-sidenav>
 
-  <mat-sidenav-content>
-    <app-menubar [navbar]="this"></app-menubar>
-    <router-outlet></router-outlet>
-  </mat-sidenav-content>
+    <mat-sidenav-content>
+        <app-menubar [navbar]="this"></app-menubar>
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
 </mat-sidenav-container>

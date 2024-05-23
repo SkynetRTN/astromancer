@@ -26,43 +26,45 @@ import {VariableModule} from "./tools/variable/variable.module";
 import {ScatterModule} from "./tools/scatter/scatter.module";
 import {SpectrumModule} from "./tools/spectrum/spectrum.module";
 import {DualModule} from "./tools/dual/dual.module";
+import {RcModule} from "./tools/rc/rc.module";
 import {NgOptimizedImage} from "@angular/common";
 
 
 registerAllModules();
 
 @NgModule({
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    ToolsNavbarModule,
-    HonorCodePopupModule,
-    MatInputModule,
-    MatSelectModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    HttpClientModule,
-    MarkdownModule.forRoot({loader: HttpClientModule}),
-    MatGridListModule,
-    MatCardModule,
-    CurveModule,
-    MoonModule,
-    VenusModule,
-    VariableModule,
-    ScatterModule,
-    SpectrumModule,
-    DualModule,
-    NgOptimizedImage,
-  ],
-  declarations: [
-    AppComponent,
-    HomeComponent,
-    AboutComponent,
-    PageNotFoundComponent,
-  ],
-  providers: [AppearanceStorageService, AppearanceService],
-  bootstrap: [AppComponent],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        ToolsNavbarModule,
+        HonorCodePopupModule,
+        MatInputModule,
+        MatSelectModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+        HttpClientModule,
+        MarkdownModule.forRoot({loader: HttpClientModule}),
+        MatGridListModule,
+        MatCardModule,
+        CurveModule,
+        MoonModule,
+        VenusModule,
+        VariableModule,
+        ScatterModule,
+        SpectrumModule,
+        DualModule,
+        RcModule,
+        NgOptimizedImage,
+    ],
+    declarations: [
+        AppComponent,
+        HomeComponent,
+        AboutComponent,
+        PageNotFoundComponent,
+    ],
+    providers: [AppearanceStorageService, AppearanceService],
+    bootstrap: [AppComponent],
 })
 export class AppModule {
 }

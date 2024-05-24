@@ -6,7 +6,7 @@ import {HonorCodeChartService} from "../../../shared/honor-code-popup/honor-code
 import {MyFileParser} from "../../../shared/data/FileParser/FileParser";
 import {FileType} from "../../../shared/data/FileParser/FileParser.util";
 import {Subject, takeUntil} from "rxjs";
-import {VariableDataDict} from "../../variable.service.util";
+import {errorMSE, VariableDataDict} from "../../variable.service.util";
 import {MatDialog} from "@angular/material/dialog";
 import {
   VariableLightCurveChartFormComponent
@@ -62,6 +62,7 @@ export class VariableLightCurveComponent implements OnDestroy {
               source2: src1data[right][1] as number,
               error1: src0data[left][2] as number,
               error2: src1data[right][2] as number,
+              errorMSE: null,
             });
             left++;
             right++;
@@ -72,6 +73,7 @@ export class VariableLightCurveComponent implements OnDestroy {
               source2: null,
               error1: src0data[left][2] as number,
               error2: null,
+              errorMSE: null,
             });
             left++;
           } else {
@@ -81,6 +83,7 @@ export class VariableLightCurveComponent implements OnDestroy {
               source2: src1data[right][1] as number,
               error1: null,
               error2: src1data[right][2] as number,
+              errorMSE: null
             });
             right++;
           }
@@ -92,6 +95,7 @@ export class VariableLightCurveComponent implements OnDestroy {
             source2: null,
             error1: src0data[left][2] as number,
             error2: null,
+            errorMSE: null
           });
           left++;
         }
@@ -102,6 +106,7 @@ export class VariableLightCurveComponent implements OnDestroy {
             source2: src1data[right][1] as number,
             error1: null,
             error2: src1data[right][2] as number,
+            errorMSE: null
           });
           right++;
         }

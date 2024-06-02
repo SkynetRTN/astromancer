@@ -171,8 +171,8 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
         const minJD = data[0][0]!;
         const period = this.getPeriodFoldingPeriod();
         const phase = this.getPeriodFoldingPhase();
-        const pfData: number[][] = [];
-        const pfError: number[][] = [];
+        let pfData: number[][] = [];
+        let pfError: number[][] = [];
         if (period !== 0 && period !== null) {
             for (let i = 0; i < data.length; i++) {
                 let temp_x = phase * period + floatMod((data[i][0]! - minJD), period);
@@ -182,12 +182,14 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
                 pfData.push([temp_x, data[i][1]!]);
                 pfError.push([temp_x, error[i][1]!, error[i][2]!]);
                 if (this.getPeriodFoldingDisplayPeriod() === VariableDisplayPeriod.TWO) {
-                    let new_x = temp_x + parseFloat(period.toString());
+                    let new_x = temp_x + parseFloat(period as any);
                     pfData.push([new_x, data[i][1]!]);
                     pfError.push([new_x, error[i][1]!, error[i][2]!]);
                 }
             }
         }
+        pfData.sort((a, b) => b[0] - a[0]);
+        pfError.sort((a, b) => b[0] - a[0]);
         return {data: pfData, error: pfError};
     }
 

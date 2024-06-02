@@ -35,6 +35,8 @@ export class VariablePeriodFoldingFormComponent implements OnDestroy {
       xAxisLabel: new FormControl(this.service.getPeriodFoldingXAxisLabel()),
       yAxisLabel: new FormControl(this.service.getPeriodFoldingYAxisLabel()),
       displayPeriod: new FormControl(this.service.getPeriodFoldingDisplayPeriod()),
+      period: new FormControl(this.periodMin),
+      phase: new FormControl(0),
     });
     this.formGroup.controls['chartTitle'].valueChanges.pipe(
       debounceTime(200),
@@ -83,6 +85,8 @@ export class VariablePeriodFoldingFormComponent implements OnDestroy {
     this.service.data$.pipe(
       takeUntil(this.destroy$),
     ).subscribe(() => {
+      this.periodMin = this.service.getPeriodogramStartPeriod();
+      this.periodMax = this.service.getJdRange();
       this.periodStep = this.getPeriodStep();
     });
   }
@@ -106,6 +110,7 @@ export class VariablePeriodFoldingFormComponent implements OnDestroy {
   onChange($event: InputSliderValue) {
     if ($event.key === 'period') {
       this.service.setPeriodFoldingPeriod($event.value);
+      this.periodStep = this.getPeriodStep();
     } else if ($event.key === 'phase') {
       this.service.setPeriodFoldingPhase($event.value);
     }

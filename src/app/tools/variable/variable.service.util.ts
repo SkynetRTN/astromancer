@@ -8,6 +8,15 @@ export interface VariableDataDict {
   source2: number | null;
   error1: number | null;
   error2: number | null;
+  errorMSE: number | null;
+}
+
+export function errorMSE(error1: number | null, error2: number | null): number | null {
+  if (error1 == null || error2 == null) {
+    return null;
+  } else {
+    return Math.sqrt(error1 ** 2 + error2 ** 2) / 2;
+  }
 }
 
 export class VariableData implements MyData {
@@ -26,6 +35,7 @@ export class VariableData implements MyData {
         source2: Math.random() * 20,
         error1: 1,
         error2: 1,
+        errorMSE: errorMSE(1, 1)
       });
     }
     return data;
@@ -35,10 +45,10 @@ export class VariableData implements MyData {
     if (index > 0) {
       for (let i = 0; i < amount; i++) {
         this.dataDict.splice(index + i, 0,
-          {jd: null, source1: null, source2: null, error1: null, error2: null});
+          {jd: null, source1: null, source2: null, error1: null, error2: null, errorMSE: null});
       }
     } else {
-      this.dataDict.push({jd: null, source1: null, source2: null, error1: null, error2: null});
+      this.dataDict.push({jd: null, source1: null, source2: null, error1: null, error2: null, errorMSE: null});
     }
   }
 
@@ -67,13 +77,13 @@ export class VariableData implements MyData {
   getChartSourcesErrorArray(): (number | null)[][][] {
     return [
       this.dataDict.filter(
-        (entry: VariableDataDict) => entry.jd !== null && entry.source1 !== null && entry.error1 !== null)
+        (entry: VariableDataDict) => entry.jd !== null && entry.source1 !== null && entry.errorMSE !== null)
         .map(
-          (entry: VariableDataDict) => [entry.jd, entry.source1! - entry.error1!, entry.source1! + entry.error1!]),
+          (entry: VariableDataDict) => [entry.jd, entry.source1! - entry.errorMSE!, entry.source1! + entry.errorMSE!]),
       this.dataDict.filter(
-        (entry: VariableDataDict) => entry.jd !== null && entry.source2 !== null && entry.error2 !== null)
+        (entry: VariableDataDict) => entry.jd !== null && entry.source2 !== null && entry.errorMSE !== null)
         .map(
-          (entry: VariableDataDict) => [entry.jd, entry.source2! - entry.error2!, entry.source2! + entry.error2!]),
+          (entry: VariableDataDict) => [entry.jd, entry.source2! - entry.errorMSE!, entry.source2! + entry.errorMSE!]),
     ];
   }
 
@@ -83,6 +93,18 @@ export class VariableData implements MyData {
 
   setData(data: VariableDataDict[]): void {
     this.dataDict = data;
+    this.dataDict = this.dataDict.map(
+        (entry: VariableDataDict) => {
+            return {
+                jd: entry.jd,
+                source1: entry.source1,
+                source2: entry.source2,
+                error1: entry.error1,
+                error2: entry.error2,
+                errorMSE: errorMSE(entry.error1, entry.error2)
+            }
+        }
+    );
   }
 }
 

@@ -116,6 +116,7 @@ export class VariableLightCurveHighchartComponent implements AfterViewInit, OnDe
         visible: this.service.getVariableStar() === VariableStarOptions.NONE,
         showInLegend: false,
         enableMouseTracking: false,
+        whiskerLength: 0,
       });
     }
   }
@@ -140,6 +141,7 @@ export class VariableLightCurveHighchartComponent implements AfterViewInit, OnDe
         data: errors[i],
         type: 'errorbar',
         visible: this.service.getVariableStar() === VariableStarOptions.NONE,
+        whiskerLength: 0,
       });
     }
   }
@@ -162,6 +164,7 @@ export class VariableLightCurveHighchartComponent implements AfterViewInit, OnDe
       visible: this.service.getVariableStar() !== VariableStarOptions.NONE,
       showInLegend: false,
       enableMouseTracking: false,
+      whiskerLength: 0,
     });
   }
 
@@ -178,6 +181,7 @@ export class VariableLightCurveHighchartComponent implements AfterViewInit, OnDe
       data: this.service.getChartVariableErrorArray(),
       type: 'errorbar',
       visible: this.service.getVariableStar() !== VariableStarOptions.NONE,
+      whiskerLength: 0,
     });
   }
 

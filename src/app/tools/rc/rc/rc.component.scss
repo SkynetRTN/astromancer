@@ -1,0 +1,19 @@
+.container {
+    display: flex;
+    height: 93%;
+    width: 100%;
+}
+
+.form-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-container div {
+    border: 1px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}

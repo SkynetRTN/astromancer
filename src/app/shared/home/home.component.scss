@@ -39,6 +39,16 @@ h1, h2 {
   pointer-events: none;
 }
 
+.radio-preview {
+  display: flex;
+  height: 300px;
+  width: 100%;
+  pointer-events: none;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
 .center-vertical {
   display: flex;
   align-items: center;

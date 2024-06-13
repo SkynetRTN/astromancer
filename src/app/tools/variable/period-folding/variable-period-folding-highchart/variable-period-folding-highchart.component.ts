@@ -65,6 +65,7 @@ export class VariablePeriodFoldingHighchartComponent implements AfterViewInit, O
     ).subscribe(() => {
       this.updateData();
       this.updateXAxisScale();
+      this.updateChart();
     });
   }
 
@@ -85,27 +86,22 @@ export class VariablePeriodFoldingHighchartComponent implements AfterViewInit, O
         radius: 5,
       }
     })
-    // this.chartObject.addSeries({
-    //   name: "error",
-    //   data: dataError['error'],
-    //   type: 'errorbar',
-    //   showInLegend: false,
-    //   enableMouseTracking: false,
-    // });
+    this.chartObject.addSeries({
+      name: "error",
+      data: dataError['error'],
+      type: 'errorbar',
+      showInLegend: false,
+      enableMouseTracking: false,
+      whiskerLength: 0,
+    });
   }
 
   updateData() {
     const dataError = this.service.getPeriodFoldingChartDataWithError();
-    this.chartObject.series[0].update({
-      name: this.service.getPeriodFoldingDataLabel(),
-      data: dataError['data'],
-      type: 'scatter',
-    });
-    // this.chartObject.series[1].update({
-    //   name: "error",
-    //   data: dataError['error'],
-    //   type: 'errorbar',
-    // });
+    this.chartObject.series[0].setData([]);
+    this.chartObject.series[1].setData([]);
+    this.chartObject.series[0].setData(dataError['data']);
+    this.chartObject.series[1].setData(dataError['error']);
   }
 
   ngOnDestroy(): void {

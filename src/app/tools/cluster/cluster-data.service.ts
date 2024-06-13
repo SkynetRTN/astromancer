@@ -112,7 +112,7 @@ export class ClusterDataService {
     }
 
     fetchCatalog(ra: number, dec: number, radius: number, catalogs: Catalogs[]): Job {
-        const catalogJob = new Job('/cluster/catalog', JobType.FETCH_CATALOG, this.http, 200);
+        const catalogJob = new Job('/cluster/catalog', JobType.FETCH_CATALOG, this.http, 500);
         let payload: any = {
             ra: ra,
             dec: dec,
@@ -140,7 +140,7 @@ export class ClusterDataService {
     }
 
     fetchFieldStarRemoval(): Job {
-        const fsrJob = new Job('/cluster/fsr', JobType.FIELD_STAR_REMOVAL, this.http, 200);
+        const fsrJob = new Job('/cluster/fsr', JobType.FIELD_STAR_REMOVAL, this.http, 500);
         fsrJob.createJob({sources: this.getAstrometry()});
         fsrJob.update$.pipe(
             takeUntil(fsrJob.complete$)

@@ -89,7 +89,7 @@ export class Job {
   private updateJob(): void {
     if (this.id === null)
       return;
-    this.http.get(`${environment.apiUrl}/job`,
+    this.http.get(`${environment.apiUrl}/job/state`,
       {params: {'id': this.id.toString()}}).subscribe(
       (resp: any) => {
         resp = resp as JobResponse;

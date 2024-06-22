@@ -1,0 +1,35 @@
+.container {
+    display: flex;
+    height: 93%;
+    width: 100%;
+}
+
+.form-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-container div {
+    border: 1px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+.wordin{
+    text-align: center;
+    font-weight:300;
+    font-size: x-large;
+    padding: 20px;
+}
+
+.freq{
+    padding: 10px;
+}
+.frq {
+    justify-content: center;
+    padding: 5px;
+
+}

@@ -1,3 +1,80 @@
-<div class="row tool-container">
-    <p>rc works!</p>
+<div class="container">
+    <div class="form-container">
+        <div>Info</div>
+        <div class=" row input container"> 
+            <p class="wordin">Image Processing Basics</p>
+            <form class="h-fit">
+                <mat-form-field class="freq">
+                  <mat-label i18n>Channel</mat-label>
+                  <mat-select>
+                    <mat-option *ngFor="let channel of channels" [value]="channel">
+                      {{channel}}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error>Please Select a Channel to proceed</mat-error>
+                </mat-form-field>
+                <mat-form-field class="freq">
+                    <mat-label i18n>Spectrum</mat-label>
+                    <mat-select>
+                      <mat-option *ngFor="let spectrum of spectrums" [value]="spectrum">
+                        {{spectrum}}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error>Please Select a Spectrum to proceed</mat-error>
+                  </mat-form-field>
+              </form>
+              <form class="h-fit">
+                <mat-form-field class="freq">
+                  <mat-label i18n>Gain Calibration</mat-label>
+                  <mat-select>
+                    <mat-option *ngFor="let gainCalibration of gCals" [value]="gainCalibration">
+                      {{gainCalibration}}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error>Please Select a Gain Calibration to proceed</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="fill" class="spectrum">
+                    <mat-label i18n>Coordinate Type</mat-label>
+                    <mat-select>
+                      <mat-option *ngFor="let imageCoordinate of imgCoords" [value]="imageCoordinate">
+                        {{imageCoordinate}}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error>Please Select a Coordinate Type to proceed</mat-error>
+                  </mat-form-field>
+                  <mat-form-field appearance="fill" class="spectrum">
+                    <mat-label i18n>Time Delay Option</mat-label>
+                    <mat-select>
+                      <mat-option *ngFor="let timeDelayOption of tdls" [value]="timeDelayOption">
+                        {{timeDelayOption}}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error>Please Select a ime Delay Option to proceed</mat-error>
+                  </mat-form-field>
+              </form>  
+        </div>
+        <div>Frequency Range
+            <form class="example-form">
+                <mat-form-field class="frq">
+                    <mat-label>Frequency Range Preset</mat-label>
+                    <input matInput>
+                </mat-form-field>
+                <mat-form-field class="frq">
+                    <mat-label>Min Frequency (MHz)</mat-label>
+                    <input matInput>
+                </mat-form-field>
+                <mat-form-field class="frq">
+                    <mat-label>Max Frequency (MHz)</mat-label>
+                    <input matInput>
+                </mat-form-field>
+            </form>
+
+        </div>
+        <div>Contaminant Cleaning and Surface Modeling Details</div>
+    </div>
+    <div class="form-container">
+        <div>File Upload</div>
+        <div>Uploaded File View and Selection</div>
+        <div>Job Submission and Selection</div>
+    </div>
 </div>

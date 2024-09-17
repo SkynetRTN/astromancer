@@ -2,9 +2,9 @@ import {Component, NgModule, ViewChild} from '@angular/core';
 import {MatSidenav, MatSidenavModule} from '@angular/material/sidenav';
 import {MenubarModule} from "../menubar/menubar.component";
 import {AppRoutingModule} from "../../app-routing.module";
-import {MatLegacyButtonModule as MatButtonModule} from "@angular/material/legacy-button";
 import {MatIconModule} from "@angular/material/icon";
-import {MatLegacyListModule as MatListModule} from "@angular/material/legacy-list";
+import {MatButtonModule} from "@angular/material/button";
+import {MatListModule} from "@angular/material/list";
 
 /**
  * Sidenav with custom escape and backdrop click behavior

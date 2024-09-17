@@ -6,7 +6,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { FITSHeaderParser } from '../../shared/data/FitsParser/FitsParser';
-import * as fitsjs from 'fitsjs';  // Import fitsjs and access classes via fitsjs.astro
 
 @Component({
   selector: 'app-radiosearch',
@@ -88,33 +87,6 @@ export class RadioSearchComponent {
       this.fitsFileName = file.name;
       this.processFitsFile(file);
     }
-  }
-
-  // Display the FITS image on the canvas
-  displayFitsImage(imageHDU: fitsjs.astro.HDU) {
-    if (!this.canvas) return;
-
-    const ctx = this.canvas.getContext('2d');
-    if (!ctx) return;
-
-    const { naxis1: width, naxis2: height, bscale = 1, bzero = 0 } = imageHDU.header;
-    const imageData = ctx.createImageData(width, height);
-    const pixelData = imageHDU.getFrame();
-
-    for (let i = 0; i < width * height; i++) {
-      const scaledPixel = Math.floor((pixelData[i] * bscale + bzero) * 255);
-      const pixelValue = Math.max(0, Math.min(255, scaledPixel));
-
-      imageData.data[4 * i] = pixelValue;     // Red
-      imageData.data[4 * i + 1] = pixelValue; // Green
-      imageData.data[4 * i + 2] = pixelValue; // Blue
-      imageData.data[4 * i + 3] = 255;        // Alpha
-    }
-
-    this.canvas.width = width;
-    this.canvas.height = height;
-
-    ctx.putImageData(imageData, 0, 0);
   }
 
   processFitsFile(file: File): void {

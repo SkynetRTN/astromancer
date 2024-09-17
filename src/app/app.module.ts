@@ -14,6 +14,7 @@ import {AppearanceService} from "./shared/settings/appearance/service/appearance
 import {MatInputModule} from "@angular/material/input";
 import {MatSelectModule} from "@angular/material/select";
 import {MatButtonModule} from "@angular/material/button";
+import {MatTableModule} from '@angular/material/table';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MarkdownModule} from "ngx-markdown";
 import {HttpClientModule} from "@angular/common/http";
@@ -26,6 +27,7 @@ import {VariableModule} from "./tools/variable/variable.module";
 import {ScatterModule} from "./tools/scatter/scatter.module";
 import {SpectrumModule} from "./tools/spectrum/spectrum.module";
 import {DualModule} from "./tools/dual/dual.module";
+import {RadioSearchModule} from "./tools/radiosearch/radiosearch.module";
 import {RcModule} from "./tools/rc/rc.module";
 import {NgOptimizedImage} from "@angular/common";
 
@@ -47,6 +49,7 @@ registerAllModules();
         MarkdownModule.forRoot({loader: HttpClientModule}),
         MatGridListModule,
         MatCardModule,
+        MatTableModule,
         CurveModule,
         MoonModule,
         VenusModule,
@@ -54,6 +57,7 @@ registerAllModules();
         ScatterModule,
         SpectrumModule,
         DualModule,
+        RadioSearchModule,
         RcModule,
         NgOptimizedImage,
     ],

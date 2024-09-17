@@ -19,8 +19,7 @@ import { map } from 'rxjs/operators';
     public sourcesSubject: BehaviorSubject<{ ra: number; dec: number }[]>;
 
     constructor(
-      private http: HttpClient,
-      private storageService: RadioSearchStorageService
+      private http: HttpClient
     ) {
       
         // Initialize the BehaviorSubject with an empty array or existing sources
@@ -44,7 +43,6 @@ import { map } from 'rxjs/operators';
     // Notify any subscribers about the updated sources list
     this.sourcesSubject.next(this.sources);
 }
-
 
 
 public getRadioCatalogResults(id: number | null): Observable<any> | void {
@@ -72,18 +70,6 @@ fetchRadioCatalog(ra: number, dec: number, width: number, height: number): Obser
 
   // Use the environment.apiUrl variable with template strings (backticks)
   return this.http.post(`${environment.apiUrl}/radiosearch/radio-catalog/query`, payload);
-}
-
-
-
-// Function to process the catalog results
-processRadioCatalogResults(results: any): void {
-  // Logic to handle the results goes here
-  console.log('Processing catalog results:', results);
-
-  // You can store the results or update the UI accordingly
-  // For example:
-  this.storageService.setSources(results);
 }
 
 }

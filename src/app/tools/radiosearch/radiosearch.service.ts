@@ -64,9 +64,9 @@ public getRadioCatalogResults(id: number | null): Observable<any> | void {
 }
 
 
-fetchRadioCatalog(ra: number, dec: number, width: number, height: number): Observable<any> {
+fetchRadioCatalog(rccords: string, ra: number, dec: number, width: number, height: number): Observable<any> {
   // Build the payload with RA, Dec, width, and height
-  const payload = { ra, dec, width, height };
+  const payload = { rccords, ra, dec, width, height };
 
   console.log('Payload being sent:', payload);  // Debugging
 

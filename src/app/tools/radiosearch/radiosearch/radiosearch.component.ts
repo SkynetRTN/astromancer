@@ -28,6 +28,7 @@ export class RadioSearchComponent implements AfterViewInit {
 
   naxis1: number = 100;
   naxis2: number = 100;
+  rccords: string | undefined;
   bitpix: number | undefined;
 
   fitsLoaded = false;
@@ -222,8 +223,9 @@ export class RadioSearchComponent implements AfterViewInit {
   processFitsFile(file: File): Promise<void> {
     return new Promise((resolve) => {
     const reader = new FileReader();
-  
+
     reader.onload = (e) => {
+      
       const arrayBuffer = e.target?.result as ArrayBuffer;
       if (arrayBuffer) {
         try {
@@ -237,6 +239,7 @@ export class RadioSearchComponent implements AfterViewInit {
           // Retrieve important header values
           this.naxis1 = header.get('NAXIS1');
           this.naxis2 = header.get('NAXIS2');
+          this.rccords = header.get('RCCORDS');
           const bitpix = header.get('BITPIX');
   
           if (!this.naxis1 || !this.naxis2 || !bitpix) {
@@ -479,8 +482,8 @@ export class RadioSearchComponent implements AfterViewInit {
     });
 
     // Find the maximum asinh-transformed value for normalization
-    const maxTransformed = Math.max(...transformedData);
-
+    const maxTransformed = transformedData.reduce((max, value) => (value > max ? value : max), -Infinity);
+    
     // Normalize the asinh-transformed data to the range [0, 255]
     const normalizedData = transformedData.map((value) => {
       // Normalize the transformed value to [0, 255]
@@ -488,13 +491,12 @@ export class RadioSearchComponent implements AfterViewInit {
     });
 
     console.log('Data After Normalization:', normalizedData);
-    console.log('Maximum value:', Math.max(...normalizedData));
     
     const imageDataArray = new Uint8ClampedArray(width * height * 4);
 
     
     // Find the max intensity in the normalized data to scale after asinh
-    const maxIntensity = Math.max(...normalizedData);
+    const maxIntensity = maxTransformed;
     const scaleFactor = Math.asinh(maxIntensity);  // Use this to normalize the asinh result
 
     
@@ -547,13 +549,15 @@ export class RadioSearchComponent implements AfterViewInit {
   
   
   searchCatalog(): void {
-    if (this.ra && this.dec && this.width && this.height) {
-      this.service.fetchRadioCatalog(this.ra, this.dec, this.width, this.height).subscribe(
+    if (this.rccords && this.ra && this.dec && this.width && this.height) {
+      this.service.fetchRadioCatalog(this.rccords, this.ra, this.dec, this.width, this.height).subscribe(
         (response: any) => {
           const results = response.objects.map((source: any) => ({
             name: source.SIMBAD || 'Unknown',
             ra: source.ra,
             dec: source.dec,
+            galLong: source.galLong,
+            galLat: source.galLat,
             threeC: source.threeC || 'Unknown',
           }));
 
@@ -570,27 +574,56 @@ export class RadioSearchComponent implements AfterViewInit {
           }));
 
 
-
+          //I assume this is how the circles aroudn the sources are drawn
+          if (this.rccords == 'equatorial'){
           const raList = results.map((source: any) => source.ra);
           const decList = results.map((source: any) => source.dec);
-          if (this.canvas) {
-            const context = this.canvas.getContext('2d');
-            if (context) {
-              for (let i = 0; i < raList.length; i++) {
-                const pixelCoordinates = this.getPixelCoordinates(raList[i], decList[i]);
-                // Draw a hollow rings at the transformed coordinates
-                if (pixelCoordinates) {
+          console.log("1");
+            if (this.canvas) {
+              const context = this.canvas.getContext('2d');
+              if (context) {
+                for (let i = 0; i < raList.length; i++) {
+                  const pixelCoordinates = this.getPixelCoordinates(raList[i], decList[i]);
+                  console.log(pixelCoordinates);
+                  // Draw a hollow rings at the transformed coordinates
+                  if (pixelCoordinates) {
                   context.beginPath();
                   context.arc(pixelCoordinates.x, pixelCoordinates.y, 25, 0, 2 * Math.PI); // Radius is 10, can be adjusted
                   context.strokeStyle = '#be1951'; // Set ring color using hex code (blue in this case)
                   context.lineWidth = 4; // Adjust the thickness of the ring outline
                   context.stroke(); // Draw the outline (ring)
                   context.closePath();
+                  }
                 }
               }
             }
           }
 
+
+          else if (this.rccords == 'galactic'){
+            const galLongList = results.map((source: any) => source.galLong);
+            console.log(galLongList);
+            const decList = results.map((source: any) => source.galLat);
+            console.log("2");
+              if (this.canvas) {
+                const context = this.canvas.getContext('2d');
+                if (context) {
+                  for (let i = 0; i < galLongList.length; i++) {
+                    const pixelCoordinates = this.getPixelCoordinates(galLongList[i], decList[i]);
+                    
+                    // Draw a hollow rings at the transformed coordinates
+                    if (pixelCoordinates) {
+                    context.beginPath();
+                    context.arc(pixelCoordinates.x, pixelCoordinates.y, 25, 0, 2 * Math.PI); // Radius is 10, can be adjusted
+                    context.strokeStyle = '#be1951'; // Set ring color using hex code (blue in this case)
+                    context.lineWidth = 4; // Adjust the thickness of the ring outline
+                    context.stroke(); // Draw the outline (ring)
+                    context.closePath();
+                    }
+                  }
+                }
+              }
+            }
           this.dataSource.data = results;
           this.results = results;
           this.hiddenResults = hidden_results;

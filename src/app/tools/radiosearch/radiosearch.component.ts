@@ -39,6 +39,7 @@ export class RadioSearchComponent implements AfterViewInit {
   scaledData: any;
   maxValue: number = 0.5;
   targetFreq: number = 1.5;
+  averageFlux: number = 2;
 
   displayedColumns: string[] = ['name', 'ra', 'dec'];  // Define the columns
   dataSource = new MatTableDataSource<any>([]);  // Initialize the data source
@@ -47,6 +48,7 @@ export class RadioSearchComponent implements AfterViewInit {
   selectedSource: any = null; // Store the selected source
   wcsInfo: { crpix1: number, crpix2: number, crval1: number, crval2: number, cdelt1: number, cdelt2: number } | null = null;
   currentCoordinates: { ra: number, dec: number } | null = null;
+  params: { targetFreq: number, threeC: number }[] | null = null;
   // Define the structure of the source object in hiddenResults
 
 
@@ -140,7 +142,7 @@ export class RadioSearchComponent implements AfterViewInit {
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-    const worldCoordinates = this.getWorldCoordinates(x - this.xOffset, y - this.yOffset);
+    const worldCoordinates = this.getWorldCoordinates(x - this.xOffset, y + this.yOffset);
     const mouseRA = worldCoordinates?.ra;
     const mouseDec = worldCoordinates?.dec;
 
@@ -186,8 +188,11 @@ export class RadioSearchComponent implements AfterViewInit {
                         }
                     }
 
+                    this.params = [{targetFreq: Math.log10(1000 * this.targetFreq), threeC: source.threeC}]
+
                     // Update the chart data with the modified scatterData
                     this.hcservice.setData(scatterData);
+                    this.hcservice.setParams(this.params);
                 }
 
                 // Set the chart title
@@ -197,7 +202,7 @@ export class RadioSearchComponent implements AfterViewInit {
                   context.beginPath();
                   context.arc(
                     pixelCoordinates.x + this.xOffset,
-                    pixelCoordinates.y + this.yOffset,
+                    pixelCoordinates.y - this.yOffset,
                     25, 0, 2 * Math.PI
                   );
                   context.strokeStyle = '#ff0000'; // Set ring color using hex code
@@ -298,7 +303,6 @@ export class RadioSearchComponent implements AfterViewInit {
   
     return { x, y };
   }
-  
 
   processFitsFile(file: File): Promise<void> {
     return new Promise((resolve) => {
@@ -316,6 +320,7 @@ export class RadioSearchComponent implements AfterViewInit {
             // Retrieve relevant header values
             this.naxis1 = header.get('NAXIS1');
             this.naxis2 = header.get('NAXIS2');
+            console.log(this.naxis1, this.naxis2)
             this.ra = header.get('CENTERRA');
             this.dec = header.get('CENTERDE');
             const bitpix = header.get('BITPIX');
@@ -327,12 +332,15 @@ export class RadioSearchComponent implements AfterViewInit {
               throw new Error('Invalid or missing header values for NAXIS1, NAXIS2, or BITPIX.');
             }
   
-            const bytesPerPixel = Math.abs(bitpix) / 8;
-            const rowLength = this.naxis1 * bytesPerPixel;
-            const dataOffset = 2880;
-  
+            const headerLength = this.service.getHeaderLength(arrayBuffer);
+            const dataOffset = headerLength; // Data starts after the header
+            
+            const bytesPerPixel = Math.abs(bitpix) / 8; // Size of each pixel in bytes
+            const rowLength = this.naxis1 * bytesPerPixel; // Logical row length in bytes
+            
             const dataView = new DataView(arrayBuffer, dataOffset);
-            const pixelArray = new Array(this.naxis1 * this.naxis2);
+            const pixelArray = new Array(this.naxis1 * this.naxis2); // Initialize pixel array
+            
   
             // Use endian swap method if needed
             const swapEndian = fitsjs.astro.FITS.DataUnit.swapEndian;
@@ -397,8 +405,12 @@ export class RadioSearchComponent implements AfterViewInit {
                 throw new Error(`Unsupported BITPIX value: ${bitpix}`);
             }
   
+            const rollAmount = 230; // Adjust based on observed roll
+            console.log('roll amount,', rollAmount)
+            const unrolledPixelArray = this.service.unrollImage(pixelArray, this.naxis1, this.naxis2, rollAmount);
+
             // Scale pixel values using BSCALE and BZERO
-            this.scaledData = pixelArray.map((value) => (isNaN(value) ? 0 : bscale * value + bzero));
+            this.scaledData = unrolledPixelArray.map((value) => (isNaN(value) ? 0 : bscale * value + bzero));
 
             this.fitsLoaded = true;
             this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2); // Display the image
@@ -449,7 +461,7 @@ export class RadioSearchComponent implements AfterViewInit {
           // Draw a hollow rings at the transformed coordinates
           if (pixelCoordinates) {
             context.beginPath();
-            context.arc(pixelCoordinates.x + this.xOffset, pixelCoordinates.y + this.yOffset, 25, 0, 2 * Math.PI);
+            context.arc(pixelCoordinates.x + this.xOffset, pixelCoordinates.y - this.yOffset, 25, 0, 2 * Math.PI);
             context.strokeStyle = '#ffffff'; // Set ring color using hex code
             context.lineWidth = 4; // Adjust the thickness of the ring outline
             context.stroke(); // Draw the outline (ring)
@@ -665,59 +677,71 @@ export class RadioSearchComponent implements AfterViewInit {
     const source = this.hiddenResults.find((src: any) => src.id === sourceId);
 
     if (source) {
-      // Create fluxes array from source
-      const fluxes: (number | null)[] = [
-        source.MHz38 !== 'Unknown' ? source.MHz38 : null,
-        source.MHz159 !== 'Unknown' ? source.MHz159 : null,
-        source.MHz178 !== 'Unknown' ? source.MHz178 : null,
-        source.MHz750 !== 'Unknown' ? source.MHz750 : null,
-        source.L1400 !== 'Unknown' ? source.L1400 : null,
-        source.S2695 !== 'Unknown' ? source.S2695 : null,
-        source.C5000 !== 'Unknown' ? source.C5000 : null,
-        source.X8400 !== 'Unknown' ? source.X8400 : null
-      ];
+        // Create fluxes array from source
+        const fluxes: (number | null)[] = [
+            source.MHz38 !== 'Unknown' ? source.MHz38 : null,
+            source.MHz159 !== 'Unknown' ? source.MHz159 : null,
+            source.MHz178 !== 'Unknown' ? source.MHz178 : null,
+            source.MHz750 !== 'Unknown' ? source.MHz750 : null,
+            source.L1400 !== 'Unknown' ? source.L1400 : null,
+            source.S2695 !== 'Unknown' ? source.S2695 : null,
+            source.C5000 !== 'Unknown' ? source.C5000 : null,
+            source.X8400 !== 'Unknown' ? source.X8400 : null
+        ];
 
-      fluxes.forEach((flux: number | null, index: number) => {
-        if (flux !== null) {
-          scatterData.push({
-            frequency: Number(Math.log10(frequencies[index]).toFixed(3)),  // Round frequency to 1 decimal place
-            flux: Number(Math.log10(flux).toFixed(3)),                     // Round flux to 1 decimal place
-            flux_fit: Number(Math.log10(flux).toFixed(3))  
-          });
-        }
-      });
-
-      const newFrequency = this.targetFreq * 1000; // Set your target frequency in Hz
-
-      // Find the closest lower and upper indices relative to newFrequency
-      let lowerIndex = -1;
-      let upperIndex = -1;
-      
-      for (let i = 0; i < frequencies.length; i++) {
-        if (frequencies[i] < newFrequency) {
-          lowerIndex = i; // Update lowerIndex whenever we find a lower frequency
-        } else if (frequencies[i] > newFrequency) {
-          upperIndex = i; // Set upperIndex to the first frequency greater than newFrequency
-          break; // Stop as soon as we find the first higher frequency
-        }
-      }
-      
-      // Check if we found valid indices for both lower and upper frequencies
-      if (lowerIndex !== -1 && upperIndex !== -1 && fluxes[lowerIndex] !== null && fluxes[upperIndex] !== null) {
-        // Calculate the average flux between the two neighboring points
-        const averageFlux = (fluxes[lowerIndex]! + fluxes[upperIndex]!) / 2;
-        // Add the new point
-        scatterData.push({
-          frequency: Number(Math.log10(newFrequency).toFixed(3)), // Log of the new frequency
-          flux: Number(Math.log10(averageFlux).toFixed(3)),        // Log of the average flux
-          flux_fit: Number(Math.log10(averageFlux).toFixed(3)),  
-          highlight: true
+        fluxes.forEach((flux: number | null, index: number) => {
+            if (flux !== null) {
+                scatterData.push({
+                    frequency: Number(Math.log10(frequencies[index]).toFixed(3)), // Log frequency
+                    flux: Number(Math.log10(flux).toFixed(3)),                   // Log flux
+                    flux_fit: Number(Math.log10(flux).toFixed(3))
+                });
+            }
         });
-      }      
+
+        const newFrequency = this.targetFreq * 1000; // Set your target frequency in Hz
+
+        // Find the closest lower and upper indices relative to newFrequency
+        let lowerIndex = -1;
+        let upperIndex = -1;
+
+        for (let i = 0; i < frequencies.length; i++) {
+            if (frequencies[i] < newFrequency) {
+                lowerIndex = i; // Update lowerIndex whenever we find a lower frequency
+            } else if (frequencies[i] > newFrequency) {
+                upperIndex = i; // Set upperIndex to the first frequency greater than newFrequency
+                break; // Stop as soon as we find the first higher frequency
+            }
+        }
+
+        // Check if we found valid indices for both lower and upper frequencies
+        if (lowerIndex !== -1 && upperIndex !== -1 && fluxes[lowerIndex] !== null && fluxes[upperIndex] !== null) {
+            const fluxLower = fluxes[lowerIndex]!;
+            const fluxUpper = fluxes[upperIndex]!;
+            const freqLower = frequencies[lowerIndex];
+            const freqUpper = frequencies[upperIndex];
+
+            // Calculate weights in linear space
+            const freqDiff = freqUpper - freqLower; // Difference in linear space
+            const weightUpper = (newFrequency - freqLower) / freqDiff;
+            const weightLower = 1 - weightUpper;
+
+            // Calculate the average flux in linear space
+            const averageFluxLinear = fluxLower * weightLower + fluxUpper * weightUpper;
+
+            // Add the new point
+            scatterData.push({
+                frequency: Number(Math.log10(newFrequency).toFixed(3)), // Log of the new frequency
+                flux: Number(Math.log10(averageFluxLinear).toFixed(3)), // Log of the averaged flux
+                flux_fit: Number(Math.log10(averageFluxLinear).toFixed(3)),
+                highlight: true
+            });
+        }
     }
 
     return scatterData;
   }
+
 
 
   /**
@@ -820,7 +844,7 @@ export class RadioSearchComponent implements AfterViewInit {
       const image = canvas.toDataURL('image/png');
       const downloadLink = document.createElement('a');
       downloadLink.href = image;
-      downloadLink.download = 'canvas-image.png';
+      downloadLink.download = this.fitsFileName!;
       document.body.appendChild(downloadLink);
       downloadLink.click();
       document.body.removeChild(downloadLink);

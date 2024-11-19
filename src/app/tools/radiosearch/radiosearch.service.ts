@@ -258,10 +258,9 @@ public unrollImage(pixelArray: number[], width: number, height: number, rollAmou
 }
 
 
-
-fetchRadioCatalog(ra: number, dec: number, width: number, height: number): Observable<any> {
-// Build the payload with RA, Dec, width, and height
-const payload = { ra, dec, width, height };
+fetchRadioCatalog(rccords: string, ra: number, dec: number, width: number, height: number): Observable<any> {
+  // Build the payload with RA, Dec, width, and height
+const payload = { rccords, ra, dec, width, height };
 
 console.log('Payload being sent:', payload);  // Debugging
 

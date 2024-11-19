@@ -12,6 +12,7 @@ import { log } from 'console';
 export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
   Highcharts: typeof Highcharts = Highcharts;
   updateFlag: boolean = true;
+  paramData: any = null;
 
   chartConstructor: string = "chart";
   chartObject!: Highcharts.Chart;
@@ -84,8 +85,28 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
   }
 
   private setChartTitle(): void {
-    this.chartOptions.title = { text: this.service.getChartTitle() };
+    // const titleText = this.service.getChartTitle(); // Get the full title text
+    const titleText = 'Results for Radio Source'
+
+    let linkText = '';
+    let hyperlink = '';
+
+    if (this.paramData && this.paramData[0] && this.paramData[0][1]) {
+        linkText = this.paramData[0][1]; // The part of the title that should be clickable
+        hyperlink = 'https://vizier.cds.unistra.fr/viz-bin/VizieR-5?-ref=VIZ6684740f2d87a&-out.add=.&-source=VIII/1A/3c&recno=' + linkText; // Set your hyperlink URL
+    }
+
+    const clickablePart = linkText
+        ? ` <a href="${hyperlink}" target="_blank" style="text-decoration: underline; color: blue;">${linkText}</a>`
+        : '';
+
+    this.chartOptions.title = {
+        text: `${titleText}${clickablePart}`,
+        useHTML: true // Enable HTML rendering for the title
+    };
   }
+
+
 
   private setChartSeries(): void {
     const frequencyFluxData = this.processData(this.service.getDataArray());
@@ -114,7 +135,15 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
 
 
   private animateSeriesUpdate(): void {
+    // Clear all existing series before adding the new data
+    while (this.chartObject?.series.length) {
+      this.chartObject.series[0].remove(false); // Remove each series without redrawing yet
+    }
+
     const frequencyFluxData = this.processData(this.service.getDataArray());
+    this.paramData = this.processData(this.service.getParamDataArray());
+    console.log('param data', this.paramData);
+    console.log(frequencyFluxData);
 
     // Separate data points for y (actual) and fit (line of best fit)
     const actualData = frequencyFluxData.map((point) => ({
@@ -127,14 +156,25 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
         y: point[2]
     }));
 
-    // Clear all existing series before adding the new data
-    while (this.chartObject?.series.length) {
-      this.chartObject.series[0].remove(false); // Remove each series without redrawing yet
-    }
+    // Calculate the minimum and maximum y coordinates from actualData
+    const minY = Math.min(...actualData.map((point) => point.y));
+    const maxY = Math.max(...actualData.map((point) => point.y));
+
+    // Get the x coordinate from the first value in paramData
+    const xCoordinate = this.paramData[0][0];
+    console.log(xCoordinate)
+
+    // Create the fitLine array with two points
+    const fitLine = [
+      { x: Number(xCoordinate.toFixed(3)), y: Number((minY + 2).toFixed(3)) },
+      { x: Number(xCoordinate.toFixed(3)), y: Number((maxY - 2).toFixed(3)) }
+    ];
+
+    console.log('fitLine', fitLine);
 
     // Add the actual data series
     this.chartObject?.addSeries({
-        name: "Frequency vs Flux (Actual)",
+        name: "Actual",
         type: 'scatter',
         data: actualData,
         marker: {
@@ -152,7 +192,7 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
 
     // Add the fit line series
     this.chartObject?.addSeries({
-        name: "Frequency vs Flux (Fit)",
+        name: "Fit",
         type: 'scatter',
         data: fitData,
         marker: {
@@ -163,6 +203,27 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
       },
         color: '#ff0000', // Color for the fit line
         lineWidth: 1, // Thicker line to distinguish fit
+        animation: {
+            duration: 2000,
+            easing: 'easeOut'
+        }
+    }, true);
+
+
+    // Add the fit line series
+    this.chartObject?.addSeries({
+        name: "Target Frequency",
+        type: 'scatter',
+        data: fitLine,
+        marker: {
+          enabled: true,
+          symbol: 'square',
+          radius: 4,
+          fillColor: '#007bff' // Color for actual data points
+      },
+        color: '#ff0000', // Color for the fit line
+        lineWidth: 0.5, // Thicker line to distinguish fit
+        dashStyle: 'Dash',
         animation: {
             duration: 2000,
             easing: 'easeOut'

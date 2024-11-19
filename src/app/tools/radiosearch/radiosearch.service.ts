@@ -7,6 +7,7 @@ import {
   RadioSearchChartInfoStorageObject,
   RadioSearchData,
   RadioSearchDataDict,
+  RadioSearchParamDataDict,
   RadioSearchStorage,
 } from "./radiosearch.service.util";
 import { MyData } from "../shared/data/data.interface";
@@ -27,7 +28,9 @@ export class RadioSearchHighChartService implements ChartInfo, MyData {
 
   // BehaviorSubjects for observables
   private dataSubject = new BehaviorSubject<RadioSearchDataDict[]>(this.radioSearchData.getData());
+  private paramDataSubject = new BehaviorSubject<RadioSearchParamDataDict[]>(this.radioSearchData.getParamData());
   data$ = this.dataSubject.asObservable();
+  paramdata$ = this.paramDataSubject.asObservable();
 
   private dataKeysSubject = new BehaviorSubject<string[]>(this.getDataLabelArray());
   dataKeys$ = this.dataKeysSubject.asObservable();
@@ -37,6 +40,7 @@ export class RadioSearchHighChartService implements ChartInfo, MyData {
 
   constructor(private http: HttpClient) {
     this.radioSearchData.setData(RadioSearchStorage.getData());
+    this.radioSearchData.setParamData(RadioSearchStorage.getParamData());
     this.chartInfo.setStorageObject(RadioSearchStorage.getChartInfo());
   }
 
@@ -96,14 +100,28 @@ export class RadioSearchHighChartService implements ChartInfo, MyData {
     return this.radioSearchData.getData();
   }
 
+  public getParamData(): RadioSearchParamDataDict[] {
+    return this.radioSearchData.getParamData();
+  }
+
   public getDataArray(): number[][] {
     return this.radioSearchData.getDataArray();
+  }
+
+  public getParamDataArray(): number[][] {
+    return this.radioSearchData.getParamDataArray();
   }
 
   public setData(dataDict: RadioSearchDataDict[]): void {
     this.radioSearchData.setData(dataDict);
     RadioSearchStorage.saveData(dataDict);
     this.dataSubject.next(this.getData());
+  }
+
+  public setParams(dataDict: RadioSearchParamDataDict[]): void {
+    this.radioSearchData.setParamData(dataDict);
+    RadioSearchStorage.saveParamData(dataDict);
+    this.paramDataSubject.next(this.getParamData());
   }
 
   public addRow(index: number, amount: number): void {
@@ -158,7 +176,8 @@ export class RadioSearchHighChartService implements ChartInfo, MyData {
   providedIn: 'root',
 })
 export class RadioSearchService {
-  public sources: { ra: number; dec: number }[] = [];  // Updated type to match simplified sources
+  public sources: { ra: number; dec: number }[] = [];
+  public params: { targetFreq: number; threeC: number }[] = [];
   public sourcesSubject: BehaviorSubject<{ ra: number; dec: number }[]>;
 
   constructor(
@@ -188,7 +207,6 @@ public setSources(sources: Source[]) {
 }
 
 
-
 public getRadioCatalogResults(id: number | null): Observable<any> | void {
 if (id !== null) {
   // Return the Observable so you can subscribe to it outside this method
@@ -204,6 +222,41 @@ if (id !== null) {
 }
 return;  // If id is null, return void
 }
+
+
+public getHeaderLength(buffer: ArrayBuffer): number {
+  const text = new TextDecoder().decode(buffer);
+  const cardSize = 80; // Each card is 80 bytes
+  const headerEndIndex = text.indexOf('END');
+
+  if (headerEndIndex === -1) {
+    throw new Error('Invalid FITS header: END card not found.');
+  }
+
+  const headerBytes = (headerEndIndex + cardSize); // Include the END card
+  return Math.ceil(headerBytes / 2880) * 2880; // Round up to nearest 2880 bytes
+}
+
+public unrollImage(pixelArray: number[], width: number, height: number, rollAmount: number): number[] {
+  const unrolledArray = new Array(width * height);
+
+  for (let y = 0; y < height; y++) {
+    const rowStart = y * width;
+    const rolledRow = pixelArray.slice(rowStart, rowStart + width); // Extract current row
+
+    // Unroll the row: Move the last `rollAmount` pixels to the start
+    const unrolledRow = [
+      ...rolledRow.slice(width - rollAmount), // The "cutoff" part
+      ...rolledRow.slice(0, width - rollAmount), // The remaining part
+    ];
+
+    // Place the unrolled row back in the array
+    unrolledArray.splice(rowStart, width, ...unrolledRow);
+  }
+
+  return unrolledArray;
+}
+
 
 
 fetchRadioCatalog(ra: number, dec: number, width: number, height: number): Observable<any> {

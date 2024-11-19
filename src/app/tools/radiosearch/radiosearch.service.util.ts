@@ -3,16 +3,16 @@ import { MyData } from "../shared/data/data.interface";
 import { MyStorage } from "../shared/storage/storage.interface";
 
 // Enum and interface definitions
-export enum RadioSearchParam {
-  FREQUENCY = 'frequency',
-  FLUX = 'flux'
-}
-
 export interface RadioSearchDataDict {
   frequency: number | null;
   flux: number | null;
   flux_fit: number | null;
   highlight?: boolean;
+}
+
+export interface RadioSearchParamDataDict {
+  targetFreq: number | null;
+  threeC: number | null;
 }
 
 export interface RadioSearchChartInfoStorageObject {
@@ -93,9 +93,11 @@ export class RadioSearchData implements MyData {
   private frequencyData: number[] = [];
   private fluxData: number[] = [];
   private radioSearchDataDict: RadioSearchDataDict[] = [];
+  private radioSearchParamDataDict: RadioSearchParamDataDict[] = [];
 
   constructor() {
     this.setData(RadioSearchData.getDefaultDataAsArray());
+    this.setParamData(RadioSearchData.getDefaultParamDataAsArray());
   }
 
   // Convert default data to RadioSearchDataDict[]
@@ -106,6 +108,12 @@ export class RadioSearchData implements MyData {
       { frequency: 300, flux: 2.5, flux_fit: 2.5 },
       { frequency: 400, flux: 3.0, flux_fit: 3.0 },
       { frequency: 500, flux: 3.5, flux_fit: 3.5 }
+    ];
+  }
+
+  public static getDefaultParamDataAsArray(): RadioSearchParamDataDict[] {
+    return [
+      { targetFreq: 15, threeC: 4}
     ];
   }
 
@@ -121,9 +129,17 @@ export class RadioSearchData implements MyData {
     return this.radioSearchDataDict;
   }
 
+  public getParamData(): RadioSearchParamDataDict[] {
+    return this.radioSearchParamDataDict;
+  }
+
   // Retrieve data as an array of [frequency, flux] pairs
   public getDataArray(): number[][] {
     return this.radioSearchDataDict.map(({ frequency, flux, flux_fit }) => [frequency, flux, flux_fit] as [number, number, number]);
+  }
+
+  public getParamDataArray(): number[][] {
+    return this.radioSearchParamDataDict.map(({ targetFreq, threeC }) => [targetFreq, threeC] as [number, number]);
   }
 
   // Set data with type checking and persistence
@@ -132,6 +148,11 @@ export class RadioSearchData implements MyData {
     this.frequencyData = data.map(item => item.frequency!); // Assumes data validation has been handled elsewhere
     this.fluxData = data.map(item => item.flux!);
     RadioSearchStorage.saveData(this.radioSearchDataDict); // Persist data on setting
+  }
+
+  public setParamData(data: RadioSearchParamDataDict[]): void {
+    this.radioSearchParamDataDict = data;
+    RadioSearchStorage.saveParamData(this.radioSearchParamDataDict); // Persist data on setting
   }
 
   public addRow(index: number, amount: number): void {
@@ -150,8 +171,10 @@ export class RadioSearchData implements MyData {
 // Class for managing storage
 export class RadioSearchStorage {
   private static readonly dataKey: string = "radio-search-data";
+  private static readonly dataKeyParam: string = "radio-search-param-data";
   private static readonly chartInfoKey: string = "radio-search-chart-info";
   private static readonly defaultData: RadioSearchDataDict[] = RadioSearchData.getDefaultDataAsArray();
+  private static readonly defaultParamData: RadioSearchParamDataDict[] = RadioSearchData.getDefaultParamDataAsArray();
   private static readonly defaultChartInfo: RadioSearchChartInfoStorageObject = RadioSearchChartInfo.getDefaultStorageObject();
 
   static getChartInfo(): RadioSearchChartInfoStorageObject {
@@ -164,12 +187,21 @@ export class RadioSearchStorage {
     return storedData ? JSON.parse(storedData) : this.defaultData;
   }
 
+  static getParamData(): RadioSearchParamDataDict[] {
+    const storedData = localStorage.getItem(this.dataKeyParam);
+    return storedData ? JSON.parse(storedData) : this.defaultParamData;
+  }
+
   static saveChartInfo(chartInfoObject: RadioSearchChartInfoStorageObject): void {
     localStorage.setItem(this.chartInfoKey, JSON.stringify(chartInfoObject));
   }
 
   static saveData(data: RadioSearchDataDict[]): void {
     localStorage.setItem(this.dataKey, JSON.stringify(data));
+  }
+
+  static saveParamData(data: RadioSearchParamDataDict[]): void {
+    localStorage.setItem(this.dataKeyParam, JSON.stringify(data));
   }
 
   static resetChartInfo(): void {

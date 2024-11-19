@@ -20,6 +20,21 @@
     <div class="left-container">
       <canvas #fitsCanvas [ngStyle]="{'opacity': ra ? 1 : 0}" id="fitsCanvas"></canvas>
 
+      <div class="ra-slider-container" [ngStyle]="{'opacity': ra ? 1 : 0}">
+        <label for="xOffset">X Offset: {{ xOffset }}</label>
+        <input id="xOffset" type="range" min="-100" max="100" [(ngModel)]="xOffset" (input)="redrawCircles()">
+      </div>
+
+      <div class="dec-slider-container" [ngStyle]="{'opacity': ra ? 1 : 0}">
+        <label for="yOffset">Y Offset: {{ yOffset }}</label>
+        <input id="yOffset" type="range" min="-100" max="100" [(ngModel)]="yOffset" (input)="redrawCircles()">
+      </div>
+
+      <div class="max-slider-container" [ngStyle]="{'opacity': ra ? 1 : 0}">
+        <label for="maxValue">Scale: {{ 200 * maxValue | number:'1.0-0' }}%</label>
+        <input id="maxValue" type="range" min="0" max="1" step="0.05" [(ngModel)]="maxValue" (input)="updateFitsImage()">
+      </div>
+
       <!-- Coordinates Display -->
       <div class="coordinates" [ngStyle]="{'opacity': ra ? 1 : 0}">
         <span *ngIf="currentCoordinates">
@@ -29,28 +44,11 @@
 
       <!-- Download Button Display -->
       <div class="download-button-container" [ngStyle]="{'opacity': ra ? 1 : 0}">
-        <button (click)="deleteFITS()">Download Canvas</button>
+        <button (click)="downloadCanvas()">Download Canvas</button>
       </div>
-    </div>
 
-    <!-- Controls for Sliders -->
-    <div class="controls" *ngIf="ra">
-      <!-- RA Offset Slider -->
-      <div class="slider-container">
-        <label for="xOffset">RA Offset: {{ xOffset }}</label>
-        <input id="xOffset" type="range" min="-100" max="100" [(ngModel)]="xOffset" (input)="redrawCircles()">
-      </div>
-    
-      <!-- Dec Offset Slider -->
-      <div class="slider-container">
-        <label for="yOffset">Dec Offset: {{ yOffset }}</label>
-        <input id="yOffset" type="range" min="-100" max="100" [(ngModel)]="yOffset" (input)="redrawCircles()">
-      </div>
-    
-      <!-- Max Value Slider -->
-      <div class="slider-container">
-        <label for="maxValue">Max Value: {{ maxValue }}</label>
-        <input id="maxValue" type="range" min="0" max="1" step="0.05" [(ngModel)]="maxValue" (input)="updateFitsImage()">
+      <div class="delete-button-container" [ngStyle]="{'opacity': ra ? 1 : 0}">
+        <button (click)="deleteFITS()">Delete Image</button>
       </div>
     </div>
   </div>
@@ -58,5 +56,9 @@
   <!-- Right container for highchart -->
   <div class="right-container">
     <app-radiosearch-highchart></app-radiosearch-highchart>
+    <p class="below-text" *ngIf="ra">
+      The uploaded file used a frequency of {{ 1000 * targetFreq || 'N/A' }} Hz. The expected flux for radio source
+      {{ results.threeC || 'Unknown source' }} at this frequency is {{ averageFlux || 'N/A' }} Jys.
+    </p>    
   </div>
 </div>

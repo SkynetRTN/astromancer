@@ -3,7 +3,7 @@
 .page-container {
   display: flex;
   flex-direction: row;
-  height: calc(100vh - 10%);
+  height: calc(100vh - 1%);
   padding: 2.5%;
   box-sizing: border-box;
   position: relative; /* Ensure that child elements can use absolute positioning */
@@ -81,10 +81,50 @@
   max-width: 30%; /* Ensure sliders do not exceed a third of the width */
 }
 
-.slider-container {
-  display: flex;
-  align-items: center;
-  // justify-content: space-between; /* Ensures slider and label stay on their sides */
+.ra-slider-container {
+  position: absolute; /* Positions the coordinates over the canvas */
+  top: 10px; /* Adjust the positioning as needed */
+  left: 26%; /* Adjust the positioning as needed */
+  background: rgba(0, 0, 0, 0.7); /* Semi-transparent background to stand out against the canvas */
+  color: #ffffff; /* Text color */
+  padding: 5px 10px; /* Padding around the text */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 12px; /* Font size */
+  z-index: 2; /* Ensure it stays on top of the canvas */
+}
+
+.dec-slider-container {
+  position: absolute; /* Positions the coordinates over the canvas */
+  top: 45%; /* Adjust the positioning as needed */
+  left: -120px; /* Adjust the positioning as needed */
+  background: rgba(0, 0, 0, 0.7); /* Semi-transparent background to stand out against the canvas */
+  color: #ffffff; /* Text color */
+  padding: 5px 10px; /* Padding around the text */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 12px; /* Font size */
+  transform: rotate(90deg) scaleY(-1) scaleX(-1);
+  z-index: 2; /* Ensure it stays on top of the canvas */
+}
+
+.max-slider-container {
+  position: absolute; /* Positions the container */
+  bottom: 10px; /* Adjust vertical positioning */
+  left: 32%; /* Adjust horizontal positioning */
+  width: 40%; /* Set a specific horizontal size */
+  display: flex; /* Use flexbox for horizontal alignment */
+  align-items: center; /* Vertically center label and slider */
+  justify-content: flex-start; /* Align items to the left */
+  background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+  color: #ffffff; /* Text color */
+  padding: 5px 10px; /* Padding around the content */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 12px; /* Font size */
+  z-index: 2; /* Ensure it stays on top of the canvas */
+}
+
+.max-slider-container label {
+  white-space: nowrap; /* Prevent label text from wrapping */
+  width: 50px;
 }
 
 label {
@@ -119,7 +159,7 @@ input[type="range"] {
 
 .download-button-container {
   position: absolute; /* Position relative to the canvas */
-  bottom: 10px; /* Align it to the bottom, opposite the coordinates */
+  bottom: 13px; /* Align it to the bottom, opposite the coordinates */
   right: 10px; /* Align to the right side */
   z-index: 2; /* Ensure it stays on top of the canvas */
 }
@@ -137,6 +177,26 @@ input[type="range"] {
   background-color: #45a049;
 }
 
+.delete-button-container {
+  position: absolute; /* Position relative to the canvas */
+  bottom: 50px; /* Align it to the bottom, opposite the coordinates */
+  right: 10px; /* Align to the right side */
+  z-index: 2; /* Ensure it stays on top of the canvas */
+}
+
+.delete-button-container button {
+  padding: 5px 10px;
+  background-color: #ef2b2b;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-button-container button:hover {
+  background-color: #b12d2d;
+}
+
 .right-container {
   display: flex;
   flex-direction: column;
@@ -145,6 +205,12 @@ input[type="range"] {
   margin-left: 2.5%; /* Add margin to the left, instead of right */
   position: relative;
   overflow-y: auto;  /* Allow vertical scrolling if content exceeds the height */
+}
+
+.below-text {
+  margin-top: 10px; /* Adjust spacing between the chart and text */
+  font-size: 14px; /* Adjust font size if needed */
+  color: #333; /* Optional: Customize text color */
 }
 
 .mat-elevation-z8 {

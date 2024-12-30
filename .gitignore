@@ -44,3 +44,6 @@ Thumbs.db
 
 # Compodoc
 documentation
+
+#venv
+.venv

@@ -74,7 +74,7 @@ export class GravityData implements MyData {
 
 
 export enum GravityOptions {
-  ONE = "Channel 1",
+  ONE = "Spectogram",
   TWO = "Channel 2",
 }
 

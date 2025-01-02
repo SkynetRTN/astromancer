@@ -28,6 +28,7 @@ import {SpectrumModule} from "./tools/spectrum/spectrum.module";
 import {DualModule} from "./tools/dual/dual.module";
 import {RcModule} from "./tools/rc/rc.module";
 import {NgOptimizedImage} from "@angular/common";
+import { GravityModule } from './tools/gravity/gravity.module';
 
 
 registerAllModules();
@@ -54,6 +55,7 @@ registerAllModules();
         ScatterModule,
         SpectrumModule,
         DualModule,
+        GravityModule,
         RcModule,
         NgOptimizedImage,
     ],

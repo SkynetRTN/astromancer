@@ -139,7 +139,9 @@ export class RadioSearchHighChartService implements ChartInfo, MyData {
   // Reset Methods
   public resetData(): void {
     const defaultData = RadioSearchData.getDefaultDataAsArray();
+    const defaultParamData = RadioSearchData.getDefaultParamDataAsArray();
     this.setData(defaultData);
+    this.setParams(defaultParamData);
     RadioSearchStorage.resetData();
     this.dataSubject.next(this.getData());
   }
@@ -260,7 +262,7 @@ public unrollImage(pixelArray: number[], width: number, height: number, rollAmou
 
 fetchRadioCatalog(rccords: string, ra: number, dec: number, width: number, height: number): Observable<any> {
   // Build the payload with RA, Dec, width, and height
-const payload = { rccords, ra, dec, width, height };
+const payload = {rccords, ra, dec, width, height };
 
 console.log('Payload being sent:', payload);  // Debugging
 

@@ -39,6 +39,20 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
         }
       }
     },
+    xAxis: {
+      type: 'logarithmic', // Log scale for x-axis
+      title: {
+        text: 'Frequency (Hz)'
+      },
+      min: 0.1
+    },
+    yAxis: {
+      type: 'logarithmic', // Log scale for y-axis
+      title: {
+        text: 'Flux Density (Jy)'
+      },
+      min: 0.1
+    }
   };
 
 
@@ -61,7 +75,7 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
     this.service.chartInfo$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
-      this.setChartYAxis();
+      // this.setChartYAxis();
       this.setChartXAxis();
       this.setChartTitle();
       this.updateChart();
@@ -91,7 +105,7 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
     let linkText = '';
     let hyperlink = '';
 
-    if (this.paramData && this.paramData[0] && this.paramData[0][1]) {
+    if (this.paramData && this.paramData[0] && this.paramData[0][1] && this.paramData[0][1] !== 0) {
         linkText = this.paramData[0][1]; // The part of the title that should be clickable
         hyperlink = 'https://vizier.cds.unistra.fr/viz-bin/VizieR-5?-ref=VIZ6684740f2d87a&-out.add=.&-source=VIII/1A/3c&recno=' + linkText; // Set your hyperlink URL
     }
@@ -102,10 +116,9 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
 
     this.chartOptions.title = {
         text: `${titleText}${clickablePart}`,
-        useHTML: true // Enable HTML rendering for the title
+        useHTML: true
     };
   }
-
 
 
   private setChartSeries(): void {
@@ -137,13 +150,11 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
   private animateSeriesUpdate(): void {
     // Clear all existing series before adding the new data
     while (this.chartObject?.series.length) {
-      this.chartObject.series[0].remove(false); // Remove each series without redrawing yet
+        this.chartObject.series[0].remove(false); // Remove each series without redrawing yet
     }
 
     const frequencyFluxData = this.processData(this.service.getDataArray());
     this.paramData = this.processData(this.service.getParamDataArray());
-    console.log('param data', this.paramData);
-    console.log(frequencyFluxData);
 
     // Separate data points for y (actual) and fit (line of best fit)
     const actualData = frequencyFluxData.map((point) => ({
@@ -162,93 +173,96 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
 
     // Get the x coordinate from the first value in paramData
     const xCoordinate = this.paramData[0][0];
-    console.log(xCoordinate)
 
     // Create the fitLine array with two points
     const fitLine = [
-      { x: Number(xCoordinate.toFixed(3)), y: Number((minY + 2).toFixed(3)) },
-      { x: Number(xCoordinate.toFixed(3)), y: Number((maxY - 2).toFixed(3)) }
+        { x: Number(xCoordinate.toFixed(3)), y: Number((minY * 1000).toFixed(3)) },
+        { x: Number(xCoordinate.toFixed(3)), y: Number((maxY / 1000).toFixed(3)) }
     ];
 
-    console.log('fitLine', fitLine);
+    const filteredActualData = actualData.filter(point => point.x !== this.paramData[0][0]);
 
-    // Add the actual data series
+    // Determine whether to enable animation based on data length
+    const enableAnimation = actualData.length > 1;
+
+    // Add the actual data series (scatter)
     this.chartObject?.addSeries({
         name: "Actual",
         type: 'scatter',
-        data: actualData,
+        data: filteredActualData,
         marker: {
             enabled: true,
             symbol: 'circle',
             radius: 4,
-            fillColor: '#007bff' // Color for actual data points
+            fillColor: '#007bff'
         },
         lineWidth: 1,
-        animation: {
-            duration: 2000,
-            easing: 'easeOut'
-        }
-    }, true);
+        animation: enableAnimation ? { duration: 2000, easing: 'easeOut' } : false // Disable animation if only 1 point
+    }, false); // No redraw yet
 
-    // Add the fit line series
+    // Add the fit data series (scatter for the fit)
     this.chartObject?.addSeries({
         name: "Fit",
         type: 'scatter',
         data: fitData,
         marker: {
-          enabled: true,
-          symbol: 'triangle',
-          radius: 4,
-          fillColor: '#007bff' // Color for actual data points
-      },
-        color: '#ff0000', // Color for the fit line
-        lineWidth: 1, // Thicker line to distinguish fit
-        animation: {
-            duration: 2000,
-            easing: 'easeOut'
-        }
-    }, true);
+            enabled: true,
+            symbol: 'triangle',
+            radius: 4,
+            fillColor: '#007bff'
+        },
+        color: '#ff0000',
+        lineWidth: 1,
+        animation: enableAnimation ? { duration: 2000, easing: 'easeOut' } : false // Disable animation if only 1 point
+    }, false);
 
-
-    // Add the fit line series
+    // Add the fit line series (dashed line)
     this.chartObject?.addSeries({
         name: "Target Frequency",
-        type: 'scatter',
+        type: 'line',
         data: fitLine,
         marker: {
-          enabled: true,
-          symbol: 'square',
-          radius: 4,
-          fillColor: '#007bff' // Color for actual data points
-      },
-        color: '#ff0000', // Color for the fit line
-        lineWidth: 0.5, // Thicker line to distinguish fit
+            enabled: false
+        },
+        color: '#ff0000',
+        lineWidth: 0.5,
         dashStyle: 'Dash',
-        animation: {
-            duration: 2000,
-            easing: 'easeOut'
-        }
-    }, true);
-  }
+        animation: enableAnimation ? { duration: 2000, easing: 'easeOut' } : false // Disable animation if only 1 point
+    }, false); 
+
+    // Update y-axis range
+    this.chartOptions.yAxis = {
+        title: { text: this.service.getYAxisLabel() },
+        min: Math.min(...actualData.map(point => point.y)) / 4,
+        max: Math.max(...actualData.map(point => point.y)) * 4
+    };
+
+    // Apply chart updates and force a single redraw
+    this.chartObject?.update(this.chartOptions, false); // Update chart options without redrawing
+    this.chartObject?.redraw(); // Perform a single redraw
+}
+
 
 
   private setChartXAxis(): void {
     this.chartOptions.xAxis = {
-      title: { text: this.service.getXAxisLabel() }
+      title: { text: this.service.getXAxisLabel() },
+      type: 'logarithmic', // Set x-axis to logarithmic scale
     };
   }
-
+  
   private setChartYAxis(): void {
     this.chartOptions.yAxis = {
-      title: { text: this.service.getYAxisLabel() }
+      title: { text: this.service.getYAxisLabel() },
+      type: 'logarithmic', // Set y-axis to logarithmic scale
     };
   }
 
   private processData(data: number[][]): number[][] {
     return data.filter((value: number[]) => {
-      return (value[0] !== null);
+      return value[0] > 0 && value[1] > 0; // Exclude non-positive values
     }).sort((a: number[], b: number[]) => {
       return a[0] - b[0];
     });
-  }
+  }  
 }

@@ -103,17 +103,18 @@ export class RadioSearchData implements MyData {
   // Convert default data to RadioSearchDataDict[]
   public static getDefaultDataAsArray(): RadioSearchDataDict[] {
     return [
-      { frequency: 100, flux: 1.5, flux_fit: 1.5 },
-      { frequency: 200, flux: 2.0, flux_fit: 2.0 },
-      { frequency: 300, flux: 2.5, flux_fit: 2.5 },
-      { frequency: 400, flux: 3.0, flux_fit: 3.0 },
-      { frequency: 500, flux: 3.5, flux_fit: 3.5 }
+      { frequency: 38, flux: 2430, flux_fit: 2302 },
+      { frequency: 159, flux: 1500, flux_fit: 1601 },
+      { frequency: 178, flux: 1534, flux_fit: 1556 },
+      { frequency: 1491.5, flux: 1300, flux_fit: 908 },
+      { frequency: 1400, flux: 930, flux_fit: 922 },
+      { frequency: 5000, flux: 680, flux_fit: 668 }
     ];
   }
 
   public static getDefaultParamDataAsArray(): RadioSearchParamDataDict[] {
     return [
-      { targetFreq: 15, threeC: 4}
+      { targetFreq: 1491.5, threeC: 0}
     ];
   }
 

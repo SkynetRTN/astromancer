@@ -3,17 +3,18 @@
 .page-container {
   display: flex;
   flex-direction: row;
-  height: calc(100vh - 1%);
+  height: calc(100vh - 10%);
   padding: 2.5%;
   box-sizing: border-box;
   position: relative; /* Ensure that child elements can use absolute positioning */
+  overflow: hidden;
 }
 
 .left-container-wrapper {
   display: flex;
   flex-direction: column;
   flex: 0 0 47.5%;
-  height: 90%;
+  height: 100%;
   margin-right: 2.5%;
   position: relative;
   overflow-y: auto; /* Allow vertical scrolling if content exceeds the height */
@@ -96,7 +97,7 @@
 .dec-slider-container {
   position: absolute; /* Positions the coordinates over the canvas */
   top: 45%; /* Adjust the positioning as needed */
-  left: -120px; /* Adjust the positioning as needed */
+  left: -114px; /* Adjust the positioning as needed */
   background: rgba(0, 0, 0, 0.7); /* Semi-transparent background to stand out against the canvas */
   color: #ffffff; /* Text color */
   padding: 5px 10px; /* Padding around the text */
@@ -122,10 +123,19 @@
   z-index: 2; /* Ensure it stays on top of the canvas */
 }
 
-.max-slider-container label {
-  white-space: nowrap; /* Prevent label text from wrapping */
-  width: 50px;
+.zoom-slider-container {
+  position: absolute; /* Positions the coordinates over the canvas */
+  top: 45%; /* Adjust the positioning as needed */
+  right: -120px; /* Adjust the positioning as needed */
+  background: rgba(0, 0, 0, 0.7); /* Semi-transparent background to stand out against the canvas */
+  color: #ffffff; /* Text color */
+  padding: 5px 10px; /* Padding around the text */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 12px; /* Font size */
+  transform: rotate(90deg) scaleY(-1) scaleX(-1);
+  z-index: 2; /* Ensure it stays on top of the canvas */
 }
+
 
 label {
   width: 100px; /* Fixed width for label */
@@ -267,7 +277,7 @@ input[type="range"] {
 /* Apply space between header row and first row */
 .mat-header-row {
   background-color: #f5f5f5; /* Customize header background color */
-  margin-bottom: 10px !important; /* Force margin-bottom between header and first row */
+  margin-bottom: 10px; /* Force margin-bottom between header and first row */
   border-bottom: 2px solid #e0e0e0; /* Optional: Add border to visually separate the header */
 }
 

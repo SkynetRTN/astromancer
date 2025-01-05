@@ -120,6 +120,7 @@ export class RadioSearchComponent implements AfterViewInit {
 
 
   onFileDrop(event: DragEvent): void {
+    this.deleteFITS();
     event.preventDefault();
     this.fileDropZoneRef.nativeElement.classList.remove('shake');
 

@@ -62,7 +62,6 @@ export class GravityData implements MyData {
 
 }
 
-
 export interface GravityInterface {
   getMergerTime(): number;
 

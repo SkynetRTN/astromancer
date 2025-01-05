@@ -27,6 +27,13 @@ export class GravityHighchartComponent implements AfterViewInit, OnDestroy {
         type: 'x',
       },
     },
+    colorAxis: { stops: [
+      [0, '#3060cf'],
+      [0.5, '#fffbbc'],
+      [0.9, '#c4463a'],
+      [1, '#c4463a']
+    ]
+    },
     legend: {
       align: 'center',
     },

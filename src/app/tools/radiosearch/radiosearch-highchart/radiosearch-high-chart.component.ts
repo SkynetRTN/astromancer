@@ -105,7 +105,7 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
     let linkText = '';
     let hyperlink = '';
 
-    if (this.paramData && this.paramData[0] && this.paramData[0][1] && this.paramData[0][1] !== 0) {
+    if (this.paramData && this.paramData[0] && this.paramData[0][1] && this.paramData[0][1] !== 0.1) {
         linkText = this.paramData[0][1]; // The part of the title that should be clickable
         hyperlink = 'https://vizier.cds.unistra.fr/viz-bin/VizieR-5?-ref=VIZ6684740f2d87a&-out.add=.&-source=VIII/1A/3c&recno=' + linkText; // Set your hyperlink URL
     }
@@ -200,20 +200,25 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
         animation: enableAnimation ? { duration: 2000, easing: 'easeOut' } : false // Disable animation if only 1 point
     }, false); // No redraw yet
 
+    // Round the y values in fitData to 1 decimal place
+    const roundedFitData = fitData.map(point => ({
+      x: point.x,
+      y: parseFloat(point.y.toFixed(1)) // Round y to 1 decimal place
+    }));
+
     // Add the fit data series (scatter for the fit)
     this.chartObject?.addSeries({
-        name: "Fit",
-        type: 'scatter',
-        data: fitData,
-        marker: {
-            enabled: true,
-            symbol: 'triangle',
-            radius: 4,
-            fillColor: '#007bff'
-        },
-        color: '#ff0000',
-        lineWidth: 1,
-        animation: enableAnimation ? { duration: 2000, easing: 'easeOut' } : false // Disable animation if only 1 point
+      name: "Fit",
+      type: 'scatter',
+      data: roundedFitData, // Use rounded data
+      marker: {
+          enabled: true,
+          symbol: 'triangle',
+          radius: 4,
+          fillColor: '#007bff'
+      },
+      lineWidth: 1,
+      animation: enableAnimation ? { duration: 2000, easing: 'easeOut' } : false // Disable animation if only 1 point
     }, false);
 
     // Add the fit line series (dashed line)
@@ -224,7 +229,6 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
         marker: {
             enabled: false
         },
-        color: '#ff0000',
         lineWidth: 0.5,
         dashStyle: 'Dash',
         animation: enableAnimation ? { duration: 2000, easing: 'easeOut' } : false // Disable animation if only 1 point
@@ -241,7 +245,6 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
     this.chartObject?.update(this.chartOptions, false); // Update chart options without redrawing
     this.chartObject?.redraw(); // Perform a single redraw
 }
-
 
 
   private setChartXAxis(): void {

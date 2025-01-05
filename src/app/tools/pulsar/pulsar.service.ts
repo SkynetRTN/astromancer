@@ -6,6 +6,7 @@ import {
     PulsarChartInfo,
     PulsarData,
     PulsarDataDict,
+    PulsarDataSeries,
     PulsarStorage
   } from "./pulsar.service.util";
 import { MyData } from "../shared/data/data.interface";

@@ -5,32 +5,38 @@ import { MyStorage } from "../shared/storage/storage.interface";
 // Enum and interface definitions
 export interface PulsarDataDict {
   frequency: number | null;
-  intensity: number | null;
+  channel1: number | null;
+  channel2: number | null;
+}
+
+export interface PulsarDataSeries {
+  name: string;               // Name for the series, e.g., 'YY1' or 'XX1'
+  data: PulsarDataDict[];     // Data points for the series
 }
 
 export interface PulsarChartInfoStorageObject {
   chartTitle: string;
   frequencyLabel: string;
-  intensityLabel: string;
+  channel1Label: string;
 }
 
 // Class managing chart information
 export class PulsarChartInfo implements ChartInfo {
   private chartTitle: string;
   private frequencyLabel: string;
-  private intensityLabel: string;
+  private channel1Label: string;
 
   constructor() {
     this.chartTitle = "Periodogram";
     this.frequencyLabel = "Frequency";
-    this.intensityLabel = "Intensity";
+    this.channel1Label = "Intensity";
   }
 
   static getDefaultStorageObject(): PulsarChartInfoStorageObject {
     return {
       chartTitle: "Periodogram",
       frequencyLabel: "Frequency",
-      intensityLabel: "Intensity"
+      channel1Label: "Intensity"
     };
   }
 
@@ -47,7 +53,7 @@ export class PulsarChartInfo implements ChartInfo {
   }
 
   getYAxisLabel(): string {
-    return this.intensityLabel;
+    return this.channel1Label;
   }
 
   getDataLabel(): string {
@@ -63,28 +69,28 @@ export class PulsarChartInfo implements ChartInfo {
   }
 
   setYAxisLabel(label: string): void {
-    this.intensityLabel = label;
+    this.channel1Label = label;
   }
 
   getStorageObject(): PulsarChartInfoStorageObject {
     return {
       chartTitle: this.chartTitle,
       frequencyLabel: this.frequencyLabel,
-      intensityLabel: this.intensityLabel
+      channel1Label: this.channel1Label
     };
   }
 
   setStorageObject(storageObject: PulsarChartInfoStorageObject): void {
     this.chartTitle = storageObject.chartTitle;
     this.frequencyLabel = storageObject.frequencyLabel;
-    this.intensityLabel = storageObject.intensityLabel;
+    this.channel1Label = storageObject.channel1Label;
   }
 }
 
 // Class for managing data
 export class PulsarData implements MyData {
   private frequencyData: number[] = [];
-  private intensityData: number[] = [];
+  private channel1Data: number[] = [];
   private pulsarDataDict: PulsarDataDict[] = [];
 
   constructor() {
@@ -94,19 +100,18 @@ export class PulsarData implements MyData {
   // Convert default data to PulsarDataDict[]
   public static getDefaultDataAsArray(): PulsarDataDict[] {
     return [
-      { frequency: 38, intensity: 2302 },
-      { frequency: 159, intensity: 1601 },
-      { frequency: 178, intensity: 1556 },
-      { frequency: 1491.5, intensity: 908 },
-      { frequency: 1400, intensity: 922 },
-      { frequency: 5000, intensity: 668 }
+      { frequency: 38, channel1: 2302, channel2: 1200 },
+      { frequency: 159, channel1: 1601, channel2: 1241 },
+      { frequency: 178, channel1: 1556, channel2: 6321 },
+      { frequency: 1491.5, channel1: 908, channel2: 2123 },
+      { frequency: 1400, channel1: 922, channel2: 7342 },
+      { frequency: 5000, channel1: 668, channel2: 2353 }
     ];
   }
-
-  public static getDefaultData(): { frequency: number[], intensity: number[] } {
+  public static getDefaultData(): { frequency: number[], channel1: number[] } {
     return {
       frequency: [100, 200, 300, 400, 500],
-      intensity: [1.5, 2.0, 2.5, 3.0, 3.5]
+      channel1: [1.5, 2.0, 2.5, 3.0, 3.5]
     };
   }
 
@@ -115,22 +120,22 @@ export class PulsarData implements MyData {
     return this.pulsarDataDict;
   }
 
-  // Retrieve data as an array of [frequency, intensity] pairs
+  // Retrieve data as an array of [frequency, channel1] pairs
   public getDataArray(): number[][] {
-    return this.pulsarDataDict.map(({ frequency, intensity }) => [frequency, intensity] as [number, number]);
+    return this.pulsarDataDict.map(({ frequency, channel1 }) => [frequency, channel1] as [number, number]);
   }
 
   // Set data with type checking and persistence
   public setData(data: PulsarDataDict[]): void {
     this.pulsarDataDict = data;
     this.frequencyData = data.map(item => item.frequency!); // Assumes data validation has been handled elsewhere
-    this.intensityData = data.map(item => item.intensity!);
+    this.channel1Data = data.map(item => item.channel1!);
     PulsarStorage.saveData(this.pulsarDataDict); // Persist data on setting
   }
 
   public addRow(index: number, amount: number): void {
     for (let i = 0; i < amount; i++) {
-      this.pulsarDataDict.splice(index + i, 0, { frequency: null, intensity: null});
+      this.pulsarDataDict.splice(index + i, 0, { frequency: null, channel1: null, channel2: null});
     }
     PulsarStorage.saveData(this.pulsarDataDict); // Persist updates
   }

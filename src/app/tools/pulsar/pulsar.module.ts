@@ -25,9 +25,9 @@ import {
 import {
   PulsarPeriodFoldingComponent
 } from './period-folding/pulsar-period-folding.component';
-// import {
-//   PulsarPeriodFoldingHighchartComponent
-// } from './period-folding/pulsar-period-folding-highchart/pulsar-period-folding-highchart.component';
+import {
+    PulsarPeriodFoldingHighchartsComponent
+} from './period-folding/pulsar-period-folding-highcharts/pulsar-period-folding-highcharts.component';
 import {InterfaceUtilModule} from "../shared/interface/util";
 import {RouterModule, Routes} from "@angular/router";
 import {MatDialogModule} from "@angular/material/dialog";
@@ -44,7 +44,7 @@ const routes: Routes = [
     PulsarPeriodogramComponent,
     PulsarPeriodogramHighchartsComponent,
     PulsarPeriodFoldingComponent,
-    // PulsarPeriodFoldingHighchartComponent
+    PulsarPeriodFoldingHighchartsComponent
   ],
   imports: [
     RouterModule.forChild(routes),

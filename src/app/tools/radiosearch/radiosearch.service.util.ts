@@ -114,7 +114,7 @@ export class RadioSearchData implements MyData {
 
   public static getDefaultParamDataAsArray(): RadioSearchParamDataDict[] {
     return [
-      { targetFreq: 1491.5, threeC: 0}
+      { targetFreq: 1491.5, threeC: 0.1}
     ];
   }
 

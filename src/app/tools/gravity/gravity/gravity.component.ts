@@ -117,13 +117,13 @@ function rawDataToDataDict(data: any[], fields: string[], wlRange: number[]): Gr
       const wl = 299792458 / (freq * 1e4);
       if (wl >= wlRange[0] && wl <= wlRange[1]) {
         dataDictArray.push({
-          wavelength: wl,
-          channel1: isNaN(channel1) ? null : channel1,
-          channel2: isNaN(channel2) ? null : channel2,
+          Time: wl,
+          Model: isNaN(channel1) ? null : channel1,
+          Strain: isNaN(channel2) ? null : channel2,
         })
       }
     }
   });
-  return dataDictArray.length > 0 ? dataDictArray : [{wavelength: null, channel1: null, channel2: null}];
+  return dataDictArray.length > 0 ? dataDictArray : [{Time: null, Model: null, Strain: null}];
 }
 

@@ -1,8 +1,8 @@
 import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import {MyTable} from "../../shared/tables/table-interface";
-import {SpectrumDataDict} from "../../spectrum/spectrum.service.util";
+import { GravityDataDict } from '../gravity.service.util';
 import {Subject, takeUntil} from "rxjs";
-import {SpectrumService} from "../../spectrum/spectrum.service";
+import { GravityService } from '../gravity.service';
 import {MyData} from "../../shared/data/data.interface";
 import {HotTableRegisterer} from "@handsontable/angular";
 import Handsontable from "handsontable";
@@ -14,13 +14,13 @@ import {beforePaste} from "../../shared/tables/util";
   styleUrls: ['./gravity-table.component.scss']
 })
 export class GravityTableComponent implements AfterViewInit, OnDestroy {
-  id: string = "spectrum-table";
-  table: MyTable = new SpectrumTable(this.id);
-  colNames: string[] = ["Wavelength", "Channel 1", "Channel 2"];
-  dataSet: SpectrumDataDict[];
+  id: string = "gravity-table";
+  table: MyTable = new GravityTable(this.id);
+  colNames: string[] = ["Wavelength", "Model", "Strain"];
+  dataSet: GravityDataDict[];
   private destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private service: SpectrumService) {
+  constructor(private service: GravityService) {
     this.dataSet = this.service.getData();
   }
 
@@ -28,7 +28,7 @@ export class GravityTableComponent implements AfterViewInit, OnDestroy {
     this.service.data$.pipe(
       takeUntil(this.destroy$)
     ).subscribe((data: MyData) => {
-      this.dataSet = this.limitPrecision(this.service.getData());
+      this.dataSet = this.service.getData();
       this.table.renderTable();
     })
   }
@@ -56,20 +56,20 @@ export class GravityTableComponent implements AfterViewInit, OnDestroy {
     return beforePaste(data, coords, this.table);
   }
 
-  private limitPrecision(data: SpectrumDataDict[]): SpectrumDataDict[] {
+  private limitPrecision(data: GravityDataDict[]): GravityDataDict[] {
     return data.map(
-      (row: SpectrumDataDict) => {
+      (row: GravityDataDict) => {
         return {
-          wavelength: row.wavelength ? parseFloat(row.wavelength.toFixed(4)) : row.wavelength,
-          channel1: row.channel1 ? parseFloat(row.channel1.toFixed(2)) : row.channel1,
-          channel2: row.channel2 ? parseFloat(row.channel2.toFixed(2)) : row.channel2,
+          Time: row.Time ? parseFloat(row.Time.toFixed(4)) : row.Time,
+          Strain: row.Strain ? parseFloat(row.Strain.toFixed(2)) : row.Strain,
+          Model: row.Model ? parseFloat(row.Model.toFixed(2)) : row.Model,
         }
       }
     );
   }
 }
 
-class SpectrumTable implements MyTable {
+class GravityTable implements MyTable {
   private readonly id: string;
   private hotRegisterer = new HotTableRegisterer();
 

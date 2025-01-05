@@ -3,7 +3,6 @@ import {Subject, takeUntil} from "rxjs";
 import * as Highcharts from "highcharts";
 
 import {GravityService} from "../gravity.service";
-import {GravityOptions} from "../gravity.service.util";
 
 @Component({
   selector: 'app-gravity-highchart',
@@ -86,56 +85,49 @@ export class GravityHighchartComponent implements AfterViewInit, OnDestroy {
 
   setData() {
     this.chartObject.addSeries({
-      name: GravityOptions.ONE,
+      name: "Model",
       data: this.service.getDataArray()[0],
       type: 'line',
-      visible: GravityOptions.ONE === this.service.getChannel(),
-      showInLegend: GravityOptions.ONE === this.service.getChannel(),
-      marker: {
-        // only enable marker when it iss radio spectrum aka the frequency is low enough
-        enabled: this.service.getDataArray()[0][0][0] < 1000,
-        symbol: 'circle',
-        radius: 3,
-      },
+      lineWidth: 5,
+      // marker: {
+      //   // enabled:
+      //   symbol: 'circle',
+      //   radius: 3,
+      // },
     });
     this.chartObject.addSeries({
-      name: GravityOptions.TWO,
+      name: "Strain",
       data: this.service.getDataArray()[1],
       type: 'line',
-      visible: GravityOptions.TWO === this.service.getChannel(),
-      showInLegend: GravityOptions.TWO === this.service.getChannel(),
-      marker: {
-        enabled: this.service.getDataArray()[1][0][0] < 1000,
-        symbol: 'circle',
-        radius: 3,
-      },
+      // marker: {
+      //   // enabled:
+      //   symbol: 'circle',
+      //   radius: 3,
+      // },
     });
   }
 
   updateData() {
     this.chartObject.series[0].update({
-      name: GravityOptions.ONE,
+      name: "Model",
       data: this.service.getDataArray()[0],
       type: 'line',
-      visible: GravityOptions.ONE === this.service.getChannel(),
-      showInLegend: GravityOptions.ONE === this.service.getChannel(),
-      marker: {
-        enabled: this.service.getDataArray()[0][0][0] < 1000,
-        symbol: 'circle',
-        radius: 3,
-      },
+      lineWidth: 5,
+      // marker: {
+      //   // enabled:
+      //   symbol: 'circle',
+      //   radius: 3,
+      // },
     });
     this.chartObject.series[1].update({
-      name: GravityOptions.TWO,
+      name: "Strain",
       data: this.service.getDataArray()[1],
       type: 'line',
-      visible: GravityOptions.TWO === this.service.getChannel(),
-      showInLegend: GravityOptions.TWO === this.service.getChannel(),
-      marker: {
-        enabled: this.service.getDataArray()[1][0][0] < 1000,
-        symbol: 'circle',
-        radius: 3,
-      },
+      // marker: {
+      //   // enabled:
+      //   symbol: 'circle',
+      //   radius: 3,
+      // },
     });
   }
 

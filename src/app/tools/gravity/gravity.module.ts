@@ -8,7 +8,7 @@ import {HotTableModule} from "@handsontable/angular";
 import {GravityService} from "./gravity.service";
 import {GravityFormComponent} from './gravity-form/gravity-form.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-
+import {InterfaceUtilModule} from "../shared/interface/util";
 
 import {GravityChartFormComponent} from './gravity-chart-form/gravity-chart-form.component';
 
@@ -40,6 +40,7 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     CommonModule,
     SimpleDataButtonModule,
+    InterfaceUtilModule,
     SimpleGraphButtonModule,
     HotTableModule,
     FormsModule,

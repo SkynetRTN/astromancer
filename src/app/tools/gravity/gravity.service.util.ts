@@ -1,11 +1,12 @@
 import {MyData} from "../shared/data/data.interface";
 import {MyStorage} from "../shared/storage/storage.interface";
 import {ChartInfo} from "../shared/charts/chart.interface";
+import {dummyData} from "./default-data/chart-gravity-dummydata";
 
 export interface GravityDataDict {
-  wavelength: number | null;
-  channel1: number | null;
-  channel2: number | null;
+  Time: number | null;
+  Strain: number | null;
+  Model: number | null;
 }
 
 export class GravityData implements MyData {
@@ -15,29 +16,18 @@ export class GravityData implements MyData {
     this.dataDict = GravityData.getDefaultData();
   }
 
-  /**
-   * Generate random data as the demo dataset
-   */
+
   public static getDefaultData(): GravityDataDict[] {
-    const result: GravityDataDict[] = [];
-    for (let i = 0; i < 200; i++) {
-      let wl = i / 200 * 0.03 + 21.09;
-      result.push({
-        wavelength: wl,
-        channel1: 100 - Math.pow(100 * (wl - 21.105), 2) / 0.015 + Math.random() * 21,
-        channel2: 100 - Math.pow(100 * (wl - 21.105), 2) / 0.015 + Math.random() * 21,
-      });
-    }
-    return result;
+    return dummyData;
   }
 
   addRow(index: number, amount: number): void {
     if (index > 0) {
       for (let i = 0; i < amount; i++) {
-        this.dataDict.splice(index + i, 0, {wavelength: null, channel1: null, channel2: null},);
+        this.dataDict.splice(index + i, 0, {Time: null, Strain: null, Model: null},);
       }
     } else {
-      this.dataDict.push({wavelength: null, channel1: null, channel2: null},);
+      this.dataDict.push({Time: null, Strain: null, Model: null},);
     }
   }
 
@@ -49,16 +39,16 @@ export class GravityData implements MyData {
     return [
       this.dataDict.filter(
         (GravityDataDict: GravityDataDict) => {
-          return GravityDataDict.wavelength !== null
-            && GravityDataDict.channel1 !== null;
+          return GravityDataDict.Time !== null
+            && GravityDataDict.Model !== null;
         }
-      ).map((entry: GravityDataDict) => [entry.wavelength, entry.channel1]) as number[][],
+      ).map((entry: GravityDataDict) => [entry.Time, entry.Model]) as number[][],
       this.dataDict.filter(
         (gravityDataDict: GravityDataDict) => {
-          return gravityDataDict.wavelength !== null
-            && gravityDataDict.channel2 !== null;
+          return gravityDataDict.Time !== null
+            && gravityDataDict.Strain !== null;
         }
-      ).map((entry: GravityDataDict) => [entry.wavelength, entry.channel2]) as number[][],
+      ).map((entry: GravityDataDict) => [entry.Time, entry.Strain]) as number[][],
     ]
   }
 
@@ -73,38 +63,136 @@ export class GravityData implements MyData {
 }
 
 
-export enum GravityOptions {
-  ONE = "Channel 1",
-  TWO = "Channel 2",
+export interface GravityInterface {
+  getMergerTime(): number;
+
+  getTotalMass(): number;
+
+  getMassRatio(): number;
+
+  getPhaseShift(): number;
+
+  getDistance(): number;
+
+  getInclination(): number;
+
+  setMergerTime(mergerTime: number): void;
+
+  setTotalMass(totalMass: number): void;
+
+  setMassRatio(massRatio: number): void;
+
+  setPhaseShift(phaseShift: number): void;
+
+  setDistance(distance: number): void;
+
+  setInclination(inclination: number): void;
+
+  resetInterface(): void;
 }
 
-export interface GravityInterface {
-  getChannel(): GravityOptions;
-
-  setChannel(channel: GravityOptions): void;
+export interface GravityInterfaceStorageObject {
+  mergerTime: number;
+  totalMass: number;
+  massRatio: number;
+  phaseShift: number;
+  distance: number;
+  inclination: number;
 }
 
 
 export class GravityInterfaceImpl implements GravityInterface {
-  private channel: GravityOptions;
 
-  constructor() {
-    this.channel = GravityOptions.ONE;
+  private mergerTime!: number;
+  private totalMass!: number;
+  private massRatio!: number;
+  private phaseShift!: number;
+  private distance!: number;
+  private inclination!: number;
+
+  getMergerTime(): number{
+    return this.mergerTime
   }
 
-  public static getDefaultChannel(): GravityOptions {
-    return GravityOptions.ONE;
+  getTotalMass(): number{
+    return this.totalMass
   }
 
-  getChannel(): GravityOptions {
-    return this.channel;
+  getMassRatio(): number{
+    return this.massRatio
   }
 
-  setChannel(channel: GravityOptions): void {
-    this.channel = channel;
+  getPhaseShift(): number{
+    return this.phaseShift
+  }
+
+  getDistance(): number{
+    return this.distance
+  }
+
+  getInclination(): number{
+    return this.inclination
+  }
+
+  resetInterface(): void {
+    this.setStorageObject(this.getDefaultStorageObject());
+  }
+
+  setMergerTime(mergerTime: number): void{
+    this.mergerTime = mergerTime
+  }
+
+  setTotalMass(totalMass: number): void{
+    this.totalMass = totalMass
+  }
+
+  setMassRatio(massRatio: number): void{
+    this.massRatio = massRatio
+  }
+
+  setPhaseShift(phaseShift: number): void{
+    this.phaseShift = phaseShift
+  }
+
+  setDistance(distance: number): void{
+    this.distance = distance
+  }
+
+  setInclination(inclination: number): void{
+    this.inclination = inclination
+  }
+
+  getStorageObject(): GravityInterfaceStorageObject {
+    return {
+      mergerTime: this.mergerTime,
+      totalMass: this.totalMass,
+      massRatio: this.massRatio,
+      phaseShift: this.phaseShift,
+      distance: this.distance,
+      inclination: this.inclination
+    };
+  }
+
+  setStorageObject(storageObject: GravityInterfaceStorageObject): void {
+    this.setMergerTime(storageObject.mergerTime);
+    this.setTotalMass(storageObject.totalMass);
+    this.setMassRatio(storageObject.massRatio);
+    this.setPhaseShift(storageObject.phaseShift);
+    this.setDistance(storageObject.distance);
+    this.setInclination(storageObject.inclination);
+  }
+
+  getDefaultStorageObject(): GravityInterfaceStorageObject {
+    return {
+      mergerTime: 16,
+      totalMass: 25,
+      massRatio: 1,
+      phaseShift: 0,
+      distance: 300,
+      inclination: 0
+    };
   }
 }
-
 
 export interface GravityChartInfoStorageObject {
   title: string;
@@ -120,18 +208,18 @@ export class GravityChartInfo implements ChartInfo {
   private dataLabel: string;
 
   constructor() {
-    this.chartTitle = GravityChartInfo.getDefaultStorageObject().title;
-    this.xAxisLabel = GravityChartInfo.getDefaultStorageObject().xAxis;
-    this.yAxisLabel = GravityChartInfo.getDefaultStorageObject().yAxis;
-    this.dataLabel = GravityChartInfo.getDefaultStorageObject().data;
+    this.chartTitle = GravityChartInfo.getDefaultChartInfo().title;
+    this.xAxisLabel = GravityChartInfo.getDefaultChartInfo().xAxis;
+    this.yAxisLabel = GravityChartInfo.getDefaultChartInfo().yAxis;
+    this.dataLabel = GravityChartInfo.getDefaultChartInfo().data;
   }
 
-  public static getDefaultStorageObject(): GravityChartInfoStorageObject {
+  public static getDefaultChartInfo(): GravityChartInfoStorageObject {
     return {
       title: "Title",
       xAxis: "",
       yAxis: "",
-      data: "Channel 1",
+      data: "Model",
     }
   }
 
@@ -195,7 +283,7 @@ export class GravityStorage implements MyStorage {
     if (localStorage.getItem(GravityStorage.chartInfoKey)) {
       return JSON.parse(localStorage.getItem(GravityStorage.chartInfoKey)!) as GravityChartInfoStorageObject;
     } else {
-      return GravityChartInfo.getDefaultStorageObject();
+      return GravityChartInfo.getDefaultChartInfo();
     }
   }
 
@@ -207,16 +295,16 @@ export class GravityStorage implements MyStorage {
     }
   }
 
-  getInterface(): GravityOptions {
+  getInterface(): GravityInterfaceStorageObject {
     if (localStorage.getItem(GravityStorage.interfaceKey)) {
-      return JSON.parse(localStorage.getItem(GravityStorage.interfaceKey)!) as GravityOptions;
+      return JSON.parse(localStorage.getItem(GravityStorage.interfaceKey) as string);
     } else {
-      return GravityInterfaceImpl.getDefaultChannel();
+      return new GravityInterfaceImpl().getDefaultStorageObject();
     }
   }
 
   resetChartInfo(): void {
-    localStorage.setItem(GravityStorage.chartInfoKey, JSON.stringify(GravityChartInfo.getDefaultStorageObject()));
+    localStorage.setItem(GravityStorage.chartInfoKey, JSON.stringify(GravityChartInfo.getDefaultChartInfo()));
   }
 
   resetData(): void {
@@ -224,7 +312,7 @@ export class GravityStorage implements MyStorage {
   }
 
   resetInterface(): void {
-    localStorage.setItem(GravityStorage.interfaceKey, JSON.stringify(GravityInterfaceImpl.getDefaultChannel()));
+    localStorage.setItem(GravityStorage.interfaceKey, JSON.stringify(new GravityInterfaceImpl().getDefaultStorageObject()));
   }
 
   saveChartInfo(chartInfo: GravityChartInfoStorageObject): void {
@@ -235,7 +323,7 @@ export class GravityStorage implements MyStorage {
     localStorage.setItem(GravityStorage.dataKey, JSON.stringify(data));
   }
 
-  saveInterface(interfaceInfo: GravityOptions): void {
+  saveInterface(interfaceInfo: GravityInterfaceStorageObject): void {
     localStorage.setItem(GravityStorage.interfaceKey, JSON.stringify(interfaceInfo));
   }
 

@@ -1,4 +1,7 @@
 import {Injectable} from '@angular/core';
+import {BehaviorSubject} from "rxjs";
+import * as Highcharts from "highcharts";
+
 import {
   GravityChartInfo,
   GravityChartInfoStorageObject,
@@ -6,13 +9,12 @@ import {
   GravityDataDict,
   GravityInterface,
   GravityInterfaceImpl,
-  GravityOptions,
   GravityStorage
 } from "./gravity.service.util";
-import {BehaviorSubject} from "rxjs";
+
 import {MyData} from "../shared/data/data.interface";
 import {ChartInfo} from "../shared/charts/chart.interface";
-import * as Highcharts from "highcharts";
+import { UpdateSource } from '../shared/data/utils';
 
 @Injectable()
 export class GravityService implements MyData, GravityInterface, ChartInfo {
@@ -24,7 +26,7 @@ export class GravityService implements MyData, GravityInterface, ChartInfo {
 
   private dataSubject: BehaviorSubject<GravityData> = new BehaviorSubject<GravityData>(this.gravityData);
   public data$ = this.dataSubject.asObservable();
-  private interfaceSubject: BehaviorSubject<GravityOptions> = new BehaviorSubject<GravityOptions>(this.gravityInterface.getChannel());
+  private interfaceSubject: BehaviorSubject<UpdateSource> = new BehaviorSubject<UpdateSource>(UpdateSource.INIT);
   public interface$ = this.interfaceSubject.asObservable();
   private chartInfoSubject: BehaviorSubject<GravityChartInfo> = new BehaviorSubject<GravityChartInfo>(this.gravityChartInfo);
   public chartInfo$ = this.chartInfoSubject.asObservable();
@@ -33,7 +35,6 @@ export class GravityService implements MyData, GravityInterface, ChartInfo {
 
   constructor() {
     this.gravityData.setData(this.gravityStorage.getData());
-    this.gravityInterface.setChannel(this.gravityStorage.getInterface());
     this.gravityChartInfo.setStorageObject(this.gravityStorage.getChartInfo());
   }
 
@@ -92,26 +93,68 @@ export class GravityService implements MyData, GravityInterface, ChartInfo {
   }
 
   resetChartInfo(): void {
-    this.gravityChartInfo.setStorageObject(GravityChartInfo.getDefaultStorageObject());
-    this.gravityChartInfo.setDataLabel(this.getChannel());
+    this.gravityChartInfo.setStorageObject(GravityChartInfo.getDefaultChartInfo());
+    this.gravityChartInfo.setDataLabel("this.getChannel()");
     this.gravityStorage.saveChartInfo(this.gravityChartInfo.getStorageObject());
     this.chartInfoSubject.next(this.gravityChartInfo);
   }
 
 
-  /** SpectrumInterface Methods **/
+  /** GravityInterface Methods **/
 
-  getChannel(): GravityOptions {
-    return this.gravityInterface.getChannel();
+  getMergerTime(): number {
+    return this.gravityInterface.getMergerTime();
   }
 
-  setChannel(channel: GravityOptions): void {
-    this.gravityInterface.setChannel(channel);
-    this.gravityStorage.saveInterface(this.gravityInterface.getChannel());
-    this.interfaceSubject.next(this.gravityInterface.getChannel());
-    this.setDataLabel(this.gravityInterface.getChannel());
+  getTotalMass(): number {
+    return this.gravityInterface.getTotalMass();
   }
 
+  getMassRatio(): number {
+    return this.gravityInterface.getMassRatio();
+  }
+
+  getPhaseShift(): number {
+    return this.gravityInterface.getPhaseShift();
+  }
+
+  getDistance(): number {
+    return this.gravityInterface.getDistance();
+  }
+
+  getInclination(): number {
+    return this.gravityInterface.getInclination();
+  }
+
+  resetInterface(): void {
+    this.gravityInterface.resetInterface();
+    this.gravityStorage.resetInterface();
+    this.interfaceSubject.next(UpdateSource.RESET);
+  }
+
+  setMergerTime(mergerTime: number): void {
+    this.gravityInterface.setMergerTime(mergerTime);
+  }
+
+  setTotalMass(totalMass: number): void {
+    this.gravityInterface.setTotalMass(totalMass);
+  }
+
+  setMassRatio(massRatio: number): void {
+    this.gravityInterface.setMassRatio(massRatio);
+  }
+
+  setPhaseShift(phaseShift: number): void {
+    this.gravityInterface.setPhaseShift(phaseShift);
+  }
+
+  setDistance(distance: number): void {
+    this.gravityInterface.setDistance(distance);
+  }
+
+  setInclination(inclination: number): void {
+    this.gravityInterface.setInclination(inclination);
+  }
 
   /** MyData Methods**/
 

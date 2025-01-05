@@ -1,0 +1,50 @@
+<div class="periodogram-container">
+  <!-- Left Panel -->
+  <div class="controls-panel">
+    <!-- File Upload Button -->
+    <div class="control-item">
+      <label for="fileUpload" class="custom-file-upload">
+        Upload TXT File
+      </label>
+      <input id="fileUpload" type="file" accept=".txt" (change)="onFileSelected($event)" />
+    </div>
+
+    <!-- Custom Inputs -->
+    <div class="control-item">
+      <label>
+        Start Period:
+        <input type="number" [(ngModel)]="startPeriod" />
+      </label>
+    </div>
+    <div class="control-item">
+      <label>
+        End Period:
+        <input type="number" [(ngModel)]="endPeriod" />
+      </label>
+    </div>
+    <div class="control-item">
+      <label>
+        Points:
+        <input type="number" [(ngModel)]="numPoints" />
+      </label>
+    </div>
+
+    <!-- Compute Button -->
+    <div class="control-item">
+      <button (click)="computeLombScargle()">Compute</button>
+    </div>
+
+    <!-- Save and Reset Buttons -->
+    <div class="control-item">
+      <button (click)="saveGraph()">Save Graph</button>
+    </div>
+    <div class="control-item">
+      <button (click)="resetForm()">Reset Form</button>
+    </div>
+  </div>
+
+  <!-- Right Panel -->
+  <div class="chart-panel">
+    <app-pulsar-periodogram-highcharts></app-pulsar-periodogram-highcharts>
+  </div>
+</div>

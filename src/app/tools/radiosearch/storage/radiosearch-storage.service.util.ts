@@ -6,6 +6,11 @@ export interface Source {
     dec: number;   // Declination (in degrees)
   }
 
+export interface FittingResult {
+  slope: number;
+  intercept: number;
+}
+
 export interface HiddenResults {
   name: string;
   MHz38: number | 'Unknown';

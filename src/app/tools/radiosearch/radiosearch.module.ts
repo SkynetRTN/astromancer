@@ -1,11 +1,12 @@
 import {NgModule} from "@angular/core";
-import {RadioSearchComponent} from "./radiosearch/radiosearch.component";
+import {RadioSearchComponent} from "./radiosearch.component";
 import {RadioSearchService} from "./radiosearch.service";
 import {SimpleDataButtonModule} from "../shared/simple-data-button/simple-data-button.component";
 import {SimpleGraphButtonModule} from "../shared/simple-graph-button/simple-graph-button.component"
 import {HotTableModule} from "@handsontable/angular";
 import {HighchartsChartModule} from "highcharts-angular";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {BrowserModule} from "@angular/platform-browser";
 import {MatSliderModule} from "@angular/material/slider";
 import {CommonModule, NgIf} from "@angular/common";
 import {InterfaceUtilModule} from "../shared/interface/util";
@@ -18,6 +19,8 @@ import {MatTableModule} from '@angular/material/table';
 import {MatIconModule} from '@angular/material/icon';
 import {MatSortModule} from '@angular/material/sort';
 import {RadioSearchStorageService} from "./storage/radiosearch-storage.service";
+import { RadioSearchHighChartComponent} from "./radiosearch-highchart/radiosearch-high-chart.component";
+import { RadioSearchHighChartService} from "./radiosearch.service";
 
 
 const routes: Routes = [
@@ -27,6 +30,7 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     RadioSearchComponent,
+    RadioSearchHighChartComponent,
   ],
   imports: [
     CommonModule,
@@ -45,11 +49,12 @@ const routes: Routes = [
     MatSliderModule,
     FormsModule,
     NgIf,
+    // BrowserModule,
     MatDialogModule,
     MatButtonModule,
   ],
-  exports: [RadioSearchComponent, RouterModule],
-  providers: [RadioSearchStorageService],
+  exports: [RadioSearchComponent, RouterModule, RadioSearchHighChartComponent],
+  providers: [RadioSearchService, RadioSearchHighChartService, RadioSearchStorageService],
 })
 export class RadioSearchModule {
 }

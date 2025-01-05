@@ -146,11 +146,11 @@
         <mat-card class="tile">
           <mat-card-header>
             <mat-card-title>Radio Search</mat-card-title>
-            <mat-card-subtitle>OPIS!</mat-card-subtitle>
+            <mat-card-subtitle>MWU!</mat-card-subtitle>
           </mat-card-header>
-          <!-- <div class="chart-preview">
-            <app-spectrum-highchart></app-spectrum-highchart>
-          </div> -->
+          <div class="chart-preview">
+            <app-radiosearch-highchart></app-radiosearch-highchart>
+          </div>
           <mat-card-content>
             <p>
               Description for the Radio Search tool goes here.
@@ -175,11 +175,20 @@
           <mat-card-content>
             <p>
               Description for the Radio plotting tool goes here.
+      <div [routerLink]="'/pulsar'" class="tile-container">
+        <mat-card class="tile">
+          <mat-card-header>
+            <mat-card-title>Pulsar</mat-card-title>
+            <mat-card-subtitle>MWU!</mat-card-subtitle>
+          </mat-card-header>
+          <div class="chart-preview">
+            <!-- <app-pulsar-highchart></app-pulsar-highchart> -->
+          </div>
+          <mat-card-content>
+            <p>
+              Description for the Pulsar plotting tool goes here.
             </p>
           </mat-card-content>
         </mat-card>
       </div>
-    </div>
-  </div>
-
-</div>
+      

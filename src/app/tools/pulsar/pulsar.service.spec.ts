@@ -1,13 +1,13 @@
 import {TestBed} from '@angular/core/testing';
 
-import {RadioSearchService} from './radiosearch.service';
+import {PulsarService} from './pulsar.service';
 
-describe('RadioSearchService', () => {
-  let service: RadioSearchService;
+describe('PulsarService', () => {
+  let service: PulsarService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(RadioSearchService);
+    service = TestBed.inject(PulsarService);
   });
 
   it('should be created', () => {

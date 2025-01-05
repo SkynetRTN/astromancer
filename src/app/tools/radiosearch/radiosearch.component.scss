@@ -3,19 +3,21 @@
 .page-container {
   display: flex;
   flex-direction: row;
-  height: calc(100vh - 7%);
+  height: calc(100vh - 10%);
   padding: 2.5%;
   box-sizing: border-box;
   position: relative; /* Ensure that child elements can use absolute positioning */
+  overflow: hidden;
 }
 
 .left-container-wrapper {
-  flex: 0 0 47.5%; /* Maintain original size */
+  display: flex;
   flex-direction: column;
-  height: 95%;
+  flex: 0 0 47.5%;
+  height: 100%;
   margin-right: 2.5%;
-  position: relative; /* For nested absolute positioning of the child containers */
-  overflow: hidden; /* Prevent overflow if necessary */
+  position: relative;
+  overflow-y: auto; /* Allow vertical scrolling if content exceeds the height */
 }
 
 .left-container {
@@ -60,17 +62,100 @@
 }
 
 .controls {
-  position: absolute; /* Position at the bottom of the wrapper */
-  bottom: 0; /* Stick to the bottom of the wrapper */
+  position: absolute; /* Stick to the bottom of the wrapper */
+  bottom: 0;
   left: 0;
   height: 10%; /* Take the bottom 10% of the wrapper */
   width: 100%; /* Full width of the wrapper */
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
+  flex-direction: column; /* Ensure the sliders are laid out horizontally */
+  gap: 2px; /* Add space between the sliders */
+  justify-content: space-between; /* Distribute sliders evenly */
+  align-items: left; /* Vertically center the sliders */
+  padding: 2px;
   background-color: #f1f1f1; /* Light background for the control area */
   border-top: 1px solid #ccc; /* Optional border for separation */
+}
+
+.controls input[type="range"] {
+  flex-grow: 1; /* Make each slider take equal width */
+  max-width: 30%; /* Ensure sliders do not exceed a third of the width */
+}
+
+.ra-slider-container {
+  position: absolute; /* Positions the coordinates over the canvas */
+  top: 10px; /* Adjust the positioning as needed */
+  left: 26%; /* Adjust the positioning as needed */
+  background: rgba(0, 0, 0, 0.7); /* Semi-transparent background to stand out against the canvas */
+  color: #ffffff; /* Text color */
+  padding: 5px 10px; /* Padding around the text */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 12px; /* Font size */
+  z-index: 2; /* Ensure it stays on top of the canvas */
+}
+
+.dec-slider-container {
+  position: absolute; /* Positions the coordinates over the canvas */
+  top: 45%; /* Adjust the positioning as needed */
+  left: -114px; /* Adjust the positioning as needed */
+  background: rgba(0, 0, 0, 0.7); /* Semi-transparent background to stand out against the canvas */
+  color: #ffffff; /* Text color */
+  padding: 5px 10px; /* Padding around the text */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 12px; /* Font size */
+  transform: rotate(90deg) scaleY(-1) scaleX(-1);
+  z-index: 2; /* Ensure it stays on top of the canvas */
+}
+
+.max-slider-container {
+  position: absolute; /* Positions the container */
+  bottom: 10px; /* Adjust vertical positioning */
+  left: 32%; /* Adjust horizontal positioning */
+  width: 40%; /* Set a specific horizontal size */
+  display: flex; /* Use flexbox for horizontal alignment */
+  align-items: center; /* Vertically center label and slider */
+  justify-content: flex-start; /* Align items to the left */
+  background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+  color: #ffffff; /* Text color */
+  padding: 5px 10px; /* Padding around the content */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 12px; /* Font size */
+  z-index: 2; /* Ensure it stays on top of the canvas */
+}
+
+.zoom-slider-container {
+  position: absolute; /* Positions the coordinates over the canvas */
+  top: 45%; /* Adjust the positioning as needed */
+  right: -120px; /* Adjust the positioning as needed */
+  background: rgba(0, 0, 0, 0.7); /* Semi-transparent background to stand out against the canvas */
+  color: #ffffff; /* Text color */
+  padding: 5px 10px; /* Padding around the text */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 12px; /* Font size */
+  transform: rotate(90deg) scaleY(-1) scaleX(-1);
+  z-index: 2; /* Ensure it stays on top of the canvas */
+}
+
+
+label {
+  width: 100px; /* Fixed width for label */
+  text-align: left; /* Align text to the left */
+  margin-right: 10px; /* Space between label and slider */
+}
+
+input[type="range"] {
+  // flex-grow: 1; /* Make the slider take available space */
+  max-width: 100%; /* Ensure the slider doesn't overflow */
+  margin: 0 10px; /* Add space around the slider */
+}
+
+.offset-sliders {
+  display: flex;
+  flex-direction: column; /* Ensure RA and Dec sliders are stacked vertically */
+}
+
+.max-value-slider {
+  margin-top: 10px; /* Add space above the max value slider */
 }
 
 .controls label {
@@ -82,16 +167,60 @@
   margin: 0 10px; /* Adds space around the sliders */
 }
 
-.right-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column; /* Let children stack vertically */
-  max-height: calc(100vh - 80%); /* Ensure it takes up remaining space */
-  overflow-y: auto; /* Enable scrolling when content overflows */
-  padding: 0;
+.download-button-container {
+  position: absolute; /* Position relative to the canvas */
+  bottom: 13px; /* Align it to the bottom, opposite the coordinates */
+  right: 10px; /* Align to the right side */
+  z-index: 2; /* Ensure it stays on top of the canvas */
+}
 
-  border-style: solid;
-  border-width: 4px;
+.download-button-container button {
+  padding: 5px 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.download-button-container button:hover {
+  background-color: #45a049;
+}
+
+.delete-button-container {
+  position: absolute; /* Position relative to the canvas */
+  bottom: 50px; /* Align it to the bottom, opposite the coordinates */
+  right: 10px; /* Align to the right side */
+  z-index: 2; /* Ensure it stays on top of the canvas */
+}
+
+.delete-button-container button {
+  padding: 5px 10px;
+  background-color: #ef2b2b;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-button-container button:hover {
+  background-color: #b12d2d;
+}
+
+.right-container {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 47.5%; /* Same width as the left container */
+  height: 100%;     /* Same height as the left container */
+  margin-left: 2.5%; /* Add margin to the left, instead of right */
+  position: relative;
+  overflow-y: auto;  /* Allow vertical scrolling if content exceeds the height */
+}
+
+.below-text {
+  margin-top: 10px; /* Adjust spacing between the chart and text */
+  font-size: 14px; /* Adjust font size if needed */
+  color: #333; /* Optional: Customize text color */
 }
 
 .mat-elevation-z8 {
@@ -148,7 +277,7 @@
 /* Apply space between header row and first row */
 .mat-header-row {
   background-color: #f5f5f5; /* Customize header background color */
-  margin-bottom: 10px !important; /* Force margin-bottom between header and first row */
+  margin-bottom: 10px; /* Force margin-bottom between header and first row */
   border-bottom: 2px solid #e0e0e0; /* Optional: Add border to visually separate the header */
 }
 
@@ -185,6 +314,23 @@
 
 .bottom-left-info h4 {
   margin: 0 0 10px 0;
+}
+
+.bottom-left-chart {
+  position: absolute;
+  bottom: 3%; /* Align similarly to the previous info container */
+  left: 50%; /* Align to the left just like the info container */
+  transform: translateX(-50%); /* Ensure it is centered horizontally */
+  width: 47%; /* Same width as the bottom-left-info container */
+  height: 40vh; /* Limit the height to 40% of the viewport */
+  padding: 0;
+  box-sizing: border-box; /* Ensure padding and borders are included in the width/height calculation */
+  z-index: 1000; /* Ensure the chart stays on top of other elements */
+}
+
+#chart-container {
+  width: 100%; /* Take full width of the bottom-left-chart container */
+  height: 100%; /* Take full height of the bottom-left-chart container */
 }
 
 .prompt-container {

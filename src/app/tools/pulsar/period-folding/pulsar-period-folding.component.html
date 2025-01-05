@@ -1,8 +1,81 @@
-<div class="row period-folding tool-container">
-  <div class="col-9">
-    <div class="row dynamic">
-      Period Folding!
-      <!-- <app-pulsar-period-folding-highchart></app-pulsar-period-folding-highchart> -->
+<div class="variable-form-container">
+  <div class="row">
+    <!-- Left Panel -->
+    <div class="col-4 controls-panel">
+      <!-- Title Field -->
+      <div class="control-item">
+        <mat-form-field>
+          <mat-label>Title</mat-label>
+          <input [(ngModel)]="chartTitle" matInput>
+        </mat-form-field>
+      </div>
+      <!-- Data Field -->
+      <div class="control-item">
+        <mat-form-field>
+          <mat-label>Data</mat-label>
+          <input [(ngModel)]="dataLabel" matInput>
+        </mat-form-field>
+      </div>
+
+      <div class="row">
+        <!-- X Axis Label -->
+        <div class="col-6 control-item">
+          <mat-form-field>
+            <mat-label>X Axis</mat-label>
+            <input [(ngModel)]="xAxisLabel" matInput>
+          </mat-form-field>
+        </div>
+        <!-- Y Axis Label -->
+        <div class="col-6 control-item">
+          <mat-form-field>
+            <mat-label>Y Axis</mat-label>
+            <input [(ngModel)]="yAxisLabel" matInput>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Sliders and Inputs -->
+      <div class="row">
+        <!-- Period Slider -->
+        <div class="col-6 slider-container">
+          <label for="periodShift">Period: </label>
+          <input id="periodShift" type="range" min="0.1" max="100" step="0.001" [(ngModel)]="periodShift">
+          <mat-form-field>
+            <input [(ngModel)]="periodShift" matInput>
+          </mat-form-field>
+        </div>
+
+        <!-- Phase Slider -->
+        <div class="col-6 slider-container">
+          <label for="phaseShift">Phase: </label>
+          <input id="phaseShift" type="range" min="0" max="1" step="0.01" [(ngModel)]="phaseShift">
+          <mat-form-field>
+            <input [(ngModel)]="phaseShift" matInput>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Checkbox for Two Periods -->
+      <div class="row">
+        <div class="col-12">
+          <mat-checkbox [(ngModel)]="twoPeriods">Two Periods</mat-checkbox>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="row button-container">
+        <div class="col-6">
+          <button (click)="saveGraph()" mat-raised-button>Save Graph</button>
+        </div>
+        <div class="col-6">
+          <button (click)="resetForm()" mat-raised-button>Reset Form</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="col-8 chart-panel">
+      Placeholder
     </div>
   </div>
 </div>

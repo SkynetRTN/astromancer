@@ -1,6 +1,69 @@
 <div class="periodogram-container">
   <!-- Left Panel -->
   <div class="controls-panel">
+    <div class="row">
+      <div class="col-12">
+        <mat-form-field>
+          <mat-label>Title</mat-label>
+          <input type="text" [(ngModel)]="chartTitle" (ngModelChange)="onFieldChange('title', $event)" placeholder="My Periodogram" matInput>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <mat-form-field>
+          <mat-label>Data</mat-label>
+          <input type="text" [(ngModel)]="dataLabel" (ngModelChange)="onFieldChange('data', $event)" placeholder="My Periodogram" matInput>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <mat-form-field>
+          <mat-label>X Axis</mat-label>
+          <input type="text" [(ngModel)]="xAxisLabel" (ngModelChange)="onFieldChange('xAxis', $event)" placeholder="My Periodogram" matInput>
+        </mat-form-field>
+      </div>
+      <div class="col-6">
+        <mat-form-field>
+          <mat-label>Y Axis</mat-label>
+          <input type="text" [(ngModel)]="yAxisLabel" (ngModelChange)="onFieldChange('yAxis', $event)" placeholder="My Periodogram" matInput>
+        </mat-form-field>
+      </div>
+    </div>    
+    <div class="row">
+      <div class="col-6">
+        <mat-form-field>
+          <mat-label>Start Period (sec)</mat-label>
+          <input type="text" [(ngModel)]="startPeriod" placeholder="My Periodogram" matInput />
+        </mat-form-field>
+      </div>
+      <div class="col-6">
+        <mat-form-field>
+          <mat-label>End Period (sec)</mat-label>
+          <input type="text" [(ngModel)]="endPeriod" placeholder="My Periodogram" matInput>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <mat-form-field>
+          <mat-label>Points</mat-label>
+          <input type="text" [(ngModel)]="numPoints" placeholder="My Periodogram" matInput>
+        </mat-form-field>
+      </div>
+      <div class="col-6">
+        <mat-form-field>
+          <mat-label i18n>Period Shown</mat-label>
+          <mat-select [(ngModel)]="displayPeriod" placeholder="My Periodogram" matInput>
+            <mat-option>
+              period
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
     <!-- File Upload Button -->
     <div class="control-item">
       <label for="fileUpload" class="custom-file-upload">
@@ -9,37 +72,9 @@
       <input id="fileUpload" type="file" accept=".txt" (change)="onFileSelected($event)" />
     </div>
 
-    <!-- Custom Inputs -->
-    <div class="control-item">
-      <label>
-        Start Period:
-        <input type="number" [(ngModel)]="startPeriod" />
-      </label>
-    </div>
-    <div class="control-item">
-      <label>
-        End Period:
-        <input type="number" [(ngModel)]="endPeriod" />
-      </label>
-    </div>
-    <div class="control-item">
-      <label>
-        Points:
-        <input type="number" [(ngModel)]="numPoints" />
-      </label>
-    </div>
-
     <!-- Compute Button -->
     <div class="control-item">
       <button (click)="computeLombScargle()">Compute</button>
-    </div>
-
-    <!-- Save and Reset Buttons -->
-    <div class="control-item">
-      <button (click)="saveGraph()">Save Graph</button>
-    </div>
-    <div class="control-item">
-      <button (click)="resetForm()">Reset Form</button>
     </div>
   </div>
 

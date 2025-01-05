@@ -64,8 +64,8 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
     
       // Filter out invalid data (null values)
       const filteredData = data
-        .filter(item => item.frequency !== null && item.intensity !== null) // Exclude null values
-        .map(item => ({ frequency: item.frequency!, intensity: item.intensity! })); // Assert non-null
+        .filter(item => item.frequency !== null && item.channel1 !== null) // Exclude null values
+        .map(item => ({ frequency: item.frequency!, channel1: item.channel1!,  channel2: item.channel2! })); // Assert non-null
     
       console.log('Filtered data:', filteredData); // Debugging log
     
@@ -88,8 +88,8 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
 
     // Get initial data and update the chart
     const initialData = this.pulsarService.getData()
-      .filter(item => item.frequency !== null && item.intensity !== null) // Exclude null values
-      .map(item => ({ frequency: item.frequency!, intensity: item.intensity! })); // Assert non-null values
+      .filter(item => item.frequency !== null && item.channel1 !== null) // Exclude null values
+      .map(item => ({ frequency: item.frequency!, channel1: item.channel1!, channel2: item.channel2! })); // Assert non-null values
 
     this.updateChartData(initialData);
   }
@@ -101,16 +101,36 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
     this.chartObject.yAxis[0].setTitle({ text: this.pulsarService.getYAxisLabel() });
   }
 
-  private updateChartData(data: { frequency: number, intensity: number }[]): void {
-    const chartData = data.map(item => [item.frequency, item.intensity]); // Format for Highcharts
-
+  private updateChartData(data: { frequency: number, channel1: number, channel2: number }[]): void {
+    const chartData = data.map(item => [item.frequency, item.channel1]); // Main data
+    const calData = data.map(item => [item.frequency, item.channel2]); // Calibration data
+  
+    // Check if series exists before updating or adding
     if (this.chartObject.series.length > 0) {
-      // Update existing series
+      // Update first series for 'channel1'
       this.chartObject.series[0].setData(chartData, true);
+  
+      // If the second series exists, update it
+      if (this.chartObject.series.length > 1) {
+        this.chartObject.series[1].setData(calData, true);
+      } else {
+        // Add the second series if it doesn't exist
+        this.chartObject.addSeries({
+          name: 'Calibration Intensity', // Second series name
+          type: 'line',
+          data: calData,
+          marker: {
+            enabled: true,
+            radius: 4,
+            symbol: 'triangle', // Different marker for distinction
+          },
+          lineWidth: 1.5,
+        });
+      }
     } else {
-      // Add a new series if none exists
+      // If no series exists, create both series
       this.chartObject.addSeries({
-        name: this.pulsarService.getDataLabel(),
+        name: 'Intensity', // First series name
         type: 'line',
         data: chartData,
         marker: {
@@ -120,8 +140,20 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
         },
         lineWidth: 1.5,
       });
+  
+      this.chartObject.addSeries({
+        name: 'Calibration Intensity', // Second series name
+        type: 'line',
+        data: calData,
+        marker: {
+          enabled: true,
+          radius: 4,
+          symbol: 'triangle',
+        },
+        lineWidth: 1.5,
+      });
     }
-  }
+  }  
 
   chartInitialized($event: Highcharts.Chart) {
     this.chartObject = $event; // Use the instance passed from (chartInstance)

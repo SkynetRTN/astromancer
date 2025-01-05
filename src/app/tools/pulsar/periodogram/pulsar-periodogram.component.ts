@@ -3,6 +3,8 @@ import { lombScargleWithError } from '../../shared/data/utils';
 import { PulsarService } from '../pulsar.service';
 import { HonorCodePopupService } from '../../shared/honor-code-popup/honor-code-popup.service';
 import { HonorCodeChartService } from '../../shared/honor-code-popup/honor-code-chart.service';
+import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-pulsar-periodogram',
@@ -12,20 +14,51 @@ import { HonorCodeChartService } from '../../shared/honor-code-popup/honor-code-
 })
 export class PulsarPeriodogramComponent {
 
-    constructor(
-      private service: PulsarService, // Inject the service
-      private honorCodeService: HonorCodePopupService,
-      private chartService: HonorCodeChartService
-    ) {}
+  chartTitle: string = 'My Periodogram';
+  dataLabel: string = 'Data Set 1';
+  xAxisLabel: string = 'Time (Days)';
+  yAxisLabel: string = 'Amplitude';
+  displayPeriod: string = 'period';
 
+  constructor(
+    private service: PulsarService, // Inject the service
+    private honorCodeService: HonorCodePopupService,
+    private chartService: HonorCodeChartService
+  ) {}
+  
   parsedData: any;
   startPeriod: number = 1;
   endPeriod: number = 10;
   numPoints: number = 1000;
 
   ts: number[] = [];
+  xs: number[] = [];
   ys: number[] = [];
   error: number[] = [];
+
+  onFieldChange(field: string, value: string) {
+    console.log(`Field "${field}" changed to:`, value);
+  
+    // You can trigger updates here if needed
+    switch (field) {
+      case 'title':
+        this.chartTitle = value;
+        this.service.setChartTitle(this.chartTitle);
+        break;
+      case 'data':
+        this.dataLabel = value;
+        this.service.setDataLabel(this.dataLabel);
+        break;
+      case 'xAxis':
+        this.xAxisLabel = value;
+        this.service.setXAxisLabel(this.xAxisLabel);
+        break;
+      case 'yAxis':
+        this.yAxisLabel = value;
+        this.service.setYAxisLabel(this.yAxisLabel);
+        break;
+    }
+  }  
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -73,30 +106,48 @@ export class PulsarPeriodogramComponent {
 
     // Prepare data for computation
     this.ts = rows.map(row => row['UTC_Time(s)'] as number);
+    this.xs = rows.map(row => row['XX1'] as number);
     this.ys = rows.map(row => row['YY1'] as number);
     this.error = Array(this.ys.length).fill(1.0); // Dummy errors
   }
 
   computeLombScargle() {
     const freqMode = false;
+  
+    // Compute Lomb-Scargle for both datasets
     const result = lombScargleWithError(
       this.ts, this.ys, this.error, this.startPeriod, this.endPeriod, this.numPoints, freqMode
     );
   
+    const calresult = lombScargleWithError(
+      this.ts, this.xs, this.error, this.startPeriod, this.endPeriod, this.numPoints, freqMode
+    );
+  
     console.log('Raw Lomb-Scargle Result:', result);
+    console.log('Raw Lomb-Scargle Calibration Result:', calresult);
+  
+    // Ensure both results have the same length
+    if (result.length !== calresult.length) {
+      console.error('Error: Results and calibration results have mismatched lengths.');
+      return;
+    }
   
     // Transform the result into an array of objects
-    const transformedResult = result.map(([frequency, intensity]) => ({
+    const transformedResult = result.map(([frequency, channel1], index) => ({
       frequency,
-      intensity
+      channel1,
+      channel2: calresult[index][1] // Append channel2 from calresult
     }));
   
     console.log('Transformed Lomb-Scargle Result:', transformedResult);
   
     // Store or process results
     this.parsedData = transformedResult;
+  
+    // Pass data to the service
     this.service.setData(transformedResult);
-  }  
+  }
+  
 
   saveGraph() {
     this.honorCodeService.honored().subscribe((name: string) => {

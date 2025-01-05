@@ -6,12 +6,10 @@
 .controls-panel {
   width: 30%; /* Left panel width */
   padding: 20px;
-  background-color: #f4f4f4;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Optional shadow for separation */
   display: flex;
   flex-direction: column; /* Stack controls vertically */
-  gap: 15px; /* Space between controls */
-  overflow-y: auto; /* Scroll if too many controls */
+  gap: 5px; /* Space between controls */
+  overflow-y: hidden; /* Scroll if too many controls */
 }
 
 .control-item {
@@ -68,4 +66,8 @@ input[type="number"] {
 
 .controls-panel::-webkit-scrollbar-track {
   background-color: #f4f4f4;
+}
+
+mat-form-field {
+  width: 100%;
 }

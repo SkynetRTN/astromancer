@@ -78,6 +78,53 @@ export function lombScargleWithError(ts: number[], ys: number[], error: number[]
 }
 
 
+export function lombScargle(ts: number[], ys: number[], start: number, stop: number, steps: number = 1000, freqMode = false): any[] {
+    if (ts.length != ys.length) {
+        alert("Dimension mismatch between time array and value array.");
+        return [];
+    }
+
+    let step = (stop - start) / steps;
+
+    // Nyquist is not used here. But it became useful for default frequency ranges in
+    // Fourier transform!! (In pulsar mode).
+    // let nyquist = 1.0 / (2.0 * (ArrMath.max(ts) - ArrMath.min(ts)) / ts.length);
+    let hResidue = ArrMath.sub(ys, ArrMath.mean(ys));
+    let twoVarOfY = 2 * ArrMath.var(ys);
+
+    // xVal is what we iterate through & push to result. It will either be frequency or
+    // period, depending on the mode.
+    let spectralPowerDensity = [];
+    let i = 0;
+    for (let xVal = start; xVal < stop; xVal += step) {
+        // Huge MISTAKE was here: I was plotting power vs. frequency, instead of power vs. period
+
+        let logXVal = Math.exp(Math.log(start)+(Math.log(stop)-Math.log(start))*i/(steps))
+        let frequency = freqMode ? logXVal : 1 / logXVal;
+        if(freqMode === true){
+            frequency = freqMode ? xVal : 1 / xVal;
+            logXVal = xVal
+        }
+
+        let omega = 2.0 * Math.PI * frequency;
+        let twoOmegaT = ArrMath.mul(2 * omega, ts);
+        let tau = Math.atan2(ArrMath.sum(ArrMath.sin(twoOmegaT)), ArrMath.sum(ArrMath.cos(twoOmegaT))) / (2.0 * omega);
+        let omegaTMinusTau = ArrMath.mul(omega, ArrMath.sub(ts, tau));
+
+        spectralPowerDensity.push({
+            x: logXVal,
+            y: (Math.pow(ArrMath.dot(hResidue, ArrMath.cos(omegaTMinusTau)), 2.0) /
+                ArrMath.dot(ArrMath.cos(omegaTMinusTau)) +
+                Math.pow(ArrMath.dot(hResidue, ArrMath.sin(omegaTMinusTau)), 2.0) /
+                ArrMath.dot(ArrMath.sin(omegaTMinusTau))) / twoVarOfY,
+        });
+        i++;
+    }
+
+    return spectralPowerDensity;
+}
+
+
 const ArrMath = {
     max: function (arr: number[]): number {
         return Math.max.apply(null, arr);

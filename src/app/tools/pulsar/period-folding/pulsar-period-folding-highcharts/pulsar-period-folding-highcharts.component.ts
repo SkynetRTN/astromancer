@@ -23,7 +23,7 @@ export class PulsarPeriodFoldingHighchartsComponent implements AfterViewInit, On
       text: '' // Placeholder, dynamically updated
     },
     legend: {
-      enabled: false,
+      enabled: true,
     },
     tooltip: {
       enabled: true,
@@ -116,41 +116,38 @@ export class PulsarPeriodFoldingHighchartsComponent implements AfterViewInit, On
       } else {
         // Add the second series if it doesn't exist
         this.chartObject.addSeries({
-          name: 'Calibration Intensity', // Second series name
-          type: 'line',
+          name: 'Channel 2', // Second series name
+          type: 'scatter',
           data: calData,
           marker: {
             enabled: true,
-            radius: 4,
+            radius: 2,
             symbol: 'triangle', // Different marker for distinction
           },
-          lineWidth: 1.5,
         });
       }
     } else {
       // If no series exists, create both series
       this.chartObject.addSeries({
-        name: 'Intensity', // First series name
-        type: 'line',
+        name: 'Channel 1', // First series name
+        type: 'scatter',
         data: chartData,
         marker: {
           enabled: true,
-          radius: 4,
+          radius: 2,
           symbol: 'circle',
         },
-        lineWidth: 1.5,
       });
   
       this.chartObject.addSeries({
-        name: 'Calibration Intensity', // Second series name
-        type: 'line',
+        name: 'Channel 2', // Second series name
+        type: 'scatter',
         data: calData,
         marker: {
           enabled: true,
-          radius: 4,
+          radius: 2,
           symbol: 'triangle',
         },
-        lineWidth: 1.5,
       });
     }
   }  

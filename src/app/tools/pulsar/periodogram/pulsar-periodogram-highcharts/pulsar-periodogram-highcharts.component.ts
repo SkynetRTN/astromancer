@@ -121,7 +121,7 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
           data: calData,
           marker: {
             enabled: true,
-            radius: 4,
+            radius: 2,
             symbol: 'triangle', // Different marker for distinction
           },
           lineWidth: 1.5,
@@ -135,7 +135,7 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
         data: chartData,
         marker: {
           enabled: true,
-          radius: 4,
+          radius: 2,
           symbol: 'circle',
         },
         lineWidth: 1.5,
@@ -147,7 +147,7 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
         data: calData,
         marker: {
           enabled: true,
-          radius: 4,
+          radius: 2,
           symbol: 'triangle',
         },
         lineWidth: 1.5,

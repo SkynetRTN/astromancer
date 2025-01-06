@@ -1,81 +1,81 @@
-<div class="variable-form-container">
-  <div class="row">
-    <!-- Left Panel -->
-    <div class="col-4 controls-panel">
-      <!-- Title Field -->
-      <div class="control-item">
+<div class="period-folding-container">
+  <!-- Left Panel -->
+  <div class="controls-panel">
+    <div class="row">
+      <div class="col-12">
         <mat-form-field>
           <mat-label>Title</mat-label>
-          <input [(ngModel)]="chartTitle" matInput>
+          <input type="text" [(ngModel)]="chartTitle" (ngModelChange)="onFieldChange('title', $event)" placeholder="My Period Folding" matInput>
         </mat-form-field>
       </div>
-      <!-- Data Field -->
-      <div class="control-item">
+    </div>
+    <!-- <div class="row">
+      <div class="col-12">
         <mat-form-field>
           <mat-label>Data</mat-label>
-          <input [(ngModel)]="dataLabel" matInput>
+          <input type="text" [(ngModel)]="dataLabel" (ngModelChange)="onFieldChange('data', $event)" placeholder="My Period Folding" matInput>
         </mat-form-field>
       </div>
-
-      <div class="row">
-        <!-- X Axis Label -->
-        <div class="col-6 control-item">
-          <mat-form-field>
-            <mat-label>X Axis</mat-label>
-            <input [(ngModel)]="xAxisLabel" matInput>
-          </mat-form-field>
-        </div>
-        <!-- Y Axis Label -->
-        <div class="col-6 control-item">
-          <mat-form-field>
-            <mat-label>Y Axis</mat-label>
-            <input [(ngModel)]="yAxisLabel" matInput>
-          </mat-form-field>
-        </div>
+    </div> -->
+    <div class="row">
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>X Axis</mat-label>
+          <input type="text" [(ngModel)]="xAxisLabel" (ngModelChange)="onFieldChange('xAxis', $event)" placeholder="My Period Folding" matInput>
+        </mat-form-field>
       </div>
-
-      <!-- Sliders and Inputs -->
-      <div class="row">
-        <!-- Period Slider -->
-        <div class="col-6 slider-container">
-          <label for="periodShift">Period: </label>
-          <input id="periodShift" type="range" min="0.1" max="100" step="0.001" [(ngModel)]="periodShift">
-          <mat-form-field>
-            <input [(ngModel)]="periodShift" matInput>
-          </mat-form-field>
-        </div>
-
-        <!-- Phase Slider -->
-        <div class="col-6 slider-container">
-          <label for="phaseShift">Phase: </label>
-          <input id="phaseShift" type="range" min="0" max="1" step="0.01" [(ngModel)]="phaseShift">
-          <mat-form-field>
-            <input [(ngModel)]="phaseShift" matInput>
-          </mat-form-field>
-        </div>
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>Y Axis</mat-label>
+          <input type="text" [(ngModel)]="yAxisLabel" (ngModelChange)="onFieldChange('yAxis', $event)" placeholder="My Period Folding" matInput>
+        </mat-form-field>
       </div>
-
-      <!-- Checkbox for Two Periods -->
-      <div class="row">
-        <div class="col-12">
-          <mat-checkbox [(ngModel)]="twoPeriods">Two Periods</mat-checkbox>
-        </div>
-      </div>
-
-      <!-- Buttons -->
-      <div class="row button-container">
-        <div class="col-6">
-          <button (click)="saveGraph()" mat-raised-button>Save Graph</button>
-        </div>
-        <div class="col-6">
-          <button (click)="resetForm()" mat-raised-button>Reset Form</button>
-        </div>
-      </div>
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label i18n>Periods</mat-label>
+          <mat-select [(ngModel)]="periodNum" (selectionChange)="onMeasurementChange()">
+            <mat-option [value]="1">1</mat-option>
+            <mat-option [value]="2">2</mat-option>
+          </mat-select>
+        </mat-form-field>        
+      </div>    
+    </div>    
+  <div class="row">
+    <div class="col-12">
+      <my-input-slider (value)="onChange($event)" [defaultValue]="periodMax"
+                       [inputPrecision]="4"
+                       [isLog]="true" [label]="'Period (sec)'"
+                       [maxValue]="periodMax" [minValue]="periodMin" [name]="'period'"
+                       [stepValue]="periodStep" [step]="periodStep">
+      </my-input-slider>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <my-input-slider (value)="onChange($event)" [defaultValue]="0"
+                       [label]="'Phase (cycles)'" [maxValue]="1"
+                       [minValue]="0"
+                       [name]="'phase'">
+      </my-input-slider>
+    </div>
+  </div>    
+    <div class="row centered-buttons">
+      <button (click)="saveGraph()" mat-raised-button>Save Graph</button>
+      <button (click)="resetForm()" mat-raised-button>Reset Form</button>
     </div>
 
-    <!-- Right Panel -->
-    <div class="col-8 chart-panel">
-      Placeholder
+
+    <!-- File Upload Button -->
+    <div class="control-item">
+      <label for="fileUpload" class="custom-file-upload">
+        Upload TXT File
+      </label>
+      <input id="fileUpload" type="file" accept=".txt" (change)="onFileSelected($event)" />
     </div>
+  </div>
+
+  <!-- Right Panel -->
+  <div class="chart-panel">
+    <app-pulsar-period-folding-highcharts></app-pulsar-period-folding-highcharts>
   </div>
 </div>

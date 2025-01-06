@@ -1,7 +1,90 @@
-.col-4, .col-8, .col-12 {
+.period-folding-container {
   display: flex;
-  flex-flow: column;
+  height: 86vh; /* Full viewport height */
 }
 
-.period-folding {
+.full-width {
+  margin-top: 4%; /* Makes the button or input grow to fill available space */
+}
+
+.controls-panel {
+  width: 30%; /* Left panel width */
+  padding: 1%;
+  padding-left: 2%;
+  display: flex;
+  flex-direction: column; /* Stack controls vertically */
+  gap: 1%; /* Space between controls */
+  overflow-y: scroll; /* Scroll if too many controls */
+}
+
+.centered-buttons {
+  display: flex;              /* Enable flexbox layout */
+  justify-content: center;    /* Center horizontally */
+  align-items: center;        /* Center vertically (optional) */
+  gap: 10px;                  /* Adds spacing between buttons */
+  padding: 5px;
+}
+
+.control-item {
+  display: flex;
+  flex-direction: column; /* Stack label and input vertically */
+  justify-content: center;
+  margin-bottom: 3%;
+  margin-left: 10%;
+  padding-left: 30%;
+  padding-right: 30%;
+}
+
+.custom-file-upload {
+  display: inline-block;
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.custom-file-upload:hover {
+  background-color: #0056b3;
+}
+
+input[type="file"] {
+  display: none; /* Hide default input file appearance */
+}
+
+.chart-panel {
+  width: 70%; /* Right panel width */
+  padding: 5%;
+  overflow: hidden;
+}
+
+/* Optional styling for input fields */
+input[type="number"] {
+  padding: 5px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box; /* Ensures padding is included in width */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Scrollbar for the left panel in case of overflow */
+.controls-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.controls-panel::-webkit-scrollbar-thumb {
+  background-color: #007bff;
+  border-radius: 4px;
+}
+
+.controls-panel::-webkit-scrollbar-track {
+  background-color: #f4f4f4;
+}
+
+mat-form-field {
+  width: 100%;
 }

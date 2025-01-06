@@ -134,12 +134,12 @@ export class PulsarService implements MyData {
         return this.highChart;
     }
 
-    setTabIndex(index: number): void {
+    public setTabIndex(index: number): void {
         this.tabIndex = index;
         this.pulsarStorage.saveTabIndex(this.tabIndex);
     }
 
-    getTabIndex(): number {
+    public getTabIndex(): number {
         return this.tabIndex;
     }
 }

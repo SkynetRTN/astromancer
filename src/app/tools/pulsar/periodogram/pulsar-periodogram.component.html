@@ -9,14 +9,14 @@
         </mat-form-field>
       </div>
     </div>
-    <div class="row">
+    <!-- <div class="row">
       <div class="col-12">
         <mat-form-field>
           <mat-label>Data</mat-label>
           <input type="text" [(ngModel)]="dataLabel" (ngModelChange)="onFieldChange('data', $event)" placeholder="My Periodogram" matInput>
         </mat-form-field>
       </div>
-    </div>
+    </div> -->
     <div class="row">
       <div class="col-6">
         <mat-form-field>
@@ -34,14 +34,20 @@
     <div class="row">
       <div class="col-6">
         <mat-form-field>
-          <mat-label>Start Period (sec)</mat-label>
-          <input type="text" [(ngModel)]="startPeriod" placeholder="My Periodogram" matInput />
+          <mat-label>{{ freqMode ? 'Start Frequency (Hz)' : 'Start Period (sec)' }}</mat-label>
+          <input 
+            type="text" 
+            [(ngModel)]="startValue" 
+            placeholder="{{ freqMode ? 'Enter Frequency' : 'Enter Period' }}" matInput />
         </mat-form-field>
       </div>
       <div class="col-6">
         <mat-form-field>
-          <mat-label>End Period (sec)</mat-label>
-          <input type="text" [(ngModel)]="endPeriod" placeholder="My Periodogram" matInput>
+          <mat-label>{{ freqMode ? 'End Frequency (Hz)' : 'End Period (sec)' }}</mat-label>
+          <input 
+            type="text" 
+            [(ngModel)]="endValue" 
+            placeholder="{{ freqMode ? 'Enter Frequency' : 'Enter Period' }}" matInput />
         </mat-form-field>
       </div>
     </div>
@@ -55,14 +61,21 @@
       <div class="col-6">
         <mat-form-field>
           <mat-label i18n>Period Shown</mat-label>
-          <mat-select [(ngModel)]="displayPeriod" placeholder="My Periodogram" matInput>
-            <mat-option>
-              period
-            </mat-option>
+          <mat-select [(ngModel)]="measurementType" (selectionChange)="onMeasurementChange()">
+            <mat-option [value]="'Period'">Period</mat-option>
+            <mat-option [value]="'Frequency'">Frequency</mat-option>
           </mat-select>
-        </mat-form-field>
-      </div>
+        </mat-form-field>        
+      </div>      
     </div>
+    <div class="row centered-buttons">
+      <button (click)="computeLombScargle()" mat-raised-button> Compute!</button>
+    </div>
+    <div class="row centered-buttons">
+      <button (click)="saveGraph()" mat-raised-button>Save Graph</button>
+      <button (click)="resetForm()" mat-raised-button>Reset Form</button>
+    </div>
+
 
     <!-- File Upload Button -->
     <div class="control-item">
@@ -70,11 +83,6 @@
         Upload TXT File
       </label>
       <input id="fileUpload" type="file" accept=".txt" (change)="onFileSelected($event)" />
-    </div>
-
-    <!-- Compute Button -->
-    <div class="control-item">
-      <button (click)="computeLombScargle()">Compute</button>
     </div>
   </div>
 

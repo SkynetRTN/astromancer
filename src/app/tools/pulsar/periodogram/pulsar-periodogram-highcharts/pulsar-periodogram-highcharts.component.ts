@@ -23,7 +23,7 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
       text: '' // Placeholder, dynamically updated
     },
     legend: {
-      enabled: false,
+      enabled: true,
     },
     tooltip: {
       enabled: true,
@@ -116,7 +116,7 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
       } else {
         // Add the second series if it doesn't exist
         this.chartObject.addSeries({
-          name: 'Calibration Intensity', // Second series name
+          name: 'Channel 2', // Second series name
           type: 'line',
           data: calData,
           marker: {
@@ -130,7 +130,7 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
     } else {
       // If no series exists, create both series
       this.chartObject.addSeries({
-        name: 'Intensity', // First series name
+        name: 'Channel 1', // First series name
         type: 'line',
         data: chartData,
         marker: {
@@ -142,7 +142,7 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
       });
   
       this.chartObject.addSeries({
-        name: 'Calibration Intensity', // Second series name
+        name: 'Channel 2', // Second series name
         type: 'line',
         data: calData,
         marker: {

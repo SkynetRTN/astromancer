@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { lombScargleWithError } from '../../shared/data/utils';
+import { lombScargle } from '../../shared/data/utils';
 import { PulsarService } from '../pulsar.service';
 import { HonorCodePopupService } from '../../shared/honor-code-popup/honor-code-popup.service';
 import { HonorCodeChartService } from '../../shared/honor-code-popup/honor-code-chart.service';
@@ -18,7 +18,10 @@ export class PulsarPeriodogramComponent {
   dataLabel: string = 'Data Set 1';
   xAxisLabel: string = 'Time (Days)';
   yAxisLabel: string = 'Amplitude';
-  displayPeriod: string = 'period';
+  displayPeriod: string = 'Period';
+  measurementType: string = 'Period'; 
+  freqMode: boolean = false;
+  transformedResult: any;
 
   constructor(
     private service: PulsarService, // Inject the service
@@ -27,14 +30,15 @@ export class PulsarPeriodogramComponent {
   ) {}
   
   parsedData: any;
-  startPeriod: number = 1;
-  endPeriod: number = 10;
+  startValue: number = 1;
+  endValue: number = 10;
   numPoints: number = 1000;
 
   ts: number[] = [];
   xs: number[] = [];
   ys: number[] = [];
   error: number[] = [];
+
 
   onFieldChange(field: string, value: string) {
     console.log(`Field "${field}" changed to:`, value);
@@ -75,6 +79,27 @@ export class PulsarPeriodogramComponent {
     }
   }
   
+  onMeasurementChange() {
+    console.log('Selected measurement type:', this.measurementType);
+
+    if (this.measurementType === 'Period') {
+      // Perform logic for 'Period'
+      this.freqMode = false;
+      const start = this.startValue;
+      const end = this.endValue;
+      this.startValue = 1 / end;
+      this.endValue = 1 / start;
+    } else if (this.measurementType === 'Frequency') {
+      // Perform logic for 'Frequency'
+      this.freqMode = true;
+      console.log('help', this.startValue, this.endValue)
+      const start = this.startValue;
+      const end = this.endValue;
+      this.startValue = 1 / end;
+      this.endValue = 1 / start;
+    }
+  }
+
   processFile(data: string) {
     // Split the file into lines
     const lines = data.split('\n');
@@ -112,42 +137,60 @@ export class PulsarPeriodogramComponent {
   }
 
   computeLombScargle() {
-    const freqMode = false;
+    let channel1: any[] = [];
+    let channel2: any[] = [];
+
+    if (this.freqMode == true) {
+      channel1 = lombScargle(
+        this.ts, this.ys, Number(1 / this.endValue), Number(1 / this.startValue), this.numPoints, false
+      );
+    
+      channel2 = lombScargle(
+        this.ts, this.xs, Number(1 / this.endValue), Number(1 / this.startValue), this.numPoints, false
+      );
+    } else {
+      channel1 = lombScargle(
+        this.ts, this.ys, Number(this.startValue), Number(this.endValue), this.numPoints, false
+      );
+    
+      channel2 = lombScargle(
+        this.ts, this.xs, Number(this.startValue), Number(this.endValue), this.numPoints, false
+      );
+    }
   
-    // Compute Lomb-Scargle for both datasets
-    const result = lombScargleWithError(
-      this.ts, this.ys, this.error, this.startPeriod, this.endPeriod, this.numPoints, freqMode
-    );
-  
-    const calresult = lombScargleWithError(
-      this.ts, this.xs, this.error, this.startPeriod, this.endPeriod, this.numPoints, freqMode
-    );
-  
-    console.log('Raw Lomb-Scargle Result:', result);
-    console.log('Raw Lomb-Scargle Calibration Result:', calresult);
+    console.log(typeof this.startValue,typeof this.endValue);
+    console.log('Raw Lomb-Scargle Result:', channel1);
+    console.log('Raw Lomb-Scargle Calibration Result:', channel2);
   
     // Ensure both results have the same length
-    if (result.length !== calresult.length) {
+    if (channel1.length !== channel2.length) {
       console.error('Error: Results and calibration results have mismatched lengths.');
       return;
     }
-  
+
     // Transform the result into an array of objects
-    const transformedResult = result.map(([frequency, channel1], index) => ({
-      frequency,
-      channel1,
-      channel2: calresult[index][1] // Append channel2 from calresult
-    }));
-  
-    console.log('Transformed Lomb-Scargle Result:', transformedResult);
+    if (this.freqMode == false) {
+        this.transformedResult = channel1.map((item, index) => ({
+        frequency: item.x,                // Use 'x' from result
+        channel1: item.y,                 // Use 'y' from result
+        channel2: channel2[index].y      // Use 'y' from calresult
+      }));
+    } else {
+        this.transformedResult = channel1.map((item, index) => ({
+        frequency: 1 / item.x,                // Use 'x' from result
+        channel1: item.y,                 // Use 'y' from result
+        channel2: channel2[index].y      // Use 'y' from calresult
+      }));
+    }
+    
+    console.log('Transformed Lomb-Scargle Result:', this.transformedResult);
   
     // Store or process results
-    this.parsedData = transformedResult;
+    this.parsedData = this.transformedResult;
   
     // Pass data to the service
-    this.service.setData(transformedResult);
+    this.service.setData(this.transformedResult);
   }
-  
 
   saveGraph() {
     this.honorCodeService.honored().subscribe((name: string) => {

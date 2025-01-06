@@ -1,0 +1,11 @@
+<div class="container">
+  <form [formGroup]="formGroup" class="row">
+    <div class="row input-container">
+      <mat-form-field>
+        <mat-label>Background Scale</mat-label>
+        <input [formControlName]="'backScale'" [step]="0.1" matInput type="number">
+        <mat-error>Magnitude is required</mat-error>
+      </mat-form-field>
+    </div>
+  </form>
+</div>

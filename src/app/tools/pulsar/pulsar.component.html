@@ -1,0 +1,26 @@
+<mat-tab-group (selectedIndexChange)="onTabChange($event)"
+               [selectedIndex]="variableTabindex"
+               animationDuration="900" dynamicHeight mat-align-tabs="center" mat-stretch-tabs="false">
+  <mat-tab>
+    <mat-tab [disabled]="!lightCurveFormValid">
+    <ng-template mat-tab-label>
+      <mat-icon>table_chart</mat-icon>
+      Light Curve
+    </ng-template>
+    <app-variable-light-curve></app-variable-light-curve>
+  </mat-tab>
+  <mat-tab [disabled]="!lightCurveFormValid">
+    <ng-template mat-tab-label>
+      <mat-icon>scatter_plot</mat-icon>
+      Periodogram
+    </ng-template>
+    <app-variable-periodogram></app-variable-periodogram>
+  </mat-tab>
+ 
+    <ng-template mat-tab-label>
+      <mat-icon>unfold_less</mat-icon>
+      Period Folding
+    </ng-template>
+    <app-variable-period-folding></app-variable-period-folding>
+  </mat-tab>
+</mat-tab-group>

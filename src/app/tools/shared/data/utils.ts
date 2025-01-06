@@ -78,7 +78,7 @@ export function lombScargleWithError(ts: number[], ys: number[], error: number[]
 }
 
 
-export function lombScargle(ts: number[], ys: number[], start: number, stop: number, steps: number = 1000, freqMode = false): any[] {
+export function lombScargle(ts: number[], ys: number[], start: number, stop: number, steps: number = 1000, freqMode: boolean): any[] {
     if (ts.length != ys.length) {
         alert("Dimension mismatch between time array and value array.");
         return [];

@@ -19,7 +19,7 @@ import {BehaviorSubject} from "rxjs";
 import {MyData} from "../shared/data/data.interface";
 import {ChartInfo} from "../shared/charts/chart.interface";
 import * as Highcharts from "highcharts";
-import {floatMod, lombScargleWithError, UpdateSource} from "../shared/data/utils";
+import {floatMod, lombScargle, UpdateSource} from "../shared/data/utils";
 
 @Injectable()
 export class PulsarService implements MyData, PulsarInterface, ChartInfo, PulsarPeriodogramInterface, PulsarPeriodFoldingInterface {
@@ -195,6 +195,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
     /** Periodogram Interface */
 
+    
     getPeriodogramTitle(): string {
         return this.pulsarPeriodogram.getPeriodogramTitle();
     }
@@ -213,6 +214,14 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         } else {
             return this.pulsarPeriodogram.getPeriodogramDataLabel();
         }
+    }
+
+    getPeriodogramPoints(): number {
+        return this.pulsarPeriodogram.getPeriodogramPoints();
+    }
+
+    getPeriodogramMethod(): boolean {
+        return this.pulsarPeriodogram.getPeriodogramMethod();
     }
 
     getPeriodogramStartPeriod(): number {
@@ -247,6 +256,20 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
     setPeriodogramDataLabel(data: string): void {
         this.pulsarPeriodogram.setPeriodogramDataLabel(data);
+        this.pulsarStorage.savePeriodogram(this.pulsarPeriodogram.getPeriodogramStorageObject());
+        this.periodogramFormSubject.next(this.pulsarPeriodogram);
+        this.periodogramDataSubject.next(this.pulsarData);
+    }
+
+    setPeriodogramPoints(points: number): void {
+        this.pulsarPeriodogram.setPeriodogramPoints(points);
+        this.pulsarStorage.savePeriodogram(this.pulsarPeriodogram.getPeriodogramStorageObject());
+        this.periodogramFormSubject.next(this.pulsarPeriodogram);
+        this.periodogramDataSubject.next(this.pulsarData);
+    }
+
+    setPeriodogramMethod(method: boolean): void {
+        this.pulsarPeriodogram.setPeriodogramMethod(method);
         this.pulsarStorage.savePeriodogram(this.pulsarPeriodogram.getPeriodogramStorageObject());
         this.periodogramFormSubject.next(this.pulsarPeriodogram);
         this.periodogramDataSubject.next(this.pulsarData);
@@ -287,6 +310,32 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
             .filter((jd: number | null) => jd !== null) as number[];
         return parseFloat((Math.max(...jdArray) - Math.min(...jdArray)).toFixed(4));
     }
+
+
+    getLabels(isHz: boolean): { startPeriodLabel: string, endPeriodLabel: string } {
+        let startPeriodLabel: string;
+        let endPeriodLabel: string;
+    
+        const currentStart = Number(this.getPeriodogramStartPeriod());
+        const currentEnd = Number(this.getPeriodogramEndPeriod());
+    
+        if (isHz) {
+            startPeriodLabel = 'Start Period (Hz)';
+            endPeriodLabel = 'End Period (Hz)';
+            this.setPeriodogramEndPeriod(1 / currentStart);
+            this.setPeriodogramStartPeriod(1 / currentEnd);
+        } else {
+            startPeriodLabel = 'Start Period (sec)';
+            endPeriodLabel = 'End Period (sec)';
+            this.setPeriodogramEndPeriod(1 / currentStart);
+            this.setPeriodogramStartPeriod(1 / currentEnd);
+        }
+    
+        // Return both labels
+        return { startPeriodLabel, endPeriodLabel };
+    }
+    
+
 
 
     /** ChartInfo implementation */
@@ -467,9 +516,10 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         const data = this.getData().filter((row: PulsarDataDict) => row.jd !== null && row.source1 !== null && row.source2 !== null && row.errorMSE !== null)
         const jd = pulsarData.map((entry) => entry[0]) as number[];
         const mag: number[] = pulsarData.map((entry) => entry[1]) as number[];
-        const errorMSE: number[] = data.map((row: PulsarDataDict) => row.errorMSE!) as number[];
+        const points: number = this.getPeriodogramPoints();
+        const method: boolean = this.getPeriodogramMethod();
         // Maximum points for html2canvas to successfully render is 2000
-        return lombScargleWithError(jd, mag, errorMSE, start, end, 2000);
+        return lombScargle(jd, mag, start, end, points, method);
     }
 
     removeRow(index: number, amount: number): void {

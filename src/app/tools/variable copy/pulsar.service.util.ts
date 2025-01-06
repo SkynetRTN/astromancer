@@ -300,6 +300,8 @@ export interface PulsarPeriodogramStorageObject {
   xAxisLabel: string;
   yAxisLabel: string;
   dataLabel: string;
+  points: number;
+  method: boolean;
   startPeriod: number;
   endPeriod: number;
 }
@@ -313,6 +315,10 @@ export interface PulsarPeriodogramInterface {
   getPeriodogramYAxisLabel(): string;
 
   getPeriodogramDataLabel(): string;
+
+  getPeriodogramPoints(): number;
+
+  getPeriodogramMethod(): boolean;
 
   getPeriodogramStartPeriod(): number;
 
@@ -328,6 +334,10 @@ export interface PulsarPeriodogramInterface {
 
   setPeriodogramDataLabel(data: string): void;
 
+  setPeriodogramPoints(points: number): void;
+
+  setPeriodogramMethod(method: boolean): void;
+
   setPeriodogramStartPeriod(startPeriod: number): void;
 
   setPeriodogramEndPeriod(endPeriod: number): void;
@@ -342,6 +352,8 @@ export class PulsarPeriodogram implements PulsarPeriodogramInterface {
   private xAxisLabel: string;
   private yAxisLabel: string;
   private dataLabel: string;
+  private points: number;
+  private method: boolean;
   private startPeriod: number;
   private endPeriod: number;
 
@@ -351,6 +363,8 @@ export class PulsarPeriodogram implements PulsarPeriodogramInterface {
     this.xAxisLabel = PulsarPeriodogram.getDefaultPeriodogram().xAxisLabel;
     this.yAxisLabel = PulsarPeriodogram.getDefaultPeriodogram().yAxisLabel;
     this.dataLabel = PulsarPeriodogram.getDefaultPeriodogram().dataLabel;
+    this.points = PulsarPeriodogram.getDefaultPeriodogram().points;
+    this.method = PulsarPeriodogram.getDefaultPeriodogram().method;
     this.startPeriod = PulsarPeriodogram.getDefaultPeriodogram().startPeriod;
     this.endPeriod = PulsarPeriodogram.getDefaultPeriodogram().endPeriod;
   }
@@ -361,6 +375,8 @@ export class PulsarPeriodogram implements PulsarPeriodogramInterface {
       xAxisLabel: "x",
       yAxisLabel: "y",
       dataLabel: PulsarPeriodogram.defaultHash,
+      points: 1000,
+      method: false,
       startPeriod: 0.1,
       endPeriod: 1,
     }
@@ -369,6 +385,14 @@ export class PulsarPeriodogram implements PulsarPeriodogramInterface {
   getPeriodogramDataLabel(): string {
     return this.dataLabel;
   }
+
+  getPeriodogramPoints(): number {
+    return this.points;
+  }
+
+  getPeriodogramMethod(): boolean {
+    return this.method;
+  } 
 
   getPeriodogramEndPeriod(): number {
     return this.endPeriod;
@@ -384,6 +408,8 @@ export class PulsarPeriodogram implements PulsarPeriodogramInterface {
       xAxisLabel: this.xAxisLabel,
       yAxisLabel: this.yAxisLabel,
       dataLabel: this.dataLabel,
+      points: this.points,
+      method: this.method,
       startPeriod: this.startPeriod,
       endPeriod: this.endPeriod,
     }
@@ -404,6 +430,14 @@ export class PulsarPeriodogram implements PulsarPeriodogramInterface {
   setPeriodogramDataLabel(data: string): void {
     this.dataLabel = data;
   }
+
+  setPeriodogramPoints(points: number): void {
+    this.points = points
+  } 
+  
+  setPeriodogramMethod(method: boolean): void {
+    this.method = method
+  } 
 
   setPeriodogramEndPeriod(endPeriod: number): void {
     this.endPeriod = endPeriod;

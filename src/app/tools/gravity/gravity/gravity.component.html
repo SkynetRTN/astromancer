@@ -15,9 +15,12 @@
   </div>
   <div class="col-8">
     <div class="row dynamic">
-      <app-gravity-highchart></app-gravity-highchart>
+      <app-gravity-spectogram></app-gravity-spectogram>
     </div>
     <div class="row button-row">
+    <div class="row dynamic">
+      <app-gravity-highchart></app-gravity-highchart>
+    </div>
       <!--      <div class="col-6">-->
       <app-simple-graph-button (chartUserActionObs$)="actionHandler($event)" [isEditChartInfo]="true">
       </app-simple-graph-button>

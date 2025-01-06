@@ -1,4 +1,4 @@
-export const dummyData =
+export const dummyStrainData =
     [
         {Time: 16.25, Strain: -0.291476046, Model: -0.108538377},
         {Time: 16.25024009, Strain: -0.529312202, Model: -0.12330947},

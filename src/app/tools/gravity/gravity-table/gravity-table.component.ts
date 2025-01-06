@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import {MyTable} from "../../shared/tables/table-interface";
-import { GravityDataDict } from '../gravity.service.util';
+import { StrainDataDict } from '../gravity.service.util';
 import {Subject, takeUntil} from "rxjs";
 import { GravityService } from '../gravity.service';
 import {MyData} from "../../shared/data/data.interface";
@@ -17,7 +17,7 @@ export class GravityTableComponent implements AfterViewInit, OnDestroy {
   id: string = "gravity-table";
   table: MyTable = new GravityTable(this.id);
   colNames: string[] = ["Wavelength", "Model", "Strain"];
-  dataSet: GravityDataDict[];
+  dataSet: StrainDataDict[];
   private destroy$: Subject<void> = new Subject<void>();
 
   constructor(private service: GravityService) {
@@ -56,9 +56,9 @@ export class GravityTableComponent implements AfterViewInit, OnDestroy {
     return beforePaste(data, coords, this.table);
   }
 
-  private limitPrecision(data: GravityDataDict[]): GravityDataDict[] {
+  private limitPrecision(data: StrainDataDict[]): StrainDataDict[] {
     return data.map(
-      (row: GravityDataDict) => {
+      (row: StrainDataDict) => {
         return {
           Time: row.Time ? parseFloat(row.Time.toFixed(4)) : row.Time,
           Strain: row.Strain ? parseFloat(row.Strain.toFixed(2)) : row.Strain,

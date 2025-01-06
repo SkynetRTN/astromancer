@@ -2,20 +2,25 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Subject, takeUntil} from "rxjs";
 import { Job, JobType } from 'src/app/shared/job/job';
+import {environment} from "../../../environments/environment";
+import { GravityStorage } from './gravity.service.util';
 
 @Injectable()
 export class GravityDataService {
 
+      private uploadSubject: Subject<any> = new Subject<any>();
+      public upload$ = this.uploadSubject.asObservable();
     
     constructor(
         private http: HttpClient) {
         this.initValues();
     }
 
-    public getGravityData() : Job{        
-        const gravityJob = new Job('/gravity/', JobType.FETCH_CATALOG, this.http, 500);
+    public processGravityData(file: File) : Job {        
+        const gravityJob = new Job('/gravity/file', JobType.PROCESS_GRAVITY_DATA, this.http, 500);
+        console.log(`${environment.apiUrl}/gravity/file`)
         let payload: any = {
-
+            file: file
         }
         gravityJob.createJob(payload);
 
@@ -23,18 +28,29 @@ export class GravityDataService {
         gravityJob.update$.pipe(
             takeUntil(gravityJob.complete$)
         ).subscribe((job) => {
-            
+            // this.gravityStorage.setJob(job.getStorageObject());
         });
 
         //When done
         gravityJob.complete$.subscribe(
             (complete) => {
                 if (complete) {
-                    
+                    this.getGravityDataProcessed(gravityJob.getJobId())
                 }
             });
         return gravityJob;
     }
+
+    public getGravityDataProcessed(id: number | null) {
+        if (id !== null)
+            this.http.get(`${environment.apiUrl}/gravity/file`,
+                {params: {'id': id}}).subscribe(
+                (resp: any) => {
+                    this.uploadSubject.next(resp.file)
+                }
+            );
+    }
+    
 
     private initValues() {
 

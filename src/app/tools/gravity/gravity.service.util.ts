@@ -1,24 +1,24 @@
 import {MyData} from "../shared/data/data.interface";
 import {MyStorage} from "../shared/storage/storage.interface";
 import {ChartInfo} from "../shared/charts/chart.interface";
-import {dummyData} from "./default-data/chart-gravity-dummydata";
+import {dummyStrainData} from "./default-data/chart-gravity-dummydata";
 
-export interface GravityDataDict {
+export interface StrainDataDict {
   Time: number | null;
   Strain: number | null;
   Model: number | null;
 }
 
-export class GravityData implements MyData {
-  private dataDict: GravityDataDict[];
+export class StrainData implements MyData {
+  private dataDict: StrainDataDict[];
 
   constructor() {
-    this.dataDict = GravityData.getDefaultData();
+    this.dataDict = StrainData.getDefaultData();
   }
 
 
-  public static getDefaultData(): GravityDataDict[] {
-    return dummyData;
+  public static getDefaultData(): StrainDataDict[] {
+    return dummyStrainData;
   }
 
   addRow(index: number, amount: number): void {
@@ -31,24 +31,24 @@ export class GravityData implements MyData {
     }
   }
 
-  getData(): GravityDataDict[] {
+  getData(): StrainDataDict[] {
     return this.dataDict;
   }
 
   getDataArray(): number[][][] {
     return [
       this.dataDict.filter(
-        (GravityDataDict: GravityDataDict) => {
+        (GravityDataDict: StrainDataDict) => {
           return GravityDataDict.Time !== null
             && GravityDataDict.Model !== null;
         }
-      ).map((entry: GravityDataDict) => [entry.Time, entry.Model]) as number[][],
+      ).map((entry: StrainDataDict) => [entry.Time, entry.Model]) as number[][],
       this.dataDict.filter(
-        (gravityDataDict: GravityDataDict) => {
+        (gravityDataDict: StrainDataDict) => {
           return gravityDataDict.Time !== null
             && gravityDataDict.Strain !== null;
         }
-      ).map((entry: GravityDataDict) => [entry.Time, entry.Strain]) as number[][],
+      ).map((entry: StrainDataDict) => [entry.Time, entry.Strain]) as number[][],
     ]
   }
 
@@ -56,7 +56,7 @@ export class GravityData implements MyData {
     this.dataDict = this.dataDict.slice(0, index).concat(this.dataDict.slice(index + amount));
   }
 
-  setData(data: GravityDataDict[]): void {
+  setData(data: StrainDataDict[]): void {
     this.dataDict = data;
   }
 
@@ -286,11 +286,11 @@ export class GravityStorage implements MyStorage {
     }
   }
 
-  getData(): GravityDataDict[] {
+  getData(): StrainDataDict[] {
     if (localStorage.getItem(GravityStorage.dataKey)) {
-      return JSON.parse(localStorage.getItem(GravityStorage.dataKey)!) as GravityDataDict[];
+      return JSON.parse(localStorage.getItem(GravityStorage.dataKey)!) as StrainDataDict[];
     } else {
-      return GravityData.getDefaultData();
+      return StrainData.getDefaultData();
     }
   }
 
@@ -307,7 +307,7 @@ export class GravityStorage implements MyStorage {
   }
 
   resetData(): void {
-    localStorage.setItem(GravityStorage.dataKey, JSON.stringify(GravityData.getDefaultData()));
+    localStorage.setItem(GravityStorage.dataKey, JSON.stringify(StrainData.getDefaultData()));
   }
 
   resetInterface(): void {
@@ -318,7 +318,7 @@ export class GravityStorage implements MyStorage {
     localStorage.setItem(GravityStorage.chartInfoKey, JSON.stringify(chartInfo));
   }
 
-  saveData(data: GravityDataDict[]): void {
+  saveData(data: StrainDataDict[]): void {
     localStorage.setItem(GravityStorage.dataKey, JSON.stringify(data));
   }
 

@@ -139,5 +139,5 @@ export interface JobResponse {
 export enum JobType {
   FIELD_STAR_REMOVAL = "FIELD_STAR_REMOVAL",
   FETCH_CATALOG = "FETCH_CATALOG",
-  
+  PROCESS_GRAVITY_DATA = "PROCESS_GRAVITY_DATA",
 }

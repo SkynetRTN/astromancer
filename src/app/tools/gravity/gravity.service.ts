@@ -1,16 +1,19 @@
 import {Injectable} from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import {BehaviorSubject} from "rxjs";
 import * as Highcharts from "highcharts";
 
 import {
   GravityChartInfo,
   GravityChartInfoStorageObject,
-  GravityData,
-  GravityDataDict,
+  StrainData,
+  StrainDataDict,
   GravityInterface,
   GravityInterfaceImpl,
   GravityStorage
 } from "./gravity.service.util";
+
+import { GravityDataService } from './gravity-data.service';
 
 import {MyData} from "../shared/data/data.interface";
 import {ChartInfo} from "../shared/charts/chart.interface";
@@ -18,13 +21,14 @@ import { UpdateSource } from '../shared/data/utils';
 
 @Injectable()
 export class GravityService implements MyData, GravityInterface, ChartInfo {
-  private gravityData: GravityData = new GravityData();
+  private strainData: StrainData = new StrainData();
+
   private gravityInterface: GravityInterfaceImpl = new GravityInterfaceImpl();
   private gravityChartInfo: GravityChartInfo = new GravityChartInfo();
 
   private gravityStorage: GravityStorage = new GravityStorage();
 
-  private dataSubject: BehaviorSubject<GravityData> = new BehaviorSubject<GravityData>(this.gravityData);
+  private dataSubject: BehaviorSubject<StrainData> = new BehaviorSubject<StrainData>(this.strainData);
   public data$ = this.dataSubject.asObservable();
   private interfaceSubject: BehaviorSubject<UpdateSource> = new BehaviorSubject<UpdateSource>(UpdateSource.INIT);
   public interface$ = this.interfaceSubject.asObservable();
@@ -33,11 +37,15 @@ export class GravityService implements MyData, GravityInterface, ChartInfo {
 
   private highChart!: Highcharts.Chart;
 
-  constructor() {
-    this.gravityData.setData(this.gravityStorage.getData());
+  constructor(private dataService: GravityDataService) {
+    this.strainData.setData(this.gravityStorage.getData());
     this.gravityChartInfo.setStorageObject(this.gravityStorage.getChartInfo());
-  }
 
+    dataService.upload$.subscribe((file) =>{
+      console.log(file)
+    })
+  }
+  
 
   /** ChartInfo Methods **/
 
@@ -71,7 +79,7 @@ export class GravityService implements MyData, GravityInterface, ChartInfo {
     this.gravityChartInfo.setDataLabel(data);
     this.gravityStorage.saveChartInfo(this.gravityChartInfo.getStorageObject());
     this.chartInfoSubject.next(this.gravityChartInfo);
-    this.dataSubject.next(this.gravityData);
+    this.dataSubject.next(this.strainData);
   }
 
   setStorageObject(storageObject: GravityChartInfoStorageObject): void {
@@ -160,35 +168,35 @@ export class GravityService implements MyData, GravityInterface, ChartInfo {
 
 
   addRow(index: number, amount: number): void {
-    this.gravityData.addRow(index, amount);
-    this.gravityStorage.saveData(this.gravityData.getData());
-    this.dataSubject.next(this.gravityData);
+    this.strainData.addRow(index, amount);
+    this.gravityStorage.saveData(this.strainData.getData());
+    this.dataSubject.next(this.strainData);
   }
 
-  getData(): GravityDataDict[] {
-    return this.gravityData.getData();
+  getData(): StrainDataDict[] {
+    return this.strainData.getData();
   }
 
   getDataArray(): number[][][] {
-    return this.gravityData.getDataArray();
+    return this.strainData.getDataArray();
   }
 
   removeRow(index: number, amount: number): void {
-    this.gravityData.removeRow(index, amount);
-    this.gravityStorage.saveData(this.gravityData.getData());
-    this.dataSubject.next(this.gravityData);
+    this.strainData.removeRow(index, amount);
+    this.gravityStorage.saveData(this.strainData.getData());
+    this.dataSubject.next(this.strainData);
   }
 
-  setData(data: GravityDataDict[]): void {
-    this.gravityData.setData(data);
-    this.gravityStorage.saveData(this.gravityData.getData());
-    this.dataSubject.next(this.gravityData);
+  setData(data: StrainDataDict[]): void {
+    this.strainData.setData(data);
+    this.gravityStorage.saveData(this.strainData.getData());
+    this.dataSubject.next(this.strainData);
   }
 
   resetData(): void {
-    this.gravityData.setData(GravityData.getDefaultData());
-    this.gravityStorage.saveData(this.gravityData.getData());
-    this.dataSubject.next(this.gravityData);
+    this.strainData.setData(StrainData.getDefaultData());
+    this.gravityStorage.saveData(this.strainData.getData());
+    this.dataSubject.next(this.strainData);
   }
 
   setHighChart(chart: Highcharts.Chart): void {

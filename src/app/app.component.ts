@@ -23,7 +23,7 @@ export class AppComponent {
   @HostListener('window:resize', ['$event'])
   onResize() {
     // Specify the URL or route you want to exclude from reload
-    const excludedRoute = '/radiosearch';
+    const excludedRoute = '/gravity';
 
     if (this.router.url !== excludedRoute) {
       location.reload();

@@ -13,6 +13,7 @@ import {InterfaceUtilModule} from "../shared/interface/util";
 import {GravityChartFormComponent} from './gravity-chart-form/gravity-chart-form.component';
 
 import {GravityHighchartComponent} from './gravity-highchart/gravity-highchart.component';
+import { GravitySpectogramComponent } from './gravity-spectogram/gravity-spectogram.component';
 import {HighchartsChartModule} from "highcharts-angular";
 import {RouterModule, Routes} from "@angular/router";
 import {MatDialogModule} from "@angular/material/dialog";
@@ -22,6 +23,7 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatSliderModule} from "@angular/material/slider";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
+import { GravityDataService } from './gravity-data.service';
 
 
 const routes: Routes = [
@@ -34,7 +36,8 @@ const routes: Routes = [
     GravityTableComponent,
     GravityFormComponent,
     GravityChartFormComponent,
-    GravityHighchartComponent
+    GravityHighchartComponent,
+    GravitySpectogramComponent
   ],
   imports: [
     RouterModule.forChild(routes),
@@ -55,7 +58,7 @@ const routes: Routes = [
     MatButtonModule,
   ],
   exports: [GravityComponent, RouterModule, GravityHighchartComponent],
-  providers: [GravityService]
+  providers: [GravityService, GravityDataService]
 })
 export class GravityModule {
 }

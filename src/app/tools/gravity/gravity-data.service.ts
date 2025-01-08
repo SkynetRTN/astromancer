@@ -4,6 +4,7 @@ import {Subject, takeUntil} from "rxjs";
 import { Job, JobType } from 'src/app/shared/job/job';
 import {environment} from "../../../environments/environment";
 import { GravityStorage } from './gravity.service.util';
+import { JobStorageObject } from 'src/app/shared/job/job';
 
 @Injectable()
 export class GravityDataService {
@@ -18,10 +19,9 @@ export class GravityDataService {
 
     public processGravityData(file: File) : Job {        
         const gravityJob = new Job('/gravity/file', JobType.PROCESS_GRAVITY_DATA, this.http, 500);
-        console.log(`${environment.apiUrl}/gravity/file`)
-        let payload: any = {
-            file: file
-        }
+        let payload = new FormData()
+        payload.append('file', file as Blob, 'file')
+
         gravityJob.createJob(payload);
 
         //While waiting

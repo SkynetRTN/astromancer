@@ -36,11 +36,20 @@ export class Job {
     return this.error;
   }
 
+  //TODO: talk to Reed about this
   public createJob(payload: any): void {
+    let contenttype = "multipart/form-data"
+
+    if(!(payload instanceof FormData))
+    {
+      console.log("json detected")
+      contenttype = 'application/json'
+      payload = JSON.stringify(payload)
+    }
+
     this.http.post(
       `${environment.apiUrl}${this.url}`,
-      JSON.stringify(payload),
-      {headers: {'content-type': 'application/json'}}).subscribe(
+      payload).subscribe(
       (resp: any) => {
         resp = resp as JobResponse;
         this.id = resp.id;

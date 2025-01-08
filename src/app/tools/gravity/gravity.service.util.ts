@@ -272,7 +272,6 @@ export class GravityChartInfo implements ChartInfo {
 
 }
 
-
 export class GravityStorage implements MyStorage {
   private static readonly dataKey: string = 'gravityData';
   private static readonly interfaceKey: string = 'gravityInterface';

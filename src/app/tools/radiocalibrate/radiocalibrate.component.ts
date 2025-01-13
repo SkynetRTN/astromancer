@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ViewChild, ElementRef } from '@angular/core';
-import { FITSHeaderParser } from '../shared/data/FitsParser/FitsParser';
+// import { FITSHeaderParser } from '../shared/data/FitsParser/FitsParser';
 import { coerceStringArray } from '@angular/cdk/coercion';
 import { FormControl } from '@angular/forms';
 

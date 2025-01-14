@@ -85,6 +85,10 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         return this.pulsarPeriodFolding.getPeriodFoldingPhase();
     }
 
+    getPeriodFoldingCal(): number {
+        return this.pulsarPeriodFolding.getPeriodFoldingCal();
+    }
+
     getPeriodFoldingTitle(): string {
         return this.pulsarPeriodFolding.getPeriodFoldingTitle();
     }
@@ -126,6 +130,13 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         this.periodFoldingDataSubject.next(this.pulsarData);
     }
 
+    setPeriodFoldingCal(cal: number): void {
+        this.pulsarPeriodFolding.setPeriodFoldingCal(cal);
+        this.pulsarStorage.savePeriodFolding(this.pulsarPeriodFolding.getPeriodFoldingStorageObject());
+        this.periodFoldingFormSubject.next(UpdateSource.INTERFACE);
+        this.periodFoldingDataSubject.next(this.pulsarData);
+    }
+
     setPeriodFoldingTitle(title: string): void {
         this.pulsarPeriodFolding.setPeriodFoldingTitle(title);
         this.pulsarStorage.savePeriodFolding(this.pulsarPeriodFolding.getPeriodFoldingStorageObject());
@@ -159,39 +170,70 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         this.periodFoldingDataSubject.next(this.pulsarData);
     }
 
-    getPeriodFoldingChartDataWithError(): { [key: string]: number[][] } {
+    getPeriodFoldingChartData(): { [key: string]: number[][] } {
+        console.log('Checking my data', this.getChartPulsarDataArray());
+    
+        // Handle case when no pulsar star is selected
         if (this.getPulsarStar() === PulsarStarOptions.NONE)
-            return {data: [], error: []};
+            return { data: [], data2: [] }; // Return empty for both series
+    
+        // Get and filter valid data
         const data = this.getChartPulsarDataArray()
-            .filter((entry) => entry[0] !== null)
-            .sort((a, b) => a[0]! - b[0]!);
-        const error = this.getChartPulsarErrorArray()
-            .filter((entry) => entry[0] !== null)
-            .sort((a, b) => a[0]! - b[0]!);
+            .filter((entry) => entry[0] !== null) // Ensure JD is not null
+            .sort((a, b) => a[0]! - b[0]!); // Sort by JD
+    
+        // Extract period and phase
         const minJD = data[0][0]!;
         const period = this.getPeriodFoldingPeriod();
         const phase = this.getPeriodFoldingPhase();
-        let pfData: number[][] = [];
-        let pfError: number[][] = [];
+    
+        // Initialize arrays for two series
+        let pfData1: number[][] = []; // For source1
+        let pfData2: number[][] = []; // For source2 (optional)
+    
         if (period !== 0 && period !== null) {
             for (let i = 0; i < data.length; i++) {
+                // Calculate x-axis (phase folded JD)
                 let temp_x = phase * period + floatMod((data[i][0]! - minJD), period);
                 if (temp_x > period) {
                     temp_x -= period;
                 }
-                pfData.push([temp_x, data[i][1]!]);
-                pfError.push([temp_x, error[i][1]!, error[i][2]!]);
+    
+                // Push data for series 1
+                pfData1.push([temp_x, data[i][1]!]);
+    
+                // Conditionally push data for series 2 if it is not null
+                if (data[i][2] !== null) {
+                    pfData2.push([temp_x, data[i][2]!]);
+                }
+    
+                // Handle double period display
                 if (this.getPeriodFoldingDisplayPeriod() === PulsarDisplayPeriod.TWO) {
                     let new_x = temp_x + parseFloat(period as any);
-                    pfData.push([new_x, data[i][1]!]);
-                    pfError.push([new_x, error[i][1]!, error[i][2]!]);
+    
+                    // Push second cycle for series 1
+                    pfData1.push([new_x, data[i][1]!]);
+    
+                    // Push second cycle for series 2 if not null
+                    if (data[i][2] !== null) {
+                        pfData2.push([new_x, data[i][2]!]);
+                    }
                 }
             }
         }
-        pfData.sort((a, b) => b[0] - a[0]);
-        pfError.sort((a, b) => b[0] - a[0]);
-        return {data: pfData, error: pfError};
+    
+        // Sort data
+        pfData1.sort((a, b) => b[0] - a[0]);
+        pfData2.sort((a, b) => b[0] - a[0]);
+    
+        // Return two datasets, only including 'data2' if it has values
+        return pfData2.length > 0
+            ? { data: pfData1, data2: pfData2 }
+            : { data: pfData1 };
     }
+    
+    
+
 
     /** Periodogram Interface */
 
@@ -416,6 +458,15 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         this.dataSubject.next(this.pulsarData);
     }
 
+    setbackScale(backScale: number): void {
+        this.pulsarInterface.setbackScale(backScale);
+        this.pulsarStorage.saveInterface(this.pulsarInterface.getStorageObject());
+        this.interfaceSubject.next(this.pulsarInterface);
+        this.chartInfoSubject.next(this.pulsarChartInfo);
+        this.periodogramDataSubject.next(this.pulsarData);
+        this.periodFoldingDataSubject.next(this.pulsarData);
+    }
+
     setPulsarStar(pulsarStar: PulsarStarOptions): void {
         this.pulsarInterface.setPulsarStar(pulsarStar);
         this.pulsarStorage.saveInterface(this.pulsarInterface.getStorageObject());
@@ -424,17 +475,19 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         this.periodogramDataSubject.next(this.pulsarData);
         this.periodFoldingDataSubject.next(this.pulsarData);
     }
-
+    
 
     /** PulsarInterface implementation */
 
+    getbackScale(): number {
+        return this.pulsarInterface.getbackScale();
+    }
 
     getPulsarStar(): PulsarStarOptions {
         return this.pulsarInterface.getPulsarStar();
     }
 
     setReferenceStarMagnitude(magnitude: number): void {
-        this.pulsarInterface.setReferenceStarMagnitude(magnitude);
         this.pulsarStorage.saveInterface(this.pulsarInterface.getStorageObject());
         this.interfaceSubject.next(this.pulsarInterface);
         this.chartInfoSubject.next(this.pulsarChartInfo);
@@ -445,21 +498,17 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         this.periodFoldingDataSubject.next(this.pulsarData);
     }
 
-    getReferenceStarMagnitude(): number {
-        return this.pulsarInterface.getReferenceStarMagnitude();
-    }
-
     getChartPulsarDataArray(): (number | null)[][] {
         if (this.getPulsarStar() === PulsarStarOptions.NONE) {
             return [];
         } else if (this.getPulsarStar() === PulsarStarOptions.SOURCE1) {
             return this.getData().filter((row: PulsarDataDict) =>
                 row.jd !== null && row.source1 !== null && row.source2 !== null)
-                .map((row: PulsarDataDict) => [row.jd, row.source1! - row.source2! + this.getReferenceStarMagnitude()])
+                .map((row: PulsarDataDict) => [row.jd, row.source1!, row.source2!])
         } else {
             return this.getData().filter((row: PulsarDataDict) =>
                 row.jd !== null && row.source1 !== null && row.source2 !== null)
-                .map((row: PulsarDataDict) => [row.jd, row.source2! - row.source1! + this.getReferenceStarMagnitude()])
+                .map((row: PulsarDataDict) => [row.jd, row.source2!, row.source1!])
         }
     }
 
@@ -467,6 +516,9 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         return this.pulsarInterface.getIsLightCurveOptionValid();
     }
 
+    setLightCurveOptionValid(valid: boolean): void {
+        this.pulsarInterface.setLightCurveOptionValid(valid);
+    }
 
     /** MyData implementation */
 
@@ -488,39 +540,40 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         return this.pulsarData.getChartSourcesDataArray();
     }
 
-    getChartSourcesErrorArray(): (number | null)[][][] {
-        return this.pulsarData.getChartSourcesErrorArray();
-    }
-
-    getChartPulsarErrorArray(): (number | null)[][] {
-        if (this.getPulsarStar() === PulsarStarOptions.NONE) {
-            return [];
-        } else {
-            return this.getData().filter(
-                (row: PulsarDataDict) => row.jd !== null && row.source1 !== null && row.source2 !== null && row.errorMSE !== null).map(
-                (row: PulsarDataDict) => {
-                    let src: number;
-                    if (this.getPulsarStar() === PulsarStarOptions.SOURCE1) {
-                        src = row.source1! - row.source2! + this.getReferenceStarMagnitude();
-                    } else {
-                        src = row.source2! - row.source1! + this.getReferenceStarMagnitude();
-                    }
-                    return [row.jd, src - row.errorMSE!, src + row.errorMSE!]
-                }
-            )
-        }
-    }
-
-    getChartPeriodogramDataArray(start: number, end: number): (number | null)[][] {
+    getChartPeriodogramDataArray(start: number, end: number): { data1: number[][], data2?: number[][]} {
         const pulsarData = this.getChartPulsarDataArray();
-        const data = this.getData().filter((row: PulsarDataDict) => row.jd !== null && row.source1 !== null && row.source2 !== null && row.errorMSE !== null)
-        const jd = pulsarData.map((entry) => entry[0]) as number[];
-        const mag: number[] = pulsarData.map((entry) => entry[1]) as number[];
+        console.log('Pulsar data:', pulsarData);
+    
+        // Filter valid data for the first two columns
+        const validData = this.getData().filter((row: PulsarDataDict) => 
+            row.jd !== null && row.source1 !== null
+        );
+    
+        // Extract data for each column
+        const jd: number[] = validData.map((entry) => entry.jd!) as number[];
+        const mag1: number[] = validData.map((entry) => entry.source1!) as number[];
+    
+        // Check for the third column (if present and not null)
+        const mag2: number[] = validData.map((entry) => entry.source2).filter(value => value !== null) as number[];
+    
         const points: number = this.getPeriodogramPoints();
         const method: boolean = this.getPeriodogramMethod();
-        // Maximum points for html2canvas to successfully render is 2000
-        return lombScargle(jd, mag, start, end, points, method);
+    
+        // Generate periodograms for each series
+        const periodogram1 = lombScargle(jd, mag1, start, end, points, method);
+    
+        let periodogram2: number[][] | undefined = undefined;
+        if (mag2.length > 0) {
+            periodogram2 = lombScargle(jd, mag2, start, end, points, method);
+        }
+    
+        // Return all periodograms
+        return {
+            data1: periodogram1,
+            data2: periodogram2
+        };
     }
+    
 
     removeRow(index: number, amount: number): void {
         this.pulsarData.removeRow(index, amount);
@@ -529,6 +582,32 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         this.periodogramDataSubject.next(this.pulsarData);
         this.periodFoldingDataSubject.next(this.pulsarData);
     }
+
+    median(arr: number[]) {
+        arr = arr.filter(num => !isNaN(num));
+        const mid = Math.floor(arr.length / 2);
+        const nums = arr.sort((a, b) => a - b);
+        return arr.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2;
+    }
+
+    backgroundSubtraction(frequency: number[], flux: number[], dt: number): number[] {
+        let n = Math.min(frequency.length, flux.length);
+        const subtracted = [];
+    
+        let jmin = 0;
+        let jmax = 0;
+        for (let i = 0; i < n; i++) {
+            while (jmin < n && frequency[jmin] < frequency[i] - (dt / 2)) {
+                jmin++;
+            }
+            while (jmax < n && frequency[jmax] <= frequency[i] + (dt / 2)) {
+                jmax++;
+            }
+            let fluxmed = this.median(flux.slice(jmin, jmax));
+            subtracted.push(flux[i] - fluxmed);
+        }
+        return subtracted;
+    }    
 
     setData(data: any[]): void {
         this.pulsarData.setData(data);
@@ -580,7 +659,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
     }
 
     private getDefaultDataLabel(): string {
-        return `Pulsar Star Mag + (${this.getReferenceStarMagnitude()} - Reference Star Mag)`
+        return `Pulsar Star Mag - Reference Star Mag)`
     }
 
 }

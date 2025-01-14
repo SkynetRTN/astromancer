@@ -16,7 +16,7 @@ import {beforePaste} from "../../../shared/tables/util";
 export class PulsarTableComponent implements AfterViewInit, OnDestroy {
     id: string = "pulsar-table";
     table: MyTable = new PulsarTable(this.id);
-    colNames: string[] = ["Julian Date", "Source 1", "Source 2", "Error 1", "Error 2"];
+    colNames: string[] = ["jd", "source1", "source2"];
     dataSet: PulsarTableDict[];
     private destroy$: Subject<void> = new Subject<void>();
 
@@ -59,14 +59,11 @@ export class PulsarTableComponent implements AfterViewInit, OnDestroy {
     private limitPrecision(data: PulsarDataDict[]): PulsarTableDict[] {
         return data.map(
             (row: PulsarDataDict) => {
-                const err1 = row.error1 ? parseFloat(row.error1.toFixed(2)) : row.error1;
-                const err2 = row.error2 ? parseFloat(row.error2.toFixed(2)) : row.error2;
+
                 return {
-                    jd: row.jd ? parseFloat(row.jd.toFixed(2)) : row.jd,
+                    jd: row.jd? parseFloat(row.jd.toFixed(2)) : row.jd,
                     source1: row.source1 ? parseFloat(row.source1.toFixed(2)) : row.source1,
                     source2: row.source2 ? parseFloat(row.source2.toFixed(2)) : row.source2,
-                    error1: err1,
-                    error2: err2,
                 }
             }
         );
@@ -99,6 +96,4 @@ interface PulsarTableDict {
     jd: number | null,
     source1: number | null,
     source2: number | null,
-    error1: number | null,
-    error2: number | null,
 }

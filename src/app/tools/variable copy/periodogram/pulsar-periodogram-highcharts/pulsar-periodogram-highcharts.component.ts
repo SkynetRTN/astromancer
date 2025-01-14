@@ -1,7 +1,7 @@
-import {AfterViewInit, Component, OnDestroy} from '@angular/core';
+import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import * as Highcharts from "highcharts";
-import {Subject, takeUntil} from "rxjs";
-import {PulsarService} from "../../pulsar.service";
+import { Subject, takeUntil } from "rxjs";
+import { PulsarService } from "../../pulsar.service";
 
 @Component({
   selector: 'app-pulsar-periodogram-highcharts',
@@ -38,8 +38,7 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
   };
   private destroy$: Subject<any> = new Subject<any>();
 
-  constructor(private service: PulsarService) {
-  }
+  constructor(private service: PulsarService) {}
 
   ngAfterViewInit() {
     this.setChartTitle();
@@ -68,28 +67,58 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
     this.service.setHighChartPeriodogram(this.chartObject);
   }
 
+  /**
+   * Handles the initial creation of series from periodogram data.
+   */
   setData() {
-    this.chartObject.addSeries({
-      name: this.service.getPeriodogramDataLabel(),
-      data: this.service.getChartPeriodogramDataArray(
-        this.service.getPeriodogramStartPeriod(),
-        this.service.getPeriodogramEndPeriod()),
-      type: 'scatter',
-      marker: {
-        symbol: 'circle',
-        radius: 2,
-      }
-    })
+    const periodogramData = this.service.getChartPeriodogramDataArray(
+      this.service.getPeriodogramStartPeriod(),
+      this.service.getPeriodogramEndPeriod()
+    );
+
+    // Process each periodogram data set and add two series for each
+    Object.entries(periodogramData).forEach(([key, data], index) => {
+      // Add the primary line series
+      this.chartObject.addSeries({
+        name: `Channel 1`,
+        data: data,
+        type: 'line',
+        marker: {
+          symbol: 'circle',
+          radius: 3,
+        }
+      });
+    });
   }
 
+  /**
+   * Handles dynamic updates of the series data.
+   */
   updateData() {
-    this.chartObject.series[0].update({
-      name: this.service.getPeriodogramDataLabel(),
-      data: this.service.getChartPeriodogramDataArray(
-        this.service.getPeriodogramStartPeriod(),
-        this.service.getPeriodogramEndPeriod()),
-      type: 'scatter',
+    const periodogramData = this.service.getChartPeriodogramDataArray(
+      this.service.getPeriodogramStartPeriod(),
+      this.service.getPeriodogramEndPeriod()
+    );
+
+    // Iterate through each series, updating or adding if necessary
+    let seriesIndex = 0; // Tracks the current series index
+    Object.entries(periodogramData).forEach(([key, data]) => {
+      // Update the primary series
+      console.log(key)
+      if (this.chartObject.series.length > seriesIndex) {
+        this.chartObject.series[seriesIndex].update({
+          name: `Channel ${seriesIndex + 1}`,
+          data: data,
+          type: 'line',
+        });
+      }
+      seriesIndex++;
     });
+
+    // Remove extra series if data has fewer series now
+    while (seriesIndex < this.chartObject.series.length) {
+      this.chartObject.series[this.chartObject.series.length - 1].remove();
+    }
   }
 
   ngOnDestroy(): void {
@@ -102,19 +131,18 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
   }
 
   private setChartTitle(): void {
-    this.chartOptions.title = {text: this.service.getPeriodogramTitle()};
+    this.chartOptions.title = { text: this.service.getPeriodogramTitle() };
   }
 
   private setChartXAxis(): void {
     this.chartOptions.xAxis = {
-      title: {text: this.service.getPeriodogramXAxisLabel()}
+      title: { text: this.service.getPeriodogramXAxisLabel() }
     };
   }
 
   private setChartYAxis(): void {
     this.chartOptions.yAxis = {
-      title: {text: this.service.getPeriodogramYAxisLabel()}
+      title: { text: this.service.getPeriodogramYAxisLabel() }
     };
   }
-
 }

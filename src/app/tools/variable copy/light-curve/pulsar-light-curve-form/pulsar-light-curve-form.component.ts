@@ -1,39 +1,31 @@
-import {Component, OnDestroy} from '@angular/core';
-import {PulsarStarOptions} from "../../pulsar.service.util";
-import {Subject} from "rxjs";
-import {PulsarService} from "../../pulsar.service";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { PulsarService } from "../../pulsar.service";
 
 @Component({
   selector: 'app-pulsar-light-curve-form',
   templateUrl: './pulsar-light-curve-form.component.html',
   styleUrls: ['./pulsar-light-curve-form.component.scss']
 })
-export class PulsarLightCurveFormComponent implements OnDestroy {
+export class PulsarLightCurveFormComponent implements OnInit {
   formGroup: FormGroup;
-  pulsarStarKeys = Object.values(PulsarStarOptions);
-  private destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private service: PulsarService) {
-    this.formGroup = new FormGroup({
-      pulsarStar: new FormControl(this.service.getPulsarStar(),
-        [Validators.required, Validators.pattern('^((?!None).)*$')]),
-      refStarMag: new FormControl(this.service.getReferenceStarMagnitude(),
-        [Validators.required]),
-    });
-    this.formGroup.controls['pulsarStar'].markAllAsTouched();
-    this.formGroup.controls['refStarMag'].markAllAsTouched();
-
-    this.formGroup.valueChanges.subscribe(() => {
-      this.service.setPulsarStar(this.formGroup.controls['pulsarStar'].value);
-      this.service.setReferenceStarMagnitude(
-        parseFloat(this.formGroup.controls['refStarMag'].value));
+  constructor(private fb: FormBuilder, private service: PulsarService) {
+    // Initialize the form group with controls
+    this.formGroup = this.fb.group({
+      backScale: [3, Validators.required],
+      // Add other controls as needed
     });
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
+  ngOnInit(): void {
+    // Listen for changes in the 'backScale' control and update the service
+    this.formGroup.get('backScale')?.valueChanges.subscribe(value => {
+      this.service.setbackScale(value);
+    });
 
+    // Initialize with the default value on load
+    const backScaleValue = this.formGroup.get('backScale')?.value;
+    this.service.setbackScale(backScaleValue);
+  }
 }

@@ -11,6 +11,8 @@ import {MatDialog} from "@angular/material/dialog";
 import {
   PulsarLightCurveChartFormComponent
 } from "../pulsar-light-curve-chart-form/pulsar-light-curve-chart-form.component";
+import { jsDocComment } from '@angular/compiler';
+import {BehaviorSubject} from 'rxjs';
 
 @Component({
   selector: 'app-pulsar-light-curve',
@@ -19,101 +21,21 @@ import {
 })
 export class PulsarLightCurveComponent implements OnDestroy {
   private destroy$ = new Subject<void>();
-  private fileParser: MyFileParser = new MyFileParser(FileType.CSV,
-    ["id", "mjd", "mag", "mag_error"],);
+  ts: number[] = [];
+  xs: number[] = [];
+  ys: number[] = [];
+  rawData: PulsarDataDict[] = [];
+  private backScaleSubject = new BehaviorSubject<number>(3); // Default value 3
+  backScale$ = this.backScaleSubject.asObservable();
+//private fileParser: MyFileParser = new MyFileParser(FileType.TXT,);
 
   constructor(private service: PulsarService,
               private honorCodeService: HonorCodePopupService,
               private chartService: HonorCodeChartService,
               public dialog: MatDialog) {
-    this.fileParser.error$.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(
-      (error: any) => {
-        alert("error " + error);
-      });
-    this.fileParser.data$.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(
-      (data: any) => {
-        const sources = Array.from(new Set(data.map((d: any) => d.id)));
-        console.log(sources);
-        if (sources.length < 2) {
-          alert("Error" + "Please upload at least two sources")
-          return;
-        }
-        const result: PulsarDataDict[] = [];
-        const src0data = data.filter((d: any) => d.id === sources[0])
-          .map((d: any) => [parseFloat(d.mjd), parseFloat(d.mag), parseFloat(d.mag_error)])
-          .filter((d: any) => !isNaN(d[0]) && !isNaN(d[1]) && !isNaN(d[2]))
-          .sort((a: any, b: any) => a[0] - b[0]);
-        const src1data = data.filter((d: any) => d.id === sources[1])
-          .map((d: any) => [parseFloat(d.mjd), parseFloat(d.mag), parseFloat(d.mag_error)])
-          .filter((d: any) => !isNaN(d[0]) && !isNaN(d[1]) && !isNaN(d[2]))
-          .sort((a: any, b: any) => a[0] - b[0]);
-        let left = 0;
-        let right = 0;
-        const mjdThreshold = 0.00000001;
-        while (left < src0data.length && right < src1data.length) {
-          if (Math.abs(src0data[left][0] - src1data[right][0]) < mjdThreshold) {
-            result.push({
-              jd: src0data[left][0] as number,
-              source1: src0data[left][1] as number,
-              source2: src1data[right][1] as number,
-              error1: src0data[left][2] as number,
-              error2: src1data[right][2] as number,
-              errorMSE: null,
-            });
-            left++;
-            right++;
-          } else if (src0data[left][0] < src1data[right][0]) {
-            result.push({
-              jd: src0data[left][0] as number,
-              source1: src0data[left][1] as number,
-              source2: null,
-              error1: src0data[left][2] as number,
-              error2: null,
-              errorMSE: null,
-            });
-            left++;
-          } else {
-            result.push({
-              jd: src1data[right][0] as number,
-              source1: null,
-              source2: src1data[right][1] as number,
-              error1: null,
-              error2: src1data[right][2] as number,
-              errorMSE: null
-            });
-            right++;
-          }
-        }
-        while (left < src0data.length) {
-          result.push({
-            jd: src0data[left][0] as number,
-            source1: src0data[left][1] as number,
-            source2: null,
-            error1: src0data[left][2] as number,
-            error2: null,
-            errorMSE: null
-          });
-          left++;
-        }
-        while (right < src1data.length) {
-          result.push({
-            jd: src1data[right][0] as number,
-            source1: null,
-            source2: src1data[right][1] as number,
-            error1: null,
-            error2: src1data[right][2] as number,
-            errorMSE: null
-          });
-          right++;
-        }
-        this.service.setData(result);
-      });
   }
 
+  
   actionHandler(actions: TableAction[]) {
     actions.forEach((action) => {
       if (action.action === "addRow") {
@@ -134,8 +56,119 @@ export class PulsarLightCurveComponent implements OnDestroy {
   }
 
   uploadHandler($event: File) {
-    this.fileParser.readFile($event, true);
+    const reader = new FileReader();
+    reader.onload = () => {
+      const file = reader.result as string;
+
+
+        // Split the file into lines
+        const lines = file.split('\n');
+        let type = "standard";
+          if (file[0].slice(0, 7) == "# Input")
+              type = "pressto";
+
+          else
+              type = "standard";
+      
+
+        // Filter out comment lines starting with #
+        let filteredLines = lines.filter(line => !line.startsWith('#') && line.trim() !== '');
+        filteredLines = filteredLines.filter(line => !line.endsWith('0 '));
+  
+        
+        if (type == "pressto" ) {
+          this.service.setTabIndex(2); // Set tab index to period folding tab
+          this.service.setLightCurveOptionValid(true); 
+        }
+    
+    
+        // Extract headers and data rows
+        const headers = [
+          'UTC_Time(s)', 'Ra(hr)', 'Dec(deg)', 'Az(deg)', 'El(deg)', 
+          'YY1', 'XX1', 'Cal', 'Sweeps'
+        ];
+    
+        const rows = filteredLines.map(line => {
+          // Replace multiple spaces with a single space, then split by space
+          const columns = line.trim().replace(/\s+/g, ' ').split(' ');
+    
+          // Map data to headers
+          const row: Record<string, string | number> = {};
+          headers.forEach((header, index) => {
+            row[header] = isNaN(Number(columns[index])) ? columns[index] : Number(columns[index]);
+          });
+    
+          return row;
+        });
+    
+        console.log('Headers:', headers);
+        console.log('Rows:', rows);
+    
+        // Prepare data for computation
+        this.ts = rows.map(row => row['UTC_Time(s)'] as number);
+        this.ys = rows.map(row => row['YY1'] as number);
+        this.xs = rows.map(row => row['XX1'] as number);
+    
+        const combinedData = rows.map(row => ({
+            jd: row['UTC_Time(s)'] as number,
+            source1: row['YY1'] as number,
+            source2: row['XX1'] as number
+          }));
+
+        this.rawData = combinedData;
+        this.service.setData(combinedData);
+        let chartData = combinedData
+    
+        const jd = chartData.map(item => item.jd);
+        const source1 = chartData.map(item => item.source1);
+        const source2 = chartData.map(item => item.source2);
+
+        const subtractedsource1 = this.service.backgroundSubtraction(jd, source1, this.service.getbackScale());
+        const subtractedsource2 = this.service.backgroundSubtraction(jd, source2, this.service.getbackScale());
+
+        chartData = chartData.map((item, index) => ({
+            jd: jd[index],
+            source1: subtractedsource1[index],
+            source2: subtractedsource2[index],
+
+          }));   
+          this.service.setData(chartData);
+        };
+        reader.readAsText($event); // Read the file as text
+       
   }
+
+  processChartData(backScale: number): void {
+    if (!this.rawData) {
+      return; // Exit early if no data is available
+    }
+  
+    this.service.setbackScale(backScale);
+
+    // Initialize combined data and store raw data
+    this.service.setData(this.rawData); // Preserve raw data state
+    let chartData = this.rawData;
+  
+    // Extract data for processing
+    const jd = chartData.map(item => item.jd ?? 0);
+    const source1 = chartData.map(item => item.source1 ?? 0);
+    const source2 = chartData.map(item => item.source2 ?? 0);
+  
+    // Apply background subtraction based on the provided backScale
+    const subtractedSource1 = this.service.backgroundSubtraction(jd, source1, backScale);
+    const subtractedSource2 = this.service.backgroundSubtraction(jd, source2, backScale);
+  
+    // Update chart data with background-subtracted values
+    chartData = chartData.map((item, index) => ({
+      jd: jd[index],
+      source1: subtractedSource1[index],
+      source2: subtractedSource2[index],
+    }));
+    
+    console.log(backScale);
+    // Set updated data back to the service
+    this.service.setData(chartData);
+  }  
 
   ngOnDestroy() {
     this.destroy$.next();

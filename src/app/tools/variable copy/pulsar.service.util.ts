@@ -6,9 +6,6 @@ export interface PulsarDataDict {
   jd: number | null;
   source1: number | null;
   source2: number | null;
-  error1: number | null;
-  error2: number | null;
-  errorMSE: number | null;
 }
 
 export function errorMSE(error1: number | null, error2: number | null): number | null {
@@ -33,9 +30,6 @@ export class PulsarData implements MyData {
         jd: i * 10 + Math.random() * 10 - 5,
         source1: Math.random() * 20,
         source2: Math.random() * 20,
-        error1: 1,
-        error2: 1,
-        errorMSE: errorMSE(1, 1)
       });
     }
     return data;
@@ -45,10 +39,10 @@ export class PulsarData implements MyData {
     if (index > 0) {
       for (let i = 0; i < amount; i++) {
         this.dataDict.splice(index + i, 0,
-          {jd: null, source1: null, source2: null, error1: null, error2: null, errorMSE: null});
+          {jd: null, source1: null, source2: null});
       }
     } else {
-      this.dataDict.push({jd: null, source1: null, source2: null, error1: null, error2: null, errorMSE: null});
+      this.dataDict.push({jd: null, source1: null, source2: null});
     }
   }
 
@@ -58,7 +52,7 @@ export class PulsarData implements MyData {
 
   getDataArray(): (number | null)[][] {
     return this.dataDict.map((entry: PulsarDataDict) =>
-      [entry.jd, entry.source1, entry.source2, entry.error1, entry.error2]);
+      [entry.jd, entry.source1, entry.source2]);
   }
 
   getChartSourcesDataArray(): (number | null)[][][] {
@@ -74,19 +68,6 @@ export class PulsarData implements MyData {
     ]
   }
 
-  getChartSourcesErrorArray(): (number | null)[][][] {
-    return [
-      this.dataDict.filter(
-        (entry: PulsarDataDict) => entry.jd !== null && entry.source1 !== null && entry.errorMSE !== null)
-        .map(
-          (entry: PulsarDataDict) => [entry.jd, entry.source1! - entry.errorMSE!, entry.source1! + entry.errorMSE!]),
-      this.dataDict.filter(
-        (entry: PulsarDataDict) => entry.jd !== null && entry.source2 !== null && entry.errorMSE !== null)
-        .map(
-          (entry: PulsarDataDict) => [entry.jd, entry.source2! - entry.errorMSE!, entry.source2! + entry.errorMSE!]),
-    ];
-  }
-
   removeRow(index: number, amount: number): void {
     this.dataDict = this.dataDict.slice(0, index).concat(this.dataDict.slice(index + amount));
   }
@@ -98,10 +79,7 @@ export class PulsarData implements MyData {
             return {
                 jd: entry.jd,
                 source1: entry.source1,
-                source2: entry.source2,
-                error1: entry.error1,
-                error2: entry.error2,
-                errorMSE: errorMSE(entry.error1, entry.error2)
+                source2: entry.source2
             }
         }
     );
@@ -120,9 +98,9 @@ export interface PulsarInterface {
 
   setPulsarStar(pulsarStar: PulsarStarOptions): void;
 
-  getReferenceStarMagnitude(): number;
+  getbackScale(): number;
 
-  setReferenceStarMagnitude(magnitude: number): void;
+  setbackScale(magnitude: number): void;
 
   getIsLightCurveOptionValid(): boolean;
 }
@@ -130,36 +108,38 @@ export interface PulsarInterface {
 
 export interface PulsarInterfaceStorageObject {
   pulsarStar: PulsarStarOptions;
-  referenceStarMagnitude: number;
+  backScale: number;
 }
 
 
 export class PulsarInterfaceImpl implements PulsarInterface {
   private pulsarStar: PulsarStarOptions;
-  private referenceStarMagnitude: number;
+  private backScale: number;
+  private LightCurveOptionValid: boolean;
 
   constructor() {
     this.pulsarStar = PulsarInterfaceImpl.getDefaultInterface().pulsarStar;
-    this.referenceStarMagnitude = PulsarInterfaceImpl.getDefaultInterface().referenceStarMagnitude;
+    this.backScale = PulsarInterfaceImpl.getDefaultInterface().backScale;
+    this.LightCurveOptionValid = true;
   }
 
   public static getDefaultInterface(): PulsarInterfaceStorageObject {
     return {
       pulsarStar: PulsarStarOptions.NONE,
-      referenceStarMagnitude: 0,
+      backScale: 3,
     };
   }
 
   getStorageObject(): PulsarInterfaceStorageObject {
     return {
       pulsarStar: this.pulsarStar,
-      referenceStarMagnitude: this.referenceStarMagnitude,
+      backScale: this.backScale,
     };
   }
 
   setStorageObject(storageObject: PulsarInterfaceStorageObject): void {
     this.pulsarStar = storageObject.pulsarStar;
-    this.referenceStarMagnitude = storageObject.referenceStarMagnitude;
+    this.backScale = storageObject.backScale;
   }
 
   getPulsarStar(): PulsarStarOptions {
@@ -170,17 +150,20 @@ export class PulsarInterfaceImpl implements PulsarInterface {
     this.pulsarStar = pulsarStar;
   }
 
-  getReferenceStarMagnitude(): number {
-    return this.referenceStarMagnitude;
+  getbackScale(): number {
+    return this.backScale;
   }
 
-  setReferenceStarMagnitude(magnitude: number): void {
-    this.referenceStarMagnitude = magnitude;
+  setbackScale(backScale: number): void {
+    this.backScale = backScale;
   }
 
   getIsLightCurveOptionValid(): boolean {
-    return this.pulsarStar !== PulsarStarOptions.NONE
-      && !isNaN(this.referenceStarMagnitude);
+    return !this.LightCurveOptionValid;
+  }
+
+  setLightCurveOptionValid(Valid: boolean): void {
+    this.LightCurveOptionValid = Valid;
   }
 }
 
@@ -378,7 +361,7 @@ export class PulsarPeriodogram implements PulsarPeriodogramInterface {
       points: 1000,
       method: false,
       startPeriod: 0.1,
-      endPeriod: 1,
+      endPeriod: 10,
     }
   }
 
@@ -481,6 +464,7 @@ export interface PulsarPeriodFoldingStorageObject {
   displayPeriod: PulsarDisplayPeriod;
   period: number;
   phase: number;
+  cal: number;
   title: string;
   xAxisLabel: string;
   yAxisLabel: string;
@@ -494,6 +478,8 @@ export interface PulsarPeriodFoldingInterface {
   getPeriodFoldingPeriod(): number;
 
   getPeriodFoldingPhase(): number;
+
+  getPeriodFoldingCal(): number;
 
   getPeriodFoldingTitle(): string;
 
@@ -524,6 +510,7 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
   private displayPeriod: PulsarDisplayPeriod;
   private period: number;
   private phase: number;
+  private cal: number;
   private title: string;
   private xAxisLabel: string;
   private yAxisLabel: string;
@@ -533,6 +520,7 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
     this.displayPeriod = PulsarPeriodFolding.getDefaultStorageObject().displayPeriod;
     this.period = PulsarPeriodFolding.getDefaultStorageObject().period;
     this.phase = PulsarPeriodFolding.getDefaultStorageObject().phase;
+    this.cal = PulsarPeriodFolding.getDefaultStorageObject().cal;
     this.title = PulsarPeriodFolding.getDefaultStorageObject().title;
     this.xAxisLabel = PulsarPeriodFolding.getDefaultStorageObject().xAxisLabel;
     this.yAxisLabel = PulsarPeriodFolding.getDefaultStorageObject().yAxisLabel;
@@ -544,6 +532,7 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
       displayPeriod: PulsarDisplayPeriod.TWO,
       period: -1,
       phase: 0,
+      cal: 1,
       title: "Title",
       xAxisLabel: "x",
       yAxisLabel: "y",
@@ -565,6 +554,10 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
 
   getPeriodFoldingPhase(): number {
     return this.phase;
+  }
+
+  getPeriodFoldingCal(): number {
+    return this.cal;
   }
 
   getPeriodFoldingTitle(): string {
@@ -595,6 +588,10 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
     this.phase = phase;
   }
 
+  setPeriodFoldingCal(cal: number): void {
+    this.cal = cal;
+  }
+
   setPeriodFoldingTitle(title: string): void {
     this.title = title;
   }
@@ -612,6 +609,7 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
       displayPeriod: this.displayPeriod,
       period: this.period,
       phase: this.phase,
+      cal: this.cal,
       title: this.title,
       xAxisLabel: this.xAxisLabel,
       yAxisLabel: this.yAxisLabel,

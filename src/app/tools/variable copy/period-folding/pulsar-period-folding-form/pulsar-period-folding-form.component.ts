@@ -21,6 +21,8 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
     = new BehaviorSubject<number>(this.service.getPeriodFoldingPeriod());
   phaseSubject: BehaviorSubject<number>
     = new BehaviorSubject<number>(this.service.getPeriodFoldingPhase());
+  calSubject: BehaviorSubject<number>
+    = new BehaviorSubject<number>(this.service.getPeriodFoldingCal());
   periodMin: number = this.service.getPeriodogramStartPeriod();
   periodMax: number = this.service.getJdRange();
   periodStep: number = this.getPeriodStep();
@@ -37,6 +39,7 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
       displayPeriod: new FormControl(this.service.getPeriodFoldingDisplayPeriod()),
       period: new FormControl(this.periodMin),
       phase: new FormControl(0),
+      cal: new FormControl(1),
     });
     this.formGroup.controls['chartTitle'].valueChanges.pipe(
       debounceTime(200),
@@ -75,6 +78,7 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
       if (source !== UpdateSource.INTERFACE) {
         this.periodSubject.next(this.service.getPeriodFoldingPeriod());
         this.phaseSubject.next(this.service.getPeriodFoldingPhase());
+        this.phaseSubject.next(this.service.getPeriodFoldingCal());
       }
     });
     this.service.periodogramForm$.pipe(
@@ -113,6 +117,8 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
       this.periodStep = this.getPeriodStep();
     } else if ($event.key === 'phase') {
       this.service.setPeriodFoldingPhase($event.value);
+    } else if ($event.key === 'calibration') {
+      this.service.setPeriodFoldingCal($event.value);
     }
   }
 

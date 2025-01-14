@@ -1,25 +1,26 @@
 <mat-tab-group (selectedIndexChange)="onTabChange($event)"
-               [selectedIndex]="pulsarTabindex"
+               [selectedIndex]="variableTabindex"
                animationDuration="900" dynamicHeight mat-align-tabs="center" mat-stretch-tabs="false">
   <mat-tab>
+    <mat-tab [disabled]="!lightCurveFormValid">
     <ng-template mat-tab-label>
       <mat-icon>table_chart</mat-icon>
       Light Curve
     </ng-template>
-    <app-pulsar-light-curve></app-pulsar-light-curve>
+    <app-variable-light-curve></app-variable-light-curve>
   </mat-tab>
-  <mat-tab [disabled]="lightCurveFormValid">
+  <mat-tab [disabled]="!lightCurveFormValid">
     <ng-template mat-tab-label>
       <mat-icon>scatter_plot</mat-icon>
       Periodogram
     </ng-template>
-    <app-pulsar-periodogram></app-pulsar-periodogram>
+    <app-variable-periodogram></app-variable-periodogram>
   </mat-tab>
-  <mat-tab [disabled]="lightCurveFormValid">
+ 
     <ng-template mat-tab-label>
       <mat-icon>unfold_less</mat-icon>
       Period Folding
     </ng-template>
-    <app-pulsar-period-folding></app-pulsar-period-folding>
+    <app-variable-period-folding></app-variable-period-folding>
   </mat-tab>
 </mat-tab-group>

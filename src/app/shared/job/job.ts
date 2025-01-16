@@ -72,6 +72,7 @@ export class Job {
     this.completeSubject.next(false);
   }
 
+
   public reincarnate(object: JobStorageObject): void {
     this.id = object.id;
     this.type = object.type;

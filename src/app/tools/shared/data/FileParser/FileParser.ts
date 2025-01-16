@@ -3,6 +3,9 @@ import {FileType, HeaderRequirement, MyFileParserErrors, MyFileParserStrategy} f
 import {MyFileParserTXT} from "./FileParser.TXT";
 import {MyFileParserDefault} from "./FileParser.Default";
 import {MyFileParserCSV} from "./FileParser.CSV";
+import { MyFileParserTXTGW } from "./FileParser.TXTGW";
+import { MyFileParserHDF5 } from "./FileParser.HDF5";
+import { HttpClient } from "@angular/common/http";
 
 
 export class MyFileParser {
@@ -10,6 +13,8 @@ export class MyFileParser {
   private readonly headerRequirements: HeaderRequirement[];
   private readonly dataKeys: string[];
 
+  private progressSubject: Subject<number> = new Subject<number>();
+  private progress$ = this.progressSubject.asObservable();
   private errorSubject: Subject<MyFileParserErrors> = new Subject<MyFileParserErrors>();
   public error$ = this.errorSubject.asObservable();
   private headerSubject: Subject<{ [key: string]: string } | undefined>
@@ -17,14 +22,19 @@ export class MyFileParser {
   public header$ = this.headerSubject.asObservable();
   private dataSubject: Subject<any> = new Subject<any>();
   public data$ = this.dataSubject.asObservable();
-
+  
   constructor(fileType: FileType,
               dataKeys: string[],
-              headerRequirements: HeaderRequirement[] = [],) {
+              headerRequirements: HeaderRequirement[] = [],
+              httpClient?: HttpClient) {
     if (fileType === FileType.TXT) {
       this.strategy = new MyFileParserTXT();
+    } else if (fileType === FileType.TXTGW) {
+      this.strategy = new MyFileParserTXTGW();
     } else if (fileType === FileType.CSV) {
       this.strategy = new MyFileParserCSV();
+    } else if (fileType === FileType.GWF && httpClient) {
+      this.strategy = new MyFileParserHDF5(httpClient);
     } else {
       this.strategy = new MyFileParserDefault();
     }
@@ -71,15 +81,17 @@ export class MyFileParser {
   }
 
   /**
-   * Read a file, with options weather to emit the data and/or the headers
+   * Read a file, with options weather to emit the data, headers, and/or progress alerts
    * @param file
    * @param isEmitData
    * @param isEmitHeaders
+   * @param isEmitProgress
    */
-  public readFile(file: File, isEmitData: boolean = true, isEmitHeaders: boolean = false): void {
+  public readFile(file: File, isEmitData: boolean = true, isEmitHeaders: boolean = false, isEmitProgress: boolean = false): void {
     this.strategy.readFile(file, this.headerRequirements, this.dataKeys, this.errorSubject,
       isEmitData ? this.dataSubject : undefined,
-      isEmitHeaders ? this.headerSubject : undefined);
+      isEmitHeaders ? this.headerSubject : undefined,
+      isEmitProgress ? this.progressSubject : undefined );
   }
 
 

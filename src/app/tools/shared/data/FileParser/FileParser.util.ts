@@ -27,7 +27,7 @@ export interface MyFileParserStrategy {
    * @param headerRequirements
    * @return the headers of the file as a dictionary or undefined if the headers are not found
    */
-  getHeaders(fileText: string,
+  getHeaders(fileText: string | object,
              headerRequirements: HeaderRequirement[])
     : { [key: string]: string } | undefined;
 
@@ -38,7 +38,7 @@ export interface MyFileParserStrategy {
    * @param dataKeys
    * @return the indices of the fields in the file or undefined if one or more fields are not found
    */
-  getFieldsIndices(fileText: string,
+  getFieldsIndices(fileText: string | object,
                    dataKeys: string[])
     : { [key: string]: number } | undefined;
 
@@ -51,7 +51,7 @@ export interface MyFileParserStrategy {
    * @param fieldsIndices
    * @return the data from the file or undefined if the data is invalid
    */
-  getData(fileText: string,
+  getData(fileText: string | object,
           fields: string[],
           fieldsIndices: { [key: string]: number },)
     : any[] | undefined;
@@ -60,24 +60,28 @@ export interface MyFileParserStrategy {
    * Read the file
    * Emits an error if the file is invalid
    * Emits the data if the file is valid
+   * Emits progress notifications during upload/file reading
    * @param file
    * @param headerRequirements
    * @param dataKeys
    * @param errorSubject
    * @param dataSubject
    * @param headerSubject
+   * @param progressSubject
    */
   readFile(file: File,
            headerRequirements: HeaderRequirement[],
            dataKeys: string[],
            errorSubject: Subject<MyFileParserErrors>,
            dataSubject: Subject<any> | undefined,
-           headerSubject: Subject<any> | undefined): void;
+           headerSubject: Subject<any> | undefined,
+           progressSubject: Subject<any> | undefined): void;
 }
 
 export enum FileType {
   TXT = "txt",
+  TXTGW = "txtgw",
   CSV = "csv",
-  HDF5 = "hdf5",
+  GWF = "gwf",
 }
 

@@ -318,7 +318,7 @@ export class GravityStorage implements MyStorage {
   }
 
   saveData(data: StrainDataDict[]): void {
-    localStorage.setItem(GravityStorage.dataKey, JSON.stringify(data));
+    // localStorage.setItem(GravityStorage.dataKey, JSON.stringify(data));
   }
 
   saveInterface(interfaceInfo: GravityInterfaceStorageObject): void {

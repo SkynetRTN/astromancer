@@ -4,12 +4,13 @@ import {HonorCodePopupService} from "../../shared/honor-code-popup/honor-code-po
 import {GravityService} from "../gravity.service";
 import {HonorCodeChartService} from "../../shared/honor-code-popup/honor-code-chart.service";
 import {MyFileParser} from "../../shared/data/FileParser/FileParser";
-import {Subject, takeUntil} from "rxjs";
+import {Subject, takeUntil, withLatestFrom} from "rxjs";
 import {StrainDataDict} from "../gravity.service.util";
 import {FileType} from "../../shared/data/FileParser/FileParser.util";
 import {MatDialog} from "@angular/material/dialog";
 import {GravityChartFormComponent} from "../gravity-chart-form/gravity-chart-form.component";
 import { GravityDataService } from '../gravity-data.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-gravity',
@@ -20,12 +21,50 @@ export class GravityComponent implements OnDestroy {
 
   private destroy$: Subject<void> = new Subject<void>();
 
+  private fileParser: MyFileParser;
+
   constructor(
     private service: GravityService,
+    private http: HttpClient,
     private dataService: GravityDataService,
     private honorCodeService: HonorCodePopupService,
     private chartService: HonorCodeChartService,
     private dialog: MatDialog) {
+      
+      this.fileParser = new MyFileParser(FileType.GWF,
+        [], undefined, http);
+
+      this.fileParser.error$.pipe(
+        takeUntil(this.destroy$)
+      ).subscribe(
+        (error: any) => {
+          alert("error " + error);
+        });
+      
+      this.fileParser.data$.pipe(
+        takeUntil(this.destroy$), withLatestFrom(this.fileParser.header$)
+      ).subscribe(
+        ([data, headers]) => {
+          
+          const result: StrainDataDict[] = [];
+
+          let dt: number, t0: number
+          if(headers !== undefined) try{
+            dt = parseFloat(headers["samplerate"])
+            t0 = parseFloat(headers["timestart"])
+          }
+          catch
+          {
+            alert("This file had incorrectly formated headers.")
+            return;
+          }
+
+          data.map((p: number[]) => {
+            result.push({Time: p[0], Strain: p[1], Model: 0})
+          })
+
+          this.service.setData(result);
+        });
 
   }
 
@@ -49,7 +88,7 @@ export class GravityComponent implements OnDestroy {
   }
 
   uploadHandler($event: File) {
-    this.dataService.processGravityData($event)
+    this.fileParser.readFile($event, true, true);
   }
 
   ngOnDestroy(): void {

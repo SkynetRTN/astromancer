@@ -1,108 +1,113 @@
-import {Subject} from "rxjs";
+import {Subject, takeUntil} from "rxjs";
 import {HeaderRequirement, MyFileParserErrors, MyFileParserStrategy} from "./FileParser.util";
+import { environment } from "src/environments/environment";
+import { Job, JobType, JobStatus } from "src/app/shared/job/job";
+import { HttpClient } from "@angular/common/http";
 
+interface GravityResponse
+{
+  dataSet: [[]],
+  headers: {[key: string]: string},
+}
+
+//This parser strategy only supports use of readFile(). May want to create a child class of FileParser to avoid using getHeaders outside of that class. 
 export class MyFileParserHDF5 implements MyFileParserStrategy {
-  getData(fileText: string,
-          fields: string[],
-          fieldsIndices: { [p: string]: number }): any[] | undefined {
-    if (fields.length === 0 || (fields.length !== Object.keys(fieldsIndices).length)) {
-      return undefined;
-    }
+  constructor(private http: HttpClient){
 
-    const resultData: any[] = [];
-    fileText.split("\n").filter((line: string) => !line.startsWith("#"))
-      .map((line: string) => {
-        const data: any = {};
-        const values: string[] = line.split(/\s+/)
-          .map((value: string) => value.trim())
-          .filter((value: string) => value !== "");
-        fields.forEach((field: string) => {
-          data[field] = values[fieldsIndices[field]];
-        });
-        resultData.push(data);
-      });
-    return resultData;
+  }
+  
+  getData(fileText: GravityResponse, fields: string[],
+          fieldsIndices: { [value: string]: number }): any[] | undefined {
+    return fileText.dataSet;
   }
 
-  getFieldsIndices(fileText: string, dataKeys: string[])
-    : { [p: string]: number } | undefined {
-    const lines = fileText.split("\n");
-    const nonDataLines = lines.filter((line: string) => line.startsWith("#"));
-    const cols: string[] = nonDataLines[nonDataLines.length - 1]
-      .replace("#", "").split(/\s+/)
-      .map((col: string) => col.trim()).filter((col: string) => col !== "");
-    const keyFieldMap: { [key: string]: number } = {};
-    let isDataKeyMissing: boolean = false;
-    dataKeys.forEach((dataKey: string) => {
-      keyFieldMap[dataKey] = cols.indexOf(dataKey);
-      if (keyFieldMap[dataKey] === -1) {
-        isDataKeyMissing = true;
-      }
-    });
-    return isDataKeyMissing ? undefined : keyFieldMap;
+  getFieldsIndices(fileText: object, dataKeys: string[]): { [p: string]: number } | undefined {
+    return undefined;
   }
 
-  getHeaders(fileText: string, headerRequirements: HeaderRequirement[])
-    : { [p: string]: string } | undefined {
-    const lines = fileText.split("\n");
-    const headerLines = lines.filter((line: string) => line.startsWith("#") && line.includes("="));
-    const headers: { [key: string]: string } = {};
-    headerLines.map((line: string): any => {
-      headers[line.split("=")[0].replace("#", "").trim()]
-        = line.split("=")[1].trim();
-    });
-
-    const headerKeys = Object.keys(headers);
+  getHeaders(fileText: GravityResponse, headerRequirements: HeaderRequirement[]): { [p: string]: string } | undefined {
+    const headers = fileText.headers
+    const fileHeaders = Object.keys(headers)
     let isHeaderValid = true;
     headerRequirements.forEach((headerRequirement: HeaderRequirement) => {
-      if (!headerKeys.includes(headerRequirement.key) ||
-        (headerRequirement.value !== undefined &&
-          headers[headerRequirement.key] !== headerRequirement.value)) {
-        isHeaderValid = false;
-      }
-    });
-    return isHeaderValid ? headers : undefined;
+          if (!fileHeaders.includes(headerRequirement.key) ||
+            (headerRequirement.value !== undefined &&
+              headers[headerRequirement.key] !== headerRequirement.value)) {
+            isHeaderValid = false;
+          }
+        })
+
+    return isHeaderValid ? headers : undefined
   }
 
   readFile(file: File, headerRequirements: HeaderRequirement[], dataKeys: string[],
            errorSubject: Subject<MyFileParserErrors>,
            dataSubject: Subject<any> | undefined,
-           headerSubject: Subject<any> | undefined): void {
+           headerSubject: Subject<any> | undefined,
+           progressSubject: Subject<any> | undefined): void {
+    
+    //Check format
     if (!this.validateFormat(file)) {
       errorSubject.next(MyFileParserErrors.FORMAT);
       return;
     }
 
-    const fileReader = new FileReader();
-    fileReader.onload = () => {
-      const fileText = fileReader.result as string;
-      const headers = this.getHeaders(fileText, headerRequirements);
-      if (headers === undefined) {
-        errorSubject.next(MyFileParserErrors.HEADER);
-        return;
-      }
-      if (headerSubject !== undefined) {
-        headerSubject.next(headers);
-      }
-      const fieldsIndices = this.getFieldsIndices(fileText, dataKeys);
-      if (fieldsIndices === undefined) {
-        errorSubject.next(MyFileParserErrors.FIELD);
-        return;
-      }
+    const gravityJob = new Job('/gravity/file', JobType.PROCESS_GRAVITY_DATA, this.http, 500);
+    let payload = new FormData()
+    payload.append('file', file as File, 'file')
+    gravityJob.createJob(payload);
 
-      const data = this.getData(fileText, dataKeys, fieldsIndices);
-      if (data === undefined) {
-        errorSubject.next(MyFileParserErrors.DATA);
-        return;
-      }
-      if (dataSubject !== undefined) {
-        dataSubject.next(data);
-      }
-    }
-    fileReader.readAsText(file);
+    //While waiting
+    gravityJob.progressUpdate$.pipe(
+        takeUntil(gravityJob.complete$)
+    ).subscribe((progress) => {
+        progressSubject?.next(progress)
+    });
+
+    //When done
+    gravityJob.complete$.subscribe(
+      (complete) => {
+        let id = gravityJob.getJobId()
+        if (complete && id) {
+          this.http.get(`${environment.apiUrl}/gravity/file`,
+          {params: {'id': id} }).subscribe(
+          (resp: any) => {
+
+            console.log(resp)
+            //Headers
+            const headers = this.getHeaders(resp.file as GravityResponse, headerRequirements);
+            if (headers === undefined) {
+              errorSubject.next(MyFileParserErrors.HEADER);
+              return;
+            }
+            if (headerSubject !== undefined) {
+              headerSubject.next(headers);
+            }
+
+            //Fields
+            // const fieldsIndices = this.getFieldsIndices(resp, dataKeys);
+            // if (fieldsIndices === undefined) {
+            //   errorSubject.next(MyFileParserErrors.FIELD);
+            //   return;
+            // }
+
+            //Data
+            const data = this.getData(resp.file as GravityResponse, dataKeys, {});
+            if (data === undefined) {
+              errorSubject.next(MyFileParserErrors.DATA);
+              return;
+            }
+            if (dataSubject !== undefined) {
+              dataSubject.next(data);
+            }
+          });
+        }
+
+        else errorSubject.next(MyFileParserErrors.FORMAT)
+    });
+    
   }
 
-  //hdf5 has no mimetype, unfortunately
   validateFormat(file: File): boolean {
     return file.name.endsWith(".hdf5");
   }

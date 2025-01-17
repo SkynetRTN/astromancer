@@ -3,6 +3,7 @@ import {FileType, HeaderRequirement, MyFileParserErrors, MyFileParserStrategy} f
 import {MyFileParserTXT} from "./FileParser.TXT";
 import {MyFileParserDefault} from "./FileParser.Default";
 import {MyFileParserCSV} from "./FileParser.CSV";
+import {MyFileParserFITS} from "./FileParser.FITS";
 
 
 export class MyFileParser {
@@ -25,6 +26,8 @@ export class MyFileParser {
       this.strategy = new MyFileParserTXT();
     } else if (fileType === FileType.CSV) {
       this.strategy = new MyFileParserCSV();
+    } else if (fileType === FileType.FITS) {
+      this.strategy = new MyFileParserFITS();
     } else {
       this.strategy = new MyFileParserDefault();
     }

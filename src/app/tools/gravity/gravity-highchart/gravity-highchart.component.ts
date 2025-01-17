@@ -2,7 +2,7 @@ import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import {Subject, takeUntil} from "rxjs";
 import * as Highcharts from "highcharts";
 
-import {GravityService} from "../gravity.service";
+import { StrainService } from '../gravity-strain.service';
 
 @Component({
   selector: 'app-gravity-highchart',
@@ -27,13 +27,6 @@ export class GravityHighchartComponent implements AfterViewInit, OnDestroy {
         type: 'x',
       },
     },
-    colorAxis: { stops: [
-      [0, '#3060cf'],
-      [0.5, '#fffbbc'],
-      [0.9, '#c4463a'],
-      [1, '#c4463a']
-    ]
-    },
     legend: {
       align: 'center',
     },
@@ -51,7 +44,7 @@ export class GravityHighchartComponent implements AfterViewInit, OnDestroy {
   };
   private destroy$: Subject<any> = new Subject<any>();
 
-  constructor(private service: GravityService) {
+  constructor(private service: StrainService) {
     this.setChartTitle();
     this.setChartXAxis();
     this.setChartYAxis();

@@ -2,11 +2,11 @@ import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import {MyTable} from "../../shared/tables/table-interface";
 import { StrainDataDict } from '../gravity.service.util';
 import {Subject, takeUntil} from "rxjs";
-import { GravityService } from '../gravity.service';
 import {MyData} from "../../shared/data/data.interface";
 import {HotTableRegisterer} from "@handsontable/angular";
 import Handsontable from "handsontable";
 import {beforePaste} from "../../shared/tables/util";
+import { StrainService } from '../gravity-strain.service';
 
 @Component({
   selector: 'app-gravity-table',
@@ -20,7 +20,7 @@ export class GravityTableComponent implements AfterViewInit, OnDestroy {
   dataSet: StrainDataDict[];
   private destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private service: GravityService) {
+  constructor(private service: StrainService) {
     this.dataSet = this.service.getData();
   }
 

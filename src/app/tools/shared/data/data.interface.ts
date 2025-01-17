@@ -9,3 +9,4 @@ export interface MyData {
 
   removeRow(index: number, amount: number): void;
 }
+

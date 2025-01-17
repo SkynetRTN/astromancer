@@ -5,6 +5,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {GravityService} from "../gravity.service";
 
 import {InputSliderValue} from "../../shared/interface/input-slider/input-slider.component";
+import { SpectogramService } from '../gravity-spectogram.service';
 
 @Component({
   selector: 'app-gravity-form',
@@ -24,7 +25,10 @@ export class GravityFormComponent {
   protected distanceSubject : Subject<number> = new Subject<number>();
   protected inclinationSubject : Subject<number> = new Subject<number>();
 
-  constructor(private service: GravityService) {
+  constructor(
+    private service: GravityService,
+    private spectogramService: SpectogramService
+  ) {
   }
 
   onChange($event: InputSliderValue) {
@@ -37,7 +41,6 @@ export class GravityFormComponent {
       case GravityModelParameters.DISTANCE: this.service.setDistance($event.value); break;
       case GravityModelParameters.INCLINATION: this.service.setInclination($event.value); break;
     }
-
   }
 }
 

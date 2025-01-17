@@ -1,9 +1,11 @@
 import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import {Subject, takeUntil} from "rxjs";
 import * as Highcharts from "highcharts";
+import Heatmap from "highcharts/modules/heatmap"
 
-import {GravityService} from "../gravity.service";
+import { SpectogramService } from '../gravity-spectogram.service';
 
+Heatmap(Highcharts)
 @Component({
   selector: 'app-gravity-spectogram',
   templateUrl: './gravity-spectogram.component.html',
@@ -18,11 +20,6 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
     chart: {
       animation: false,
       styledMode: true,
-      panning: {
-        enabled: true,
-        type: 'x',
-      },
-      panKey: 'shift',
       zooming: {
         type: 'x',
       },
@@ -51,7 +48,7 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
   };
   private destroy$: Subject<any> = new Subject<any>();
 
-  constructor(private service: GravityService) {
+  constructor(private service: SpectogramService) {
     this.setChartTitle();
     this.setChartXAxis();
     this.setChartYAxis();
@@ -112,6 +109,16 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
       },
       showInLegend: false,
     });
+    this.chartObject.addSeries({
+      name: "Spectrum",
+      data: this.service.getDataArray(),
+      zIndex: 0,
+      interpolation: true,
+      type: 'heatmap',
+      marker: {
+        symbol: 'circle',
+      },
+    });
   }
 
   updateData() {
@@ -129,6 +136,15 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
       data: [],
       zIndex: 1,
       type: 'area',
+      marker: {
+        symbol: 'circle',
+      },
+    });
+    this.chartObject.series[2].update({
+      name: "Spectrum",
+      data: this.service.getDataArray(),
+      zIndex: 0,
+      type: 'heatmap',
       marker: {
         symbol: 'circle',
       },

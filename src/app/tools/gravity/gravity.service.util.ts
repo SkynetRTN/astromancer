@@ -3,10 +3,65 @@ import {MyStorage} from "../shared/storage/storage.interface";
 import {ChartInfo} from "../shared/charts/chart.interface";
 import {dummyStrainData} from "./default-data/chart-gravity-dummydata";
 
+export enum GravityChart
+{
+  SPECTO = "Specto",
+  STRAIN = "Strain"
+}
+
 export interface StrainDataDict {
   Time: number | null;
   Strain: number | null;
   Model: number | null;
+}
+export interface SpectogramDataDict {
+  x: number | null;
+  y: number | null;
+  value: number | null;
+}
+
+export class SpectoData implements MyData {
+  private dataDict: SpectogramDataDict[];
+
+  constructor() {
+    this.dataDict = [];
+  }
+
+  public static getDefaultData(): SpectogramDataDict[] {
+    return [];
+  }
+
+  addRow(index: number, amount: number): void {
+    if (index > 0) {
+      for (let i = 0; i < amount; i++) {
+        this.dataDict.splice(index + i, 0, {x: null, y: null, value: null});
+      }
+    } else {
+      this.dataDict.push({x: null, y: null, value: null});
+    }
+  }
+
+  getData(): SpectogramDataDict[] {
+    return this.dataDict;
+  }
+  
+  getDataArray(): number[][] {
+    let data: number[][] = [[]]
+    this.dataDict.forEach((value) => {
+      if(value.x == null || value.y == null ) return;
+      data.push([value.x, value.y, value.value? value.value : 0 ])
+    })
+    return data; 
+  }
+
+  removeRow(index: number, amount: number): void {
+    this.dataDict = this.dataDict.slice(0, index).concat(this.dataDict.slice(index + amount));
+  }
+
+  setData(data: SpectogramDataDict[]): void {
+    this.dataDict = data;
+  }
+
 }
 
 export class StrainData implements MyData {
@@ -193,27 +248,27 @@ export class GravityInterfaceImpl implements GravityInterface {
   }
 }
 
-export interface GravityChartInfoStorageObject {
+export interface StrainChartInfoStorageObject {
   title: string;
   xAxis: string;
   yAxis: string;
   data: string;
 }
 
-export class GravityChartInfo implements ChartInfo {
+export class StrainChartInfo implements ChartInfo {
   private chartTitle: string;
   private xAxisLabel: string;
   private yAxisLabel: string;
   private dataLabel: string;
 
   constructor() {
-    this.chartTitle = GravityChartInfo.getDefaultChartInfo().title;
-    this.xAxisLabel = GravityChartInfo.getDefaultChartInfo().xAxis;
-    this.yAxisLabel = GravityChartInfo.getDefaultChartInfo().yAxis;
-    this.dataLabel = GravityChartInfo.getDefaultChartInfo().data;
+    this.chartTitle = StrainChartInfo.getDefaultChartInfo().title;
+    this.xAxisLabel = StrainChartInfo.getDefaultChartInfo().xAxis;
+    this.yAxisLabel = StrainChartInfo.getDefaultChartInfo().yAxis;
+    this.dataLabel = StrainChartInfo.getDefaultChartInfo().data;
   }
 
-  public static getDefaultChartInfo(): GravityChartInfoStorageObject {
+  public static getDefaultChartInfo(): StrainChartInfoStorageObject {
     return {
       title: "Title",
       xAxis: "",
@@ -230,7 +285,7 @@ export class GravityChartInfo implements ChartInfo {
     return this.dataLabel;
   }
 
-  getStorageObject(): GravityChartInfoStorageObject {
+  getStorageObject(): StrainChartInfoStorageObject {
     return {
       title: this.chartTitle,
       xAxis: this.xAxisLabel,
@@ -255,7 +310,7 @@ export class GravityChartInfo implements ChartInfo {
     this.dataLabel = data;
   }
 
-  setStorageObject(storageObject: GravityChartInfoStorageObject): void {
+  setStorageObject(storageObject: StrainChartInfoStorageObject): void {
     this.chartTitle = storageObject.title;
     this.xAxisLabel = storageObject.xAxis;
     this.yAxisLabel = storageObject.yAxis;
@@ -272,49 +327,49 @@ export class GravityChartInfo implements ChartInfo {
 
 }
 
-export class GravityStorage implements MyStorage {
-  private static readonly dataKey: string = 'gravityData';
-  private static readonly interfaceKey: string = 'gravityInterface';
-  private static readonly chartInfoKey: string = 'gravityChartInfo';
+export class StrainStorage implements MyStorage {
+  private static readonly dataKey: string = 'strainData';
+  private static readonly interfaceKey: string = 'strainInterface';
+  private static readonly chartInfoKey: string = 'strainChartInfo';
 
-  getChartInfo(): GravityChartInfoStorageObject {
-    if (localStorage.getItem(GravityStorage.chartInfoKey)) {
-      return JSON.parse(localStorage.getItem(GravityStorage.chartInfoKey)!) as GravityChartInfoStorageObject;
+  getChartInfo(): StrainChartInfoStorageObject {
+    if (localStorage.getItem(StrainStorage.chartInfoKey)) {
+      return JSON.parse(localStorage.getItem(StrainStorage.chartInfoKey)!) as StrainChartInfoStorageObject;
     } else {
-      return GravityChartInfo.getDefaultChartInfo();
+      return StrainChartInfo.getDefaultChartInfo();
     }
   }
 
   getData(): StrainDataDict[] {
-    if (localStorage.getItem(GravityStorage.dataKey)) {
-      return JSON.parse(localStorage.getItem(GravityStorage.dataKey)!) as StrainDataDict[];
+    if (localStorage.getItem(StrainStorage.dataKey)) {
+      return JSON.parse(localStorage.getItem(StrainStorage.dataKey)!) as StrainDataDict[];
     } else {
       return StrainData.getDefaultData();
     }
   }
 
   getInterface(): GravityInterfaceStorageObject {
-    if (localStorage.getItem(GravityStorage.interfaceKey)) {
-      return JSON.parse(localStorage.getItem(GravityStorage.interfaceKey) as string);
+    if (localStorage.getItem(StrainStorage.interfaceKey)) {
+      return JSON.parse(localStorage.getItem(StrainStorage.interfaceKey) as string);
     } else {
       return new GravityInterfaceImpl().getDefaultStorageObject();
     }
   }
 
   resetChartInfo(): void {
-    localStorage.setItem(GravityStorage.chartInfoKey, JSON.stringify(GravityChartInfo.getDefaultChartInfo()));
+    localStorage.setItem(StrainStorage.chartInfoKey, JSON.stringify(StrainChartInfo.getDefaultChartInfo()));
   }
 
   resetData(): void {
-    localStorage.setItem(GravityStorage.dataKey, JSON.stringify(StrainData.getDefaultData()));
+    localStorage.setItem(StrainStorage.dataKey, JSON.stringify(StrainData.getDefaultData()));
   }
 
   resetInterface(): void {
-    localStorage.setItem(GravityStorage.interfaceKey, JSON.stringify(new GravityInterfaceImpl().getDefaultStorageObject()));
+    localStorage.setItem(StrainStorage.interfaceKey, JSON.stringify(new GravityInterfaceImpl().getDefaultStorageObject()));
   }
 
-  saveChartInfo(chartInfo: GravityChartInfoStorageObject): void {
-    localStorage.setItem(GravityStorage.chartInfoKey, JSON.stringify(chartInfo));
+  saveChartInfo(chartInfo: StrainChartInfoStorageObject): void {
+    localStorage.setItem(StrainStorage.chartInfoKey, JSON.stringify(chartInfo));
   }
 
   saveData(data: StrainDataDict[]): void {
@@ -322,7 +377,7 @@ export class GravityStorage implements MyStorage {
   }
 
   saveInterface(interfaceInfo: GravityInterfaceStorageObject): void {
-    localStorage.setItem(GravityStorage.interfaceKey, JSON.stringify(interfaceInfo));
+    localStorage.setItem(StrainStorage.interfaceKey, JSON.stringify(interfaceInfo));
   }
 
 }

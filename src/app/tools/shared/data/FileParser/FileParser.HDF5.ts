@@ -6,8 +6,9 @@ import { HttpClient } from "@angular/common/http";
 
 interface GravityResponse
 {
-  dataSet: [[]],
-  headers: {[key: string]: string},
+  dataSet: [[]]
+  spectogram: [[]]
+  headers: {[key: string]: string}
 }
 
 //This parser strategy only supports use of readFile(). May want to create a child class of FileParser to avoid using getHeaders outside of that class. 
@@ -18,7 +19,7 @@ export class MyFileParserHDF5 implements MyFileParserStrategy {
   
   getData(fileText: GravityResponse, fields: string[],
           fieldsIndices: { [value: string]: number }): any[] | undefined {
-    return fileText.dataSet;
+    return [fileText.dataSet, fileText.spectogram];
   }
 
   getFieldsIndices(fileText: object, dataKeys: string[]): { [p: string]: number } | undefined {

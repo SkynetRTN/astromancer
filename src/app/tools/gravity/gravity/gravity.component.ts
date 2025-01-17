@@ -1,16 +1,16 @@
 import {Component, OnDestroy} from '@angular/core';
 import {ChartAction} from "../../shared/types/actions";
 import {HonorCodePopupService} from "../../shared/honor-code-popup/honor-code-popup.service";
-import {GravityService} from "../gravity.service";
 import {HonorCodeChartService} from "../../shared/honor-code-popup/honor-code-chart.service";
 import {MyFileParser} from "../../shared/data/FileParser/FileParser";
 import {Subject, takeUntil, withLatestFrom} from "rxjs";
-import {StrainDataDict} from "../gravity.service.util";
+import {SpectogramDataDict, StrainDataDict} from "../gravity.service.util";
 import {FileType} from "../../shared/data/FileParser/FileParser.util";
 import {MatDialog} from "@angular/material/dialog";
 import {GravityChartFormComponent} from "../gravity-chart-form/gravity-chart-form.component";
-import { GravityDataService } from '../gravity-data.service';
 import { HttpClient } from '@angular/common/http';
+import { StrainService } from '../gravity-strain.service';
+import { SpectogramService } from '../gravity-spectogram.service';
 
 @Component({
   selector: 'app-gravity',
@@ -24,9 +24,9 @@ export class GravityComponent implements OnDestroy {
   private fileParser: MyFileParser;
 
   constructor(
-    private service: GravityService,
+    private strainService: StrainService,
+    private spectogramService: SpectogramService,
     private http: HttpClient,
-    private dataService: GravityDataService,
     private honorCodeService: HonorCodePopupService,
     private chartService: HonorCodeChartService,
     private dialog: MatDialog) {
@@ -46,24 +46,25 @@ export class GravityComponent implements OnDestroy {
       ).subscribe(
         ([data, headers]) => {
           
-          const result: StrainDataDict[] = [];
+          const strainResult: StrainDataDict[] = [];
+          const spectogramResult: SpectogramDataDict[] = [];
 
-          let dt: number, t0: number
-          if(headers !== undefined) try{
-            dt = parseFloat(headers["samplerate"])
-            t0 = parseFloat(headers["timestart"])
-          }
-          catch
-          {
-            alert("This file had incorrectly formated headers.")
-            return;
-          }
+          let strain = data[0]
+          let spectogram: number[][] = data[1].data
+          let x0 = data[1].x0
+          let dx = data[1].dx
+          let y0 = data[1].y0
+          let dy = data[1].dy
 
-          data.map((p: number[]) => {
-            result.push({Time: p[0], Strain: p[1], Model: 0})
+          strain.map((p: number[]) => {
+            strainResult.push({Time: p[0], Strain: p[1], Model: 0})
           })
+          this.strainService.setData(strainResult);
 
-          this.service.setData(result);
+          spectogram.forEach( (y, i) => y.forEach( (value, j) => { 
+            spectogramResult.push({x: x0 + dx * j, y: y0 + dy * i, value: value })
+          } ) )
+          this.spectogramService.setData(spectogramResult)
         });
 
   }
@@ -71,11 +72,11 @@ export class GravityComponent implements OnDestroy {
   actionHandler(actions: ChartAction[]) {
     actions.forEach((action) => {
       if (action.action === "addRow") {
-        this.service.addRow(-1, 1);
+        this.strainService.addRow(-1, 1);
       } else if (action.action === "saveGraph") {
         this.saveGraph();
       } else if (action.action === "resetData") {
-        this.service.resetData();
+        this.strainService.resetData();
       } else if (action.action === "editChartInfo") {
         const dialogRef =
           this.dialog.open(GravityChartFormComponent, {width: 'fit-content'});
@@ -98,7 +99,7 @@ export class GravityComponent implements OnDestroy {
 
   private saveGraph() {
     this.honorCodeService.honored().subscribe((name: string) => {
-      this.chartService.saveImageHighChartOffline(this.service.getHighChart(), "gravity", name);
+      this.chartService.saveImageHighChartOffline(this.strainService.getHighChart(), "gravity", name);
     });
   }
 }

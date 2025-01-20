@@ -110,6 +110,6 @@ export class MyFileParserFITS implements MyFileParserStrategy {
     }
 
     validateFormat(file: File): boolean {
-        return !(!file.type.match("fits") || !file.name.endsWith(".fits"));
+        return file.name.endsWith(".fits");
       }
 }

@@ -63,7 +63,7 @@ export class RadioCalibrateData {
                 source: RadioCalibrateSources.CAS_A,
                 startFreq: 1355,
                 endFreq: 1435,
-                date: 2002.635,
+                date: 2002.551,
             }
         };
     }

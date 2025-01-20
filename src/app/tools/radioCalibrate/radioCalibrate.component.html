@@ -22,21 +22,26 @@
                 <div class="row entry">
                     <mat-form-field appearance="fill">
                         <mat-label>Stop Frequency (MHz)</mat-label>
-                        <input matInput type="number" step="1" [formControlName]="'stopFreq'">
+                        <input matInput type="number" step="1" [formControlName]="'endFreq'">
                     </mat-form-field>
                 </div>
                 <div class="row entry">
                     <mat-form-field appearance="fill">
                         <mat-label>Date (Years)</mat-label>
-                        <input matInput type="number" step="0.001" min="2000" formControlName="year">
+                        <input matInput type="number" step="0.001" min="2000" formControlName="date">
                     </mat-form-field>
                 </div>
                 <div class="row entry">
                     <button class="input-button" mat-raised-button color="primary" (click)="fitsUpload()"
-                            id="fits-upload-button"
                             type="button">Upload Fits File
-                        <input type="file" id="fits-upload" #fileInput (change)="onFileSelected($event)"
+                        <input type="file" #fileInput (change)="onFileSelected($event)"
                                style="display: none;">
+                    </button>
+                </div>
+                <div class="row entry">
+                    <button (click)="reset()"
+                            class="input-button" mat-raised-button color="warn" type="button">
+                        Reset Default
                     </button>
                 </div>
                 <div class="row entry">

@@ -41,18 +41,19 @@ export class RadioCalibrateComponent {
         this.formGroup = new FormGroup({
             source: new FormControl(input.source, [Validators.required]),
             startFreq: new FormControl(input.startFreq, [Validators.required, Validators.min(0)]),
-            stopFreq: new FormControl(input.endFreq, [Validators.required, Validators.min(0)]),
-            year: new FormControl(input.date, [Validators.required, Validators.min(2000)]),
+            endFreq: new FormControl(input.endFreq, [Validators.required, Validators.min(0)]),
+            date: new FormControl(input.date, [Validators.required, Validators.min(2000)]),
         });
         // subscribe to data changes
         this.formGroup.valueChanges.subscribe(() => {
             if (this.formGroup.valid) {
                 this.data.setInput({
-                    date: this.formGroup.value.year as number,
-                    startFreq: this.formGroup.value.startFreq as number,
-                    endFreq: this.formGroup.value.stopFreq as number,
                     source: this.formGroup.value.source as RadioCalibrateSources,
+                    startFreq: this.formGroup.value.startFreq as number,
+                    endFreq: this.formGroup.value.endFreq as number,
+                    date: this.formGroup.value.date as number,
                 });
+                console.log(this.data.getInput());
                 this.storage.saveInterface(this.data.getStorageObject());
                 this.computeSubject.next();
             }
@@ -108,10 +109,20 @@ export class RadioCalibrateComponent {
 
                 this.formGroup.patchValue({
                     startFreq: startFQ,
-                    stopFreq: stopFQ,
-                    year: this.round(dateUTC.getUTCFullYear() + dateUTC.getUTCMonth() / 12 + dateUTC.getUTCDate() / 30, 3)
+                    endFreq: stopFQ,
+                    date: this.round(dateUTC.getUTCFullYear() + dateUTC.getUTCMonth() / 12 + dateUTC.getUTCDate() / 30, 3)
                 });
             }
+        });
+    }
+
+    reset() {
+        const input = RadioCalibrateData.getDefaultStorageObject().input;
+        this.formGroup.patchValue({
+            source: input.source,
+            startFreq: input.startFreq,
+            endFreq: input.endFreq,
+            date: input.date
         });
     }
 

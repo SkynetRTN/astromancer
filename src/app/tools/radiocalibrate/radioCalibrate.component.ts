@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 // import { FITSHeaderParser } from '../shared/data/FitsParser/FitsParser';
 import {FormControl} from '@angular/forms';
 import {MyFileParser} from "../shared/data/FileParser/FileParser";
@@ -11,8 +11,8 @@ import {FileType} from "../shared/data/FileParser/FileParser.util";
     styleUrls: ['./radioCalibrate.component.scss', '../shared/interface/tools.scss'],
 })
 
-export class RadioCalibrateComponent implements AfterViewInit {
-    ngAfterViewInit(): void {
+export class RadioCalibrateComponent implements OnInit {
+    ngOnInit(): void {
         this.source = 'Cas A'
     }
 

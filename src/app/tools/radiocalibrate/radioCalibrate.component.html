@@ -2,12 +2,11 @@
     <div class="container-row">
         <div class="row">
             <!-- First Column -->
-            <div class="col-6">
+            <div class="col-6" [formGroup]="formGroup">
                 <div class="row entry">
                     <mat-form-field appearance="fill">
                         <mat-label>Source</mat-label>
-                        <mat-select [(ngModel)]="source" [formControl]="form"
-                                    (selectionChange)="onSourceChange($event)">
+                        <mat-select [formControlName]="'source'">
                             <mat-option *ngFor="let count of sources" [value]="count">
                                 {{ count }}
                             </mat-option>
@@ -17,21 +16,19 @@
                 <div class="row entry">
                     <mat-form-field appearance="fill">
                         <mat-label>Start Frequency (MHz)</mat-label>
-                        <input matInput type="number" step="0.001" name="startFreq" min="10" max="100000"
-                               [(ngModel)]="startFreq">
+                        <input matInput type="number" step="1" [formControlName]="'startFreq'">
                     </mat-form-field>
                 </div>
                 <div class="row entry">
                     <mat-form-field appearance="fill">
                         <mat-label>Stop Frequency (MHz)</mat-label>
-                        <input matInput type="number" step="0.001" name="stopFreq" min="10" max="100000"
-                               [(ngModel)]="stopFreq">
+                        <input matInput type="number" step="1" [formControlName]="'stopFreq'">
                     </mat-form-field>
                 </div>
                 <div class="row entry">
                     <mat-form-field appearance="fill">
                         <mat-label>Date (Years)</mat-label>
-                        <input matInput type="number" step="0.001" name="Year" min="2000" [(ngModel)]="Year">
+                        <input matInput type="number" step="0.001" min="2000" formControlName="year">
                     </mat-form-field>
                 </div>
                 <div class="row entry">
@@ -63,11 +60,6 @@
                         <input matInput type="string" step="0.001" min="10" max="100000" name="effectiveFrequency"
                                [(ngModel)]="effectiveFrequency" readonly>
                     </mat-form-field>
-                </div>
-                <div class="row entry">
-                    <button class="input-button" mat-raised-button color="primary" (click)="computeClicked()" id="compute" type="button">
-                        Compute
-                    </button>
                 </div>
             </div>
         </div>

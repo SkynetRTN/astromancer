@@ -1,7 +1,7 @@
 import {NgModule} from "@angular/core";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { BrowserModule } from '@angular/platform-browser';
-import {RadiocalibrateComponent} from "./radiocalibrate.component";
+import {RadioCalibrateComponent} from "./radioCalibrate.component";
 import {RouterModule, Routes} from "@angular/router";
 import {SimpleDataButtonModule} from "../shared/simple-data-button/simple-data-button.component";
 import {SimpleGraphButtonModule} from "../shared/simple-graph-button/simple-graph-button.component"
@@ -25,12 +25,12 @@ import { MatOptionModule } from '@angular/material/core';
 
 
 const routes: Routes = [
-  {path: '', component: RadiocalibrateComponent, title: 'Radio Calibration'}
+  {path: '', component: RadioCalibrateComponent, title: 'Radio Calibration'}
 ];
 
 @NgModule({
     declarations: [
-        RadiocalibrateComponent
+        RadioCalibrateComponent
     ],
     imports: [
         CommonModule,
@@ -56,7 +56,7 @@ const routes: Routes = [
 
 
     ],
-    exports: [RadiocalibrateComponent],
+    exports: [RadioCalibrateComponent],
   })
-export class RadiocalibrateModule {
+export class RadioCalibrateModule {
  }

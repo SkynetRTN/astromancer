@@ -26,7 +26,7 @@ import {VariableModule} from "./tools/variable/variable.module";
 import {ScatterModule} from "./tools/scatter/scatter.module";
 import {SpectrumModule} from "./tools/spectrum/spectrum.module";
 import {DualModule} from "./tools/dual/dual.module";
-import {RadiocalibrateModule} from "./tools/radiocalibrate/radiocalibrate.module";
+import {RadioCalibrateModule} from "./tools/radiocalibrate/radioCalibrate.module";
 import {RcModule} from "./tools/rc/rc.module";
 import {NgOptimizedImage} from "@angular/common";
 
@@ -55,7 +55,7 @@ registerAllModules();
         ScatterModule,
         SpectrumModule,
         DualModule,
-        RadiocalibrateModule,
+        RadioCalibrateModule,
         RcModule,
         NgOptimizedImage,
     ],

@@ -7,11 +7,11 @@ import {FileType} from "../shared/data/FileParser/FileParser.util";
 
 @Component({
     selector: 'app-radiocalibrate',
-    templateUrl: './radiocalibrate.component.html',
-    styleUrls: ['./radiocalibrate.component.scss', '../shared/interface/tools.scss'],
+    templateUrl: './radioCalibrate.component.html',
+    styleUrls: ['./radioCalibrate.component.scss', '../shared/interface/tools.scss'],
 })
 
-export class RadiocalibrateComponent implements AfterViewInit {
+export class RadioCalibrateComponent implements AfterViewInit {
     ngAfterViewInit(): void {
         this.source = 'Cas A'
     }

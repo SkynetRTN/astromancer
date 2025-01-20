@@ -13,7 +13,7 @@ import {Subject} from "rxjs";
 
 
 @Component({
-    selector: 'app-radiocalibrate',
+    selector: 'app-radioCalibrate',
     templateUrl: './radioCalibrate.component.html',
     styleUrls: ['./radioCalibrate.component.scss', '../shared/interface/tools.scss'],
 })

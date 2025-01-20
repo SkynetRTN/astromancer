@@ -21,8 +21,8 @@ export class RadioCalibrateComponent implements AfterViewInit {
     sources: string[] = ['Cas A', 'Cyg A', 'Tau A', 'Vir A']; // Example data for the dropdown
 
 
-    fitsFileName: string | undefined;
-    fitsLoaded: boolean = false;
+    // fitsFileName: string | undefined;
+    // fitsLoaded: boolean = false;
 
     startFreq: number = 1355;
     stopFreq: number = 1435;

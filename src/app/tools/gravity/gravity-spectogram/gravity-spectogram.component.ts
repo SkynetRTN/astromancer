@@ -2,10 +2,13 @@ import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import {Subject, takeUntil} from "rxjs";
 import * as Highcharts from "highcharts";
 import Heatmap from "highcharts/modules/heatmap"
+import Boost from "highcharts/modules/boost"
 
 import { SpectogramService } from '../gravity-spectogram.service';
 
 Heatmap(Highcharts)
+Boost(Highcharts)
+
 @Component({
   selector: 'app-gravity-spectogram',
   templateUrl: './gravity-spectogram.component.html',
@@ -25,15 +28,21 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
       },
     },
     colorAxis: { stops: [
-      [0, '#3060cf'],
-      [0.5, '#fffbbc'],
-      [0.9, '#c4463a'],
-      [1, '#c4463a']
-    ]
+      [0, 'rgb(26, 0, 31)'],
+      [0.2, 'rgb(69, 16, 115)'],
+      [0.6, 'rgb(13, 206, 154)'],
+      [0.9, 'rgb(195, 255, 0)'],
+    ],
+      reversed: false,
     },
     legend: {
-      align: 'center',
-    },
+      align: 'right',
+      layout: 'vertical',
+      margin: 0,
+      verticalAlign: 'top',
+      y: 25,
+      symbolHeight: 280
+  },
     tooltip: {
       enabled: true,
       shared: false,
@@ -110,14 +119,12 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
       showInLegend: false,
     });
     this.chartObject.addSeries({
+      boostThreshold: 5000,
       name: "Spectrum",
       data: this.service.getDataArray(),
       zIndex: 0,
       interpolation: true,
       type: 'heatmap',
-      marker: {
-        symbol: 'circle',
-      },
     });
   }
 
@@ -141,13 +148,12 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
       },
     });
     this.chartObject.series[2].update({
+      boostThreshold: 5000,
       name: "Spectrum",
       data: this.service.getDataArray(),
       zIndex: 0,
+      interpolation: true,
       type: 'heatmap',
-      marker: {
-        symbol: 'circle',
-      },
     });
   }
 
@@ -167,7 +173,8 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
 
   private setChartYAxis(): void {
     this.chartOptions.yAxis = {
-      title: {text: this.service.getYAxisLabel()}
+      title: {text: this.service.getYAxisLabel()},
+      
     };
   }
 

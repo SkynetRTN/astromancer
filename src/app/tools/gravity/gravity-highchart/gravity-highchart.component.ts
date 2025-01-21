@@ -1,8 +1,11 @@
 import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import {Subject, takeUntil} from "rxjs";
 import * as Highcharts from "highcharts";
+import Boost from "highcharts/modules/boost"
 
 import { StrainService } from '../gravity-strain.service';
+
+Boost(Highcharts)
 
 @Component({
   selector: 'app-gravity-highchart',
@@ -89,45 +92,48 @@ export class GravityHighchartComponent implements AfterViewInit, OnDestroy {
       data: this.service.getDataArray()[0],
       type: 'line',
       lineWidth: 5,
-      // marker: {
-      //   // enabled:
-      //   symbol: 'circle',
-      //   radius: 3,
-      // },
+      marker: {
+        // enabled:
+        symbol: 'circle',
+        radius: 3,
+      },
     });
     this.chartObject.addSeries({
+      boostThreshold: 5000,
       name: "Strain",
       data: this.service.getDataArray()[1],
       type: 'line',
-      // marker: {
-      //   // enabled:
-      //   symbol: 'circle',
-      //   radius: 3,
-      // },
+      marker: {
+        // enabled:
+        symbol: 'circle',
+        radius: 3,
+      },
     });
   }
 
   updateData() {
     this.chartObject.series[0].update({
+      boostThreshold: 5000,
       name: "Model",
       data: this.service.getDataArray()[0],
       type: 'line',
       lineWidth: 5,
-      // marker: {
-      //   // enabled:
-      //   symbol: 'circle',
-      //   radius: 3,
-      // },
+      marker: {
+        // enabled:
+        symbol: 'circle',
+        radius: 3,
+      },
     });
     this.chartObject.series[1].update({
+      boostThreshold: 5000,
       name: "Strain",
       data: this.service.getDataArray()[1],
       type: 'line',
-      // marker: {
-      //   // enabled:
-      //   symbol: 'circle',
-      //   radius: 3,
-      // },
+      marker: {
+        // enabled:
+        symbol: 'circle',
+        radius: 3,
+      },
     });
   }
 

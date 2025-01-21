@@ -51,10 +51,10 @@ export class GravityComponent implements OnDestroy {
 
           let strain = data[0]
           let spectogram: number[][] = data[1].data
-          let x0 = data[1].x0
-          let dx = data[1].dx
-          let y0 = data[1].y0
-          let dy = data[1].dy
+          let x0 = parseFloat(data[1].x0)
+          let dx = parseFloat(data[1].dx)
+          let y0 = parseFloat(data[1].y0)
+          let dy = parseFloat(data[1].dy)
 
           strain.map((p: number[]) => {
             strainResult.push({Time: p[0], Strain: p[1], Model: 0})
@@ -62,7 +62,7 @@ export class GravityComponent implements OnDestroy {
           this.strainService.setData(strainResult);
 
           spectogram.forEach( (y, i) => y.forEach( (value, j) => { 
-            spectogramResult.push({x: x0 + dx * j, y: y0 + dy * i, value: value })
+            spectogramResult.push({x: i, y: j, value: value })
           } ) )
           this.spectogramService.setData(spectogramResult)
         });

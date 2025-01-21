@@ -327,6 +327,13 @@ export class StrainChartInfo implements ChartInfo {
 
 }
 
+export class SpectoChartInfo extends StrainChartInfo {
+
+  constructor() {
+    super()
+  }
+}
+
 export class StrainStorage implements MyStorage {
   private static readonly dataKey: string = 'strainData';
   private static readonly interfaceKey: string = 'strainInterface';

@@ -1,11 +1,11 @@
-import { AfterViewInit, HostListener, Component, ViewChild, ElementRef } from '@angular/core';
+import { AfterViewInit, Component, ViewChild, ElementRef } from '@angular/core';
 import { RadioSearchHighChartService, RadioSearchService } from './radiosearch.service'; // Import the service
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
 import { HonorCodePopupService } from '../shared/honor-code-popup/honor-code-popup.service';
 import { HonorCodeChartService } from '../shared/honor-code-popup/honor-code-chart.service';
-import { FittingResult } from './storage/radiosearch-storage.service.util';
+import { FittingResult } from './radiosearch.service.util';
 import { RadioSearchDataDict } from './radiosearch.service.util';
 import { BehaviorSubject } from 'rxjs';
 import {getDateString} from "../shared/charts/utils";
@@ -65,11 +65,6 @@ export class RadioSearchComponent implements AfterViewInit {
   @ViewChild('fileDropZone', { static: false }) fileDropZoneRef!: ElementRef<HTMLDivElement>;
   @ViewChild('chartContainer', { static: false }) chartContainer!: ElementRef;
 
-  ngOnDestroy() {
-    // Remove the event listener when the component is destroyed
-    window.removeEventListener('beforeunload', this.confirmExit);
-  }
-    
   ngAfterViewInit() {
     // Bind the MatSort to the dataSource
     this.dataSource.sort = this.sort;
@@ -158,15 +153,6 @@ export class RadioSearchComponent implements AfterViewInit {
 
   onFileUnselected(event: Event): void {
     this.fitsLoaded = false;
-  }
-
-
-  @HostListener('window:beforeunload', ['$event'])
-  confirmExit(event: BeforeUnloadEvent): void {
-    if (this.fitsLoaded) { // Only warn if there's an uploaded image
-      event.preventDefault(); // Required for older browsers
-      event.returnValue = ''; // Standard for most browsers
-    }
   }
 
 

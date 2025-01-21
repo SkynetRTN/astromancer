@@ -18,7 +18,6 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatTableModule} from '@angular/material/table'; 
 import {MatIconModule} from '@angular/material/icon';
 import {MatSortModule} from '@angular/material/sort';
-import {RadioSearchStorageService} from "./storage/radiosearch-storage.service";
 import { RadioSearchHighChartComponent} from "./radiosearch-highchart/radiosearch-high-chart.component";
 import { RadioSearchHighChartService} from "./radiosearch.service";
 
@@ -54,7 +53,7 @@ const routes: Routes = [
     MatButtonModule,
   ],
   exports: [RadioSearchComponent, RouterModule, RadioSearchHighChartComponent],
-  providers: [RadioSearchService, RadioSearchHighChartService, RadioSearchStorageService],
+  providers: [RadioSearchService, RadioSearchHighChartService],
 })
 export class RadioSearchModule {
 }

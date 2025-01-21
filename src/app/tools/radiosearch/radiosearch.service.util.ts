@@ -10,6 +10,17 @@ export interface RadioSearchDataDict {
   highlight?: boolean;
 }
 
+export interface FittingResult {
+  slope: number;
+  intercept: number;
+}
+
+export interface Source {
+  name: string;  // Name of the source
+  ra: number;    // Right Ascension (in degrees)
+  dec: number;   // Declination (in degrees)
+}
+
 export interface RadioSearchParamDataDict {
   targetFreq: number | null;
   threeC: number | null;

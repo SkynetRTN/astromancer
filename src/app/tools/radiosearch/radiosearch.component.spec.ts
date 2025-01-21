@@ -2,7 +2,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {RadioSearchComponent} from './radiosearch.component';
 
-describe('MoonComponent', () => {
+describe('RadioSearchComponent', () => {
   let component: RadioSearchComponent;
   let fixture: ComponentFixture<RadioSearchComponent>;
 

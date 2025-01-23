@@ -80,6 +80,10 @@ export class SpectogramService implements ChartInfo {
     this.chartInfoSubject.next(this.gravityChartInfo);
   }
 
+  SetXRange(min: number, max: number): void {
+    
+  }
+
   setYAxisLabel(yAxis: string): void {
     this.gravityChartInfo.setYAxisLabel(yAxis);
     this.chartInfoSubject.next(this.gravityChartInfo);
@@ -110,6 +114,15 @@ export class SpectogramService implements ChartInfo {
     this.spectoData.setData(SpectoData.getDefaultData());
     this.dataSubject.next(this.spectoData);
   }
+
+  getColumnSize(): number {
+    return this.spectoData.getColumnSize()
+  }
+
+  setColumnSize(size: number): void {
+    this.spectoData.setColumnSize(size)
+  }
+  
 
   setHighChart(chart: Highcharts.Chart): void {
     this.highChart = chart;

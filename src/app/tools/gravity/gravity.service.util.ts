@@ -22,9 +22,11 @@ export interface SpectogramDataDict {
 
 export class SpectoData implements MyData {
   private dataDict: SpectogramDataDict[];
+  private columnSize: number;
 
   constructor() {
     this.dataDict = [];
+    this.columnSize = 1;
   }
 
   public static getDefaultData(): SpectogramDataDict[] {
@@ -44,6 +46,10 @@ export class SpectoData implements MyData {
   getData(): SpectogramDataDict[] {
     return this.dataDict;
   }
+
+  getColumnSize(): number {
+    return this.columnSize
+  }
   
   getDataArray(): number[][] {
     let data: number[][] = [[]]
@@ -62,6 +68,9 @@ export class SpectoData implements MyData {
     this.dataDict = data;
   }
 
+  setColumnSize(size: number): void {
+    this.columnSize = size;
+  }
 }
 
 export class StrainData implements MyData {
@@ -325,6 +334,13 @@ export class StrainChartInfo implements ChartInfo {
     this.yAxisLabel = yAxis;
   }
 
+}
+
+export class SpectoChartInfo extends StrainChartInfo {
+
+  constructor() {
+    super()
+  }
 }
 
 export class StrainStorage implements MyStorage {

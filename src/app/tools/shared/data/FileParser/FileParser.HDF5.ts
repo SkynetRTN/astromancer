@@ -74,7 +74,7 @@ export class MyFileParserHDF5 implements MyFileParserStrategy {
           {params: {'id': id} }).subscribe(
           (resp: any) => {
 
-            console.log(resp)
+            // console.log(resp)
             //Headers
             const headers = this.getHeaders(resp.file as GravityResponse, headerRequirements);
             if (headers === undefined) {

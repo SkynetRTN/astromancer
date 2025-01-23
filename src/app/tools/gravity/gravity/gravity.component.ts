@@ -40,6 +40,13 @@ export class GravityComponent implements OnDestroy {
         (error: any) => {
           alert("error " + error);
         });
+
+      this.fileParser.error$.pipe(
+        takeUntil(this.destroy$)
+      ).subscribe(
+        (progress: any) => {
+        console.log(progress);
+      });
       
       this.fileParser.data$.pipe(
         takeUntil(this.destroy$), withLatestFrom(this.fileParser.header$)

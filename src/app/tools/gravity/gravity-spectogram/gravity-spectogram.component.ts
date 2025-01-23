@@ -32,6 +32,10 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
       [0.2, 'rgb(69, 16, 115)'],
       [0.6, 'rgb(13, 206, 154)'],
       [0.9, 'rgb(195, 255, 0)'],
+      // [0, '#051f39'],
+      // [0.2, '#4a2480'],
+      // [0.6, '#c53a9d'],
+      // [0.9, '#ff8e80'],
     ],
       reversed: false,
     },
@@ -122,6 +126,7 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
       boostThreshold: 5000,
       name: "Spectrum",
       data: this.service.getDataArray(),
+      yAxis: 0,
       zIndex: 0,
       interpolation: true,
       type: 'heatmap',
@@ -141,6 +146,7 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
     this.chartObject.series[1].update({
       name: "Model",
       data: [],
+      yAxis: 0,
       zIndex: 1,
       type: 'area',
       marker: {
@@ -150,6 +156,7 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
     this.chartObject.series[2].update({
       boostThreshold: 5000,
       name: "Spectrum",
+      colsize: this.service.getColumnSize(),
       data: this.service.getDataArray(),
       zIndex: 0,
       interpolation: true,
@@ -174,7 +181,8 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
   private setChartYAxis(): void {
     this.chartOptions.yAxis = {
       title: {text: this.service.getYAxisLabel()},
-      
+
+      endOnTick: false
     };
   }
 

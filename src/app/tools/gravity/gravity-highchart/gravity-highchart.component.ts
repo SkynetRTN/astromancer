@@ -93,7 +93,7 @@ export class GravityHighchartComponent implements AfterViewInit, OnDestroy {
       type: 'line',
       lineWidth: 5,
       marker: {
-        // enabled:
+        enabled: false,
         symbol: 'circle',
         radius: 3,
       },
@@ -104,7 +104,7 @@ export class GravityHighchartComponent implements AfterViewInit, OnDestroy {
       data: this.service.getDataArray()[1],
       type: 'line',
       marker: {
-        // enabled:
+        enabled: false,
         symbol: 'circle',
         radius: 3,
       },
@@ -119,7 +119,7 @@ export class GravityHighchartComponent implements AfterViewInit, OnDestroy {
       type: 'line',
       lineWidth: 5,
       marker: {
-        // enabled:
+        enabled: false,
         symbol: 'circle',
         radius: 3,
       },
@@ -130,7 +130,7 @@ export class GravityHighchartComponent implements AfterViewInit, OnDestroy {
       data: this.service.getDataArray()[1],
       type: 'line',
       marker: {
-        // enabled:
+        enabled: false,
         symbol: 'circle',
         radius: 3,
       },

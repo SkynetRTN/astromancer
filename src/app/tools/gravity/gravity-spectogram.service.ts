@@ -115,6 +115,15 @@ export class SpectogramService implements ChartInfo {
     this.dataSubject.next(this.spectoData);
   }
 
+  getColumnSize(): number {
+    return this.spectoData.getColumnSize()
+  }
+
+  setColumnSize(size: number): void {
+    this.spectoData.setColumnSize(size)
+  }
+  
+
   setHighChart(chart: Highcharts.Chart): void {
     this.highChart = chart;
   }

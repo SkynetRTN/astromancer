@@ -5,11 +5,19 @@
 }
 
 .entry {
-  padding: 10px 20% 10px 20%;
+  padding: 10px 20%;
 }
 
 .input-button {
   width: calc(100% - 24px);
   height: 100%;
   margin: 0 12px;
+}
+
+.card {
+  font-size: medium;
+}
+
+.content {
+  padding: 20px 5px;
 }

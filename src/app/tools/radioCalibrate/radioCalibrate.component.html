@@ -1,8 +1,8 @@
 <form title="Radio" id="radio-form" style="padding-bottom: .5em">
-    <div class="container-row">
+    <div class="container-row" [formGroup]="formGroup">
         <div class="row">
             <!-- First Column -->
-            <div class="col-6" [formGroup]="formGroup">
+            <div class="col-6">
                 <div class="row entry">
                     <mat-form-field appearance="fill">
                         <mat-label>Source</mat-label>
@@ -13,6 +13,23 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
+                <div class="row entry">
+                    <mat-card class="input-button card" appearance="raised">
+                        <mat-card-content class="content">
+                            <strong>Flux Density: </strong> {{fluxDensity}} Jy
+                            <br>
+                            <strong>Effective Frequency: </strong> {{effectiveFrequency}} MHz
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+                <div class="row entry">
+                    <a style="color: grey;" target="_blank" href="https://arxiv.org/abs/1704.00002">
+                        Trotter, A. S, Reichart, D. E., Egger, R. E., et al. 1997, MNRAS, 469, 1299
+                    </a>
+                </div>
+            </div>
+            <!-- Second Column -->
+            <div class="col-6" >
                 <div class="row entry">
                     <mat-form-field appearance="fill">
                         <mat-label>Start Frequency (MHz)</mat-label>
@@ -27,8 +44,11 @@
                 </div>
                 <div class="row entry">
                     <mat-form-field appearance="fill">
-                        <mat-label>Date (Years)</mat-label>
-                        <input matInput type="number" step="0.001" min="2000" formControlName="date">
+                        <mat-label>Date</mat-label>
+                        <input matInput [matDatepicker]="picker" [formControlName]="'date'">
+                        <mat-hint>MM/DD/YYYY</mat-hint>
+                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker ></mat-datepicker>
                     </mat-form-field>
                 </div>
                 <div class="row entry">
@@ -43,28 +63,6 @@
                             class="input-button" mat-raised-button color="warn" type="button">
                         Reset Default
                     </button>
-                </div>
-                <div class="row entry">
-                    <a style="color: grey;" target="_blank" href="https://arxiv.org/abs/1704.00002">
-                        Trotter, A. S, Reichart, D. E., Egger, R. E., et al. 1997, MNRAS, 469, 1299
-                    </a>
-                </div>
-            </div>
-            <!-- Second Column -->
-            <div class="col-6">
-                <div class="row entry">
-                    <mat-form-field appearance="fill">
-                        <mat-label>Flux Density (Jy)</mat-label>
-                        <input matInput type="string" step="0.001" min="10" max="100000" name="fluxDensity"
-                               [(ngModel)]="fluxDensity" readonly>
-                    </mat-form-field>
-                </div>
-                <div class="row entry">
-                    <mat-form-field appearance="fill">
-                        <mat-label>Effective Frequency</mat-label>
-                        <input matInput type="string" step="0.001" min="10" max="100000" name="effectiveFrequency"
-                               [(ngModel)]="effectiveFrequency" readonly>
-                    </mat-form-field>
                 </div>
             </div>
         </div>

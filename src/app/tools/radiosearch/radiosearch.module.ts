@@ -6,7 +6,6 @@ import {SimpleGraphButtonModule} from "../shared/simple-graph-button/simple-grap
 import {HotTableModule} from "@handsontable/angular";
 import {HighchartsChartModule} from "highcharts-angular";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {BrowserModule} from "@angular/platform-browser";
 import {MatSliderModule} from "@angular/material/slider";
 import {CommonModule, NgIf} from "@angular/common";
 import {InterfaceUtilModule} from "../shared/interface/util";
@@ -18,8 +17,8 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatTableModule} from '@angular/material/table'; 
 import {MatIconModule} from '@angular/material/icon';
 import {MatSortModule} from '@angular/material/sort';
-import { RadioSearchHighChartComponent} from "./radiosearch-highchart/radiosearch-high-chart.component";
-import { RadioSearchHighChartService} from "./radiosearch.service";
+import {RadioSearchHighChartComponent} from "./radiosearch-highchart/radiosearch-high-chart.component";
+import {RadioSearchHighChartService} from "./radiosearch.service";
 
 
 const routes: Routes = [
@@ -48,7 +47,6 @@ const routes: Routes = [
     MatSliderModule,
     FormsModule,
     NgIf,
-    // BrowserModule,
     MatDialogModule,
     MatButtonModule,
   ],

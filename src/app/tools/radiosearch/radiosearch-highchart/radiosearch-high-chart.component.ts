@@ -66,6 +66,7 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
 
   chartInitialized($event: Highcharts.Chart) {
     this.chartObject = $event;
+    this.service.setHighChart(this.chartObject);
   }
 
   ngAfterViewInit(): void {

@@ -1,14 +1,13 @@
-import { AfterViewInit, Component, ViewChild, ElementRef } from '@angular/core';
+import { AfterViewInit, HostListener, Component, ViewChild, ElementRef } from '@angular/core';
 import { RadioSearchHighChartService, RadioSearchService } from './radiosearch.service'; // Import the service
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import { MatDialog } from '@angular/material/dialog';
 import { HonorCodePopupService } from '../shared/honor-code-popup/honor-code-popup.service';
 import { HonorCodeChartService } from '../shared/honor-code-popup/honor-code-chart.service';
 import { FittingResult } from './radiosearch.service.util';
 import { RadioSearchDataDict } from './radiosearch.service.util';
 import { BehaviorSubject } from 'rxjs';
-import {getDateString} from "../shared/charts/utils";
+import { getDateString } from "../shared/charts/utils";
 import * as fitsjs from 'fitsjs';
 
 @Component({
@@ -34,7 +33,6 @@ export class RadioSearchComponent implements AfterViewInit {
   naxis1: number = 100;
   naxis2: number = 100;
   rccords: string | undefined;
-  bitpix: number | undefined;
   pixelOffset: number = 0;
 
   fitsLoaded = false;
@@ -49,8 +47,7 @@ export class RadioSearchComponent implements AfterViewInit {
   averageFlux$ = this.averageFluxSubject.asObservable();
   zoomLevel: number = 100;
   zoomScale: number = 1;
-  
-  displayedColumns: string[] = ['name', 'ra', 'dec'];  // Define the columns
+
   dataSource = new MatTableDataSource<any>([]);  // Initialize the data source
   results: any = [];
   hiddenResults: any = [];
@@ -64,6 +61,11 @@ export class RadioSearchComponent implements AfterViewInit {
   @ViewChild('fitsCanvas', { static: false }) canvasRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('fileDropZone', { static: false }) fileDropZoneRef!: ElementRef<HTMLDivElement>;
   @ViewChild('chartContainer', { static: false }) chartContainer!: ElementRef;
+
+  ngOnDestroy() {
+    // Remove the event listener when the component is destroyed
+    window.removeEventListener('beforeunload', this.confirmExit);
+  }
 
   ngAfterViewInit() {
     // Bind the MatSort to the dataSource
@@ -96,10 +98,24 @@ export class RadioSearchComponent implements AfterViewInit {
     private hcservice: RadioSearchHighChartService,
     private honorCodeService: HonorCodePopupService,
     private chartService: HonorCodeChartService,
-    public dialog: MatDialog,
   ) {}
 
 
+  @HostListener('window:beforeunload', ['$event'])
+  confirmExit(event: BeforeUnloadEvent): void {
+    if (this.fitsLoaded) { // Only warn if there's an uploaded image
+      event.preventDefault(); // Required for older browsers
+    }
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: UIEvent): void {
+    if (this.scaledData) {
+      this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2);
+    }
+  }
+
+  
   // Handle row click
   onRowClicked(row: any): void {
     const index = this.dataSource.data.indexOf(row);
@@ -156,47 +172,6 @@ export class RadioSearchComponent implements AfterViewInit {
   }
 
 
-  updateZoom(): void {
-    // Adjust the scaling factor based on zoom level
-    this.zoomScale = this.zoomLevel / 100; // Convert percentage to scale factor
-
-    this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2);
-  }
-
-
-  convertCoordinates(ra: number, dec: number, isGalactic: string): string {
-    if (isGalactic == 'galactic') {
-      // Convert Galactic Latitude and Longitude to degrees (no further conversion needed since they're already in degrees)
-      return `Glon: ${ra.toFixed(2)}°<br>Glat: ${dec.toFixed(2)}°`;
-    } else {
-      // Convert RA from hours:minutes:seconds to degrees
-      const raDegrees = ra * 15; // RA in hours to degrees
-      const raHMS = this.convertToHMS(raDegrees);
-      const decDMS = this.convertToDMS(dec); // Convert Dec to degrees:arcminutes:arcseconds
-      return `RA: ${raHMS}<br>Dec: ${decDMS}`;
-    }
-  }
-  
-
-  // Helper functions for RA and Dec conversions
-  convertToHMS(ra: number): string {
-    const hours = Math.floor(ra / 15);
-    const minutes = Math.floor((ra / 15 - hours) * 60);
-    const seconds = Math.round((((ra / 15 - hours) * 60 - minutes) * 60));
-    return `${hours}h ${minutes}m ${seconds}s`;
-  }
-  
-
-  convertToDMS(dec: number): string {
-    const sign = dec < 0 ? "-" : "+";
-    const absDec = Math.abs(dec);
-    const degrees = Math.floor(absDec);
-    const arcminutes = Math.floor((absDec - degrees) * 60);
-    const arcseconds = Math.round((((absDec - degrees) * 60 - arcminutes) * 60));
-    return `${sign}${degrees}° ${arcminutes}' ${arcseconds}"`;
-  }  
-  
-
   // Function to grab the x and y coordinates when the mouse is clicked
   grabCoordinatesOnClick(event: MouseEvent): void {
     if (!this.canvas || !this.wcsInfo) return;
@@ -222,8 +197,6 @@ export class RadioSearchComponent implements AfterViewInit {
     const unscaledY = adjustedY / this.scale;
 
     const flippedY = this.naxis2 - unscaledY - 1; // Flip Y-axis for FITS image storage
-    const mouseRA = cdelt1 * (unscaledX - crpix1) + crval1;
-    const mouseDec = crval2 - cdelt2 * (flippedY - crpix2);
 
     // Loop through sources to check if the click is inside any circle
     let selectedSource: any = null;
@@ -283,8 +256,8 @@ export class RadioSearchComponent implements AfterViewInit {
                     0,
                     2 * Math.PI
                 );
-                context.strokeStyle = '#ff0000'; // Red outline
-                context.lineWidth = 3;
+                context.strokeStyle = '#ff0000';
+                context.lineWidth = 1 + (3 - 1) * ((this.zoomScale - 0.1) / (1 - 0.1));
                 context.stroke();
                 context.closePath();
             }
@@ -313,6 +286,76 @@ export class RadioSearchComponent implements AfterViewInit {
         }
     });
   }
+
+
+  convertCoordinates(ra: number, dec: number, isGalactic: string): string {
+    if (isGalactic == 'galactic') {
+      // Convert Galactic Latitude and Longitude to degrees (no further conversion needed since they're already in degrees)
+      return `Glon: ${ra.toFixed(2)}°<br>Glat: ${dec.toFixed(2)}°`;
+    } else {
+      // Convert RA from hours:minutes:seconds to degrees
+      const raDegrees = ra * 15; // RA in hours to degrees
+      const raHMS = this.service.convertToHMS(raDegrees);
+      const decDMS = this.service.convertToDMS(dec); // Convert Dec to degrees:arcminutes:arcseconds
+      return `RA: ${raHMS}<br>Dec: ${decDMS}`;
+    }
+  }
+
+
+  drawCircles(results: any[], scale: number, offsetX: number, offsetY: number): void {
+    const canvas = this.canvasRef.nativeElement;
+    const context = canvas.getContext('2d');
+    if (!context || !canvas || !this.wcsInfo) {
+        console.error('Canvas context or WCS info is not initialized.');
+        return;
+    }
+
+    // Use WCS information from wcsInfo
+    const { crpix1, crpix2, crval1, crval2, cdelt1, cdelt2 } = this.wcsInfo;
+
+    // Convert slider offsets from degrees to pixels using WCS scale
+    const pixelXOffset = this.sliderXOffset / Math.abs(cdelt1); // Degrees to pixels (X-axis)
+    const pixelYOffset = this.sliderYOffset / Math.abs(cdelt2); // Degrees to pixels (Y-axis)
+
+    // Iterate through each source
+    results.forEach(source => {
+        let ra: number, dec: number;
+
+        // Determine coordinate system
+        if (this.rccords === 'equatorial') {
+            ra = source.ra;       // Equatorial coordinates
+            dec = source.dec;
+        } else if (this.rccords === 'galactic') {
+            ra = source.galLong;
+            dec = source.galLat;
+        } else {
+            console.error('Unknown coordinate system:', this.rccords);
+            return;
+        }
+
+        // Convert RA/Dec to pixel coordinates
+        const pixelX = ((ra - crval1) / cdelt1) + crpix1;
+        const pixelY = ((crval2 - dec) / cdelt2) + crpix2;
+
+        // Apply scaling and offsets (use pixel offsets from degrees!)
+        const scaledX = (pixelX + pixelXOffset) * scale + this.canvasXOffset; // Degrees applied
+        const scaledY = (pixelY - pixelYOffset) * scale + this.canvasYOffset; // Degrees applied
+
+        // Draw the circle
+        context.beginPath();
+        context.arc(
+            scaledX,
+            scaledY,
+            scale * 22, // Radius of the circle
+            0,
+            2 * Math.PI
+        );
+        context.strokeStyle = '#ffffff'; // Ring color
+        context.lineWidth = 1 + (3 - 1) * ((this.zoomScale - 0.1) / (1 - 0.1));
+        context.stroke();
+        context.closePath();
+    });
+  }  
 
 
   // Redraw the image and then the circles without clearing the image
@@ -394,24 +437,6 @@ export class RadioSearchComponent implements AfterViewInit {
     return { ra, dec }; 
   }
 
-
-  getPixelCoordinates(ra: number, dec: number): { x: number, y: number } | null {
-    if (!this.wcsInfo) {
-        console.error('WCS information not available');
-        return null;
-    }
-
-    const { crpix1, crpix2, crval1, crval2, cdelt1, cdelt2 } = this.wcsInfo;
-
-    // Calculate pixel coordinates based on the inverse of the WCS transformation equations
-    const x = crpix1 + (ra - crval1) / cdelt1;
-
-    // Invert the y-axis by reversing direction
-    const y = crpix2 - (dec - crval2) / cdelt2; // Subtract instead of add
-
-    return { x, y };
-  }
-  
 
   processFitsFile(file: File): Promise<void> {
     return new Promise((resolve) => {
@@ -571,65 +596,55 @@ export class RadioSearchComponent implements AfterViewInit {
   }  
 
 
+  searchCatalog(): void {
+    if (this.rccords && this.ra && this.dec && this.width && this.height) {
+      this.service.fetchRadioCatalog(this.rccords, this.ra, this.dec, this.width, this.height).subscribe(
+        (response: any) => {
+          const results = response.objects.map((source: any) => ({
+            name: source.SIMBAD || 'Unknown',
+            id: source.id,
+            ra: source.ra,
+            dec: source.dec,
+            galLat: source.galLat,
+            galLong: source.galLong,
+            threeC: source.threeC || 'Unknown',
+          }));
+
+          const hidden_results = response.objects.map((source: any) => ({
+            name: source.SIMBAD || 'Unknown',
+            id: source.id || 'Unknown',
+            MHz38: source.MHz38 || 'Unknown',
+            MHz159: source.MHz159 || 'Unknown',
+            MHz178: source.MHz178 || 'Unknown',
+            MHz750: source.MHz750 || 'Unknown',
+            L1400: source.L || 'Unknown',
+            S2695: source.S || 'Unknown',
+            C5000: source.C || 'Unknown',
+            X8400: source.X || 'Unknown',
+          }));
+
+          this.dataSource.data = results;
+          this.results = results;
+          this.hiddenResults = hidden_results;
+          this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2); // Render image
+        },
+        (error: any) => {
+
+          this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2); // Render image
+        }
+      );
+    } else {
+      console.error('RA, Dec, Width, and Height are required!');
+      this.deleteFITS();
+    }
+  }
+
+
   updateFitsImage() {
+    this.zoomScale = this.zoomLevel / 100;
     this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2);
   }
 
-  
-  drawCircles(results: any[], scale: number, offsetX: number, offsetY: number): void {
-    const canvas = this.canvasRef.nativeElement;
-    const context = canvas.getContext('2d');
-    if (!context || !this.wcsInfo) {
-        console.error('Canvas context or WCS info is not initialized.');
-        return;
-    }
-
-    // Use WCS information from wcsInfo
-    const { crpix1, crpix2, crval1, crval2, cdelt1, cdelt2 } = this.wcsInfo;
-
-    // Convert slider offsets from degrees to pixels using WCS scale
-    const pixelXOffset = this.sliderXOffset / Math.abs(cdelt1); // Degrees to pixels (X-axis)
-    const pixelYOffset = this.sliderYOffset / Math.abs(cdelt2); // Degrees to pixels (Y-axis)
-
-    // Iterate through each source
-    results.forEach(source => {
-        let ra: number, dec: number;
-
-        // Determine coordinate system
-        if (this.rccords === 'equatorial') {
-            ra = source.ra;       // Equatorial coordinates
-            dec = source.dec;
-        } else if (this.rccords === 'galactic') {
-            ra = source.galLong;
-            dec = source.galLat;
-        } else {
-            console.error('Unknown coordinate system:', this.rccords);
-            return;
-        }
-
-        // Convert RA/Dec to pixel coordinates
-        const pixelX = ((ra - crval1) / cdelt1) + crpix1;
-        const pixelY = ((crval2 - dec) / cdelt2) + crpix2;
-
-        // Apply scaling and offsets (use pixel offsets from degrees!)
-        const scaledX = (pixelX + pixelXOffset) * scale + this.canvasXOffset; // Degrees applied
-        const scaledY = (pixelY - pixelYOffset) * scale + this.canvasYOffset; // Degrees applied
-
-        // Draw the circle
-        context.beginPath();
-        context.arc(
-            scaledX,
-            scaledY,
-            scale * 22, // Radius of the circle
-            0,
-            2 * Math.PI
-        );
-        context.strokeStyle = '#ffffff'; // Ring color
-        context.lineWidth = 2; // Ring thickness
-        context.stroke();
-        context.closePath();
-    });
-  }
 
 
   displayFitsImage(imageData: number[], width: number, height: number): void {
@@ -761,50 +776,6 @@ export class RadioSearchComponent implements AfterViewInit {
     );
 
     this.drawCircles(this.results, this.scale, this.sliderXOffset + this.canvasXOffset, this.sliderYOffset + this.canvasYOffset);
-  }
-
-
-  searchCatalog(): void {
-    if (this.rccords && this.ra && this.dec && this.width && this.height) {
-      this.service.fetchRadioCatalog(this.rccords, this.ra, this.dec, this.width, this.height).subscribe(
-        (response: any) => {
-          const results = response.objects.map((source: any) => ({
-            name: source.SIMBAD || 'Unknown',
-            id: source.id,
-            ra: source.ra,
-            dec: source.dec,
-            galLat: source.galLat,
-            galLong: source.galLong,
-            threeC: source.threeC || 'Unknown',
-          }));
-
-          const hidden_results = response.objects.map((source: any) => ({
-            name: source.SIMBAD || 'Unknown',
-            id: source.id || 'Unknown',
-            MHz38: source.MHz38 || 'Unknown',
-            MHz159: source.MHz159 || 'Unknown',
-            MHz178: source.MHz178 || 'Unknown',
-            MHz750: source.MHz750 || 'Unknown',
-            L1400: source.L || 'Unknown',
-            S2695: source.S || 'Unknown',
-            C5000: source.C || 'Unknown',
-            X8400: source.X || 'Unknown',
-          }));
-
-          this.dataSource.data = results;
-          this.results = results;
-          this.hiddenResults = hidden_results;
-          this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2); // Render image
-        },
-        (error: any) => {
-
-          this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2); // Render image
-        }
-      );
-    } else {
-      console.error('RA, Dec, Width, and Height are required!');
-      this.deleteFITS();
-    }
   }
 
 
@@ -958,16 +929,25 @@ export class RadioSearchComponent implements AfterViewInit {
 
     this.sliderXOffset = 0;
     this.sliderYOffset = 0;
+    this.canvasXOffset = 0;
+    this.canvasYOffset = 0;
+    this.scaledWidth = 0;
+    this.scaledHeight = 0;
+    this.scale = 1;
 
     this.naxis1 = 100;
     this.naxis2 = 100;
-    this.bitpix = undefined;
+    this.pixelOffset = 0;
 
     this.fitsLoaded = false;
     this.displayData = null;
     this.scaledData = undefined;
     this.maxValue = 0.5;
-    this.targetFreq = 0.002;
+    this.targetFreq = 1.5;
+    this.lowerFreq = 1.4;
+    this.upperFreq = 1.6;
+    this.zoomLevel = 100;
+    this.zoomScale = 1;
 
     this.dataSource = new MatTableDataSource<any>([]);  // Clear data source
     this.results = [];
@@ -983,56 +963,19 @@ export class RadioSearchComponent implements AfterViewInit {
   }
   
 
-  async downloadCanvas(): Promise<void> {
-    this.honorCodeService.honored().subscribe(async () => {
-        const canvas = this.canvas; // Reference the canvas element
-        if (!canvas) {
-            console.error('Canvas element not found!');
-            return;
-        }
+  saveCanvas() {
+    this.honorCodeService.honored().subscribe((name: string) => {
+      if (this.canvas) {
+        this.chartService.saveCanvasAsJpg(this.canvas, "radio-search", name);
+      }
+    })
+  }
 
-        // Check for File System Access API support
-        if ('showSaveFilePicker' in window) {
-            try {
-                // Open "Save As" dialog
-                const options = {
-                    types: [
-                        {
-                            description: 'PNG Image',
-                            accept: { 'image/png': ['.png'] },
-                        },
-                    ],
-                };
-                const fileHandle = await (window as any).showSaveFilePicker(options);
 
-                // Convert canvas to blob (PNG format)
-                const blob = await new Promise<Blob | null>((resolve) => {
-                    canvas.toBlob((blob) => resolve(blob), 'image/png');
-                });
-
-                if (blob) {
-                    const writable = await fileHandle.createWritable();
-                    await writable.write(blob); // Write to file
-                    await writable.close(); // Close file after writing
-                } else {
-                    console.error('Blob creation failed!');
-                }
-            } catch (error) {
-                console.error('Error during file save:', error);
-            }
-        } else {
-            console.warn('File System Access API not supported, using fallback');
-
-            // Fallback to traditional download
-            const image = canvas.toDataURL('image/png');
-            const downloadLink = document.createElement('a');
-            downloadLink.href = image;
-            downloadLink.download = `${this.fitsFileName!}_image_${getDateString()}.png`; // Add timestamp to filename
-            document.body.appendChild(downloadLink);
-            downloadLink.click();
-            document.body.removeChild(downloadLink);
-        }
-    });
+  saveGraph() {
+    this.honorCodeService.honored().subscribe((name: string) => {
+      this.chartService.saveImageHighChartOffline(this.hcservice.getHighChart(), "radio-search", name);
+    })
   }
 
 

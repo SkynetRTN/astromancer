@@ -3,175 +3,149 @@
 .page-container {
   display: flex;
   flex-direction: row;
-  height: calc(100vh - 10%);
-  padding: 2.5%;
+  height: 85vh;
+  padding: 2.5vw;
   box-sizing: border-box;
-  position: relative; /* Ensure that child elements can use absolute positioning */
-  overflow: hidden;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 .left-container-wrapper {
   display: flex;
   flex-direction: column;
   flex: 0 0 47.5%;
-  height: 100%;
-  margin-right: 2.5%;
+  width: 47.5%; 
+  height: 95%; 
+  min-width: 150px;
+  min-height: 400px;
+  margin-right: 2.5vw;
   position: relative;
-  overflow-y: auto; /* Allow vertical scrolling if content exceeds the height */
+  overflow-y: visible;
+  box-sizing: border-box;
 }
 
 .left-container {
-  position: absolute; /* Overlap the child containers */
-  top: 0;
-  left: 0;
+  display: flex;
   width: 100%;
-  height: 90%;
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box; /* Ensure padding and border are included in the size */
+  height: 95%; 
+  min-width: 150px;
+  min-height: 400px;
+  position: absolute;
+  box-sizing: border-box;
+}
+
+.coordinates,
+.ra-slider-container,
+.dec-slider-container,
+.max-slider-container,
+.zoom-slider-container {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  color: #ffffff;
+  padding: 1vh 1vw;
+  border-radius: 4px;
+  font-size: clamp(6px, 1vw, 20px);
+  z-index: 2;
+  white-space: nowrap;
 }
 
 .left-container:first-child {
-  z-index: 3; /* Upload container */
-  position: absolute;
-}
-
-.left-container:last-child {
-  z-index: 1; /* Canvas container */
+  z-index: 3;
   position: absolute;
 }
 
 .coordinates {
-  position: absolute; /* Positions the coordinates over the canvas */
-  bottom: 10px; /* Adjust the positioning as needed */
-  left: 10px; /* Adjust the positioning as needed */
-  background: rgba(0, 0, 0, 0.7); /* Semi-transparent background to stand out against the canvas */
-  color: #ffffff; /* Text color */
-  padding: 5px 10px; /* Padding around the text */
-  border-radius: 5px; /* Rounded corners */
-  font-size: 14px; /* Font size */
-  z-index: 2; /* Ensure it stays on top of the canvas */
+  bottom: 1vh;
+  left: 0.5vw;
+  width: 10vw;
+  justify-content: left;
+  font-size: clamp(5px, 1vw, 20px);
+}
+
+.ra-slider-container {
+  top: 1vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 68%;
+}
+
+.dec-slider-container {
+  left: -13vw; 
+  top: 40%;
+  transform: rotate(270deg) translateY(50%);
+  width: 60%;
+}
+
+.max-slider-container {
+  bottom: 1vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50%;
+}
+
+.zoom-slider-container {
+  right: -13vw;
+  top: 40%;
+  transform: rotate(270deg) translateY(-50%);
+  width: 60%;
+}
+
+.slider-container {
+  padding: 1vh 1vw;
+  border-radius: 6px;
+}
+
+.slider-container input[type="range"] {
+  position: absolute;
+  width: 13vw;
+  right: 5%;
+}
+
+.slider-container label {
+  width: 30%;
+  left: 0;
+  padding-right: 100%;
+  overflow-x: visible;
+}
+
+.slider-container input[type="range"]::-webkit-slider-thumb {
+  width: 5%;
+  height: 5%;
+}
+
+.slider-container input[type="range"]::-moz-range-thumb {
+  width: 5%;
+  height: 5%;
+}
+
+.ra-slider-container,
+.dec-slider-container,
+.max-slider-container,
+.zoom-slider-container {
+  @extend .slider-container; /* Apply common styles */
 }
 
 #fitsCanvas {
   border-style: solid;
-  border-width: 5px;  
-
-  width: 100%; // Set the canvas width as a percentage of the container.
-  height: 100%; // Set the canvas height as a percentage of the container.
+  border-width: 0.3vw;
+  width: 100%;
+  height: 100%;
 }
 
-.controls {
-  position: absolute; /* Stick to the bottom of the wrapper */
-  bottom: 0;
-  left: 0;
-  height: 10%; /* Take the bottom 10% of the wrapper */
-  width: 100%; /* Full width of the wrapper */
-  display: flex;
-  flex-direction: column; /* Ensure the sliders are laid out horizontally */
-  gap: 2px; /* Add space between the sliders */
-  justify-content: space-between; /* Distribute sliders evenly */
-  align-items: left; /* Vertically center the sliders */
-  padding: 2px;
-  background-color: #f1f1f1; /* Light background for the control area */
-  border-top: 1px solid #ccc; /* Optional border for separation */
-}
-
-.controls input[type="range"] {
-  flex-grow: 1; /* Make each slider take equal width */
-  max-width: 30%; /* Ensure sliders do not exceed a third of the width */
-}
-
-.ra-slider-container {
-  position: absolute; /* Positions the coordinates over the canvas */
-  top: 10px; /* Adjust the positioning as needed */
-  left: 26%; /* Adjust the positioning as needed */
-  background: rgba(0, 0, 0, 0.7); /* Semi-transparent background to stand out against the canvas */
-  color: #ffffff; /* Text color */
-  padding: 5px 10px; /* Padding around the text */
-  border-radius: 5px; /* Rounded corners */
-  font-size: 12px; /* Font size */
-  z-index: 2; /* Ensure it stays on top of the canvas */
-}
-
-.dec-slider-container {
-  position: absolute; /* Positions the coordinates over the canvas */
-  top: 45%; /* Adjust the positioning as needed */
-  left: -114px; /* Adjust the positioning as needed */
-  background: rgba(0, 0, 0, 0.7); /* Semi-transparent background to stand out against the canvas */
-  color: #ffffff; /* Text color */
-  padding: 5px 10px; /* Padding around the text */
-  border-radius: 5px; /* Rounded corners */
-  font-size: 12px; /* Font size */
-  transform: rotate(90deg) scaleY(-1) scaleX(-1);
-  z-index: 2; /* Ensure it stays on top of the canvas */
-}
-
-.max-slider-container {
-  position: absolute; /* Positions the container */
-  bottom: 10px; /* Adjust vertical positioning */
-  left: 32%; /* Adjust horizontal positioning */
-  width: 40%; /* Set a specific horizontal size */
-  display: flex; /* Use flexbox for horizontal alignment */
-  align-items: center; /* Vertically center label and slider */
-  justify-content: flex-start; /* Align items to the left */
-  background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
-  color: #ffffff; /* Text color */
-  padding: 5px 10px; /* Padding around the content */
-  border-radius: 5px; /* Rounded corners */
-  font-size: 12px; /* Font size */
-  z-index: 2; /* Ensure it stays on top of the canvas */
-}
-
-.zoom-slider-container {
-  position: absolute; /* Positions the coordinates over the canvas */
-  top: 45%; /* Adjust the positioning as needed */
-  right: -120px; /* Adjust the positioning as needed */
-  background: rgba(0, 0, 0, 0.7); /* Semi-transparent background to stand out against the canvas */
-  color: #ffffff; /* Text color */
-  padding: 5px 10px; /* Padding around the text */
-  border-radius: 5px; /* Rounded corners */
-  font-size: 12px; /* Font size */
-  transform: rotate(90deg) scaleY(-1) scaleX(-1);
-  z-index: 2; /* Ensure it stays on top of the canvas */
-}
-
-
-label {
-  width: 100px; /* Fixed width for label */
-  text-align: left; /* Align text to the left */
-  margin-right: 10px; /* Space between label and slider */
-}
-
-input[type="range"] {
-  // flex-grow: 1; /* Make the slider take available space */
-  max-width: 100%; /* Ensure the slider doesn't overflow */
-  margin: 0 10px; /* Add space around the slider */
-}
-
-.offset-sliders {
-  display: flex;
-  flex-direction: column; /* Ensure RA and Dec sliders are stacked vertically */
-}
-
-.max-value-slider {
-  margin-top: 10px; /* Add space above the max value slider */
-}
-
-.controls label {
-  margin-right: 10px; /* Adds space between label and slider */
-}
-
-.controls input[type="range"] {
-  flex: 1; /* Makes the sliders take the available space */
-  margin: 0 10px; /* Adds space around the sliders */
+.download-button-container,
+.delete-button-container {
+  position: absolute;
+  right: 0.5vw;
+  z-index: 2;
+  font-size: 1vw;
 }
 
 .download-button-container {
-  position: absolute; /* Position relative to the canvas */
-  bottom: 13px; /* Align it to the bottom, opposite the coordinates */
-  right: 10px; /* Align to the right side */
-  z-index: 2; /* Ensure it stays on top of the canvas */
+  bottom: 1vh;
 }
 
 .download-button-container button {
@@ -179,7 +153,7 @@ input[type="range"] {
   background-color: #4CAF50;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 3px;
   cursor: pointer;
 }
 
@@ -188,10 +162,7 @@ input[type="range"] {
 }
 
 .delete-button-container {
-  position: absolute; /* Position relative to the canvas */
-  bottom: 50px; /* Align it to the bottom, opposite the coordinates */
-  right: 10px; /* Align to the right side */
-  z-index: 2; /* Ensure it stays on top of the canvas */
+  bottom: 6vh;
 }
 
 .delete-button-container button {
@@ -199,7 +170,7 @@ input[type="range"] {
   background-color: #ef2b2b;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 2px;
   cursor: pointer;
 }
 
@@ -207,31 +178,44 @@ input[type="range"] {
   background-color: #b12d2d;
 }
 
+.download-button-container button,
+.delete-button-container button {
+  padding: 0.5vh 1vw;
+  border-radius: 2vh;
+}
+
+.button-container {
+  position: relative;
+  width: 130px;
+  height: auto;
+  font-size: 1vw;
+  left: 20vw;
+  padding-bottom: 15px;
+}
+
 .right-container {
   display: flex;
   flex-direction: column;
-  flex: 0 0 47.5%; /* Same width as the left container */
-  height: 100%;     /* Same height as the left container */
-  margin-left: 2.5%; /* Add margin to the left, instead of right */
+  flex-grow: 1;
+  width: 45%;
+  height: 100%; 
+  min-height: 400px;
+  margin-left: 2.5vw; 
   position: relative;
-  overflow-y: auto;  /* Allow vertical scrolling if content exceeds the height */
+  overflow-y: visible; 
 }
 
 .below-text {
-  margin-top: 10px; /* Adjust spacing between the chart and text */
   font-size: 14px; /* Adjust font size if needed */
-  color: #333; /* Optional: Customize text color */
+  padding-top: 2vh;
+  padding-bottom: 2vh;
+  color: var(--text-color); /* Optional: Customize text color */
 }
 
-.mat-elevation-z8 {
+.mat-elevation-z8 { 
   flex: 1; /* Allow it to grow within the right-container */
   overflow-y: auto; /* Ensure it can scroll */
   box-shadow: none;
-}
-
-.table-wrapper {
-  flex: 1; /* Ensure it fills available space */
-  overflow-y: auto; /* Ensure table can scroll when content overflows */
 }
 
 .drop-zone {
@@ -267,87 +251,12 @@ input[type="range"] {
   width: 100%;
 }
 
-.mat-header-cell {
-  position: sticky;
-  top: 0; /* Stick to the top of the container */
-  background-color: #f5f5f5; /* Ensure background doesn't scroll with content */
-  z-index: 1; /* Ensure header stays above table rows */
-}
-
-/* Apply space between header row and first row */
-.mat-header-row {
-  background-color: #f5f5f5; /* Customize header background color */
-  margin-bottom: 10px; /* Force margin-bottom between header and first row */
-  border-bottom: 2px solid #e0e0e0; /* Optional: Add border to visually separate the header */
-}
-
-/* Style for odd rows */
-.odd-row {
-  background-color: #ffffff; /* Background color for odd rows */
-}
-
-/* Style for even rows */
-.even-row {
-  background-color: #f0f0f0; /* Background color for even rows */
-}
-
-/* Hover effect for all rows */
-.mat-row:hover {
-  background-color: #d9edf7 !important; /* Lighter color on hover */
-}
-
-.bottom-left-info {
-  position: absolute;
-  bottom: 3%; /* Keep existing bottom margin */
-  left: 50%; /* Keep existing left margin */
-  background-color: #f5f5f5;
-  padding: 2.5%;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  width: 47%; /* Keep existing width */
-  font-size: 14px;
-  z-index: 1000; /* Ensure it stays on top of other elements */
-  
-  max-height: 30vh; /* Limit the height to 40% of the viewport */
-  overflow-y: auto; /* Enable vertical scrolling if content exceeds max height */
-}
-
-.bottom-left-info h4 {
-  margin: 0 0 10px 0;
-}
-
-.bottom-left-chart {
-  position: absolute;
-  bottom: 3%; /* Align similarly to the previous info container */
-  left: 50%; /* Align to the left just like the info container */
-  transform: translateX(-50%); /* Ensure it is centered horizontally */
-  width: 47%; /* Same width as the bottom-left-info container */
-  height: 40vh; /* Limit the height to 40% of the viewport */
-  padding: 0;
-  box-sizing: border-box; /* Ensure padding and borders are included in the width/height calculation */
-  z-index: 1000; /* Ensure the chart stays on top of other elements */
-}
-
-#chart-container {
-  width: 100%; /* Take full width of the bottom-left-chart container */
-  height: 100%; /* Take full height of the bottom-left-chart container */
-}
-
 .prompt-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   height: 100%;
   width: 100%;
-}
-
-.prompt {
-  display: flex;
-  z-index: 0;
-  text-align: center;
-  height: min-content;
-  width: max-content;
-  margin-top: 10px;
 }
 
 .shake {
@@ -440,6 +349,10 @@ input[type="range"] {
   :host .right-container {
     border-color: map_get($light-primary, 300);
   }
+
+  :host text {
+    color: black;
+  }
 }
 
 .DARK_THEME {
@@ -462,5 +375,9 @@ input[type="range"] {
 
   :host a {
     color: map_get($dark-primary, 400);
+  }
+
+  :host text {
+    color: white;
   }
 }

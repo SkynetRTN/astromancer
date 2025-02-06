@@ -8,14 +8,14 @@
     </ng-template>
     <app-pulsar-light-curve></app-pulsar-light-curve>
   </mat-tab>
-  <mat-tab>
+  <mat-tab [disabled]="lightCurveFormValid">
     <ng-template mat-tab-label>
       <mat-icon>scatter_plot</mat-icon>
       Periodogram
     </ng-template>
     <app-pulsar-periodogram></app-pulsar-periodogram>
   </mat-tab>
-  <mat-tab>
+  <mat-tab [disabled]="lightCurveFormValid">
     <ng-template mat-tab-label>
       <mat-icon>unfold_less</mat-icon>
       Period Folding

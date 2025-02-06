@@ -15,11 +15,11 @@ export class PulsarComponent implements OnDestroy {
 
   constructor(private service: PulsarService) {
 
-    // this.service.interface$.pipe(
-    //   takeUntil(this.destroy$)
-    // ).subscribe(() => {
-    //   this.lightCurveFormValid = this.service.getIsLightCurveOptionValid();
-    // });
+    this.service.interface$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      this.lightCurveFormValid = this.service.getIsLightCurveOptionValid();
+    });
   }
 
   ngOnDestroy(): void {

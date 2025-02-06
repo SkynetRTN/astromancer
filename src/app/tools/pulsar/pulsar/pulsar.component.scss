@@ -18,19 +18,19 @@ mat-tab-group {
 }
 
 @media screen and (max-width: 901px) {
-  .variable-form-horizontal {
+  .pulsar-form-horizontal {
     display: none;
   }
-  .variable-form-vertical {
+  .pulsar-form-vertical {
     display: block;
   }
 }
 
 @media screen and (min-width: 901px) {
-  .variable-form-horizontal {
+  .pulsar-form-horizontal {
     display: block;
   }
-  .variable-form-vertical {
+  .pulsar-form-vertical {
     display: none;
   }
 }

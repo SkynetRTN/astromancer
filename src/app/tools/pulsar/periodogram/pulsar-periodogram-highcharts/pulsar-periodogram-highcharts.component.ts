@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
-import * as Highcharts from 'highcharts';
-import { Subject, takeUntil } from 'rxjs';
-import { PulsarService } from '../../pulsar.service';
+import { AfterViewInit, Component, OnDestroy } from '@angular/core';
+import * as Highcharts from "highcharts";
+import { Subject, takeUntil } from "rxjs";
+import { PulsarService } from "../../pulsar.service";
 
 @Component({
   selector: 'app-pulsar-periodogram-highcharts',
@@ -13,64 +13,112 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
   updateFlag: boolean = true;
   chartConstructor: any = "chart";
   chartObject!: Highcharts.Chart;
-
   chartOptions: Highcharts.Options = {
     chart: {
       animation: false,
       styledMode: true,
     },
-    title: {
-      text: '' // Placeholder, dynamically updated
-    },
     legend: {
-      enabled: true,
+      align: 'center',
     },
     tooltip: {
       enabled: true,
       shared: false,
     },
     xAxis: {
-      title: {
-        text: '' // Placeholder, dynamically updated
-      },
+      type: 'logarithmic',
     },
-    yAxis: {
-      title: {
-        text: '' // Placeholder, dynamically updated
-      },
-    },
-    series: []
+    exporting: {
+      buttons: {
+        contextButton: {
+          enabled: false,
+        }
+      }
+    }
   };
-
   private destroy$: Subject<any> = new Subject<any>();
 
-  constructor(private pulsarService: PulsarService) {}
+  constructor(private service: PulsarService) {}
 
-  ngAfterViewInit(): void {
-    this.initializeChart();
+  ngAfterViewInit() {
+    this.setChartTitle();
+    this.setChartXAxis();
+    this.setChartYAxis();
+    this.setData();
+    this.updateChart();
 
-    // React to chart info updates
-    this.pulsarService.chartInfo$.pipe(
+    this.service.periodogramForm$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
-      this.updateChartOptions();
+      this.setChartTitle();
+      this.setChartXAxis();
+      this.setChartYAxis();
+      this.updateChart();
+    });
+    this.service.periodogramData$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      this.updateData();
+    });
+  }
+
+  chartInitialized($event: Highcharts.Chart) {
+    this.chartObject = $event;
+    this.service.setHighChartPeriodogram(this.chartObject);
+  }
+
+  /**
+   * Handles the initial creation of series from periodogram data.
+   */
+  setData() {
+    const periodogramData = this.service.getChartPeriodogramDataArray(
+      this.service.getPeriodogramStartPeriod(),
+      this.service.getPeriodogramEndPeriod()
+    );
+
+    // Process each periodogram data set and add two series for each
+    Object.entries(periodogramData).forEach(([key, data], index) => {
+      // Add the primary line series
+      this.chartObject.addSeries({
+        name: `Channel 1`,
+        data: data,
+        type: 'line',
+        marker: {
+          symbol: 'circle',
+          radius: 3,
+        }
+      });
+    });
+  }
+
+  /**
+   * Handles dynamic updates of the series data.
+   */
+  updateData() {
+    const periodogramData = this.service.getChartPeriodogramDataArray(
+      this.service.getPeriodogramStartPeriod(),
+      this.service.getPeriodogramEndPeriod()
+    );
+
+    // Iterate through each series, updating or adding if necessary
+    let seriesIndex = 0; // Tracks the current series index
+    Object.entries(periodogramData).forEach(([key, data]) => {
+      // Update the primary series
+      console.log(key)
+      if (this.chartObject.series.length > seriesIndex) {
+        this.chartObject.series[seriesIndex].update({
+          name: `Channel ${seriesIndex + 1}`,
+          data: data,
+          type: 'line',
+        });
+      }
+      seriesIndex++;
     });
 
-    // React to data updates
-    this.pulsarService.data$.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe((data) => {
-      console.log('Raw data:', data); // Debugging log
-    
-      // Filter out invalid data (null values)
-      const filteredData = data
-        .filter(item => item.frequency !== null && item.channel1 !== null) // Exclude null values
-        .map(item => ({ frequency: item.frequency!, channel1: item.channel1!,  channel2: item.channel2! })); // Assert non-null
-    
-      console.log('Filtered data:', filteredData); // Debugging log
-    
-      this.updateChartData(filteredData);
-    });
+    // Remove extra series if data has fewer series now
+    while (seriesIndex < this.chartObject.series.length) {
+      this.chartObject.series[this.chartObject.series.length - 1].remove();
+    }
   }
 
   ngOnDestroy(): void {
@@ -78,89 +126,23 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
     this.destroy$.complete();
   }
 
-  private initializeChart(): void {
-    // Use ViewChild to ensure the container exists before initializing
-    // this.chartObject = Highcharts.chart(this.chartContainer.nativeElement, this.chartOptions);
-    this.pulsarService.setHighChart(this.chartObject);
-
-    // Set initial options and data
-    this.updateChartOptions();
-
-    // Get initial data and update the chart
-    const initialData = this.pulsarService.getData()
-      .filter(item => item.frequency !== null && item.channel1 !== null) // Exclude null values
-      .map(item => ({ frequency: item.frequency!, channel1: item.channel1!, channel2: item.channel2! })); // Assert non-null values
-
-    this.updateChartData(initialData);
+  private updateChart(): void {
+    this.updateFlag = true;
   }
 
-  private updateChartOptions(): void {
-    // Update chart titles and axis labels from the service
-    this.chartObject.setTitle({ text: this.pulsarService.getChartTitle() });
-    this.chartObject.xAxis[0].setTitle({ text: this.pulsarService.getXAxisLabel() });
-    this.chartObject.yAxis[0].setTitle({ text: this.pulsarService.getYAxisLabel() });
+  private setChartTitle(): void {
+    this.chartOptions.title = { text: this.service.getPeriodogramTitle() };
   }
 
-  private updateChartData(data: { frequency: number, channel1: number, channel2: number }[]): void {
-    const chartData = data.map(item => [item.frequency, item.channel1]); // Main data
-    const calData = data.map(item => [item.frequency, item.channel2]); // Calibration data
-  
-    // Check if series exists before updating or adding
-    if (this.chartObject.series.length > 0) {
-      // Update first series for 'channel1'
-      this.chartObject.series[0].setData(chartData, true);
-  
-      // If the second series exists, update it
-      if (this.chartObject.series.length > 1) {
-        this.chartObject.series[1].setData(calData, true);
-      } else {
-        // Add the second series if it doesn't exist
-        this.chartObject.addSeries({
-          name: 'Channel 2', // Second series name
-          type: 'line',
-          data: calData,
-          marker: {
-            enabled: true,
-            radius: 2,
-            symbol: 'triangle', // Different marker for distinction
-          },
-          lineWidth: 1.5,
-        });
-      }
-    } else {
-      // If no series exists, create both series
-      this.chartObject.addSeries({
-        name: 'Channel 1', // First series name
-        type: 'line',
-        data: chartData,
-        marker: {
-          enabled: true,
-          radius: 2,
-          symbol: 'circle',
-        },
-        lineWidth: 1.5,
-      });
-  
-      this.chartObject.addSeries({
-        name: 'Channel 2', // Second series name
-        type: 'line',
-        data: calData,
-        marker: {
-          enabled: true,
-          radius: 2,
-          symbol: 'triangle',
-        },
-        lineWidth: 1.5,
-      });
-    }
-  }  
+  private setChartXAxis(): void {
+    this.chartOptions.xAxis = {
+      title: { text: this.service.getPeriodogramXAxisLabel() }
+    };
+  }
 
-  chartInitialized($event: Highcharts.Chart) {
-    this.chartObject = $event; // Use the instance passed from (chartInstance)
-    this.pulsarService.setHighChart(this.chartObject);
-  
-    // Set initial chart data
-    const initialData = this.pulsarService.resetData()
-    // this.updateChartData(initialData);
-  }  
+  private setChartYAxis(): void {
+    this.chartOptions.yAxis = {
+      title: { text: this.service.getPeriodogramYAxisLabel() }
+    };
+  }
 }

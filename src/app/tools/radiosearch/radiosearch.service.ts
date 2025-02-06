@@ -191,156 +191,173 @@ export class RadioSearchService {
   }
 
 
-public setSources(sources: Source[]) {
-  this.sources = [];
+  public setSources(sources: Source[]) {
+    this.sources = [];
 
-  // Loop through the provided sources and add them to the list
-  for (const source of sources) {
-      if (source.ra != null && source.dec != null) {
-          this.sources.push({
-              ra: source.ra,
-              dec: source.dec
-          });
+    // Loop through the provided sources and add them to the list
+    for (const source of sources) {
+        if (source.ra != null && source.dec != null) {
+            this.sources.push({
+                ra: source.ra,
+                dec: source.dec
+            });
+        }
+    }
+
+    // Notify any subscribers about the updated sources list
+    this.sourcesSubject.next(this.sources);
+  }
+
+
+  public getRadioCatalogResults(id: number | null): Observable<any> | void {
+  if (id !== null) {
+    // Return the Observable so you can subscribe to it outside this method
+    return this.http.get<any>(`${environment.apiUrl}/radiosearch/radio-catalog/query`, { 
+      params: { 'id': id.toString() }
+    }).pipe(
+      map((resp: any) => {
+        const sources: Source[] = resp['output_sources'];  // Extract sources from the response
+        this.setSources(sources);  // Set the sources in storage
+        return resp;  // Return the response or sources if needed
+      })
+    );
+  }
+  return;  // If id is null, return void
+  }
+
+
+  public getHeaderLength(buffer: ArrayBuffer): number {
+    const text = new TextDecoder().decode(buffer);
+    const cardSize = 80; // Each card is 80 bytes
+    const headerEndIndex = text.indexOf('END');
+
+    if (headerEndIndex === -1) {
+      throw new Error('Invalid FITS header: END card not found.');
+    }
+
+    const headerBytes = (headerEndIndex + cardSize); // Include the END card
+    return Math.ceil(headerBytes / 2880) * 2880; // Round up to nearest 2880 bytes
+  }
+
+
+  public unrollImage(pixelArray: number[], width: number, height: number, rollAmount: number): number[] {
+    const unrolledArray = new Array(width * height);
+
+    for (let y = 0; y < height; y++) {
+      const rowStart = y * width;
+      const rolledRow = pixelArray.slice(rowStart, rowStart + width); // Extract current row
+
+      // Unroll the row: Move the last `rollAmount` pixels to the start
+      const unrolledRow = [
+        ...rolledRow.slice(width - rollAmount), // The "cutoff" part
+        ...rolledRow.slice(0, width - rollAmount), // The remaining part
+      ];
+
+      // Place the unrolled row back in the array
+      unrolledArray.splice(rowStart, width, ...unrolledRow);
+    }
+
+    return unrolledArray;
+  }
+
+
+  fetchRadioCatalog(rccords: string, ra: number, dec: number, width: number, height: number): Observable<any> {
+    // Build the payload with RA, Dec, width, and height
+  const payload = {rccords, ra, dec, width, height };
+
+  return this.http.post(`${environment.apiUrl}/radiosearch/radio-catalog/query`, payload);
+  }
+
+
+  // Method to process and extract a frame from the FITS image
+  getFrame(
+    fitsImage: any,
+    frame: number,
+    callback: (arr: Float64Array, opts?: any) => void,
+    opts?: any
+    ): void {
+    const frameInfo = fitsImage.frameOffsets[frame];
+    if (!frameInfo) {
+      console.error(`Frame ${frame} not found in frameOffsets.`);
+      return;
+    }
+
+    const begin = frameInfo.begin;
+    const end = begin + fitsImage.frameLength;
+
+    if (end > fitsImage.buffer.byteLength) {
+      console.error('Attempting to access data beyond buffer limits.');
+      return;
+    }
+
+    const frameData = fitsImage.buffer.slice(begin, end);
+
+    // Check if the buffer length matches the expected frame size
+    const expectedByteLength = fitsImage.width * fitsImage.height * fitsImage.bytes;
+    if (frameData.byteLength !== expectedByteLength) {
+      console.error('Frame data length mismatch. Expected:', expectedByteLength, 'Got:', frameData.byteLength);
+      return;
+    }
+
+    try {
+      const pixelArray = new Float64Array(frameData);
+
+      // Apply BZERO and BSCALE if needed
+      for (let i = 0; i < pixelArray.length; i++) {
+        pixelArray[i] = fitsImage.bzero + fitsImage.bscale * pixelArray[i];
       }
+
+      // Call the callback with the processed data
+      callback(pixelArray, opts);
+    } catch (error) {
+      console.error('Error processing frame data:', error);
+    }
   }
 
-  // Notify any subscribers about the updated sources list
-  this.sourcesSubject.next(this.sources);
-}
+  // Utility function to convert FITS image data to ImageData format for display
+  public convertFitsToImageData(imageData: Float64Array, width: number, height: number): ImageData {
+    const imageDataArray = new Uint8ClampedArray(width * height * 4); // RGBA array
 
+    // Normalize and map the FITS data to the canvas data array
+    let min = Infinity;
+    let max = -Infinity;
 
-public getRadioCatalogResults(id: number | null): Observable<any> | void {
-if (id !== null) {
-  // Return the Observable so you can subscribe to it outside this method
-  return this.http.get<any>(`${environment.apiUrl}/radiosearch/radio-catalog/query`, { 
-    params: { 'id': id.toString() }
-  }).pipe(
-    map((resp: any) => {
-      const sources: Source[] = resp['output_sources'];  // Extract sources from the response
-      this.setSources(sources);  // Set the sources in storage
-      return resp;  // Return the response or sources if needed
-    })
-  );
-}
-return;  // If id is null, return void
-}
+    for (let i = 0; i < imageData.length; i++) {
+      if (imageData[i] < min) min = imageData[i];
+      if (imageData[i] > max) max = imageData[i];
+    }
 
+    for (let i = 0; i < imageData.length; i++) {
+      // Normalize the pixel value to 0-255 range
+      const normalizedValue = Math.floor(255 * (imageData[i] - min) / (max - min));
 
-public getHeaderLength(buffer: ArrayBuffer): number {
-  const text = new TextDecoder().decode(buffer);
-  const cardSize = 80; // Each card is 80 bytes
-  const headerEndIndex = text.indexOf('END');
+      // Set the RGBA values
+      const index = i * 4;
+      imageDataArray[index] = normalizedValue; // Red channel
+      imageDataArray[index + 1] = normalizedValue; // Green channel
+      imageDataArray[index + 2] = normalizedValue; // Blue channel
+      imageDataArray[index + 3] = 255; // Alpha channel (fully opaque)
+    }
 
-  if (headerEndIndex === -1) {
-    throw new Error('Invalid FITS header: END card not found.');
+    return new ImageData(imageDataArray, width, height);
   }
 
-  const headerBytes = (headerEndIndex + cardSize); // Include the END card
-  return Math.ceil(headerBytes / 2880) * 2880; // Round up to nearest 2880 bytes
-}
 
-public unrollImage(pixelArray: number[], width: number, height: number, rollAmount: number): number[] {
-  const unrolledArray = new Array(width * height);
-
-  for (let y = 0; y < height; y++) {
-    const rowStart = y * width;
-    const rolledRow = pixelArray.slice(rowStart, rowStart + width); // Extract current row
-
-    // Unroll the row: Move the last `rollAmount` pixels to the start
-    const unrolledRow = [
-      ...rolledRow.slice(width - rollAmount), // The "cutoff" part
-      ...rolledRow.slice(0, width - rollAmount), // The remaining part
-    ];
-
-    // Place the unrolled row back in the array
-    unrolledArray.splice(rowStart, width, ...unrolledRow);
+  // Helper functions for RA and Dec conversions
+  public convertToHMS(ra: number): string {
+    const hours = Math.floor(ra / 15);
+    const minutes = Math.floor((ra / 15 - hours) * 60);
+    const seconds = Math.round((((ra / 15 - hours) * 60 - minutes) * 60));
+    return `${hours}h ${minutes}m ${seconds}s`;
   }
 
-  return unrolledArray;
-}
 
-
-fetchRadioCatalog(rccords: string, ra: number, dec: number, width: number, height: number): Observable<any> {
-  // Build the payload with RA, Dec, width, and height
-const payload = {rccords, ra, dec, width, height };
-
-console.log('Payload being sent:', payload);  // Debugging
-
-// Use the environment.apiUrl variable with template strings (backticks)
-return this.http.post(`${environment.apiUrl}/radiosearch/radio-catalog/query`, payload);
-}
-
-// Method to process and extract a frame from the FITS image
-getFrame(
-fitsImage: any,
-frame: number,
-callback: (arr: Float64Array, opts?: any) => void,
-opts?: any
-): void {
-const frameInfo = fitsImage.frameOffsets[frame];
-if (!frameInfo) {
-  console.error(`Frame ${frame} not found in frameOffsets.`);
-  return;
-}
-
-const begin = frameInfo.begin;
-const end = begin + fitsImage.frameLength;
-
-if (end > fitsImage.buffer.byteLength) {
-  console.error('Attempting to access data beyond buffer limits.');
-  return;
-}
-
-const frameData = fitsImage.buffer.slice(begin, end);
-
-// Check if the buffer length matches the expected frame size
-const expectedByteLength = fitsImage.width * fitsImage.height * fitsImage.bytes;
-if (frameData.byteLength !== expectedByteLength) {
-  console.error('Frame data length mismatch. Expected:', expectedByteLength, 'Got:', frameData.byteLength);
-  return;
-}
-
-try {
-  const pixelArray = new Float64Array(frameData);
-
-  // Apply BZERO and BSCALE if needed
-  for (let i = 0; i < pixelArray.length; i++) {
-    pixelArray[i] = fitsImage.bzero + fitsImage.bscale * pixelArray[i];
-  }
-
-  // Call the callback with the processed data
-  callback(pixelArray, opts);
-} catch (error) {
-  console.error('Error processing frame data:', error);
-}
-}
-
-// Utility function to convert FITS image data to ImageData format for display
-convertFitsToImageData(imageData: Float64Array, width: number, height: number): ImageData {
-const imageDataArray = new Uint8ClampedArray(width * height * 4); // RGBA array
-
-// Normalize and map the FITS data to the canvas data array
-let min = Infinity;
-let max = -Infinity;
-
-for (let i = 0; i < imageData.length; i++) {
-  if (imageData[i] < min) min = imageData[i];
-  if (imageData[i] > max) max = imageData[i];
-}
-
-for (let i = 0; i < imageData.length; i++) {
-  // Normalize the pixel value to 0-255 range
-  const normalizedValue = Math.floor(255 * (imageData[i] - min) / (max - min));
-
-  // Set the RGBA values
-  const index = i * 4;
-  imageDataArray[index] = normalizedValue; // Red channel
-  imageDataArray[index + 1] = normalizedValue; // Green channel
-  imageDataArray[index + 2] = normalizedValue; // Blue channel
-  imageDataArray[index + 3] = 255; // Alpha channel (fully opaque)
-}
-
-return new ImageData(imageDataArray, width, height);
-}
-
+  public convertToDMS(dec: number): string {
+    const sign = dec < 0 ? "-" : "+";
+    const absDec = Math.abs(dec);
+    const degrees = Math.floor(absDec);
+    const arcminutes = Math.floor((absDec - degrees) * 60);
+    const arcseconds = Math.round((((absDec - degrees) * 60 - arcminutes) * 60));
+    return `${sign}${degrees}° ${arcminutes}' ${arcseconds}"`;
+  }  
 }

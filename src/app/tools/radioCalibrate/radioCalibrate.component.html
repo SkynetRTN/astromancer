@@ -1,0 +1,66 @@
+<div class="row tool-container" [formGroup]="formGroup">
+    <!-- First Column -->
+    <div class="col-6">
+        <div class="row entry">
+            <mat-form-field appearance="fill">
+                <mat-label>Source</mat-label>
+                <mat-select [formControlName]="'source'">
+                    <mat-option *ngFor="let count of sources" [value]="count">
+                        {{ count }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="row entry">
+            <mat-card class="input-button card" appearance="raised">
+                <mat-card-content class="content">
+                    <strong>Flux Density: </strong> {{ fluxDensity }} Jy
+                    <br>
+                    <strong>Effective Frequency: </strong> {{ effectiveFrequency }} MHz
+                </mat-card-content>
+            </mat-card>
+        </div>
+        <div class="row entry">
+            <a style="color: grey;" target="_blank" href="https://arxiv.org/abs/1704.00002">
+                Trotter, A. S, Reichart, D. E., Egger, R. E., et al. 1997, MNRAS, 469, 1299
+            </a>
+        </div>
+    </div>
+    <!-- Second Column -->
+    <div class="col-6">
+        <div class="row entry">
+            <mat-form-field appearance="fill">
+                <mat-label>Start Frequency (MHz)</mat-label>
+                <input matInput type="number" step="1" [formControlName]="'startFreq'">
+            </mat-form-field>
+        </div>
+        <div class="row entry">
+            <mat-form-field appearance="fill">
+                <mat-label>Stop Frequency (MHz)</mat-label>
+                <input matInput type="number" step="1" [formControlName]="'endFreq'">
+            </mat-form-field>
+        </div>
+        <div class="row entry">
+            <mat-form-field appearance="fill">
+                <mat-label>Date</mat-label>
+                <input matInput [matDatepicker]="picker" [formControlName]="'date'">
+                <mat-hint>MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+        </div>
+        <div class="row entry">
+            <button class="input-button" mat-raised-button color="primary" (click)="fitsUpload()"
+                    type="button">Upload Fits File
+                <input type="file" #fileInput (change)="onFileSelected($event)"
+                       style="display: none;">
+            </button>
+        </div>
+        <div class="row entry">
+            <button (click)="reset()"
+                    class="input-button" mat-raised-button color="warn" type="button">
+                Reset Default
+            </button>
+        </div>
+    </div>
+</div>

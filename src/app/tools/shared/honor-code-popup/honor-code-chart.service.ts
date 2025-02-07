@@ -81,7 +81,7 @@ export class HonorCodeChartService {
         }
     }
 
-    private saveCanvasAsJpg(canvas: HTMLCanvasElement, signature: string, chartType?: string): void {
+    public saveCanvasAsJpg(canvas: HTMLCanvasElement, signature: string, chartType?: string): void {
         this.saveCanvasTilesAsJpg([canvas], 1, signature, chartType);
     }
 

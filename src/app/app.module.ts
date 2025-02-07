@@ -30,6 +30,8 @@ import {RadioCalibrateModule} from "./tools/radioCalibrate/radioCalibrate.module
 import {RadioSearchModule} from './tools/radiosearch/radiosearch.module';
 import {RcModule} from "./tools/rc/rc.module";
 import {NgOptimizedImage} from "@angular/common";
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MatNativeDateModule} from "@angular/material/core";
 
 
 registerAllModules();
@@ -45,6 +47,7 @@ registerAllModules();
         MatSelectModule,
         ReactiveFormsModule,
         MatButtonModule,
+        MatNativeDateModule,
         HttpClientModule,
         MarkdownModule.forRoot({loader: HttpClientModule}),
         MatGridListModule,

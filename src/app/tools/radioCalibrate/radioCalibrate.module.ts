@@ -22,6 +22,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { AppRoutingModule } from '../../app-routing.module';
 import { AppComponent } from '../../app.component';
 import { MatOptionModule } from '@angular/material/core';
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MatCardModule} from "@angular/material/card";
 
 
 const routes: Routes = [
@@ -34,27 +36,27 @@ const routes: Routes = [
     ],
     imports: [
         CommonModule,
-            RouterModule.forChild(routes),
-            SimpleDataButtonModule,
-            SimpleGraphButtonModule,
-            InterfaceUtilModule,
-            HotTableModule,
-            HighchartsChartModule,
-            MatFormFieldModule,
-            MatInputModule,
-            MatTableModule,
-            MatIconModule, 
-            MatSortModule,
-            ReactiveFormsModule,
-            MatSliderModule,
-            FormsModule,
-            NgIf,
-            MatDialogModule,
-            MatButtonModule,
-            MatOptionModule,
-            MatSelectModule,
-
-
+        RouterModule.forChild(routes),
+        SimpleDataButtonModule,
+        SimpleGraphButtonModule,
+        InterfaceUtilModule,
+        HotTableModule,
+        HighchartsChartModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatTableModule,
+        MatIconModule,
+        MatSortModule,
+        ReactiveFormsModule,
+        MatSliderModule,
+        FormsModule,
+        NgIf,
+        MatDialogModule,
+        MatButtonModule,
+        MatOptionModule,
+        MatSelectModule,
+        MatDatepickerModule,
+        MatCardModule,
     ],
     exports: [RadioCalibrateComponent],
   })

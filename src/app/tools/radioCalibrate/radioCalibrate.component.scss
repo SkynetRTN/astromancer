@@ -1,15 +1,35 @@
-.container-row {
-  height: 80%;
-  padding: 20px 100px 20px 100px;
-  width: 100%;
+.col-6 {
+  height: min-content;
 }
 
-.entry {
-  padding: 10px 20% 10px 20%;
+@media screen and (max-width: 500px) {
+  .entry {
+    padding: 10px 20px;
+  }
+}
+
+@media screen and (max-width: 1441px) and (min-width: 500px) {
+  .entry {
+    padding: 10px 20%;
+  }
+}
+
+@media screen and (min-width: 1441px) {
+  .entry {
+    padding: 10px 25%;
+  }
 }
 
 .input-button {
   width: calc(100% - 24px);
   height: 100%;
   margin: 0 12px;
+}
+
+.card {
+  font-size: medium;
+}
+
+.content {
+  padding: 20px 5px;
 }

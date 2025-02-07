@@ -11,7 +11,7 @@ export interface RadioCalibrateInput {
     source: RadioCalibrateSources,
     startFreq: number,
     endFreq: number,
-    date: number, // years in decimal
+    date: Date,
 }
 
 export interface RadioCalibrateOutput {
@@ -53,7 +53,12 @@ export class RadioCalibrateData {
     }
 
     public setStorageObject(storageObject: RadioCalibrateStorageObject): void {
-        this.input = storageObject.input;
+        this.input= {
+            source: storageObject.input.source,
+            startFreq: storageObject.input.startFreq,
+            endFreq: storageObject.input.endFreq,
+            date: new Date(Date.parse(storageObject.input.date as unknown as string)),
+        }
         this.output = this.compute();
     }
 
@@ -63,14 +68,14 @@ export class RadioCalibrateData {
                 source: RadioCalibrateSources.CAS_A,
                 startFreq: 1355,
                 endFreq: 1435,
-                date: 2002.551,
+                date: new Date(2002, 6, 19),
             }
         };
     }
 
     // Compute the output and modify the fields of the output object
     private compute(): RadioCalibrateOutput {
-        if (this.input.startFreq >= this.input.endFreq || this.input.date < 2000 || this.input.startFreq < 0 || this.input.endFreq < 0) {
+        if (this.input.startFreq >= this.input.endFreq || this.input.date.getUTCFullYear() < 2000 || this.input.startFreq < 0 || this.input.endFreq < 0) {
             return {
                 flux: null,
                 fluxError: null,
@@ -97,7 +102,7 @@ export class RadioCalibrateData {
         let variencea_3 = 0
         let variencemnu_0 = 0
         let variencemdeltlog = 0
-        let t = this.input.date;
+        let t = this.input.date.getUTCFullYear() + this.input.date.getUTCMonth() / 12 + this.input.date.getUTCDate()/30;
 
         if (this.input.source == RadioCalibrateSources.CAS_A) {
             t_ref = 2006.9

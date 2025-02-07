@@ -294,7 +294,7 @@ export class RadioSearchComponent implements AfterViewInit {
       return `Glon: ${ra.toFixed(2)}°<br>Glat: ${dec.toFixed(2)}°`;
     } else {
       // Convert RA from hours:minutes:seconds to degrees
-      const raDegrees = ra * 15; // RA in hours to degrees
+      const raDegrees = ra; // RA in hours to degrees
       const raHMS = this.service.convertToHMS(raDegrees);
       const decDMS = this.service.convertToDMS(dec); // Convert Dec to degrees:arcminutes:arcseconds
       return `RA: ${raHMS}<br>Dec: ${decDMS}`;
@@ -469,12 +469,15 @@ export class RadioSearchComponent implements AfterViewInit {
           this.upperFreq = header.get('RCMAXFQ');
           this.targetFreq = ((this.lowerFreq + this.upperFreq) / 2)
   
+          console.log(header, dataUnit);
+
           if (!this.naxis1 || !this.naxis2 || !bitpix) {
             throw new Error('Invalid or missing header values (NAXIS1, NAXIS2, BITPIX).');
           }
   
           // Calculate data offset and pixel array size
-          const headerLength = this.service.getHeaderLength(arrayBuffer);
+          const headerLength = this.service.getHeaderLength(arrayBuffer) + 2880;
+          console.log('header lengt', headerLength);
           const dataOffset = headerLength;
           const bytesPerPixel = Math.abs(bitpix) / 8;
           const rowLength = this.naxis1 * bytesPerPixel;
@@ -543,30 +546,6 @@ export class RadioSearchComponent implements AfterViewInit {
           // Scale pixel values using BSCALE and BZERO
           this.scaledData = pixelArray.map((value) => (isNaN(value) ? 0 : bscale * value + bzero));
           this.fitsLoaded = true;
-
-          // Find and log widths with intensity sums of 0
-          for (let x = 0; x < this.naxis1; x++) {
-            let sum = 0;
-            for (let y = Math.floor(this.naxis2 * 0.2); y < Math.floor(this.naxis2 * 0.8); y++) {
-              const flippedY = this.naxis2 - y - 1;
-              const srcIndex = flippedY * this.naxis1 + x;
-              sum += this.scaledData[srcIndex];
-            }
-            if (sum === 0) {
-              this.pixelOffset = x;
-            }
-          }
-
-          // Adjust for any roll in the image data
-          const rollAmount = this.naxis1 - this.pixelOffset; // Adjust based on observation
-          const unrolledPixelArray = this.service.unrollImage(
-            Array.from(this.scaledData), 
-            this.naxis1, 
-            this.naxis2, 
-            rollAmount
-            );
-
-          this.scaledData = unrolledPixelArray;
   
           // Extract WCS (World Coordinate System) info
           this.wcsInfo = {
@@ -629,9 +608,9 @@ export class RadioSearchComponent implements AfterViewInit {
           this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2); // Render image
         },
         (error: any) => {
-
+          
           this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2); // Render image
-        }
+        } 
       );
     } else {
       console.error('RA, Dec, Width, and Height are required!');
@@ -698,12 +677,9 @@ export class RadioSearchComponent implements AfterViewInit {
         return Math.asinh(value); // Apply asinh transformation
     });
 
-    // Get the maximum transformed value for normalization
-    const maxTransformed = Math.max(...transformedData);
-
     // Normalize the transformed data to [0, 255]
     const normalizedData = transformedData.map((value) => {
-        return Math.floor((value / maxTransformed) * 255);
+        return Math.floor(value * 255);
     });
 
     const imageDataArray = new Uint8ClampedArray(width * height * 4);

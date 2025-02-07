@@ -51,9 +51,10 @@ export class RadioCalibrateComponent {
                     source: this.formGroup.value.source as RadioCalibrateSources,
                     startFreq: this.formGroup.value.startFreq as number,
                     endFreq: this.formGroup.value.endFreq as number,
-                    date: this.formGroup.value.date as number,
+                    date: this.formGroup.value.date as Date,
                 });
                 console.log(this.data.getInput());
+                console.log(this.data.getOutput());
                 this.storage.saveInterface(this.data.getStorageObject());
                 this.computeSubject.next();
             }
@@ -110,7 +111,7 @@ export class RadioCalibrateComponent {
                 this.formGroup.patchValue({
                     startFreq: startFQ,
                     endFreq: stopFQ,
-                    date: this.round(dateUTC.getUTCFullYear() + dateUTC.getUTCMonth() / 12 + dateUTC.getUTCDate() / 30, 3)
+                    date: dateUTC
                 });
             }
         });
@@ -134,14 +135,8 @@ export class RadioCalibrateComponent {
         const [date, time] = input.split(" ");
         const [year, month, day] = date.split("-");
         const [hour, min, sec] = time.split(":");
-        const utc: number = Date.UTC(parseInt(year), parseInt(month) - 1, parseInt(day), parseInt(hour), parseInt(min), parseInt(sec));
-        return new Date(utc);
-    }
-
-    round(value: number, digits: number): number {
-        return Math.round(value * Math.pow(10, digits)) / Math.pow(10, digits);
+        return new Date(Date.UTC(parseInt(year), parseInt(month) - 1, parseInt(day), parseInt(hour), parseInt(min), parseInt(sec)));
     }
 
     protected readonly RadioCalibrateSources = RadioCalibrateSources;
 }
-  

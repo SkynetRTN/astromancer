@@ -12,21 +12,28 @@ import {
   GravityInterface,
   GravityInterfaceImpl,
   StrainStorage,
-  SpectogramDataDict
+  SpectogramDataDict,
+  ModelDataDict,
+  ModelData
 } from "./gravity.service.util";
 
 import {MyData} from "../shared/data/data.interface";
 import {ChartInfo} from "../shared/charts/chart.interface";
 import { UpdateSource } from '../shared/data/utils';
+import { InterfaceService } from './gravity-interface.service';
 
 @Injectable()
 export class SpectogramService implements ChartInfo {
   private spectoData: SpectoData = new SpectoData();
+  private modelData: ModelData = new ModelData();
 
   private gravityChartInfo: StrainChartInfo = new StrainChartInfo();
 
-  private dataSubject: BehaviorSubject<SpectoData> = new BehaviorSubject<SpectoData>(this.spectoData);
-  public data$ = this.dataSubject.asObservable();
+  private spectogramSubject: BehaviorSubject<SpectoData> = new BehaviorSubject<SpectoData>(this.spectoData);
+  public spectogram$ = this.spectogramSubject.asObservable();
+  private modelSubject: BehaviorSubject<ModelData> = new BehaviorSubject<ModelData>(this.modelData);
+  public model$ = this.modelSubject.asObservable();
+
   private chartInfoSubject: BehaviorSubject<StrainChartInfo> = new BehaviorSubject<StrainChartInfo>(this.gravityChartInfo);
   public chartInfo$ = this.chartInfoSubject.asObservable();
 
@@ -34,8 +41,8 @@ export class SpectogramService implements ChartInfo {
 
   constructor() {
     this.spectoData.setData([{x: 0, y: 0, value: 0}]);
-  }
-  
+    this.modelData.setData([]);
+  } 
 
   /** ChartInfo Methods **/
 
@@ -67,7 +74,7 @@ export class SpectogramService implements ChartInfo {
   setDataLabel(data: string): void {
     this.gravityChartInfo.setDataLabel(data);
     this.chartInfoSubject.next(this.gravityChartInfo);
-    this.dataSubject.next(this.spectoData);
+    this.spectogramSubject.next(this.spectoData);
   }
 
   setStorageObject(storageObject: StrainChartInfoStorageObject): void {
@@ -97,22 +104,22 @@ export class SpectogramService implements ChartInfo {
 
   /** MyData Methods**/
 
-  getData(): SpectogramDataDict[] {
+  getSpectogram(): SpectogramDataDict[] {
     return this.spectoData.getData();
   }
 
-  getDataArray(): number[][] {
+  getSpectoArray(): number[][] {
     return this.spectoData.getDataArray();
   }
 
-  setData(data: SpectogramDataDict[]): void {
+  setSpecto(data: SpectogramDataDict[]): void {
     this.spectoData.setData(data);
-    this.dataSubject.next(this.spectoData);
+    this.spectogramSubject.next(this.spectoData);
   }
 
-  resetData(): void {
+  resetSpecto(): void {
     this.spectoData.setData(SpectoData.getDefaultData());
-    this.dataSubject.next(this.spectoData);
+    this.spectogramSubject.next(this.spectoData);
   }
 
   getColumnSize(): number {
@@ -121,6 +128,32 @@ export class SpectogramService implements ChartInfo {
 
   setColumnSize(size: number): void {
     this.spectoData.setColumnSize(size)
+  }
+
+  getModel(): ModelDataDict[] {
+    return this.modelData.getData();
+  }
+
+  getModelArray(): number[][] {
+    return this.modelData.getDataArray();
+  }
+
+  setModel(data: ModelDataDict[]): void {
+    this.modelData.setData(data);
+    this.modelSubject.next(this.modelData);
+  }
+
+  resetModel(): void {
+    this.modelData.setData(ModelData.getDefaultData());
+    this.modelSubject.next(this.modelData);
+  }
+
+  getSampleWidth(): number {
+    return this.modelData.getSampleWidth()
+  }
+
+  setSampleWidth(size: number): void {
+    this.modelData.setSampleWidth(size)
   }
   
 
@@ -131,5 +164,6 @@ export class SpectogramService implements ChartInfo {
   getHighChart(): Highcharts.Chart {
     return this.highChart;
   }
+
 
 }

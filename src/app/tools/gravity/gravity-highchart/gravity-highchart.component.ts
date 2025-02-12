@@ -67,6 +67,12 @@ export class GravityHighchartComponent implements AfterViewInit, OnDestroy {
       this.updateData();
       this.updateChart();
     });
+    this.service.model$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      this.updateData();
+      this.updateChart();
+    });
     this.service.chartInfo$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
@@ -86,25 +92,25 @@ export class GravityHighchartComponent implements AfterViewInit, OnDestroy {
     this.setData();
   }
 
+  // TODO: Split model and data setters
   setData() {
     this.chartObject.addSeries({
       name: "Model",
-      data: this.service.getDataArray()[0],
+      data: this.service.getModelDataArray(),
       type: 'line',
       lineWidth: 5,
       marker: {
-        enabled: false,
+        // enabled: false,
         symbol: 'circle',
         radius: 3,
       },
     });
     this.chartObject.addSeries({
-      boostThreshold: 5000,
       name: "Strain",
-      data: this.service.getDataArray()[1],
+      data: this.service.getDataArray(),
       type: 'line',
       marker: {
-        enabled: false,
+        // enabled: false,
         symbol: 'circle',
         radius: 3,
       },
@@ -113,24 +119,22 @@ export class GravityHighchartComponent implements AfterViewInit, OnDestroy {
 
   updateData() {
     this.chartObject.series[0].update({
-      boostThreshold: 5000,
       name: "Model",
-      data: this.service.getDataArray()[0],
+      data: this.service.getModelDataArray(),
       type: 'line',
       lineWidth: 5,
       marker: {
-        enabled: false,
+        // enabled: false,
         symbol: 'circle',
         radius: 3,
       },
     });
     this.chartObject.series[1].update({
-      boostThreshold: 5000,
       name: "Strain",
-      data: this.service.getDataArray()[1],
+      data: this.service.getDataArray().sort((a,b)=> a[0]-b[0]),
       type: 'line',
       marker: {
-        enabled: false,
+        // enabled: false,
         symbol: 'circle',
         radius: 3,
       },

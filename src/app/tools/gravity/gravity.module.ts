@@ -5,7 +5,7 @@ import {SimpleDataButtonModule} from "../shared/simple-data-button/simple-data-b
 import {SimpleGraphButtonModule} from "../shared/simple-graph-button/simple-graph-button.component";
 import {GravityTableComponent} from './gravity-table/gravity-table.component';
 import {HotTableModule} from "@handsontable/angular";
-import {GravityService as GravityService} from "./gravity.service";
+import {InterfaceService as InterfaceService} from "./gravity-interface.service";
 import {GravityFormComponent} from './gravity-form/gravity-form.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {InterfaceUtilModule} from "../shared/interface/util";
@@ -59,7 +59,7 @@ const routes: Routes = [
     MatButtonModule,
   ],
   exports: [GravityComponent, RouterModule, GravityHighchartComponent],
-  providers: [GravityService, SpectogramService, StrainService]
+  providers: [InterfaceService, SpectogramService, StrainService]
 })
 export class GravityModule {
 }

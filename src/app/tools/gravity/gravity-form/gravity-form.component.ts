@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {Subject, takeUntil} from "rxjs";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 
-import {GravityService} from "../gravity.service";
+import {InterfaceService} from "../gravity-interface.service";
 
 import {InputSliderValue} from "../../shared/interface/input-slider/input-slider.component";
 import { SpectogramService } from '../gravity-spectogram.service';
@@ -26,12 +26,13 @@ export class GravityFormComponent {
   protected inclinationSubject : Subject<number> = new Subject<number>();
 
   constructor(
-    private service: GravityService,
+    private service: InterfaceService,
     private spectogramService: SpectogramService
   ) {
   }
 
   onChange($event: InputSliderValue) {
+    console.log($event.value)
     switch($event.key)
     {
       case GravityModelParameters.MERGERTIME: this.service.setMergerTime($event.value); break;
@@ -40,16 +41,17 @@ export class GravityFormComponent {
       case GravityModelParameters.PHASESHIFT: this.service.setPhaseShift($event.value); break;
       case GravityModelParameters.DISTANCE: this.service.setDistance($event.value); break;
       case GravityModelParameters.INCLINATION: this.service.setInclination($event.value); break;
+      default: console.log("Bad interface event: " + $event.key);
     }
   }
 }
 
 
 enum GravityModelParameters {
-  MERGERTIME = 'mergertime',
-  TOTALMASS = 'totalmass',
-  MASSRATIO = 'massratio',
-  PHASESHIFT = 'phaseshift',
+  MERGERTIME = 'mergerTime',
+  TOTALMASS = 'totalMass',
+  MASSRATIO = 'massRatio',
+  PHASESHIFT = 'phaseShift',
   DISTANCE = 'distance',
   INCLINATION = 'inclination',
 }

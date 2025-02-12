@@ -3,14 +3,17 @@ import {ChartAction} from "../../shared/types/actions";
 import {HonorCodePopupService} from "../../shared/honor-code-popup/honor-code-popup.service";
 import {HonorCodeChartService} from "../../shared/honor-code-popup/honor-code-chart.service";
 import {MyFileParser} from "../../shared/data/FileParser/FileParser";
-import {Subject, takeUntil, withLatestFrom} from "rxjs";
-import {SpectogramDataDict, StrainDataDict} from "../gravity.service.util";
+import {debounce, debounceTime, Subject, takeUntil, withLatestFrom} from "rxjs";
+import {fitValuesToGrid, ModelDataDict, SpectogramDataDict, StrainDataDict} from "../gravity.service.util";
 import {FileType} from "../../shared/data/FileParser/FileParser.util";
 import {MatDialog} from "@angular/material/dialog";
 import {GravityChartFormComponent} from "../gravity-chart-form/gravity-chart-form.component";
 import { HttpClient } from '@angular/common/http';
 import { StrainService } from '../gravity-strain.service';
 import { SpectogramService } from '../gravity-spectogram.service';
+import { InterfaceService } from '../gravity-interface.service';
+import { UpdateSource } from '../../shared/data/utils';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-gravity',
@@ -26,11 +29,13 @@ export class GravityComponent implements OnDestroy {
   constructor(
     private strainService: StrainService,
     private spectogramService: SpectogramService,
+    private interfaceService: InterfaceService,
     private http: HttpClient,
     private honorCodeService: HonorCodePopupService,
     private chartService: HonorCodeChartService,
     private dialog: MatDialog) {
       
+      //File upload
       this.fileParser = new MyFileParser(FileType.GWF,
         [], undefined, http);
 
@@ -63,7 +68,7 @@ export class GravityComponent implements OnDestroy {
           let frequencies = data[1].frequencies
 
           strain.map((p: number[]) => {
-            strainResult.push({Time: p[0], Strain: p[1], Model: 0})
+            strainResult.push({Time: p[0], Strain: p[1]})
           })
           this.strainService.setData(strainResult);
 
@@ -71,7 +76,7 @@ export class GravityComponent implements OnDestroy {
           spectogram.forEach( (y, i) => y.forEach( (value, j) => { 
             spectogramResult.push({x: i*dx, y: j, value: value })
           } ) )
-          this.spectogramService.setData(spectogramResult)
+          this.spectogramService.setSpecto(spectogramResult)
         });
 
   }

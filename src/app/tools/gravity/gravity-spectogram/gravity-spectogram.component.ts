@@ -75,12 +75,19 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.initChartSeries();
-    this.service.data$.pipe(
+    this.service.spectogram$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
       this.updateData();
       this.updateChart();
     });
+    this.service.model$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      this.updateData();
+      this.updateChart();
+    });
+
     this.service.chartInfo$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
@@ -105,6 +112,7 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
     this.chartObject.addSeries({
       name: "Model",
       data: [],
+      yAxis: 0,
       zIndex: 1,
       type: 'area',
       marker: {
@@ -114,7 +122,7 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
     //Lower
     this.chartObject.addSeries({
       name: "Model",
-      data: [],
+      data: this.service.getModelArray(),
       zIndex: 1,
       type: 'area',
       marker: {
@@ -125,8 +133,8 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
     this.chartObject.addSeries({
       boostThreshold: 5000,
       name: "Spectrum",
-      data: this.service.getDataArray(),
-      yAxis: 0,
+      data: this.service.getSpectoArray(),
+      yAxis:1,
       zIndex: 0,
       interpolation: true,
       type: 'heatmap',
@@ -137,6 +145,7 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
     this.chartObject.series[0].update({
       name: "Model",
       data: [],
+      yAxis: 0,
       zIndex: 1,
       type: 'area',
       marker: {
@@ -145,7 +154,7 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
     });
     this.chartObject.series[1].update({
       name: "Model",
-      data: [],
+      data: this.service.getModelArray(),
       yAxis: 0,
       zIndex: 1,
       type: 'area',
@@ -157,7 +166,8 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
       boostThreshold: 5000,
       name: "Spectrum",
       colsize: this.service.getColumnSize(),
-      data: this.service.getDataArray(),
+      data: this.service.getSpectoArray(),
+      yAxis:1,
       zIndex: 0,
       interpolation: true,
       type: 'heatmap',
@@ -179,11 +189,18 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
   }
 
   private setChartYAxis(): void {
-    this.chartOptions.yAxis = {
+    this.chartOptions.yAxis = [
+      //Logarithmic axis
+      {
       title: {text: this.service.getYAxisLabel()},
-
       endOnTick: false
-    };
+      },
+      //Linear axis
+      {
+        visible: false,
+        endOnTick: false
+      }
+    ]
   }
 
 }

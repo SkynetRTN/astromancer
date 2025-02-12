@@ -1,13 +1,13 @@
 import {TestBed} from '@angular/core/testing';
 
-import {GravityService} from './gravity.service';
+import {InterfaceService} from './gravity-interface.service';
 
 describe('GravityService', () => {
-  let service: GravityService;
+  let service: InterfaceService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(GravityService);
+    service = TestBed.inject(InterfaceService);
   });
 
   it('should be created', () => {

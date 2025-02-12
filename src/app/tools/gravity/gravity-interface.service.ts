@@ -17,15 +17,23 @@ import {MyData} from "../shared/data/data.interface";
 import {ChartInfo} from "../shared/charts/chart.interface";
 import { UpdateSource } from '../shared/data/utils';
 
+/**
+ * @remarks Service for interface activity
+ * @member { Observable<UpdateSource> } serverParameters$ - interface change that requires a request to the server
+ * @member { Observable<UpdateSource> } strainParameters$ - interface change that affects the strain vs time graph
+ */
 @Injectable()
-export class GravityService implements GravityInterface{
+export class InterfaceService implements GravityInterface{
   private strainData: StrainData = new StrainData();
-
+  
   private gravityInterface: GravityInterfaceImpl = new GravityInterfaceImpl();
   private gravityStorage: StrainStorage = new StrainStorage();
 
-  private interfaceSubject: BehaviorSubject<UpdateSource> = new BehaviorSubject<UpdateSource>(UpdateSource.INIT);
-  public interface$ = this.interfaceSubject.asObservable();
+  private serverParameterSubject: BehaviorSubject<UpdateSource> = new BehaviorSubject<UpdateSource>(UpdateSource.INIT);
+  public serverParameters$ = this.serverParameterSubject.asObservable();
+
+  private strainParameterSubject: BehaviorSubject<UpdateSource> = new BehaviorSubject<UpdateSource>(UpdateSource.INIT);
+  public strainParameters$ = this.strainParameterSubject.asObservable();
 
   constructor() {
     this.strainData.setData(this.gravityStorage.getData());
@@ -60,23 +68,27 @@ export class GravityService implements GravityInterface{
   resetInterface(): void {
     this.gravityInterface.resetInterface();
     this.gravityStorage.resetInterface();
-    this.interfaceSubject.next(UpdateSource.RESET);
+    this.serverParameterSubject.next(UpdateSource.RESET);
   }
 
   setMergerTime(mergerTime: number): void {
     this.gravityInterface.setMergerTime(mergerTime);
+    this.strainParameterSubject.next(UpdateSource.INTERFACE)
   }
 
   setTotalMass(totalMass: number): void {
     this.gravityInterface.setTotalMass(totalMass);
+    this.serverParameterSubject.next(UpdateSource.INTERFACE);
   }
 
   setMassRatio(massRatio: number): void {
     this.gravityInterface.setMassRatio(massRatio);
+    this.serverParameterSubject.next(UpdateSource.INTERFACE);
   }
 
   setPhaseShift(phaseShift: number): void {
     this.gravityInterface.setPhaseShift(phaseShift);
+    this.serverParameterSubject.next(UpdateSource.INTERFACE);
   }
 
   setDistance(distance: number): void {

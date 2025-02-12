@@ -16,7 +16,7 @@ import { StrainService } from '../gravity-strain.service';
 export class GravityTableComponent implements AfterViewInit, OnDestroy {
   id: string = "gravity-table";
   table: MyTable = new GravityTable(this.id);
-  colNames: string[] = ["Wavelength", "Model", "Strain"];
+  colNames: string[] = ["Time","Strain"];
   dataSet: StrainDataDict[];
   private destroy$: Subject<void> = new Subject<void>();
 
@@ -62,7 +62,6 @@ export class GravityTableComponent implements AfterViewInit, OnDestroy {
         return {
           Time: row.Time ? parseFloat(row.Time.toFixed(4)) : row.Time,
           Strain: row.Strain ? parseFloat(row.Strain.toFixed(2)) : row.Strain,
-          Model: row.Model ? parseFloat(row.Model.toFixed(2)) : row.Model,
         }
       }
     );

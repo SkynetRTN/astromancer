@@ -1,7 +1,8 @@
 import {MyData} from "../shared/data/data.interface";
 import {MyStorage} from "../shared/storage/storage.interface";
 import {ChartInfo} from "../shared/charts/chart.interface";
-import {dummyStrainData} from "./default-data/chart-gravity-dummydata";
+import {dummyStrainData} from "./constants/chart-gravity-dummydata";
+import { ratioMassLogSpace as massRatioLogSpaceStrain, phaseList, totalMassLogSpaceStrain } from "./constants/model-grid";
 
 export enum GravityChart
 {
@@ -12,18 +13,26 @@ export enum GravityChart
 export interface StrainDataDict {
   Time: number | null;
   Strain: number | null;
-  Model: number | null;
 }
 export interface SpectogramDataDict {
   x: number | null;
   y: number | null;
   value: number | null;
 }
+export interface ModelDataDict {
+  Time: number | null
+  Frequency: number | null
+}
 
+//For the spectogram
+/**
+ * @remarks Represents heatmap data for the spectogram
+ * @implements {MyData}
+ */
 export class SpectoData implements MyData {
   private dataDict: SpectogramDataDict[];
   private columnSize: number;
-
+  
   constructor() {
     this.dataDict = [];
     this.columnSize = 1;
@@ -73,25 +82,97 @@ export class SpectoData implements MyData {
   }
 }
 
-export class StrainData implements MyData {
-  private dataDict: StrainDataDict[];
+/**
+ * @remarks Represents the frequency curve ploted over the spectogram
+ * @implements {MyData}
+ */
+export class ModelData implements MyData{
+  private dataDict: ModelDataDict[];
+  //May be obsolete
+  private sampleWidth: number;
 
   constructor() {
-    this.dataDict = StrainData.getDefaultData();
+    this.dataDict = [];
+    this.sampleWidth = 1;
   }
 
-
-  public static getDefaultData(): StrainDataDict[] {
-    return dummyStrainData;
+  public static getDefaultData(): ModelDataDict[] {
+    return [];
   }
 
   addRow(index: number, amount: number): void {
     if (index > 0) {
       for (let i = 0; i < amount; i++) {
-        this.dataDict.splice(index + i, 0, {Time: null, Strain: null, Model: null},);
+        this.dataDict.splice(index + i, 0, {Time: null, Frequency: null});
       }
     } else {
-      this.dataDict.push({Time: null, Strain: null, Model: null},);
+      this.dataDict.push({Time: null, Frequency: null});
+    }
+  }
+
+  getData(): ModelDataDict[] {
+    return this.dataDict;
+  }
+
+  getSampleWidth(): number {
+    return this.sampleWidth
+  }
+  
+  getDataArray(): number[][] {
+    let data: number[][] = [[]]
+    this.dataDict.forEach((value) => {
+      if(value.Time == null || value.Frequency == null ) return;
+      data.push([value.Time, value.Frequency])
+    })
+    return data; 
+  }
+
+  removeRow(index: number, amount: number): void {
+    this.dataDict = this.dataDict.slice(0, index).concat(this.dataDict.slice(index + amount));
+  }
+
+  setData(data: ModelDataDict[]): void {
+    this.dataDict = data;
+  }
+
+  setSampleWidth(width: number): void {
+    this.sampleWidth = width;
+  }
+}
+
+/**
+ * @remarks Represents a strain waveform
+ * @implements {MyData}
+ */
+export class StrainData implements MyData {
+  private dataDict: StrainDataDict[];
+
+  //There is likely a more elegent solugtion that uses polymorphism.
+  constructor(private isModel: Boolean = false) {
+    this.dataDict = isModel?StrainData.getDefaultModel():StrainData.getDefaultData();
+  }
+
+  public static getDefaultData(): StrainDataDict[] 
+  {
+    return dummyStrainData.map((e) => {
+      return {'Time': e.Time, 'Strain': e.Strain}
+    });
+  }
+
+  public static getDefaultModel(): StrainDataDict[] 
+  {
+    return dummyStrainData.map((e) => {
+      return {'Time': e.Time, 'Strain': e.Model}
+    });
+  }
+
+  addRow(index: number, amount: number): void {
+    if (index > 0) {
+      for (let i = 0; i < amount; i++) {
+        this.dataDict.splice(index + i, 0, {Time: null, Strain: null},);
+      }
+    } else {
+      this.dataDict.push({Time: null, Strain: null},);
     }
   }
 
@@ -99,21 +180,12 @@ export class StrainData implements MyData {
     return this.dataDict;
   }
 
-  getDataArray(): number[][][] {
-    return [
-      this.dataDict.filter(
+  getDataArray(): number[][] {
+    return this.dataDict.filter(
         (GravityDataDict: StrainDataDict) => {
-          return GravityDataDict.Time !== null
-            && GravityDataDict.Model !== null;
+          return GravityDataDict.Time !== null;
         }
-      ).map((entry: StrainDataDict) => [entry.Time, entry.Model]) as number[][],
-      this.dataDict.filter(
-        (gravityDataDict: StrainDataDict) => {
-          return gravityDataDict.Time !== null
-            && gravityDataDict.Strain !== null;
-        }
-      ).map((entry: StrainDataDict) => [entry.Time, entry.Strain]) as number[][],
-    ]
+      ).map((entry: StrainDataDict) => [entry.Time, entry.Strain]) as number[][]
   }
 
   removeRow(index: number, amount: number): void {
@@ -396,4 +468,41 @@ export class StrainStorage implements MyStorage {
     localStorage.setItem(StrainStorage.interfaceKey, JSON.stringify(interfaceInfo));
   }
 
+}
+
+/**
+ * @remarks Models are generated for specific input values. This function finds the values of the closest extant model for the provided values.
+ * @param totalMass Total mass of the two objects
+ * @param massRatio Ratio of mass between the objects
+ * @param phase  Angle of the plane of the merger against out view? I'm still not sure.
+ * @returns Valid values in a generic object for a server request
+ */
+export function fitValuesToGrid(totalMass: number, massRatio: number, phase: number) {
+
+  // Fitting the sliders to each logspace
+
+  let roundedMassRatio = approx(massRatio, massRatioLogSpaceStrain)
+  let roundedTotalMass = approx(totalMass, totalMassLogSpaceStrain)
+  let roundedPhase     = approx(phase, phaseList)
+
+  return {'total_mass': roundedTotalMass, 'mass_ratio': roundedMassRatio, 'phase': roundedPhase}
+
+  // returns the element of array closest to value (if array is presorted, which it is)
+  function approx(value: number, array: number[]): number
+  {
+    // Case: value is greater than every element. Result: if-statement never runs, roundedValue is left as the greatest element.
+    let roundedValue = array[array.length-1]
+
+    for (let i = 0; i < array.length - 1; i++) {
+      let low = array[i], high = array[i+1]
+      if(high > value)
+      {
+        // Case: value is below the first element in array. Result: if-statement runs on first loop, high>low, so low (the first element in array) is returned.
+        roundedValue = (value-low < value-high)?low:high
+        break
+      }
+    }
+
+    return roundedValue
+  }
 }

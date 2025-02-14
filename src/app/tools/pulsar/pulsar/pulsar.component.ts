@@ -10,16 +10,18 @@ import {Subject, takeUntil} from "rxjs";
 export class PulsarComponent implements OnDestroy {
   lightCurveFormValid: boolean = false;
   pulsarTabindex: number = 0;
-  // this.pulsarTabindex = this.service.getTabIndex();
   private destroy$: Subject<void> = new Subject<void>();
 
   constructor(private service: PulsarService) {
 
-    // this.service.interface$.pipe(
-    //   takeUntil(this.destroy$)
-    // ).subscribe(() => {
-    //   this.lightCurveFormValid = this.service.getIsLightCurveOptionValid();
-    // });
+     this.service.lightCurveOptionValid$.pipe(
+       takeUntil(this.destroy$)
+     ).subscribe(() => {
+      console.log("tab index changed");
+      this.lightCurveFormValid = this.service.getIsLightCurveOptionValid();
+      if (this.lightCurveFormValid){ this.pulsarTabindex = 2;}
+      
+     });
   }
 
   ngOnDestroy(): void {

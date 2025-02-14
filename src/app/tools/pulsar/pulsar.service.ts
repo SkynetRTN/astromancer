@@ -71,18 +71,6 @@ export class PulsarService implements MyData {
         return this.chartInfo.getYAxisLabel();
     }
 
-    public getLCChartTitle(): string {
-        return this.chartInfo.getChartTitle();
-    }
-
-    public getLCXAxisLabel(): string {
-        return this.chartInfo.getXAxisLabel();
-    }
-
-    public getLCYAxisLabel(): string {
-        return this.chartInfo.getYAxisLabel();
-    }
-
     public getDataLabel(): string {
         return this.chartInfo.getDataLabel();
     }

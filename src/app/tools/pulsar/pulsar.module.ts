@@ -5,7 +5,7 @@ import {MatStepperModule} from "@angular/material/stepper";
 import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
 import {MatTabsModule} from "@angular/material/tabs";
-import {PulsarLightCurveComponent} from './light-curve/pulsar-light-curve.component';
+import {PulsarLightCurveComponent} from './light-curve/pulsar-light-curve/pulsar-light-curve.component';
 import {SimpleDataButtonModule} from "../shared/simple-data-button/simple-data-button.component";
 import {SimpleGraphButtonModule} from "../shared/simple-graph-button/simple-graph-button.component";
 import {PulsarService} from "./pulsar.service";
@@ -14,9 +14,9 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatInputModule} from "@angular/material/input";
 import {MatOptionModule} from "@angular/material/core";
 import {MatSelectModule} from "@angular/material/select";
-// import {
-//   PulsarLightCurveHighchartComponent
-// } from './light-curve/pulsar-light-curve-highchart/pulsar-light-curve-highchart.component';
+import { PulsarLightCurveHighchartComponent } from './light-curve/pulsar-light-curve-highchart/pulsar-light-curve-highchart.component';
+import { PulsarTableComponent } from './light-curve/pulsar-table/pulsar-table.component';
+import { PulsarLightCurveFormComponent } from './light-curve/pulsar-light-curve-form/pulsar-light-curve-form.component';
 import {HighchartsChartModule} from "highcharts-angular";
 import {PulsarPeriodogramComponent} from './periodogram/pulsar-periodogram.component';
 import {
@@ -32,6 +32,11 @@ import {InterfaceUtilModule} from "../shared/interface/util";
 import {RouterModule, Routes} from "@angular/router";
 import {MatDialogModule} from "@angular/material/dialog";
 
+import { MatFormFieldModule } from '@angular/material/form-field';
+
+import { PulsarLightCurveChartFormComponent } from './light-curve/pulsar-light-curve-chart-form/pulsar-light-curve-chart-form.component';
+
+
 const routes: Routes = [
   {path: '', component: PulsarComponent, title: 'Pulsar'}
 ];
@@ -40,7 +45,10 @@ const routes: Routes = [
   declarations: [
     PulsarComponent,
     PulsarLightCurveComponent,
-    // PulsarLightCurveHighchartComponent,
+    PulsarLightCurveHighchartComponent,
+    PulsarTableComponent,
+    PulsarLightCurveFormComponent,
+    PulsarLightCurveChartFormComponent,
     PulsarPeriodogramComponent,
     PulsarPeriodogramHighchartsComponent,
     PulsarPeriodFoldingComponent,
@@ -64,6 +72,7 @@ const routes: Routes = [
     HighchartsChartModule,
     InterfaceUtilModule,
     MatDialogModule,
+    MatFormFieldModule,
   ],
   exports: [PulsarComponent, RouterModule],
   providers: [PulsarService],

@@ -14,10 +14,67 @@ export interface PulsarDataSeries {
   data: PulsarDataDict[];     // Data points for the series
 }
 
+
 export interface PulsarChartInfoStorageObject {
   chartTitle: string;
   frequencyLabel: string;
   channel1Label: string;
+}
+
+export interface PulsarInterface {
+  getbackScale(): number;
+
+  setbackScale(magnitude: number): void;
+
+  getIsLightCurveOptionValid(): boolean;
+}
+
+export interface PulsarInterfaceStorageObject {
+  backScale: number;
+}
+
+export class PulsarInterfaceImpl implements PulsarInterface {
+  private backScale: number = 3;
+  private LightCurveOptionValid: boolean;
+
+  constructor() {
+    this.backScale = this.getbackScale();
+    this.LightCurveOptionValid = true;
+  }
+/*
+  public static getDefaultInterface(): PulsarInterfaceStorageObject {
+    return {
+      backScale: 2,
+    };
+  }
+*/
+  getStorageObject(): PulsarInterfaceStorageObject {
+    return {
+      backScale: this.backScale,
+    };
+  }
+
+  setStorageObject(storageObject: PulsarInterfaceStorageObject): void {
+    this.backScale = storageObject.backScale;
+  }
+
+
+
+  getbackScale(): number {
+    return this.backScale;
+  }
+
+  setbackScale(magnitude: number): void {
+    this.backScale = magnitude;
+  }
+
+  getIsLightCurveOptionValid(): boolean {
+    return this.LightCurveOptionValid;
+  }
+
+  setLightCurveOptionValid(Valid: boolean): void {
+    this.LightCurveOptionValid = Valid;
+  }
 }
 
 // Class managing chart information
@@ -86,6 +143,7 @@ export class PulsarChartInfo implements ChartInfo {
     this.channel1Label = storageObject.channel1Label;
   }
 }
+
 
 // Class for managing data
 export class PulsarData implements MyData {

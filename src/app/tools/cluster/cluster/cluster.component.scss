@@ -1,0 +1,17 @@
+
+.loading-block {
+    position: absolute;
+    top: 64px;
+    z-index: 2;
+    display: block;
+    width: 100%;
+    height: calc(100% - 64px);
+
+    background-color: rgba(169,169,169, 0.8);
+}
+
+.wait-spinner {
+    top: calc(50% - 128px);
+    left: calc(50% - 64px);
+    opacity: 1;
+}

@@ -17,6 +17,8 @@ export class ClusterService {
     tabIndex$ = this.tabIndexSubject.asObservable();
     private resetSubject: Subject<void> = new Subject<void>();
     reset$ = this.resetSubject.asObservable();
+    private loadingSubject: Subject<boolean> = new BehaviorSubject<boolean>(false);
+    loading$ = this.loadingSubject.asObservable();
 
     constructor(
         private dataService: ClusterDataService,
@@ -80,5 +82,9 @@ export class ClusterService {
 
     getTabIndex(): number {
         return this.storageService.getTabIndex();
+    }
+
+    setLoading(loading: boolean) {
+        this.loadingSubject.next(loading);
     }
 }

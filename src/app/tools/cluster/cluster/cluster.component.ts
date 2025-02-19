@@ -1,4 +1,5 @@
 import {Component} from '@angular/core';
+import {ClusterService} from "../cluster.service";
 
 @Component({
   selector: 'app-cluster',
@@ -6,5 +7,6 @@ import {Component} from '@angular/core';
   styleUrls: ['./cluster.component.scss', '../../shared/interface/tools.scss']
 })
 export class ClusterComponent {
-
+    constructor(public service: ClusterService) {
+    }
 }

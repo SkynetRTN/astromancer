@@ -159,27 +159,26 @@ export class ResultSummaryComponent {
         });
     }
 
-    downloadPlotData() {
-        this.honorCodeService.honored().subscribe(() => {
-            const name = this.service.getClusterName();
-            const plotConfig = this.isochroneService.getPlotConfigs();
-            const highCharts = this.isochroneService.getHighCharts();
-            const sources: (number | undefined)[][][] = [];
-            const isochrones: (number | undefined)[][][] = [];
-            for (let i = 0; i < plotConfig.length; i++) {
-                const seriesSources: (number | undefined)[][] = [];
-                for (let j = 0; j < highCharts[i].series[0].data.length; j++) {
-                    seriesSources.push([highCharts[i].series[0].data[j]['x'], highCharts[i].series[0].data[j]['y']]);
+    downloadFsrPlots() {
+        this.service.setLoading(true);
+        this.service.setTabIndex(1);
+        this.honorCodeService.honored().pipe(
+            tap(signature => {
+                if (!signature) {
+                    this.service.setTabIndex(4);
+                    this.service.setLoading(false);
                 }
-                sources.push(seriesSources);
-                const seriesIsochrones: (number | undefined)[][] = [];
-                for (let j = 0; j < highCharts[i].series[1].data.length; j++) {
-                    seriesIsochrones.push([highCharts[i].series[1].data[j]['x'], highCharts[i].series[1].data[j]['y']]);
-                }
-                isochrones.push(seriesIsochrones);
-            }
-            const maxLength = Math.max(...sources.map(s => s.length),
-                ...isochrones.map(s => s.length));
+            }),
+            filter(signature => !!signature),
+            switchMap(signature => of(signature).pipe(
+                // concatMap(() => this.chartService.saveImageHighChartsOffline(this.service.getFsrCharts().slice(1), 1, signature, "cluster-field-removal-histogram")),
+                concatMap(() => this.chartService.saveImageHighChartsOffline(this.service.getFsrCharts().slice(0,1), 1, signature, "cluster-field-removal-2dpm")),
+            ))
+        ).subscribe(() => {
+            this.service.setTabIndex(4);
+            this.service.setLoading(false);
+        });
+    }
 
     downloadPlotData() {
         this.honorCodeService.honored().subscribe((studentName) => {

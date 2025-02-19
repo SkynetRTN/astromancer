@@ -6,6 +6,7 @@ import {FormControl, FormGroup} from "@angular/forms";
 import {FsrHistogramPayload} from "../fsr.util";
 import {ClusterDataService} from "../../cluster-data.service";
 import {MatSlider} from "@angular/material/slider";
+import {ClusterService} from "../../cluster.service";
 
 HC_histogram(Highcharts);
 
@@ -29,6 +30,7 @@ export class HistogramSliderInputComponent implements OnInit, AfterViewInit {
   @Input()
   $initEvent!: Subject<FsrHistogramPayload>;
   @Input()
+  chartIndex!: number;
   @Output()
   $OnInit: EventEmitter<void> = new EventEmitter<void>();
   @Output()
@@ -133,7 +135,7 @@ export class HistogramSliderInputComponent implements OnInit, AfterViewInit {
   private binBufferSubject: Subject<number> = new Subject<number>();
   private $binBuffer = this.binBufferSubject.asObservable();
 
-  constructor(private dataService: ClusterDataService) {
+  constructor(private service: ClusterService, private dataService: ClusterDataService) {
     this.initDebounce();
     this.setFormGroups();
   }
@@ -174,6 +176,7 @@ export class HistogramSliderInputComponent implements OnInit, AfterViewInit {
 
   chartInitialized($event: Highcharts.Chart) {
     this.chartObject = $event;
+    this.service.setFsrCharts(this.chartObject, this.chartIndex);
   }
 
   private setFormGroups() {

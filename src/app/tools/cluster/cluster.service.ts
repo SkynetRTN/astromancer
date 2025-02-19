@@ -1,8 +1,9 @@
 import {Injectable} from '@angular/core';
 import {ClusterStorageService} from "./storage/cluster-storage.service";
-import {Subject} from "rxjs";
+import {BehaviorSubject, Subject, take} from "rxjs";
 import {FsrParameters} from "./FSR/fsr.util";
 import {ClusterDataService} from "./cluster-data.service";
+import * as Highcharts from "highcharts";
 
 @Injectable()
 export class ClusterService {
@@ -19,6 +20,8 @@ export class ClusterService {
     reset$ = this.resetSubject.asObservable();
     private loadingSubject: Subject<boolean> = new BehaviorSubject<boolean>(false);
     loading$ = this.loadingSubject.asObservable();
+
+    private fsrCharts: (Highcharts.Chart | null)[] = [null, null, null, null];
 
     constructor(
         private dataService: ClusterDataService,
@@ -86,5 +89,13 @@ export class ClusterService {
 
     setLoading(loading: boolean) {
         this.loadingSubject.next(loading);
+    }
+
+    setFsrCharts(chart: (Highcharts.Chart | null), index: number) {
+        this.fsrCharts[index] = chart;
+    }
+
+    getFsrCharts(): (Highcharts.Chart)[] {
+        return this.fsrCharts as Highcharts.Chart[];
     }
 }

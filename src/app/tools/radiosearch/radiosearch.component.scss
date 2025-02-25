@@ -184,6 +184,13 @@
   border-radius: 2vh;
 }
 
+.query-button-container {
+  position: absolute;
+  justify-self: center; 
+  right: 5px;
+  bottom: -11%;
+}
+
 .button-container {
   position: relative;
   width: 130px;
@@ -206,15 +213,15 @@
 }
 
 .below-text {
-  font-size: 14px; /* Adjust font size if needed */
+  font-size: 14px; 
   padding-top: 2vh;
-  padding-bottom: 2vh;
-  color: var(--text-color); /* Optional: Customize text color */
+  padding-bottom: 1vh;
+  color: var(--text-color); 
 }
 
 .mat-elevation-z8 { 
-  flex: 1; /* Allow it to grow within the right-container */
-  overflow-y: auto; /* Ensure it can scroll */
+  flex: 1;
+  overflow-y: auto; 
   box-shadow: none;
 }
 

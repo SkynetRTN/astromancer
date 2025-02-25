@@ -82,7 +82,8 @@ export class RadioSearchComponent implements AfterViewInit {
     if (this.canvas) {
       this.canvas.addEventListener('click', (event: MouseEvent) => {
         this.grabCoordinatesOnClick(event);
-        this.queryCoordinatesOnClick(event); 
+        // this.queryCoordinatesOnClick(event); 
+        console.log(this.selectedSource$);
       });
     }
 
@@ -215,6 +216,7 @@ export class RadioSearchComponent implements AfterViewInit {
     // Circle radius in pixels
     const radius = this.scale * 22;
 
+    this.redrawCircles();
     this.results.forEach((source: any, i: number) => {
         let sourceRA = raList[i];
         let sourceDec = decList[i];
@@ -236,7 +238,6 @@ export class RadioSearchComponent implements AfterViewInit {
             Math.pow(mouseX - scaledX, 2) + Math.pow(mouseY - scaledY, 2)
         );
 
-        // Check if click is inside the circle radius
         if (distance <= radius && this.canvas !== null) {
             selectedSource = this.results[i];
             this.selectedSourceSubject.next(selectedSource.threeC);
@@ -284,6 +285,27 @@ export class RadioSearchComponent implements AfterViewInit {
             this.hcservice.setChartTitle('Results for Radio Source ' + selectedSource.threeC);
         }
     });
+
+    const context = this.canvas.getContext('2d');
+    this.selectedCoordinates = this.currentCoordinates;
+    if (context) {
+        const crossSize = 10 * this.zoomScale;
+
+        context.beginPath();
+        context.strokeStyle = '#ff0000';
+        context.lineWidth = 2;
+
+        // Horizontal line
+        context.moveTo(mouseX - crossSize, mouseY);
+        context.lineTo(mouseX + crossSize, mouseY);
+
+        // Vertical line
+        context.moveTo(mouseX, mouseY - crossSize);
+        context.lineTo(mouseX, mouseY + crossSize);
+
+        context.stroke();
+        context.closePath();
+    }
   }
 
 
@@ -343,17 +365,19 @@ export class RadioSearchComponent implements AfterViewInit {
   }
   
 
-  convertCoordinates(ra: number, dec: number, isGalactic: string): string {
+  convertCoordinates(ra: number, dec: number, isGalactic: string, useBreak: boolean = true): string {
+    const separator = useBreak ? '<br>' : ', ';
+    
     if (isGalactic == 'galactic') {
       // Convert Galactic Latitude and Longitude to degrees (no further conversion needed since they're already in degrees)
-      return `Glon: ${ra.toFixed(2)}°<br>Glat: ${dec.toFixed(2)}°`;
+      return `Glon: ${ra.toFixed(2)}°${separator}Glat: ${dec.toFixed(2)}°`;
     } else {
       // Convert RA from hours:minutes:seconds to degrees
       const raDegrees = ra; // RA in hours to degrees
       const raHMS = this.service.convertToHMS(raDegrees);
 
       const decDMS = this.service.convertToDMS(dec); // Convert Dec to degrees:arcminutes:arcseconds
-      return `RA: ${raHMS}<br>Dec: ${decDMS}`;
+      return `RA: ${raHMS}${separator}Dec: ${decDMS}`;
     }
   }
 
@@ -465,7 +489,7 @@ export class RadioSearchComponent implements AfterViewInit {
           worldCoordinates.ra -= 360;
         }
         worldCoordinates.ra += this.sliderXOffset;
-        worldCoordinates.dec += this.sliderYOffset;
+        worldCoordinates.dec -= this.sliderYOffset;
         this.currentCoordinates = worldCoordinates;
 
     } else {
@@ -991,6 +1015,7 @@ export class RadioSearchComponent implements AfterViewInit {
   
     this.wcsInfo = null;
     this.currentCoordinates = null;
+    this.selectedCoordinates = null;
 
     this.hcservice.resetData();
     this.hcservice.resetChartInfo();

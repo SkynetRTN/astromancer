@@ -50,8 +50,7 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
       type: 'logarithmic', // Log scale for y-axis
       title: {
         text: 'Flux Density (Jy)'
-      },
-      min: 0.1
+      }
     }
   };
 
@@ -107,12 +106,12 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
     let hyperlink = '';
 
     if (this.paramData && this.paramData[0] && this.paramData[0][1] && this.paramData[0][1] !== 0.1) {
-        linkText = this.paramData[0][1]; // The part of the title that should be clickable
-        hyperlink = 'https://vizier.cds.unistra.fr/viz-bin/VizieR-5?-ref=VIZ6684740f2d87a&-out.add=.&-source=VIII/1A/3c&recno=' + linkText; // Set your hyperlink URL
+        linkText = "3C " + this.paramData[0][1]; // The part of the title that should be clickable
+        hyperlink = 'https://www.google.com/search?q=Information+for+radio+source+' + linkText; // Set your hyperlink URL
     }
 
     const clickablePart = linkText
-        ? ` <a href="${hyperlink}" target="_blank" style="text-decoration: underline; color: blue;">${linkText}</a>`
+        ? ` <a href="${hyperlink}" target="_blank" style="text-decoration: underline; color: teal;">${linkText}</a>`
         : '';
 
     this.chartOptions.title = {
@@ -204,19 +203,16 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
     // Round the y values in fitData to 1 decimal place
     const roundedFitData = fitData.map(point => ({
       x: point.x,
-      y: parseFloat(point.y.toFixed(1)) // Round y to 1 decimal place
+      y: parseFloat(point.y.toFixed(1)) 
     }));
 
     // Add the fit data series (scatter for the fit)
     this.chartObject?.addSeries({
       name: "Fit",
-      type: 'scatter',
-      data: roundedFitData, // Use rounded data
+      type: 'line',
+      data: roundedFitData,
       marker: {
-          enabled: true,
-          symbol: 'triangle',
-          radius: 4,
-          fillColor: '#007bff'
+          enabled: false
       },
       lineWidth: 1,
       animation: enableAnimation ? { duration: 2000, easing: 'easeOut' } : false // Disable animation if only 1 point
@@ -238,8 +234,8 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
     // Update y-axis range
     this.chartOptions.yAxis = {
         title: { text: this.service.getYAxisLabel() },
-        min: Math.min(...actualData.map(point => point.y)) / 4,
-        max: Math.max(...actualData.map(point => point.y)) * 4
+        min: Math.min(...actualData.map(point => point.y)) * 0.8,
+        max: Math.max(...actualData.map(point => point.y)) * 1.05
     };
 
     // Apply chart updates and force a single redraw

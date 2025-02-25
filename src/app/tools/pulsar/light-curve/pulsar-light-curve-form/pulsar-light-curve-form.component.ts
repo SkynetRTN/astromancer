@@ -16,7 +16,7 @@ export class PulsarLightCurveFormComponent implements OnInit {
     // Initialize the form group with controls
     this.formGroup = this.fb.group({
       backScale: [3, Validators.required],
-      // Add other controls as needed
+
     });
   }
 

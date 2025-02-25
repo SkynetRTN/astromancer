@@ -1,0 +1,44 @@
+<div class="canvas-container" id="canvas-container">
+    <canvas #fitsCanvas id="fitsCanvas"></canvas>
+        <div class="slider-container">
+            <label for="right-slider">Zoom: {{ zoomLevel | number:'1.0-0' }}%</label>
+            <input type="range" id="right-slider" 
+                min="10" max="100" [(ngModel)]="zoomLevel" 
+                (input)="updateFitsImage()">
+        </div>
+        
+        <div class="slider-container">
+            <label for="bottom-slider">Scale: {{ 200 * maxValue | number:'1.0-0' }}%</label>
+            <input type="range" id="bottom-slider" 
+                min="0" max="1" step="0.05" [(ngModel)]="maxValue" 
+                (input)="updateFitsImage()">
+        </div>
+        
+        <div class="slider-container">
+            <label for="left-slider">
+            {{ rccords === 'equatorial' ? 'Dec Offset' : 'GalLat Offset' }}: {{ sliderYOffset }}°
+            </label>
+            <input type="range" id="left-slider" 
+                min="-3" max="3" step="0.1" [(ngModel)]="sliderYOffset" 
+                (input)="redrawCircles()">
+        </div>
+        
+        <div class="slider-container">
+            <label for="top-slider">
+            {{ rccords === 'equatorial' ? 'RA Offset' : 'GalLong Offset' }}: {{ sliderXOffset }}°
+            </label>
+            <input type="range" id="top-slider" 
+                min="-3" max="3" step="0.1" [(ngModel)]="sliderXOffset" 
+                (input)="redrawCircles()">
+        </div>
+  
+    <div class="coordinates">
+        <span *ngIf="currentCoordinates && rccords" [innerHTML]="convertCoordinates(currentCoordinates.ra, currentCoordinates.dec, rccords)">
+        </span>
+    </div>
+
+    <div class="button-container">
+        <button (click)="saveCanvas()">Download</button>
+        <button (click)="deleteFITS()">Delete</button>
+    </div>
+</div>

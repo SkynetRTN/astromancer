@@ -71,6 +71,13 @@
       <div class="delete-button-container" [ngStyle]="{'opacity': ra ? 1 : 0}">
         <button (click)="deleteFITS()">Delete Image</button>
       </div>
+
+      <div *ngIf="selectedCoordinates?.ra != null && selectedCoordinates?.dec != null">
+        {{ selectedCoordinates?.ra }} {{ selectedCoordinates?.dec }}
+        <button (click)="querySIMBAD()" color="'primary'" style="border-radius: 3px" mat-raised-button>
+          Query
+        </button>
+      </div>  
     </div>
   </div>
 
@@ -79,8 +86,8 @@
     <app-radiosearch-highchart></app-radiosearch-highchart>
     <p class="below-text" *ngIf="selectedSource$ | async as selectedSource">
       <ng-container *ngIf="averageFlux$ | async as averageFlux; else noFlux">
-        The uploaded file used a frequency of {{ lowerFreq || 'N/A' }} Hz to {{ upperFreq || 'N/A' }} Hz. The expected flux for radio source
-        {{ selectedSource || 'Unknown Source' }} at this frequency range is {{ averageFlux }} Jys.
+        The uploaded file used a frequency range of {{ lowerFreq || 'N/A' }} MHz to {{ upperFreq || 'N/A' }} MHz. The expected flux for radio source
+        {{ selectedSource || 'Unknown Source' }} in this frequency range is {{ averageFlux }} Jy.
       </ng-container>
       <ng-template #noFlux>
         There is not enough data to guess the flux at the appropriate frequency!

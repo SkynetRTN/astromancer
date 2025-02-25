@@ -55,6 +55,7 @@ export class RadioSearchComponent implements AfterViewInit {
   selectedSource$ = this.selectedSourceSubject.asObservable();
   wcsInfo: { crpix1: number, crpix2: number, crval1: number, crval2: number, cdelt1: number, cdelt2: number } | null = null;
   currentCoordinates: { ra: number, dec: number } | null = null;
+  selectedCoordinates: { ra: number, dec: number} | null = null;
   params: { targetFreq: number, threeC: number }[] | null = null;
 
   @ViewChild(MatSort) sort!: MatSort;
@@ -79,12 +80,15 @@ export class RadioSearchComponent implements AfterViewInit {
     }
 
     if (this.canvas) {
-      this.canvas.addEventListener('click', (event: MouseEvent) => this.grabCoordinatesOnClick(event));
+      this.canvas.addEventListener('click', (event: MouseEvent) => {
+        this.grabCoordinatesOnClick(event);
+        this.queryCoordinatesOnClick(event); 
+      });
     }
 
     // Add mouse move listener to display RA/Dec on hover
     this.canvas.addEventListener('mousemove', (event) => {
-    this.displayCoordinates(event);
+      this.displayCoordinates(event);
     });
 
     // Add drag-and-drop listeners to the drop zone
@@ -106,20 +110,6 @@ export class RadioSearchComponent implements AfterViewInit {
     if (this.fitsLoaded) { // Only warn if there's an uploaded image
       event.preventDefault(); // Required for older browsers
     }
-  }
-
-  @HostListener('window:resize', ['$event'])
-  onResize(event: UIEvent): void {
-    if (this.scaledData) {
-      this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2);
-    }
-  }
-
-  
-  // Handle row click
-  onRowClicked(row: any): void {
-    const index = this.dataSource.data.indexOf(row);
-    this.selectedSourceSubject.next(this.hiddenResults[index]);
   }
 
 
@@ -162,7 +152,7 @@ export class RadioSearchComponent implements AfterViewInit {
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
       this.fitsFileName = file.name;
-      this.processFitsFile(file);
+      this.service.updateFile(input.files[0]);
     }
   }
 
@@ -186,8 +176,8 @@ export class RadioSearchComponent implements AfterViewInit {
     const mouseY = (event.clientY - rect.top) * scaleY;
 
     // Adjust for image centering inside the canvas
-    const adjustedX = mouseX - this.canvasXOffset; // Remove horizontal centering offset
-    const adjustedY = mouseY - this.canvasYOffset; // Remove vertical centering offset
+    const adjustedX = mouseX - this.canvasXOffset;
+    const adjustedY = mouseY - this.canvasYOffset;
 
     // Use WCS info for RA/Dec conversion
     const { crpix1, crpix2, crval1, crval2, cdelt1, cdelt2 } = this.wcsInfo;
@@ -288,6 +278,62 @@ export class RadioSearchComponent implements AfterViewInit {
   }
 
 
+  queryCoordinatesOnClick(event: MouseEvent): void {
+    if (!this.canvas || !this.wcsInfo) return;
+
+    // Get the bounding box of the canvas (CSS size)
+    const rect = this.canvas.getBoundingClientRect();
+
+    // Normalize mouse coordinates from CSS size to actual size
+    const scaleX = this.canvas.width / rect.width;  // Scale factor in X
+    const scaleY = this.canvas.height / rect.height; // Scale factor in Y
+    const mouseX = (event.clientX - rect.left) * scaleX;
+    const mouseY = (event.clientY - rect.top) * scaleY;
+
+    // Adjust for image centering inside the canvas
+    const adjustedX = mouseX - this.canvasXOffset;
+    const adjustedY = mouseY - this.canvasYOffset;
+
+    const crossSize = 10 * this.zoomScale; // Adjust cross size as needed
+
+    this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2);
+    this.selectedCoordinates = this.currentCoordinates;
+    console.log(this.selectedCoordinates);
+
+    const context = this.canvas.getContext('2d');
+    if (context) {
+      context.beginPath();
+      context.strokeStyle = '#ff0000';
+      context.lineWidth = 2;
+
+      // Horizontal line of the cross
+      context.moveTo(mouseX - crossSize, mouseY);
+      context.lineTo(mouseX + crossSize, mouseY);
+
+      // Vertical line of the cross
+      context.moveTo(mouseX, mouseY - crossSize);
+      context.lineTo(mouseX, mouseY + crossSize);
+
+      context.stroke();
+      context.closePath();
+    }
+  }
+
+
+  querySIMBAD() {
+    if (this.selectedCoordinates && this.wcsInfo) {
+      if (this.rccords === "equatorial") {
+        console.log(this.wcsInfo.cdelt1,this.naxis1);
+        const url = `https://simbad.cds.unistra.fr/simbad/sim-coo?Coord=${this.selectedCoordinates.ra}d${this.selectedCoordinates.dec}d&CooFrame=Ecl&CooEpoch=2000&CooEqui=2000&CooDefinedFrames=ICRS-J2000&Radius=${Math.round(Math.abs(this.wcsInfo.cdelt1 * 60 * (this.naxis1 / 100)))}&Radius.unit=arcmin&submit=submit+query&CoordList=`;
+        window.open(url, "_blank");
+      } else if (this.rccords === "galactic") {
+        const url = `https://simbad.cds.unistra.fr/simbad/sim-coo?Coord=${this.selectedCoordinates.ra}d${this.selectedCoordinates.dec}d&CooFrame=Gal&CooEpoch=2000&CooEqui=2000&CooDefinedFrames=none&Radius=${Math.round(Math.abs(this.wcsInfo.cdelt1 * 60 * (this.naxis1 / 100)))}&Radius.unit=arcmin&submit=submit+query&CoordList=`;
+        window.open(url, "_blank");
+      }
+    }
+  }
+  
+
   convertCoordinates(ra: number, dec: number, isGalactic: string): string {
     if (isGalactic == 'galactic') {
       // Convert Galactic Latitude and Longitude to degrees (no further conversion needed since they're already in degrees)
@@ -296,6 +342,7 @@ export class RadioSearchComponent implements AfterViewInit {
       // Convert RA from hours:minutes:seconds to degrees
       const raDegrees = ra; // RA in hours to degrees
       const raHMS = this.service.convertToHMS(raDegrees);
+
       const decDMS = this.service.convertToDMS(dec); // Convert Dec to degrees:arcminutes:arcseconds
       return `RA: ${raHMS}<br>Dec: ${decDMS}`;
     }
@@ -404,6 +451,12 @@ export class RadioSearchComponent implements AfterViewInit {
 
     if (worldCoordinates) {
         // Update coordinates in UI or tooltip
+        console.log("world", worldCoordinates);
+        if (worldCoordinates.ra > 360) {
+          worldCoordinates.ra -= 360;
+        }
+        worldCoordinates.ra += this.sliderXOffset;
+        worldCoordinates.dec += this.sliderYOffset;
         this.currentCoordinates = worldCoordinates;
 
     } else {
@@ -468,8 +521,6 @@ export class RadioSearchComponent implements AfterViewInit {
           this.lowerFreq = header.get('RCMINFQ');
           this.upperFreq = header.get('RCMAXFQ');
           this.targetFreq = ((this.lowerFreq + this.upperFreq) / 2)
-  
-          console.log(header, dataUnit);
 
           if (!this.naxis1 || !this.naxis2 || !bitpix) {
             throw new Error('Invalid or missing header values (NAXIS1, NAXIS2, BITPIX).');
@@ -477,7 +528,6 @@ export class RadioSearchComponent implements AfterViewInit {
   
           // Calculate data offset and pixel array size
           const headerLength = this.service.getHeaderLength(arrayBuffer) + 2880;
-          console.log('header lengt', headerLength);
           const dataOffset = headerLength;
           const bytesPerPixel = Math.abs(bitpix) / 8;
           const rowLength = this.naxis1 * bytesPerPixel;
@@ -940,11 +990,16 @@ export class RadioSearchComponent implements AfterViewInit {
   
 
   saveCanvas() {
-    this.honorCodeService.honored().subscribe((name: string) => {
-      if (this.canvas) {
-        this.chartService.saveCanvasAsJpg(this.canvas, "radio-search", name);
-      }
-    })
+    if (this.canvas) {
+      this.zoomLevel = 100;
+      this.zoomScale = 1;
+      this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2);
+      this.honorCodeService.honored().subscribe((name: string) => {
+        if (this.canvas) {
+          this.chartService.saveCanvasAsJpg(this.canvas, "radio-search", name);
+        }
+      })
+    }
   }
 
 

@@ -1,12 +1,18 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { TableAction } from "../../../shared/types/actions";
-import { PulsarService } from "../../pulsar.service";
-import { HonorCodePopupService } from "../../../shared/honor-code-popup/honor-code-popup.service";
-import { HonorCodeChartService } from "../../../shared/honor-code-popup/honor-code-chart.service";
-import { Subject, takeUntil } from "rxjs";
-import { PulsarDataDict } from "../../pulsar.service.util";
-import { MatDialog } from "@angular/material/dialog";
-import { PulsarLightCurveChartFormComponent } from "../pulsar-light-curve-chart-form/pulsar-light-curve-chart-form.component";
+import {TableAction} from "../../../shared/types/actions";
+import {PulsarService} from "../../pulsar.service";
+import {HonorCodePopupService} from "../../../shared/honor-code-popup/honor-code-popup.service";
+import {HonorCodeChartService} from "../../../shared/honor-code-popup/honor-code-chart.service";
+import {MyFileParser} from "../../../shared/data/FileParser/FileParser";
+import {FileType} from "../../../shared/data/FileParser/FileParser.util";
+import {Subject, takeUntil} from "rxjs";
+import {errorMSE, PulsarDataDict} from "../../pulsar.service.util";
+import {MatDialog} from "@angular/material/dialog";
+import {
+  PulsarLightCurveChartFormComponent
+} from "../pulsar-light-curve-chart-form/pulsar-light-curve-chart-form.component";
+import { jsDocComment } from '@angular/compiler';
+import {BehaviorSubject} from 'rxjs';
 
 @Component({
   selector: 'app-pulsar-light-curve',
@@ -18,6 +24,9 @@ export class PulsarLightCurveComponent implements OnInit, OnDestroy {
   ts: number[] = [];
   xs: number[] = [];
   ys: number[] = [];
+  rawData: PulsarDataDict[] = [];
+  private backScaleSubject = new BehaviorSubject<number>(3); // Default value 3
+  backScale$ = this.backScaleSubject.asObservable();
 
   constructor(private service: PulsarService,
               private honorCodeService: HonorCodePopupService,
@@ -29,9 +38,10 @@ export class PulsarLightCurveComponent implements OnInit, OnDestroy {
     this.service.backScale$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
-      const combinedData = this.service.getCombinedData();
-      console.log("backscale changed");
-      this.backscaled(combinedData);
+      const backScale = this.service.getbackScale();
+      console.log("backscale changed", backScale);
+      this.rawData = this.service.getCombinedData();
+      this.processChartData(backScale); // Call processChartData with the new backScale value
     });
   }
 
@@ -55,6 +65,7 @@ export class PulsarLightCurveComponent implements OnInit, OnDestroy {
   }
 
   uploadHandler($event: File) {
+    console.log("uploadHandler");
     const reader = new FileReader();
     reader.onload = () => {
       const file = reader.result as string;
@@ -62,7 +73,7 @@ export class PulsarLightCurveComponent implements OnInit, OnDestroy {
       // Split the file into lines
       const lines = file.split('\n');
       let type = "standard";
-      if (file.slice(0, 7) == "# Input")
+      if (lines[0].slice(0, 7) == "# Input")
         type = "pressto";
       else
         type = "standard";
@@ -73,7 +84,8 @@ export class PulsarLightCurveComponent implements OnInit, OnDestroy {
 
       if (type == "pressto") {
         console.log("Pressto file detected");
-        this.service.setLightCurveOptionValid(true); // Set tab index to period folding tab
+        this.service.setTabIndex(2); // Set tab index to period folding tab
+        this.service.setLightCurveOptionValid(false);
       }
 
       // Extract headers and data rows
@@ -97,37 +109,66 @@ export class PulsarLightCurveComponent implements OnInit, OnDestroy {
 
       console.log('Headers:', headers);
       console.log('Rows:', rows);
-      console.log("I will now set combined data");
+
+      // Prepare data for computation
+      this.ts = rows.map(row => row['UTC_Time(s)'] as number);
+      this.ys = rows.map(row => row['YY1'] as number);
+      this.xs = rows.map(row => row['XX1'] as number);
+
       const combinedData = rows.map(row => ({
-        frequency: row['UTC_Time(s)'] as number,
-        channel1: row['YY1'] as number,
-        channel2: row['XX1'] as number,
+        jd: row['UTC_Time(s)'] as number,
+        source1: row['YY1'] as number,
+        source2: row['XX1'] as number
       }));
 
+      this.rawData = combinedData;
+      this.service.setData(combinedData);
       this.service.setCombinedData(combinedData);
-      console.log(combinedData);
-      //this.service.setData(combinedData);
-      this.backscaled(combinedData);
+      let chartData = combinedData;
+
+      const jd = chartData.map(item => item.jd);
+      const source1 = chartData.map(item => item.source1);
+      const source2 = chartData.map(item => item.source2);
+
+      const subtractedsource1 = this.service.backgroundSubtraction(jd, source1, this.service.getbackScale());
+      const subtractedsource2 = this.service.backgroundSubtraction(jd, source2, this.service.getbackScale());
+
+      chartData = chartData.map((item, index) => ({
+        jd: jd[index],
+        source1: subtractedsource1[index],
+        source2: subtractedsource2[index],
+      }));
+      this.service.setData(chartData);
     };
     reader.readAsText($event); // Read the file as text
   }
 
-  backscaled(combinedData: PulsarDataDict[]): void {
-    let chartData = combinedData;
-    //console.log("I am in backscaled", chartData);
+  processChartData(backScale: number): void {
+    if (!this.rawData) {
+      console.log("No data available");
+      return; // Exit early if no data is available
+    }
 
-    const jd = chartData.map(item => item.frequency).filter((value): value is number => value !== null);
-    const source1 = chartData.map(item => item.channel1).filter((value): value is number => value !== null);
-    const source2 = chartData.map(item => item.channel2).filter((value): value is number => value !== null);
-    const subtractedsource1 = this.service.backgroundSubtraction(jd, source1, this.service.getbackScale());
-    const subtractedsource2 = this.service.backgroundSubtraction(jd, source2, this.service.getbackScale());
+    let chartData = this.rawData;
+
+    // Extract data for processing
+    const jd = chartData.map(item => item.jd ?? 0);
+    const source1 = chartData.map(item => item.source1 ?? 0);
+    const source2 = chartData.map(item => item.source2 ?? 0);
+
+    // Apply background subtraction based on the provided backScale
+    const subtractedSource1 = this.service.backgroundSubtraction(jd, source1, backScale);
+    const subtractedSource2 = this.service.backgroundSubtraction(jd, source2, backScale);
+
+    // Update chart data with background-subtracted values
     chartData = chartData.map((item, index) => ({
-      ...item,
-      frequency: jd[index],
-      channel1: subtractedsource1[index],
-      channel2: subtractedsource2[index],
+      jd: jd[index],
+      source1: subtractedSource1[index],
+      source2: subtractedSource2[index],
     }));
-   // console.log("I updated chartdate", chartData);
+
+    console.log(backScale, "new data", chartData);
+    // Set updated data back to the service
     this.service.setData(chartData);
   }
 

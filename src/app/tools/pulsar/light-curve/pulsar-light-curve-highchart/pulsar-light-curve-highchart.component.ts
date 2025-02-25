@@ -1,7 +1,8 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
-import * as Highcharts from 'highcharts';
-import { Subject, takeUntil } from 'rxjs';
-import { PulsarService } from '../../pulsar.service';
+import {Subject, takeUntil} from "rxjs";
+import * as Highcharts from "highcharts";
+import More from "highcharts/highcharts-more";
+import {PulsarService} from "../../pulsar.service";
 
 @Component({
   selector: 'app-pulsar-light-curve-highchart',
@@ -48,6 +49,16 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
     },
     series: []
   };
+  
+  chartInitialized($event: Highcharts.Chart) {
+    this.chartObject = $event; // Use the instance passed from (chartInstance)
+    this.pulsarService.setHighChartLightCurve(this.chartObject);
+  
+    // Set initial chart data
+    const initialData = this.pulsarService.resetData()
+    // this.updateChartData(initialData);
+  }  
+
 
   private destroy$: Subject<any> = new Subject<any>();
 
@@ -70,16 +81,20 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
       console.log('Raw data:', data); // Debugging log
     
       // Filter out invalid data (null values)
-      const filteredData = data
-        .filter(item => item.frequency !== null && item.channel1 !== null) // Exclude null values
-        .map(item => ({ frequency: item.frequency!, channel1: item.channel1!,  channel2: item.channel2! })); // Assert non-null
+      const filteredData = this.pulsarService.getData()
+      .filter(item => item.jd !== null && item.source1 !== null && item.source2 !== null) // Exclude null values
+      .map(item => ({ frequency: item.jd!, channel1: item.source1!, channel2: item.source2! })); // Assert non-null values
     
-      console.log('Filtered data:', filteredData); // Debugging log
-    
-      this.updateChartData(filteredData);
-    });
-  }
+    // Process the filtered data
+    const processedData = filteredData.map(item => ({
+      frequency: item.frequency,
+      channel1: item.channel1,
+      channel2: item.channel2
+    }));
 
+    this.updateChartData(processedData);
+  });
+}
   ngOnDestroy(): void {
     this.destroy$.next(null);
     this.destroy$.complete();
@@ -88,15 +103,15 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
   private initializeChart(): void {
     // Use ViewChild to ensure the container exists before initializing
     // this.chartObject = Highcharts.chart(this.chartContainer.nativeElement, this.chartOptions);
-    this.pulsarService.setHighChart(this.chartObject);
+    this.pulsarService.setHighChartLightCurve(this.chartObject);
 
     // Set initial options and data
     this.updateChartOptions();
 
     // Get initial data and update the chart
     const initialData = this.pulsarService.getData()
-      .filter(item => item.frequency !== null && item.channel1 !== null) // Exclude null values
-      .map(item => ({ frequency: item.frequency!, channel1: item.channel1!, channel2: item.channel2! })); // Assert non-null values
+      .filter(item => item.jd !== null && item.source1 !== null) // Exclude null values
+      .map(item => ({ frequency: item.jd!, channel1: item.source1!, channel2: item.source2! })); // Assert non-null values
 
     this.updateChartData(initialData);
   }
@@ -164,14 +179,53 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
   }
 
 
-  chartInitialized($event: Highcharts.Chart) {
-    this.chartObject = $event; // Use the instance passed from (chartInstance)
-    this.pulsarService.setHighChart(this.chartObject);
-  
-    // Set initial chart data
-    const initialData = this.pulsarService.resetData()
-    // this.updateChartData(initialData);
-  }  
 
   
+  updateSources() {
+    const labels: string[] = this.pulsarService.getDataLabelArray();
+    const data: (number | null)[][][] = this.pulsarService.getChartSourcesDataArray();
+    for (let i = 0; i < 2; i++) {
+      this.chartObject.series[2 * i].update({
+        name: labels[i],
+        data: data[i],
+        type: 'line',
+        marker: {
+          symbol: 'circle',
+        }
+      });
+    }
+  }
+
+  setPulsar() {
+    this.chartObject.addSeries({
+      name: this.pulsarService.getDataLabel(),
+      data: this.pulsarService.getChartPulsarDataArray(),
+      type: 'line',
+      tooltip: {
+        pointFormat: '<b>({point.x:.2f}, {point.y:.2f})</b>'
+      }
+    });
+  }
+
+
+  private updateChart(): void {
+    this.updateFlag = true;
+  }
+
+  private setChartTitle(): void {
+    this.chartOptions.title = {text: this.pulsarService.getChartTitle()};
+  }
+
+  private setChartXAxis(): void {
+    this.chartOptions.xAxis = {
+      title: {text: this.pulsarService.getXAxisLabel()}
+    };
+  }
+
+  private setChartYAxis(): void {
+    this.chartOptions.yAxis = {
+      title: {text: this.pulsarService.getYAxisLabel()},
+    };
+  }
+
 }

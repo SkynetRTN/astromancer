@@ -47,13 +47,14 @@ export class PulsarTableComponent implements AfterViewInit, OnDestroy {
     public beforePaste = (data: any[], coords: any) => {
         return beforePaste(data, coords, this.table);
     }
+    
     private limitPrecision(data: PulsarDataDict[]): PulsarTableDict[] {
         return data.map(
             (row: PulsarDataDict) => {
                 return {
-                    jd: row.frequency? parseFloat(row.frequency.toFixed(2)) : row.frequency,
-                    source1: row.channel1 ? parseFloat(row.channel1.toFixed(2)) : row.channel1,
-                    source2: row.channel2 ? parseFloat(row.channel2.toFixed(2)) : row.channel2,
+                    jd: row.jd? parseFloat(row.jd.toFixed(2)) : row.jd,
+                    source1: row.source1 ? parseFloat(row.source1.toFixed(2)) : row.source1,
+                    source2: row.source2 ? parseFloat(row.source2.toFixed(2)) : row.source2,
                 }
             }
         );

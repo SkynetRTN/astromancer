@@ -17,7 +17,7 @@ const TOOLS_ROUTES: Routes = [
     {path: "variable", loadChildren: () => import('./tools/variable/variable.module').then(m => m.VariableModule)},
     {path: "spectrum", loadChildren: () => import('./tools/spectrum/spectrum.module').then(m => m.SpectrumModule)},
     {path: "dual", loadChildren: () => import('./tools/dual/dual.module').then(m => m.DualModule)},
-    {path: "radiosearch", loadChildren: () => import('./tools/radiosearch/radiosearch.module').then(m => m.RadioSearchModule)},
+    //{path: "radiosearch", loadChildren: () => import('./tools/radiosearch/radiosearch.module').then(m => m.RadioSearchModule)},
     {path: "pulsar", loadChildren: () => import('./tools/pulsar/pulsar.module').then(m => m.PulsarModule)},
     {path: "pulsar-test", loadChildren: () => import('./tools/pulsar/pulsar.module').then(m => m.PulsarModule)},
     {path: "cluster", loadChildren: () => import('./tools/cluster/cluster.module').then(m => m.ClusterModule)},

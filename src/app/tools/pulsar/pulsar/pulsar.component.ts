@@ -8,18 +8,17 @@ import {Subject, takeUntil} from "rxjs";
   styleUrls: ['./pulsar.component.scss'],
 })
 export class PulsarComponent implements OnDestroy {
-  lightCurveFormValid: boolean = false;
+  lightCurveFormValid: boolean = true;
   pulsarTabindex: number = 0;
-  private destroy$: Subject<void> = new Subject<void>();
+  private destroy$ = new Subject<void>();
 
   constructor(private service: PulsarService) {
-
      this.service.lightCurveOptionValid$.pipe(
        takeUntil(this.destroy$)
-     ).subscribe(() => {
-      console.log("tab index changed");
-      this.lightCurveFormValid = this.service.getIsLightCurveOptionValid();
-      if (this.lightCurveFormValid){ this.pulsarTabindex = 2;}
+     ).subscribe((lightCurveFormValid) => {
+      console.log("tab index changed", lightCurveFormValid);
+      this.lightCurveFormValid = lightCurveFormValid;
+      if (!this.lightCurveFormValid){ this.pulsarTabindex = 2;}
       
      });
   }

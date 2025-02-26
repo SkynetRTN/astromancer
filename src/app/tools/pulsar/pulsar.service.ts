@@ -635,7 +635,6 @@ median(arr: number[]) {
     return arr.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2;
 }
 
-
 backgroundSubtraction(frequency: number[], flux: number[], dt: number): number[] {
     let n = Math.min(frequency.length, flux.length);
     const subtracted = [];
@@ -653,7 +652,7 @@ backgroundSubtraction(frequency: number[], flux: number[], dt: number): number[]
         subtracted.push(flux[i] - fluxmed); 
     }
     return subtracted;
-}    
+    }    
 
     setData(data: any[]): void {
         this.pulsarData.setData(data);
@@ -701,10 +700,6 @@ backgroundSubtraction(frequency: number[], flux: number[], dt: number): number[]
       }
     }
 
-
-
-
-
     getHighChartLightCurve(): Highcharts.Chart {
         return this.highChartLightCurve;
     }
@@ -729,4 +724,62 @@ backgroundSubtraction(frequency: number[], flux: number[], dt: number): number[]
         return `Pulsar Star Mag - Reference Star Mag)`
     }
 
+    sonification(xValues: number[], yValues: number[], lengthInSeconds: number) {
+        const numSamples = xValues.length;
+        const sampleRate = Math.floor(numSamples / lengthInSeconds);
+        const numChannels = 1;  // Mono
+        const bitsPerSample = 16;
+        const byteRate = sampleRate * numChannels * (bitsPerSample / 8);
+        const blockAlign = numChannels * (bitsPerSample / 8);
+        const dataSize = numSamples * numChannels * (bitsPerSample / 8);
+        const chunkSize = 36 + dataSize;
+    
+        const buffer = new ArrayBuffer(44 + dataSize);
+        const view = new DataView(buffer);
+    
+        // Write the RIFF header
+        this.writeString(view, 0, 'RIFF');
+        view.setUint32(4, chunkSize, true);
+        this.writeString(view, 8, 'WAVE');
+    
+        // fmt sub-chunk
+        this.writeString(view, 12, 'fmt ');
+        view.setUint32(16, 16, true);  // Subchunk1Size (PCM)
+        view.setUint16(20, 1, true);   // Audio format (PCM)
+        view.setUint16(22, numChannels, true);
+        view.setUint32(24, sampleRate, true);
+        view.setUint32(28, byteRate, true);
+        view.setUint16(32, blockAlign, true);
+        view.setUint16(34, bitsPerSample, true);
+    
+        // data sub-chunk
+        this.writeString(view, 36, 'data');
+        view.setUint32(40, dataSize, true);
+    
+        // Write audio samples (assuming yValues are normalized between -1 and 1)
+        const offset = 44;
+        for (let i = 0; i < numSamples; i++) {
+            let sample = Math.max(-1, Math.min(1, yValues[i])); // Clamp values
+            let intSample = sample * 32767; // Convert to 16-bit integer
+            view.setInt16(offset + i * 2, intSample, true);
+        }
+    
+        // Create Blob and trigger download
+        const blob = new Blob([buffer], { type: 'audio/wav' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'generated.wav';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+    
+    // Helper function to write strings into DataView
+    writeString(view: DataView, offset: number, string: string) {
+        for (let i = 0; i < string.length; i++) {
+            view.setUint8(offset + i, string.charCodeAt(i));
+        }
+    }
 }

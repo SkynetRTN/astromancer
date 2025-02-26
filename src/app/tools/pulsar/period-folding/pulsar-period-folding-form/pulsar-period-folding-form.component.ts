@@ -111,6 +111,15 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
     this.service.resetPeriodFoldingForm();
   }
 
+  sonification() {
+    this.periodSubject.subscribe(value => {
+      let period = value;
+
+      
+      this.service.sonification(xValues, yValues, period);
+    });
+  }
+
   onChange($event: InputSliderValue) {
     if ($event.key === 'period') {
       this.service.setPeriodFoldingPeriod($event.value);

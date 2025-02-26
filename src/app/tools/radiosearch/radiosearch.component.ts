@@ -172,6 +172,11 @@ export class RadioSearchComponent implements AfterViewInit {
   }
 
 
+  drawCrosshair(): void {
+    
+  }
+
+
   // Function to grab the x and y coordinates when the mouse is clicked
   grabCoordinatesOnClick(event: MouseEvent): void {
     if (!this.canvas || !this.wcsInfo) return;
@@ -329,7 +334,6 @@ export class RadioSearchComponent implements AfterViewInit {
 
     this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2);
     this.selectedCoordinates = this.currentCoordinates;
-    console.log(this.selectedCoordinates);
 
     const context = this.canvas.getContext('2d');
     if (context) {
@@ -833,6 +837,8 @@ export class RadioSearchComponent implements AfterViewInit {
         this.canvasXOffset, this.canvasYOffset,           // Destination position
         this.scaledWidth, this.scaledHeight   // Destination size
     );
+
+    
 
     this.drawCircles(this.results, this.scale, this.sliderXOffset + this.canvasXOffset, this.sliderYOffset + this.canvasYOffset);
   }

@@ -30,7 +30,7 @@
         </label>
         <input id="xOffset" type="range" 
                min="-3" max="3" step="0.1" [(ngModel)]="sliderXOffset" 
-               (input)="redrawCircles()">
+               (input)="updateFitsImage()">
       </div>
       
       <div class="dec-slider-container" [ngStyle]="{'opacity': ra ? 1 : 0}">
@@ -39,7 +39,7 @@
         </label>
         <input id="yOffset" type="range" 
                min="-3" max="3" step="0.1" [(ngModel)]="sliderYOffset" 
-               (input)="redrawCircles()">
+               (input)="updateFitsImage()">
       </div>
       
       <div class="max-slider-container" [ngStyle]="{'opacity': ra ? 1 : 0}">

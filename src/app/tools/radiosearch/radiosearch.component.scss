@@ -3,7 +3,7 @@
 .page-container {
   display: flex;
   flex-direction: row;
-  height: 85vh;
+  height: 90vh;
   padding: 2.5vw;
   box-sizing: border-box;
   position: relative;
@@ -205,8 +205,8 @@
   flex-direction: column;
   flex-grow: 1;
   width: 45%;
-  height: 100%; 
-  min-height: 400px;
+  height: 65%; 
+  min-height: 300px;
   margin-left: 2.5vw; 
   position: relative;
   overflow-y: visible; 

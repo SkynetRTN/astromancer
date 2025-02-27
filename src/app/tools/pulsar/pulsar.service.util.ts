@@ -120,8 +120,6 @@ export class PulsarInterfaceImpl implements PulsarInterface {
 
   setLightCurveOptionValid(Valid: boolean): void {
     this.LightCurveOptionValid = Valid;
-    console.log("light curve was set in service.util", this.LightCurveOptionValid);
-
   }
 }
 
@@ -156,10 +154,10 @@ export class PulsarChartInfo implements ChartInfo {
       frequencyLabel: "Frequency",
       channel1Label: "Channel 1",
       title: "Title",
-      xAxisLabel: "x",
+      xAxisLabel: "",
       yAxisLabel: "y",
-      dataLabels: ["Source 1", "Source 2"],
-      dataLabel: PulsarChartInfo.defaultHash,
+      dataLabels: ["Channel 1", "Channel 2"],
+      dataLabel: "Channel 1",
     }
   }
 
@@ -221,6 +219,10 @@ export class PulsarChartInfo implements ChartInfo {
 
   setDataLabel(data: string): void {
     this.dataLabel = data;
+  }
+
+  setDataLabelArray(data: string[]): void{
+    this.dataLabels = data;
   }
 
   setStorageObject(storageObject: PulsarChartInfoStorageObject): void {

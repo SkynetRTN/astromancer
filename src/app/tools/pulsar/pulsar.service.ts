@@ -411,15 +411,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
     }
 
     getDataLabel(): string {
-        if (this.getPulsarStar() === PulsarStarOptions.NONE) {
-            return this.pulsarChartInfo.getDataLabels();
-        } else {
-            if (this.pulsarChartInfo.getDataLabel() === PulsarChartInfo.defaultHash) {
-                return this.getDefaultDataLabel();
-            } else {
-                return this.pulsarChartInfo.getDataLabel();
-            }
-        }
+        return this.pulsarChartInfo.getDataLabel();
     }
 
     getDataLabelArray(): string[] {
@@ -457,6 +449,13 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         this.pulsarStorage.saveChartInfo(this.pulsarChartInfo.getStorageObject());
         this.chartInfoSubject.next(this.pulsarChartInfo);
         this.dataSubject.next(this.pulsarData);
+    }
+
+    setDataLabelArray(data: string): void{
+        let LabelArray = data.split(',')
+        this.pulsarChartInfo.setDataLabelArray(LabelArray);
+        this.pulsarStorage.saveChartInfo(this.pulsarChartInfo.getStorageObject());
+        this.chartInfoSubject.next(this.pulsarChartInfo);
     }
 
     setStorageObject(storageObject: PulsarChartInfoStorageObject): void {

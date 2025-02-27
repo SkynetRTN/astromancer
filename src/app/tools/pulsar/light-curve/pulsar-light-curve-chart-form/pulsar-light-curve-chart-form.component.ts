@@ -16,6 +16,7 @@ export class PulsarLightCurveChartFormComponent implements OnDestroy {
   constructor(private service: PulsarService) {
     this.formGroup = new FormGroup({
       chartTitle: new FormControl(this.service.getChartTitle()),
+      dataLabel: new FormControl(this.service.getDataLabelArray()),
       xAxisLabel: new FormControl(this.service.getXAxisLabel()),
       yAxisLabel: new FormControl(this.service.getYAxisLabel()),
     });
@@ -43,6 +44,7 @@ export class PulsarLightCurveChartFormComponent implements OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(info => {
       this.formGroup.controls['chartTitle'].setValue(this.service.getChartTitle(), {emitEvent: false});
+      this.formGroup.controls['dataLabel'].setValue(this.service.getDataLabelArray(), {emitEvent: false});
       this.formGroup.controls['xAxisLabel'].setValue(this.service.getXAxisLabel(), {emitEvent: false});
       this.formGroup.controls['yAxisLabel'].setValue(this.service.getYAxisLabel(), {emitEvent: false});
     })

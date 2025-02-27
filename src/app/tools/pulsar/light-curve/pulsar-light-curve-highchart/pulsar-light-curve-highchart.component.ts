@@ -14,9 +14,11 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
   updateFlag: boolean = true;
   chartConstructor: any = "chart";
   chartObject!: Highcharts.Chart;
-  chartTitle: string = 'Light Curve';
-  xAxisLabel: string = 'Time (S)';
-  yAxisLabel: string = 'Flux';
+  chartTitle: string = 'Title';
+  xAxisLabel: string = '';
+  yAxisLabel: string = 'y';
+  dataLabel1: string = 'Channel 1';
+  dataLabel2: string = 'Channel 2';
 
   chartOptions: Highcharts.Options = {
     chart: {
@@ -27,9 +29,6 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
         key: 'shift',
       },
     },
-    title: {
-      text: 'Light Curve' // Placeholder, dynamically updated
-    },
     legend: {
       enabled: true,
     },
@@ -37,17 +36,6 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
       enabled: true,
       shared: false,
     },
-    xAxis: {
-      title: {
-        text: 'Time (S)' // Placeholder, dynamically updated
-      },
-    },
-    yAxis: {
-      title: {
-        text: 'Flux' // Placeholder, dynamically updated
-      },
-    },
-    series: []
   };
   
   chartInitialized($event: Highcharts.Chart) {
@@ -62,7 +50,12 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
 
   private destroy$: Subject<any> = new Subject<any>();
 
-  constructor(private pulsarService: PulsarService) {}
+  constructor(private pulsarService: PulsarService) {
+    More(Highcharts);
+        this.setChartTitle();
+        this.setChartXAxis();
+        this.setChartYAxis();
+  }
 
   ngAfterViewInit(): void {
     this.initializeChart();
@@ -72,6 +65,11 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
       takeUntil(this.destroy$)
     ).subscribe(() => {
       this.updateChartOptions();
+      this.setChartTitle();
+      this.setChartXAxis();
+      this.setChartYAxis();
+      this.updateSources();
+      this.updateChart();
     });
 
     // React to data updates
@@ -139,7 +137,7 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
       } else {
         // Add the second series if it doesn't exist
         this.chartObject.addSeries({
-          name: 'Channel 2', // Second series name
+          name: this.dataLabel2, // Second series name
           type: 'line',
           data: calData,
           lineWidth: .1, // Thin line
@@ -153,7 +151,7 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
     } else {
       // If no series exists, create both series
       this.chartObject.addSeries({
-        name: 'Channel 1', // First series name
+        name: this.dataLabel1, // First series name
         type: 'line',
         data: chartData,
         lineWidth: .1, // Thin line
@@ -165,7 +163,7 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
       });
   
       this.chartObject.addSeries({
-        name: 'Channel 2', // Second series name
+        name: this.dataLabel2, // Second series name
         type: 'line',
         data: calData,
         lineWidth: .1, // Thin line
@@ -184,18 +182,21 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
   updateSources() {
     const labels: string[] = this.pulsarService.getDataLabelArray();
     const data: (number | null)[][][] = this.pulsarService.getChartSourcesDataArray();
-    for (let i = 0; i < 2; i++) {
-      this.chartObject.series[2 * i].update({
-        name: labels[i],
-        data: data[i],
-        type: 'line',
-        marker: {
-          symbol: 'circle',
-        }
-      });
+    for (let i = 0; i < labels.length; i++) {
+      if (this.chartObject.series[i]) {
+        this.chartObject.series[i].update({
+          name: labels[i],
+          data: data[i],
+          type: 'line',
+          marker: {
+            symbol: i === 0 ? 'circle' : 'triangle', // Different marker for distinction
+          }
+        });
+      }
     }
   }
 
+  
   setPulsar() {
     this.chartObject.addSeries({
       name: this.pulsarService.getDataLabel(),
@@ -228,4 +229,7 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
     };
   }
 
+  private setDatalabels(): void {
+    
+}
 }

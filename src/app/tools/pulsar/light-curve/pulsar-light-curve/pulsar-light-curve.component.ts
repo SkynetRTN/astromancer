@@ -51,8 +51,8 @@ export class PulsarLightCurveComponent implements OnInit, OnDestroy {
         this.service.addRow(-1, 1);
       } else if (action.action === "saveGraph") {
         this.saveGraph();
-      } else if (action.action === "resetData") {
-        this.service.resetData();
+      } else if (action.action === "resetGraphInfo") {
+        this.resetGraphInfo();
       } else if (action.action === "editChartInfo") {
         const dialogRef =
           this.dialog.open(PulsarLightCurveChartFormComponent, { width: 'fit-content' });
@@ -180,6 +180,12 @@ export class PulsarLightCurveComponent implements OnInit, OnDestroy {
   private saveGraph() {
     this.honorCodeService.honored().subscribe((name: string) => {
       this.chartService.saveImageHighChartOffline(this.service.getHighChartLightCurve(), "Pulsar Light Curve", name);
+
     })
+  }
+  private resetGraphInfo(){
+    this.service.setChartTitle("Title")
+    this.service.setXAxisLabel("")
+    this.service.setYAxisLabel("y")
   }
 }

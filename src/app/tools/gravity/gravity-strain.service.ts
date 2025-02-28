@@ -1,6 +1,6 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {BehaviorSubject, Subject, takeUntil, debounceTime} from "rxjs";
+import {BehaviorSubject, Subject, takeUntil, debounceTime, throttleTime} from "rxjs";
 import * as Highcharts from "highcharts";
 
 import {
@@ -47,18 +47,30 @@ export class StrainService implements MyData, ChartInfo, OnDestroy {
     this.strainData.setData(this.storage.getData());
     this.gravityChartInfo.setStorageObject(this.storage.getChartInfo());
 
-    //Interface Changes. May move to modelService
-    this.interfaceService.serverParameters$.pipe(
+    //Interface Changes. May move back here
+    // this.interfaceService.serverParameters$.pipe(
+    //   takeUntil(this.destroy$),
+    //   debounceTime(200)
+    // ).subscribe(
+    //   (source: UpdateSource) => {
+    //     //don't make a request before the user has a chance to fiddle with the interface
+    //     if(source==UpdateSource.INIT) return;
+
+    //     this.fetchModels(this.interfaceService.getTotalMass(),
+    //                     this.interfaceService.getMassRatio(),
+    //                     this.interfaceService.getPhaseShift())
+    //   }
+    // )
+
+    //Changes to the interface that don't require server requests. Maybe should be moved to highchart component.
+    this.interfaceService.strainParameters$.pipe(
       takeUntil(this.destroy$),
-      debounceTime(200)
+      debounceTime(100)
     ).subscribe(
       (source: UpdateSource) => {
-        //don't make a request before the user has a chance to fiddle with the interface
         if(source==UpdateSource.INIT) return;
 
-        this.fetchStrainModel(this.interfaceService.getTotalMass(),
-                        this.interfaceService.getMassRatio(),
-                        this.interfaceService.getPhaseShift())
+        this.modelSubject.next(this.modelData);
       }
     )
   }
@@ -172,7 +184,7 @@ export class StrainService implements MyData, ChartInfo, OnDestroy {
 
     if(ignoreMergerTime) return this.modelData.getData()
 
-    let mergerTime = this.interfaceService.getMergerTime()
+    let mergerTime: number = this.interfaceService.getMergerTime()
 
     return this.modelData.getData().map((p) => {
       let time = p.Time?p.Time:0;
@@ -184,13 +196,18 @@ export class StrainService implements MyData, ChartInfo, OnDestroy {
   getModelDataArray(ignoreMergerTime: Boolean = false): number[][] {
     if(ignoreMergerTime) return this.modelData.getDataArray();
 
-    let mergerTime = this.interfaceService.getMergerTime()
+    //Making a not of this, because it comes from the old interface and the reason for this specific value is not clear.
+    let factor = 100
 
+    let mergerTime: number = this.interfaceService.getMergerTime()
+    let amplifier: number = (1-0.5*Math.sin(this.interfaceService.getInclination()*(Math.PI/180)))*(factor / this.interfaceService.getDistance())
+    
     //because of how getDataArray works, this goes through the whole array twice. might be faster not to use that function.
     return this.modelData.getDataArray().map((p) => {
-      let time = p[0];
-      time+=mergerTime;
-      return [time, p[1]]
+      let time: number = p[0];
+      time = +time + +mergerTime;
+      let strain = p[1] * amplifier
+      return [time, strain]
     });
   }
 
@@ -198,14 +215,14 @@ export class StrainService implements MyData, ChartInfo, OnDestroy {
 
   setModelData(data: StrainDataDict[]): void {
     this.modelData.setData(data);
-    this.storage.saveData(this.strainData.getData());
-    this.dataSubject.next(this.strainData);
+    // this.storage.saveData(this.strainData.getData());
+    this.modelSubject.next(this.modelData);
   }
 
   resetModelData(): void {
     this.modelData.setData(StrainData.getDefaultData());
-    this.storage.saveData(this.strainData.getData());
-    this.dataSubject.next(this.strainData);
+    // this.storage.saveData(this.strainData.getData());
+    this.modelSubject.next(this.modelData);
   }
 
 
@@ -216,25 +233,4 @@ export class StrainService implements MyData, ChartInfo, OnDestroy {
   getHighChart(): Highcharts.Chart {
     return this.highChart;
   }
-
-  
-  private fetchStrainModel(totalMass: number, massRatio: number, phase: number) {
-    
-    let payload = fitValuesToGrid(totalMass,massRatio,phase)
-
-    this.http.get(
-      `${environment.apiUrl}/gravity/model`,
-        {'params': payload}).subscribe(
-          (resp: any) => {
-            let data: StrainDataDict[] = []
-            resp.file.map((p: number[]) => {
-              data.push({ 'Time': p[0], 'Strain': p[1]})
-            })
-            data.sort((a,b) => a.Time as number - (b.Time as number))
-            console.log(data)
-            this.setModelData(data)
-          }
-        )
-  }
-
 }

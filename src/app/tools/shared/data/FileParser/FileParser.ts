@@ -14,7 +14,7 @@ export class MyFileParser {
   private readonly dataKeys: string[];
 
   private progressSubject: Subject<number> = new Subject<number>();
-  private progress$ = this.progressSubject.asObservable();
+  public progress$ = this.progressSubject.asObservable();
   private errorSubject: Subject<MyFileParserErrors> = new Subject<MyFileParserErrors>();
   public error$ = this.errorSubject.asObservable();
   private headerSubject: Subject<{ [key: string]: string } | undefined>

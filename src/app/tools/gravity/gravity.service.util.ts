@@ -2,7 +2,7 @@ import {MyData} from "../shared/data/data.interface";
 import {MyStorage} from "../shared/storage/storage.interface";
 import {ChartInfo} from "../shared/charts/chart.interface";
 import {dummyStrainData} from "./constants/chart-gravity-dummydata";
-import { ratioMassLogSpace as massRatioLogSpaceStrain, phaseList, totalMassLogSpaceStrain } from "./constants/model-grid";
+import { ratioMassLogSpace, totalMassLogSpace, phaseList, totalMassLogSpaceStrain } from "./constants/model-grid";
 
 export enum GravityChart
 {
@@ -31,11 +31,11 @@ export interface ModelDataDict {
  */
 export class SpectoData implements MyData {
   private dataDict: SpectogramDataDict[];
-  private columnSize: number;
+  private axes: SpectoAxes;
   
   constructor() {
     this.dataDict = [];
-    this.columnSize = 1;
+    this.axes = {};
   }
 
   public static getDefaultData(): SpectogramDataDict[] {
@@ -56,8 +56,8 @@ export class SpectoData implements MyData {
     return this.dataDict;
   }
 
-  getColumnSize(): number {
-    return this.columnSize
+  getAxes(): SpectoAxes {
+    return this.axes
   }
   
   getDataArray(): number[][] {
@@ -77,9 +77,20 @@ export class SpectoData implements MyData {
     this.dataDict = data;
   }
 
-  setColumnSize(size: number): void {
-    this.columnSize = size;
+  setAxes(axes: Partial<SpectoAxes>): void {
+    Object.keys(axes).forEach((v) => this.axes[v as keyof SpectoAxes] = axes[v as keyof SpectoAxes])
   }
+}
+
+export interface SpectoAxes
+{
+  zmin?: number
+  zmax?: number
+  ymin?: number
+  ymax?: number
+  xmin?: number
+  xmax?: number
+  dx?: number
 }
 
 /**
@@ -481,11 +492,12 @@ export function fitValuesToGrid(totalMass: number, massRatio: number, phase: num
 
   // Fitting the sliders to each logspace
 
-  let roundedMassRatio = approx(massRatio, massRatioLogSpaceStrain)
-  let roundedTotalMass = approx(totalMass, totalMassLogSpaceStrain)
+  let roundedMassRatio = approx(massRatio, ratioMassLogSpace)
+  let roundedTotalMassStrain = approx(totalMass, totalMassLogSpaceStrain)
+  let roundedTotalMassFreq = approx(totalMass, totalMassLogSpace)
   let roundedPhase     = approx(phase, phaseList)
 
-  return {'total_mass': roundedTotalMass, 'mass_ratio': roundedMassRatio, 'phase': roundedPhase}
+  return {'total_mass_strain': roundedTotalMassStrain, 'total_mass_freq': roundedTotalMassFreq, 'mass_ratio': roundedMassRatio, 'phase': roundedPhase}
 
   // returns the element of array closest to value (if array is presorted, which it is)
   function approx(value: number, array: number[]): number

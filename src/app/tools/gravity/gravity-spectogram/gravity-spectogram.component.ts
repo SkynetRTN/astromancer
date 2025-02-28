@@ -23,11 +23,8 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
     chart: {
       animation: false,
       styledMode: true,
-      zooming: {
-        type: 'x',
-      },
     },
-    colorAxis: { stops: [
+    colorAxis: [{ stops: [
       [0, 'rgb(26, 0, 31)'],
       [0.2, 'rgb(69, 16, 115)'],
       [0.6, 'rgb(13, 206, 154)'],
@@ -38,7 +35,9 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
       // [0.9, '#ff8e80'],
     ],
       reversed: false,
-    },
+
+    //So, the color axis is affected by the model's y value. we have to give the model it's own dummy axis to prevent this.
+    }, {visible: false}],
     legend: {
       align: 'right',
       layout: 'vertical',
@@ -78,13 +77,17 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
     this.service.spectogram$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
-      this.updateData();
+      this.updateSpectogram();
+      //The xAxis of this chart is controlled by the data, not the user. 
+      //It is updated with the data, not with the chart info
+      this.setChartXAxis();
+      this.setChartYAxis();
       this.updateChart();
     });
     this.service.model$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
-      this.updateData();
+      this.updateModel();
       this.updateChart();
     });
 
@@ -92,8 +95,8 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(() => {
       this.setChartTitle();
-      this.setChartXAxis();
-      this.setChartYAxis();
+      // this.setChartXAxis();
+      // this.setChartYAxis();
       this.updateChart();
     });
   }
@@ -108,31 +111,34 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
   }
 
   setData() {
-    //Upper
     this.chartObject.addSeries({
       name: "Model",
       data: [],
       yAxis: 0,
+      colorAxis: 1,
       zIndex: 1,
-      type: 'area',
+      type: 'spline',
       marker: {
         symbol: 'circle',
       },
-    });
-    //Lower
-    this.chartObject.addSeries({
-      name: "Model",
-      data: this.service.getModelArray(),
-      zIndex: 1,
-      type: 'area',
-      marker: {
-        symbol: 'circle',
-      },
-      showInLegend: false,
     });
     this.chartObject.addSeries({
       boostThreshold: 5000,
       name: "Spectrum",
+      data: this.service.getSpectoArray(),
+      yAxis:1,
+      colorAxis: 0,
+      zIndex: 0,
+      interpolation: true,
+      type: 'heatmap',
+    });
+  }
+
+  updateSpectogram() {
+    this.chartObject.series[1].update({
+      boostThreshold: 5000,
+      name: "Spectrum",
+      colsize: this.service.getAxes().dx,
       data: this.service.getSpectoArray(),
       yAxis:1,
       zIndex: 0,
@@ -141,36 +147,16 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  updateData() {
+  updateModel() {
     this.chartObject.series[0].update({
-      name: "Model",
-      data: [],
-      yAxis: 0,
-      zIndex: 1,
-      type: 'area',
-      marker: {
-        symbol: 'circle',
-      },
-    });
-    this.chartObject.series[1].update({
       name: "Model",
       data: this.service.getModelArray(),
       yAxis: 0,
       zIndex: 1,
-      type: 'area',
+      type: 'spline',
       marker: {
         symbol: 'circle',
       },
-    });
-    this.chartObject.series[2].update({
-      boostThreshold: 5000,
-      name: "Spectrum",
-      colsize: this.service.getColumnSize(),
-      data: this.service.getSpectoArray(),
-      yAxis:1,
-      zIndex: 0,
-      interpolation: true,
-      type: 'heatmap',
     });
   }
 
@@ -183,22 +169,37 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
   }
 
   private setChartXAxis(): void {
+    let axes = this.service.getAxes()
+
     this.chartOptions.xAxis = {
-      title: {text: this.service.getXAxisLabel()}
+      title: {text: this.service.getXAxisLabel()},
+      min: axes.xmin,
+      max: axes.xmax,
     };
+
   }
 
   private setChartYAxis(): void {
+
+    let axes = this.service.getAxes()
+
     this.chartOptions.yAxis = [
       //Logarithmic axis
       {
       title: {text: this.service.getYAxisLabel()},
-      endOnTick: false
+      endOnTick: false,
+      type: "logarithmic",
+
+      min: axes.ymin,
+      max: axes.ymax
+      
       },
       //Linear axis
       {
         visible: false,
-        endOnTick: false
+        endOnTick: false,
+        type: "category"
+        
       }
     ]
   }

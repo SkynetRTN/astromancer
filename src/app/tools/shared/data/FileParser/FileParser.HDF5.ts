@@ -65,6 +65,19 @@ export class MyFileParserHDF5 implements MyFileParserStrategy {
         progressSubject?.next(progress)
     });
 
+    //status update
+    gravityJob.statusUpdate$.pipe(
+      takeUntil(gravityJob.complete$)
+  ).subscribe((status) => {
+
+      //THIS IS SO IF THE COMPLETED JOB'S FILE IS DELETED SERVER SIDE AND THE JOB IS MARKED CANCELLED, WE TRY AGAIN INSTANTLY
+      //If the cancelled status gets used for other things, this will be bad.
+      if(status == JobStatus.CANCELLED)
+      {
+        //do something
+      }
+  });
+
     //When done
     gravityJob.complete$.subscribe(
       (complete) => {

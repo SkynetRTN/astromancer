@@ -5,7 +5,7 @@ import Boost from "highcharts/modules/boost"
 
 import { StrainService } from '../gravity-strain.service';
 
-Boost(Highcharts)
+// Boost(Highcharts)
 
 @Component({
   selector: 'app-gravity-highchart',
@@ -70,7 +70,7 @@ export class GravityHighchartComponent implements AfterViewInit, OnDestroy {
     this.service.model$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
-      this.updateData();
+      this.updateModel();
       this.updateChart();
     });
     this.service.chartInfo$.pipe(
@@ -92,7 +92,6 @@ export class GravityHighchartComponent implements AfterViewInit, OnDestroy {
     this.setData();
   }
 
-  // TODO: Split model and data setters
   setData() {
     this.chartObject.addSeries({
       name: "Model",
@@ -118,21 +117,24 @@ export class GravityHighchartComponent implements AfterViewInit, OnDestroy {
   }
 
   updateData() {
-    this.chartObject.series[0].update({
-      name: "Model",
-      data: this.service.getModelDataArray(),
-      type: 'line',
-      lineWidth: 5,
+    this.chartObject.series[1].update({
+      name: "Strain",
+      data: this.service.getDataArray(),
+      type: 'spline',
       marker: {
         // enabled: false,
         symbol: 'circle',
         radius: 3,
       },
     });
-    this.chartObject.series[1].update({
-      name: "Strain",
-      data: this.service.getDataArray().sort((a,b)=> a[0]-b[0]),
-      type: 'line',
+  }
+
+  updateModel() {
+    this.chartObject.series[0].update({
+      name: "Model",
+      data: this.service.getModelDataArray(),
+      type: 'spline',
+      lineWidth: 5,
       marker: {
         // enabled: false,
         symbol: 'circle',

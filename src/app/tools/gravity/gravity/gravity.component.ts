@@ -46,7 +46,7 @@ export class GravityComponent implements OnDestroy {
           alert("error " + error);
         });
 
-      this.fileParser.error$.pipe(
+      this.fileParser.progress$.pipe(
         takeUntil(this.destroy$)
       ).subscribe(
         (progress: any) => {
@@ -63,21 +63,41 @@ export class GravityComponent implements OnDestroy {
 
           let strain = data[0]
           let spectogram: number[][] = data[1].data
-          let x0 = parseFloat(data[1].x0)
-          let dx = parseFloat(data[1].dx)
-          let frequencies = data[1].frequencies
+          let axes = data[1].axes
+
+          console.log(axes)
+
+          let xmin = parseFloat(axes.x[0])
+          let xmax = parseFloat(axes.x[1])
+          let dx   = parseFloat(axes.x[2])
+          let ymin = axes.y[0]
+          let ymax = axes.y[1]
 
           strain.map((p: number[]) => {
             strainResult.push({Time: p[0], Strain: p[1]})
           })
           this.strainService.setData(strainResult);
 
-          this.spectogramService.setColumnSize(dx)
+          this.spectogramService.setAxes({'dx': dx, 'xmin': xmin, 'xmax': xmax, 'ymin': ymin, 'ymax': ymax})
           spectogram.forEach( (y, i) => y.forEach( (value, j) => { 
-            spectogramResult.push({x: i*dx, y: j, value: value })
+            spectogramResult.push({x: i*dx + xmin , y: j, value: value })
           } ) )
           this.spectogramService.setSpecto(spectogramResult)
         });
+
+      this.interfaceService.serverParameters$.pipe(
+        takeUntil(this.destroy$),
+        debounceTime(200)
+      ).subscribe(
+        (source: UpdateSource) => {
+          //don't make a request before the user has a chance to fiddle with the interface
+          if(source==UpdateSource.INIT) return;
+  
+          this.fetchModels(this.interfaceService.getTotalMass(),
+                          this.interfaceService.getMassRatio(),
+                          this.interfaceService.getPhaseShift())
+        }
+      )
 
   }
 
@@ -113,5 +133,42 @@ export class GravityComponent implements OnDestroy {
     this.honorCodeService.honored().subscribe((name: string) => {
       this.chartService.saveImageHighChartOffline(this.strainService.getHighChart(), "gravity", name);
     });
+  }
+
+  private fetchModels(totalMass: number, massRatio: number, phase: number) {
+  
+    let payload = fitValuesToGrid(totalMass,massRatio,phase)
+
+    let freqMassError = totalMass/payload.total_mass_freq
+
+    this.http.get(
+      `${environment.apiUrl}/gravity/model`,
+        {'params': payload}).subscribe(
+          (resp: any) => {
+            let strainModel: StrainDataDict[] = []
+            let freqModel: ModelDataDict[] = []
+            
+            resp.frequency.forEach((p: number[]) => {
+              if(p[0] != null && p[1] != null)
+              {
+                freqModel.push({ 'Time': p[0]*freqMassError, 'Frequency': p[1]/freqMassError})
+              }
+            })
+            // freqModel.sort((a,b) =>  +(a.Time as number) - +(b.Time as number))
+
+            this.spectogramService.setModel(freqModel)
+
+            resp.strain.forEach((p: number[]) => {
+              if(p[0] != null && p[1] != null)
+              {
+                strainModel.push({ 'Time': p[0], 'Strain': p[1]})
+              }
+            })
+
+            // strainModel.sort((a,b) =>  +(a.Time as number) - +(b.Time as number))
+
+            this.strainService.setModelData(strainModel)
+          }
+        )
   }
 }

@@ -32,7 +32,6 @@ export class GravityFormComponent {
   }
 
   onChange($event: InputSliderValue) {
-    console.log($event.value)
     switch($event.key)
     {
       case GravityModelParameters.MERGERTIME: this.service.setMergerTime($event.value); break;
@@ -48,11 +47,11 @@ export class GravityFormComponent {
 
 
 enum GravityModelParameters {
-  MERGERTIME = 'mergerTime',
-  TOTALMASS = 'totalMass',
-  MASSRATIO = 'massRatio',
-  PHASESHIFT = 'phaseShift',
-  DISTANCE = 'distance',
+  MERGERTIME  = 'mergerTime',
+  TOTALMASS   = 'totalMass',
+  MASSRATIO   = 'massRatio',
+  PHASESHIFT  = 'phaseShift',
+  DISTANCE    = 'distance',
   INCLINATION = 'inclination',
 }
 

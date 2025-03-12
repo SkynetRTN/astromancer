@@ -82,7 +82,6 @@ export class RadioSearchComponent implements AfterViewInit {
     if (this.canvas) {
       this.canvas.addEventListener('click', (event: MouseEvent) => {
         this.grabCoordinatesOnClick(event);
-        console.log(this.selectedSource$);
       });
     }
 
@@ -347,11 +346,10 @@ export class RadioSearchComponent implements AfterViewInit {
   querySIMBAD() {
     if (this.selectedCoordinates && this.wcsInfo) {
       if (this.rccords === "equatorial") {
-        console.log(this.wcsInfo.cdelt1,this.naxis1);
-        const url = `https://simbad.cds.unistra.fr/simbad/sim-coo?Coord=${this.selectedCoordinates.ra}d${this.selectedCoordinates.dec}d&CooFrame=Ecl&CooEpoch=2000&CooEqui=2000&CooDefinedFrames=ICRS-J2000&Radius=${this.beamWidth}&Radius.unit=degree&submit=submit+query&CoordList=`;
+        const url = `https://simbad.cds.unistra.fr/simbad/sim-coo?Coord=${this.selectedCoordinates.ra}d${this.selectedCoordinates.dec}d&CooFrame=Ecl&CooEpoch=2000&CooEqui=2000&CooDefinedFrames=ICRS-J2000&Radius=${0.25 * this.beamWidth}&Radius.unit=degree&submit=submit+query&CoordList=`;
         window.open(url, "_blank");
       } else if (this.rccords === "galactic") {
-        const url = `https://simbad.cds.unistra.fr/simbad/sim-coo?Coord=${this.selectedCoordinates.ra}d${this.selectedCoordinates.dec}d&CooFrame=Gal&CooEpoch=2000&CooEqui=2000&CooDefinedFrames=none&Radius=${this.beamWidth}&Radius.unit=degree&submit=submit+query&CoordList=`;
+        const url = `https://simbad.cds.unistra.fr/simbad/sim-coo?Coord=${this.selectedCoordinates.ra}d${this.selectedCoordinates.dec}d&CooFrame=Gal&CooEpoch=2000&CooEqui=2000&CooDefinedFrames=none&Radius=${0.25 * this.beamWidth}&Radius.unit=degree&submit=submit+query&CoordList=`;
         window.open(url, "_blank");
       }
     }
@@ -476,8 +474,6 @@ export class RadioSearchComponent implements AfterViewInit {
     const worldCoordinates = this.getWorldCoordinates(adjustedX, adjustedY, this.scale);
 
     if (worldCoordinates) {
-        // Update coordinates in UI or tooltip
-        console.log("world", worldCoordinates);
         if (worldCoordinates.ra > 360) {
           worldCoordinates.ra -= 360;
         }
@@ -534,7 +530,6 @@ export class RadioSearchComponent implements AfterViewInit {
           const dataUnit = new fitsjs.astro.FITS.DataUnit(null, this.arrayBuffer);
           const headerBlock = new TextDecoder().decode(dataUnit.buffer!.slice(0, 5760));
           this.header = new fitsjs.astro.FITS.Header(headerBlock);
-          console.log('headerBlock', this.header);
   
           // Extract header values
           this.naxis1 = this.header.get('NAXIS1');

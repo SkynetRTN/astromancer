@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, OnDestroy} from '@angular/core';
-import {Subject, takeUntil} from "rxjs";
+import {auditTime, debounceTime, Subject, takeUntil} from "rxjs";
 import * as Highcharts from "highcharts";
 import Heatmap from "highcharts/modules/heatmap"
 import Boost from "highcharts/modules/boost"
@@ -20,10 +20,20 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
   chartConstructor: any = "chart";
   chartObject!: Highcharts.Chart;
   chartOptions: Highcharts.Options = {
+    boost: {
+      seriesThreshold: 5000
+    },
     chart: {
       animation: false,
       styledMode: true,
+      events: {
+        redraw: ()=> {
+          console.log("Spectogram Redraw")
+        }
+      },
     },
+
+    
     colorAxis: [{ stops: [
       [0, 'rgb(26, 0, 31)'],
       [0.2, 'rgb(69, 16, 115)'],
@@ -46,16 +56,17 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
       y: 25,
       symbolHeight: 280
   },
-    tooltip: {
-      enabled: true,
-      shared: false,
-    },
-    exporting: {
-      buttons: {
-        contextButton: {
-          enabled: false,
-        }
+  
+  tooltip: {
+    enabled: true,
+    shared: false,
+  },
+  exporting: {
+    buttons: {
+      contextButton: {
+        enabled: false,
       }
+    }
     }
   };
   private destroy$: Subject<any> = new Subject<any>();
@@ -74,6 +85,7 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.initChartSeries();
+
     this.service.spectogram$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
@@ -84,10 +96,15 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
       this.setChartYAxis();
       this.updateChart();
     });
+
     this.service.model$.pipe(
-      takeUntil(this.destroy$)
+      takeUntil(this.destroy$),
+      // auditTime(100),
     ).subscribe(() => {
+      let t1 = performance.now()
       this.updateModel();
+      let t2 = performance.now()
+      console.log("Model updated in ", (t2-t1), " milliseconds.")
       this.updateChart();
     });
 
@@ -117,47 +134,64 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
       yAxis: 0,
       colorAxis: 1,
       zIndex: 1,
-      type: 'spline',
+
+      // This can be used to add a base x value to every point, which would presumably be faster to how merger time is currently handled
+      // The points don't render when the x min and max are set, however. May be worth revisiting later.
+      // pointInterval: 1,
+      // relativeXValue: true,
+
       marker: {
         symbol: 'circle',
       },
+      
+      type: 'spline',
+
+      // dataGrouping: {
+      //   anchor: "middle",
+      //   groupPixelWidth: 2
+      // },
+      states: {
+        hover: {
+          enabled: false
+        }
+      }
     });
+
     this.chartObject.addSeries({
-      boostThreshold: 5000,
       name: "Spectrum",
       data: this.service.getSpectoArray(),
       yAxis:1,
       colorAxis: 0,
       zIndex: 0,
-      interpolation: true,
-      type: 'heatmap',
+      // interpolation: true,
+      type: 'scatter',
+      
     });
   }
 
   updateSpectogram() {
+    console.log("updateSpectogram()")
     this.chartObject.series[1].update({
-      boostThreshold: 5000,
-      name: "Spectrum",
-      colsize: this.service.getAxes().dx,
+      // boostThreshold: 5000,
+      // name: "Spectrum",
+      // colsize: this.service.getAxes().dx,
       data: this.service.getSpectoArray(),
-      yAxis:1,
-      zIndex: 0,
-      interpolation: true,
-      type: 'heatmap',
+      // enableMouseTracking: false,
+      // yAxis:1,
+      // zIndex: 0,
+      // interpolation: true,
+      type: 'scatter',
     });
   }
 
   updateModel() {
-    this.chartObject.series[0].update({
-      name: "Model",
-      data: this.service.getModelArray(),
-      yAxis: 0,
-      zIndex: 1,
-      type: 'spline',
-      marker: {
-        symbol: 'circle',
-      },
-    });
+    console.log("updateModel()")
+    this.chartObject.series[0].setData(
+      this.service.getModelArray(), 
+      //Redraw chart, do animation, update points
+      false, false, false,
+    );
+    
   }
 
   private updateChart(): void {
@@ -168,6 +202,7 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
     this.chartOptions.title = {text: this.service.getChartTitle()};
   }
 
+  //TODO: use set extremes.
   private setChartXAxis(): void {
     let axes = this.service.getAxes()
 

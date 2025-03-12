@@ -14,8 +14,19 @@ import { SpectogramService } from '../gravity-spectogram.service';
 })
 export class GravityFormComponent {
   formGroup = new FormGroup({
-    mergerTime: new FormControl(30,
-          [Validators.required, Validators.min(10), Validators.max(20)]),
+    // mergerTime: new FormControl(16,
+    //       [Validators.required, Validators.min(10), Validators.max(20)]),
+    // totalMass: new FormControl(30,
+    //       [Validators.required, Validators.min(25), Validators.max(250)]),
+    // massRatio: new FormControl(30,
+    //       [Validators.required, Validators.min(10), Validators.max(20)]),
+    // phaseShift: new FormControl(30,
+    //       [Validators.required, Validators.min(10), Validators.max(20)]),
+    // distance: new FormControl(30,
+    //       [Validators.required, Validators.min(10), Validators.max(20)]),
+    // inclination: new FormControl(30,
+    //       [Validators.required, Validators.min(10), Validators.max(20)]),
+    
   })
 
   protected mergerTimeSubject : Subject<number> = new Subject<number>();

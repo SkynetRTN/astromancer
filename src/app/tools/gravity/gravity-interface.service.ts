@@ -35,6 +35,9 @@ export class InterfaceService implements GravityInterface{
   private strainParameterSubject: BehaviorSubject<UpdateSource> = new BehaviorSubject<UpdateSource>(UpdateSource.INIT);
   public strainParameters$ = this.strainParameterSubject.asObservable();
 
+  private freqParameterSubject: BehaviorSubject<UpdateSource> = new BehaviorSubject<UpdateSource>(UpdateSource.INIT);
+  public freqParameters$ = this.freqParameterSubject.asObservable();
+
   constructor() {
     this.strainData.setData(this.gravityStorage.getData());
   }
@@ -72,30 +75,33 @@ export class InterfaceService implements GravityInterface{
   }
 
   setMergerTime(mergerTime: number): void {
-    this.gravityInterface.setMergerTime(mergerTime);
+    this.gravityInterface.setMergerTime(+mergerTime);
     this.strainParameterSubject.next(UpdateSource.INTERFACE)
+    this.freqParameterSubject.next(UpdateSource.INTERFACE)
   }
 
   setTotalMass(totalMass: number): void {
-    this.gravityInterface.setTotalMass(totalMass);
+    this.gravityInterface.setTotalMass(+totalMass);
     this.serverParameterSubject.next(UpdateSource.INTERFACE);
   }
 
   setMassRatio(massRatio: number): void {
-    this.gravityInterface.setMassRatio(massRatio);
+    this.gravityInterface.setMassRatio(+massRatio);
     this.serverParameterSubject.next(UpdateSource.INTERFACE);
   }
 
   setPhaseShift(phaseShift: number): void {
-    this.gravityInterface.setPhaseShift(phaseShift);
+    this.gravityInterface.setPhaseShift(+phaseShift);
     this.serverParameterSubject.next(UpdateSource.INTERFACE);
   }
 
   setDistance(distance: number): void {
-    this.gravityInterface.setDistance(distance);
+    this.gravityInterface.setDistance(+distance);
+    this.strainParameterSubject.next(UpdateSource.INTERFACE)
   }
 
   setInclination(inclination: number): void {
-    this.gravityInterface.setInclination(inclination);
+    this.gravityInterface.setInclination(+inclination);
+    this.strainParameterSubject.next(UpdateSource.INTERFACE)
   }
 }

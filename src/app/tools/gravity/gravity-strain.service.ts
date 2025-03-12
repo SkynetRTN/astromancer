@@ -1,6 +1,6 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {BehaviorSubject, Subject, takeUntil, debounceTime, throttleTime} from "rxjs";
+import {BehaviorSubject, Subject, takeUntil, auditTime} from "rxjs";
 import * as Highcharts from "highcharts";
 
 import {
@@ -23,7 +23,7 @@ import { environment } from 'src/environments/environment';
 @Injectable()
 export class StrainService implements MyData, ChartInfo, OnDestroy {
   private strainData: StrainData = new StrainData();
-  private modelData: StrainData = new StrainData(true);
+  private modelData: StrainData = new StrainData();
 
   private destroy$: Subject<void> = new Subject<void>();
 
@@ -31,9 +31,11 @@ export class StrainService implements MyData, ChartInfo, OnDestroy {
 
   private storage: StrainStorage = new StrainStorage();
 
-  private dataSubject: BehaviorSubject<StrainData> = new BehaviorSubject<StrainData>(this.strainData);
+  //There isn't a point in using behaviorsubjects of type straindata if the data is retrieved using the getters anyways
+  //using type boolean for now until the need for a specific data type arises
+  private dataSubject: Subject<Boolean> = new Subject<Boolean>;
   public data$ = this.dataSubject.asObservable();
-  private modelSubject: BehaviorSubject<StrainData> = new BehaviorSubject<StrainData>(this.modelData);
+  private modelSubject: Subject<Boolean> = new Subject<Boolean>;
   public model$ = this.modelSubject.asObservable();
 
   private chartInfoSubject: BehaviorSubject<StrainChartInfo> = new BehaviorSubject<StrainChartInfo>(this.gravityChartInfo);
@@ -65,12 +67,12 @@ export class StrainService implements MyData, ChartInfo, OnDestroy {
     //Changes to the interface that don't require server requests. Maybe should be moved to highchart component.
     this.interfaceService.strainParameters$.pipe(
       takeUntil(this.destroy$),
-      debounceTime(100)
+      auditTime(100)
     ).subscribe(
       (source: UpdateSource) => {
         if(source==UpdateSource.INIT) return;
 
-        this.modelSubject.next(this.modelData);
+        this.modelSubject.next(true);
       }
     )
   }
@@ -113,7 +115,7 @@ export class StrainService implements MyData, ChartInfo, OnDestroy {
     this.gravityChartInfo.setDataLabel(data);
     this.storage.saveChartInfo(this.gravityChartInfo.getStorageObject());
     this.chartInfoSubject.next(this.gravityChartInfo);
-    this.dataSubject.next(this.strainData);
+    this.dataSubject.next(true);
   }
 
   setStorageObject(storageObject: StrainChartInfoStorageObject): void {
@@ -147,7 +149,7 @@ export class StrainService implements MyData, ChartInfo, OnDestroy {
   addRow(index: number, amount: number): void {
     this.strainData.addRow(index, amount);
     this.storage.saveData(this.strainData.getData());
-    this.dataSubject.next(this.strainData);
+    this.dataSubject.next(true);
   }
 
   getData(): StrainDataDict[] {
@@ -161,36 +163,29 @@ export class StrainService implements MyData, ChartInfo, OnDestroy {
   removeRow(index: number, amount: number): void {
     this.strainData.removeRow(index, amount);
     this.storage.saveData(this.strainData.getData());
-    this.dataSubject.next(this.strainData);
+    this.dataSubject.next(true);
   }
 
   setData(data: StrainDataDict[]): void {
     this.strainData.setData(data);
     this.storage.saveData(this.strainData.getData());
-    this.dataSubject.next(this.strainData);
+    this.dataSubject.next(true);
   }
 
   resetData(): void {
     this.strainData.setData(StrainData.getDefaultData());
     this.storage.saveData(this.strainData.getData());
-    this.dataSubject.next(this.strainData);
+    this.dataSubject.next(true);
   }
 
 
   //Model Data
   // addModelRow(index: number, amount: number): void 
 
-  getModelData(ignoreMergerTime: Boolean = false): StrainDataDict[] {
+  getModelData(): StrainDataDict[] {
 
-    if(ignoreMergerTime) return this.modelData.getData()
+    return this.modelData.getData()
 
-    let mergerTime: number = this.interfaceService.getMergerTime()
-
-    return this.modelData.getData().map((p) => {
-      let time = p.Time?p.Time:0;
-      time+=mergerTime;
-      return {'Time': time, "Strain": p.Strain}
-    });
   }
 
   getModelDataArray(ignoreMergerTime: Boolean = false): number[][] {
@@ -216,13 +211,13 @@ export class StrainService implements MyData, ChartInfo, OnDestroy {
   setModelData(data: StrainDataDict[]): void {
     this.modelData.setData(data);
     // this.storage.saveData(this.strainData.getData());
-    this.modelSubject.next(this.modelData);
+    this.modelSubject.next(true);
   }
 
   resetModelData(): void {
     this.modelData.setData(StrainData.getDefaultData());
     // this.storage.saveData(this.strainData.getData());
-    this.modelSubject.next(this.modelData);
+    this.modelSubject.next(true);
   }
 
 
@@ -232,5 +227,9 @@ export class StrainService implements MyData, ChartInfo, OnDestroy {
 
   getHighChart(): Highcharts.Chart {
     return this.highChart;
+  }
+
+  getMergerTime(): number {
+    return this.interfaceService.getMergerTime()
   }
 }

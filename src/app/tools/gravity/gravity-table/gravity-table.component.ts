@@ -27,7 +27,7 @@ export class GravityTableComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.service.data$.pipe(
       takeUntil(this.destroy$)
-    ).subscribe((data: MyData) => {
+    ).subscribe((update) => {
       this.dataSet = this.service.getData();
       this.table.renderTable();
     })

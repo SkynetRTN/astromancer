@@ -99,12 +99,11 @@ export interface SpectoAxes
  */
 export class ModelData implements MyData{
   private dataDict: ModelDataDict[];
-  //May be obsolete
-  private sampleWidth: number;
+  private dataArr: [];
 
   constructor() {
     this.dataDict = [];
-    this.sampleWidth = 1;
+    this.dataArr = [];
   }
 
   public static getDefaultData(): ModelDataDict[] {
@@ -124,16 +123,12 @@ export class ModelData implements MyData{
   getData(): ModelDataDict[] {
     return this.dataDict;
   }
-
-  getSampleWidth(): number {
-    return this.sampleWidth
-  }
   
   getDataArray(): number[][] {
-    let data: number[][] = [[]]
+    let data: number[][] = []
     this.dataDict.forEach((value) => {
       if(value.Time == null || value.Frequency == null ) return;
-      data.push([value.Time, value.Frequency])
+      data.push([+value.Time, +value.Frequency])
     })
     return data; 
   }
@@ -145,10 +140,6 @@ export class ModelData implements MyData{
   setData(data: ModelDataDict[]): void {
     this.dataDict = data;
   }
-
-  setSampleWidth(width: number): void {
-    this.sampleWidth = width;
-  }
 }
 
 /**
@@ -158,22 +149,14 @@ export class ModelData implements MyData{
 export class StrainData implements MyData {
   private dataDict: StrainDataDict[];
 
-  //There is likely a more elegent solugtion that uses polymorphism.
-  constructor(private isModel: Boolean = false) {
-    this.dataDict = isModel?StrainData.getDefaultModel():StrainData.getDefaultData();
+  constructor() {
+    this.dataDict = StrainData.getDefaultData();
   }
 
   public static getDefaultData(): StrainDataDict[] 
   {
     return dummyStrainData.map((e) => {
       return {'Time': e.Time, 'Strain': e.Strain}
-    });
-  }
-
-  public static getDefaultModel(): StrainDataDict[] 
-  {
-    return dummyStrainData.map((e) => {
-      return {'Time': e.Time, 'Strain': e.Model}
     });
   }
 
@@ -249,12 +232,12 @@ export interface GravityInterfaceStorageObject {
 
 export class GravityInterfaceImpl implements GravityInterface {
 
-  private mergerTime!: number;
-  private totalMass!: number;
-  private massRatio!: number;
-  private phaseShift!: number;
-  private distance!: number;
-  private inclination!: number;
+  private mergerTime: number = 16;
+  private totalMass: number = 25;
+  private massRatio: number = 0;
+  private phaseShift: number = 0;
+  private distance: number = 300;
+  private inclination: number = 0;
 
   getMergerTime(): number{
     return this.mergerTime

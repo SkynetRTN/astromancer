@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, OnDestroy} from '@angular/core';
-import {Subject, takeUntil} from "rxjs";
+import {auditTime, debounceTime, Subject, takeUntil} from "rxjs";
 import * as Highcharts from "highcharts";
 import Boost from "highcharts/modules/boost"
 
@@ -29,6 +29,12 @@ export class GravityHighchartComponent implements AfterViewInit, OnDestroy {
       zooming: {
         type: 'x',
       },
+
+      events: {
+        redraw: ()=> {
+          console.log("Strain Redraw")
+        }
+      }
     },
     legend: {
       align: 'center',
@@ -68,7 +74,8 @@ export class GravityHighchartComponent implements AfterViewInit, OnDestroy {
       this.updateChart();
     });
     this.service.model$.pipe(
-      takeUntil(this.destroy$)
+      takeUntil(this.destroy$),
+      // auditTime(100)
     ).subscribe(() => {
       this.updateModel();
       this.updateChart();
@@ -81,6 +88,7 @@ export class GravityHighchartComponent implements AfterViewInit, OnDestroy {
       this.setChartYAxis();
       this.updateChart();
     });
+    
   }
 
   ngOnDestroy(): void {
@@ -95,52 +103,49 @@ export class GravityHighchartComponent implements AfterViewInit, OnDestroy {
   setData() {
     this.chartObject.addSeries({
       name: "Model",
-      data: this.service.getModelDataArray(),
-      type: 'line',
+      data: [],
+      type: 'spline',
       lineWidth: 5,
       marker: {
         // enabled: false,
         symbol: 'circle',
         radius: 3,
       },
+
+      dataGrouping: {
+        anchor: "middle",
+        groupPixelWidth: 2
+      }
     });
     this.chartObject.addSeries({
       name: "Strain",
       data: this.service.getDataArray(),
-      type: 'line',
+      type: 'spline',
       marker: {
         // enabled: false,
         symbol: 'circle',
         radius: 3,
       },
+
+      dataGrouping: {
+        anchor: "middle",
+        groupPixelWidth: 2
+      }
     });
   }
 
   updateData() {
-    this.chartObject.series[1].update({
-      name: "Strain",
-      data: this.service.getDataArray(),
-      type: 'spline',
-      marker: {
-        // enabled: false,
-        symbol: 'circle',
-        radius: 3,
-      },
-    });
+    this.chartObject.series[1].setData(
+      this.service.getDataArray(),
+      false, false, false
+    );
   }
 
   updateModel() {
-    this.chartObject.series[0].update({
-      name: "Model",
-      data: this.service.getModelDataArray(),
-      type: 'spline',
-      lineWidth: 5,
-      marker: {
-        // enabled: false,
-        symbol: 'circle',
-        radius: 3,
-      },
-    });
+    this.chartObject.series[0].setData(
+      this.service.getModelDataArray(),
+      false, false, false
+    );
   }
 
   private updateChart(): void {

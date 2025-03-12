@@ -3,7 +3,7 @@ import {ChartAction} from "../../shared/types/actions";
 import {HonorCodePopupService} from "../../shared/honor-code-popup/honor-code-popup.service";
 import {HonorCodeChartService} from "../../shared/honor-code-popup/honor-code-chart.service";
 import {MyFileParser} from "../../shared/data/FileParser/FileParser";
-import {debounce, debounceTime, Subject, takeUntil, withLatestFrom} from "rxjs";
+import {auditTime, debounce, debounceTime, Subject, takeUntil, withLatestFrom} from "rxjs";
 import {fitValuesToGrid, ModelDataDict, SpectogramDataDict, StrainDataDict} from "../gravity.service.util";
 import {FileType} from "../../shared/data/FileParser/FileParser.util";
 import {MatDialog} from "@angular/material/dialog";
@@ -65,7 +65,8 @@ export class GravityComponent implements OnDestroy {
           let spectogram: number[][] = data[1].data
           let axes = data[1].axes
 
-          console.log(axes)
+          console.log("Spectogram points: ", spectogram.length * spectogram[0].length)
+          console.log("Strain points: ", strain.length)
 
           let xmin = parseFloat(axes.x[0])
           let xmax = parseFloat(axes.x[1])
@@ -87,9 +88,10 @@ export class GravityComponent implements OnDestroy {
 
       this.interfaceService.serverParameters$.pipe(
         takeUntil(this.destroy$),
-        debounceTime(200)
       ).subscribe(
         (source: UpdateSource) => {
+          console.log("Server param update")
+
           //don't make a request before the user has a chance to fiddle with the interface
           if(source==UpdateSource.INIT) return;
   
@@ -137,6 +139,8 @@ export class GravityComponent implements OnDestroy {
 
   private fetchModels(totalMass: number, massRatio: number, phase: number) {
   
+    let time = performance.now()
+
     let payload = fitValuesToGrid(totalMass,massRatio,phase)
 
     let freqMassError = totalMass/payload.total_mass_freq
@@ -148,6 +152,10 @@ export class GravityComponent implements OnDestroy {
             let strainModel: StrainDataDict[] = []
             let freqModel: ModelDataDict[] = []
             
+            let temp = time
+            time = performance.now()
+            console.log("Model Retrieved in ", (time - temp), " Milliseconds")
+
             resp.frequency.forEach((p: number[]) => {
               if(p[0] != null && p[1] != null)
               {
@@ -155,8 +163,6 @@ export class GravityComponent implements OnDestroy {
               }
             })
             // freqModel.sort((a,b) =>  +(a.Time as number) - +(b.Time as number))
-
-            this.spectogramService.setModel(freqModel)
 
             resp.strain.forEach((p: number[]) => {
               if(p[0] != null && p[1] != null)
@@ -167,6 +173,9 @@ export class GravityComponent implements OnDestroy {
 
             // strainModel.sort((a,b) =>  +(a.Time as number) - +(b.Time as number))
 
+             //Calling these functions causes subscription updates.
+             //VERY Slow. Debouncing allows them to run async at least
+            this.spectogramService.setModelData(freqModel)
             this.strainService.setModelData(strainModel)
           }
         )

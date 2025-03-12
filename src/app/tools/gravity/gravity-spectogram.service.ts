@@ -1,6 +1,6 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {BehaviorSubject, Subject, takeUntil, debounceTime} from "rxjs";
+import {BehaviorSubject, Subject, takeUntil, debounceTime, auditTime} from "rxjs";
 import * as Highcharts from "highcharts";
 
 import {
@@ -32,9 +32,9 @@ export class SpectogramService implements ChartInfo, OnDestroy {
 
   private gravityChartInfo: StrainChartInfo = new StrainChartInfo();
 
-  private spectogramSubject: BehaviorSubject<SpectoData> = new BehaviorSubject<SpectoData>(this.spectoData);
+  private spectogramSubject: Subject<Boolean> = new Subject<Boolean>;
   public spectogram$ = this.spectogramSubject.asObservable();
-  private modelSubject: BehaviorSubject<ModelData> = new BehaviorSubject<ModelData>(this.modelData);
+  private modelSubject: Subject<Boolean> = new Subject<Boolean>;
   public model$ = this.modelSubject.asObservable();
 
   private chartInfoSubject: BehaviorSubject<StrainChartInfo> = new BehaviorSubject<StrainChartInfo>(this.gravityChartInfo);
@@ -46,14 +46,14 @@ export class SpectogramService implements ChartInfo, OnDestroy {
     this.spectoData.setData([{x: 0, y: 0, value: 0}]);
     this.modelData.setData([]);
 
-    this.interfaceService.strainParameters$.pipe(
+    this.interfaceService.freqParameters$.pipe(
       takeUntil(this.destroy$),
-      debounceTime(100)
+      auditTime(100)
     ).subscribe(
       (source: UpdateSource) => {
         if(source==UpdateSource.INIT) return;
 
-        this.modelSubject.next(this.modelData);
+        this.modelSubject.next(true);
       }
     )
   } 
@@ -93,7 +93,7 @@ export class SpectogramService implements ChartInfo, OnDestroy {
   setDataLabel(data: string): void {
     this.gravityChartInfo.setDataLabel(data);
     this.chartInfoSubject.next(this.gravityChartInfo);
-    this.spectogramSubject.next(this.spectoData);
+    this.spectogramSubject.next(true);
   }
 
   setStorageObject(storageObject: StrainChartInfoStorageObject): void {
@@ -129,12 +129,12 @@ export class SpectogramService implements ChartInfo, OnDestroy {
 
   setSpecto(data: SpectogramDataDict[]): void {
     this.spectoData.setData(data);
-    this.spectogramSubject.next(this.spectoData);
+    this.spectogramSubject.next(true);
   }
 
   resetSpecto(): void {
     this.spectoData.setData(SpectoData.getDefaultData());
-    this.spectogramSubject.next(this.spectoData);
+    this.spectogramSubject.next(true);
   }
 
   getAxes(): SpectoAxes {
@@ -151,7 +151,7 @@ export class SpectogramService implements ChartInfo, OnDestroy {
 
   getModelArray(ignoreMergerTime: Boolean = false): number[][] {
 
-    if(ignoreMergerTime) return this.modelData.getDataArray();
+    if (ignoreMergerTime) return this.modelData.getDataArray();
 
     let mergerTime: number = this.interfaceService.getMergerTime()
     
@@ -164,24 +164,15 @@ export class SpectogramService implements ChartInfo, OnDestroy {
     });
   }
 
-  setModel(data: ModelDataDict[]): void {
+  setModelData(data: ModelDataDict[]): void {
     this.modelData.setData(data);
-    this.modelSubject.next(this.modelData);
+    this.modelSubject.next(true);
   }
 
   resetModel(): void {
     this.modelData.setData(ModelData.getDefaultData());
-    this.modelSubject.next(this.modelData);
+    this.modelSubject.next(true);
   }
-
-  getSampleWidth(): number {
-    return this.modelData.getSampleWidth()
-  }
-
-  setSampleWidth(size: number): void {
-    this.modelData.setSampleWidth(size)
-  }
-  
 
   setHighChart(chart: Highcharts.Chart): void {
     this.highChart = chart;
@@ -191,5 +182,8 @@ export class SpectogramService implements ChartInfo, OnDestroy {
     return this.highChart;
   }
 
+  getMergerTime(): number {
+    return this.interfaceService.getMergerTime()
+  }
 
 }

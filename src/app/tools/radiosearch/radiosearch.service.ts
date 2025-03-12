@@ -274,14 +274,11 @@ export class RadioSearchService {
 
 
   fetchRadioCatalog(rccords: string, ra: number, dec: number, width: number, height: number): Observable<any> {
-    // Build the payload with RA, Dec, width, and height
-  const payload = {rccords, ra, dec, width, height };
-
-  return this.http.post(`${environment.apiUrl}/radiosearch/radio-catalog/query`, payload);
+    const payload = {rccords, ra, dec, width, height };
+    return this.http.post(`${environment.apiUrl}/radiosearch/radio-catalog/query`, payload);
   }
 
 
-  // Helper functions for RA and Dec conversions
   public convertToHMS(ra: number): string {
     const hours = Math.floor(ra / 15);
     const minutes = Math.floor((ra / 15 - hours) * 60);

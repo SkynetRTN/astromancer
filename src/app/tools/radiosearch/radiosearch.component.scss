@@ -191,12 +191,20 @@
   bottom: -11%;
 }
 
+.new-fits-button-container {
+  position: absolute;
+  justify-self: center; 
+  left: 5px;
+  bottom: -11%;
+}
+
 .button-container {
   position: relative;
   width: 130px;
   height: auto;
   font-size: 1vw;
   left: 20vw;
+  padding-top: 15px;
   padding-bottom: 15px;
 }
 

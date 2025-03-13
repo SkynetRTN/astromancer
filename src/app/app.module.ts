@@ -32,6 +32,10 @@ import {RcModule} from "./tools/rc/rc.module";
 import {NgOptimizedImage} from "@angular/common";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatNativeDateModule} from "@angular/material/core";
+import { SourceFinderComponent } from './tools/source-finder/source-finder.component';
+import { SourceFinderHighchartComponent } from './tools/source-finder/source-finder-highchart/source-finder-highchart.component';
+import { SourceFinderCanvasComponent } from './tools/source-finder/source-finder-canvas/source-finder-canvas.component';
+import { SourceFinderFormComponent } from './tools/source-finder/source-finder-form/source-finder-form.component';
 
 
 registerAllModules();
@@ -69,6 +73,10 @@ registerAllModules();
         HomeComponent,
         AboutComponent,
         PageNotFoundComponent,
+        SourceFinderComponent,
+        SourceFinderHighchartComponent,
+        SourceFinderCanvasComponent,
+        SourceFinderFormComponent,
     ],
     providers: [AppearanceStorageService, AppearanceService],
     bootstrap: [AppComponent],

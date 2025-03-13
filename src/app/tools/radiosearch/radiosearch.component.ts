@@ -1,7 +1,8 @@
-import { AfterViewInit, HostListener, Component, ViewChild, ElementRef } from '@angular/core';
+import { AfterViewInit, HostListener, Component, ViewChild, ElementRef, Inject } from '@angular/core';
 import { RadioSearchHighChartService, RadioSearchService } from './radiosearch.service'; // Import the service
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { HonorCodePopupService } from '../shared/honor-code-popup/honor-code-popup.service';
 import { HonorCodeChartService } from '../shared/honor-code-popup/honor-code-chart.service';
 import { FittingResult } from './radiosearch.service.util';
@@ -47,6 +48,9 @@ export class RadioSearchComponent implements AfterViewInit {
   averageFlux$ = this.averageFluxSubject.asObservable();
   zoomLevel: number = 100;
   zoomScale: number = 1;
+  beamWidth: number = 1;
+  arrayBuffer: ArrayBuffer | null = null;
+  header: fitsjs.astro.FITS.Header | null = null;
 
   dataSource = new MatTableDataSource<any>([]);  // Initialize the data source
   results: any = [];
@@ -64,15 +68,11 @@ export class RadioSearchComponent implements AfterViewInit {
   @ViewChild('chartContainer', { static: false }) chartContainer!: ElementRef;
 
   ngOnDestroy() {
-    // Remove the event listener when the component is destroyed
     window.removeEventListener('beforeunload', this.confirmExit);
   }
 
   ngAfterViewInit() {
-    // Bind the MatSort to the dataSource
     this.dataSource.sort = this.sort;
-
-    // Initialize the canvas element after the view has been fully rendered
     this.canvas = this.canvasRef.nativeElement;
 
     if (!this.canvas) {
@@ -82,34 +82,31 @@ export class RadioSearchComponent implements AfterViewInit {
     if (this.canvas) {
       this.canvas.addEventListener('click', (event: MouseEvent) => {
         this.grabCoordinatesOnClick(event);
-        // this.queryCoordinatesOnClick(event); 
-        console.log(this.selectedSource$);
       });
     }
 
-    // Add mouse move listener to display RA/Dec on hover
     this.canvas.addEventListener('mousemove', (event) => {
       this.displayCoordinates(event);
     });
 
-    // Add drag-and-drop listeners to the drop zone
     this.fileDropZoneRef.nativeElement.addEventListener('dragenter', () => this.onDragEnter());
     this.fileDropZoneRef.nativeElement.addEventListener('dragleave', () => this.onDragLeave());
     this.fileDropZoneRef.nativeElement.addEventListener('drop', (event: DragEvent) => this.onFileDrop(event));
   }
 
   constructor(
-    private service: RadioSearchService, // Inject the service
+    private service: RadioSearchService, 
     private hcservice: RadioSearchHighChartService,
     private honorCodeService: HonorCodePopupService,
     private chartService: HonorCodeChartService,
+    private dialog: MatDialog
   ) {}
 
 
   @HostListener('window:beforeunload', ['$event'])
   confirmExit(event: BeforeUnloadEvent): void {
-    if (this.fitsLoaded) { // Only warn if there's an uploaded image
-      event.preventDefault(); // Required for older browsers
+    if (this.fitsLoaded) { 
+      event.preventDefault();
     }
   }
 
@@ -169,11 +166,6 @@ export class RadioSearchComponent implements AfterViewInit {
 
   onFileUnselected(event: Event): void {
     this.fitsLoaded = false;
-  }
-
-
-  drawCrosshair(): void {
-    
   }
 
 
@@ -300,11 +292,9 @@ export class RadioSearchComponent implements AfterViewInit {
         context.strokeStyle = '#ff0000';
         context.lineWidth = 2;
 
-        // Horizontal line
         context.moveTo(mouseX - crossSize, mouseY);
         context.lineTo(mouseX + crossSize, mouseY);
 
-        // Vertical line
         context.moveTo(mouseX, mouseY - crossSize);
         context.lineTo(mouseX, mouseY + crossSize);
 
@@ -321,8 +311,8 @@ export class RadioSearchComponent implements AfterViewInit {
     const rect = this.canvas.getBoundingClientRect();
 
     // Normalize mouse coordinates from CSS size to actual size
-    const scaleX = this.canvas.width / rect.width;  // Scale factor in X
-    const scaleY = this.canvas.height / rect.height; // Scale factor in Y
+    const scaleX = this.canvas.width / rect.width; 
+    const scaleY = this.canvas.height / rect.height;
     const mouseX = (event.clientX - rect.left) * scaleX;
     const mouseY = (event.clientY - rect.top) * scaleY;
 
@@ -330,7 +320,7 @@ export class RadioSearchComponent implements AfterViewInit {
     const adjustedX = mouseX - this.canvasXOffset;
     const adjustedY = mouseY - this.canvasYOffset;
 
-    const crossSize = 10 * this.zoomScale; // Adjust cross size as needed
+    const crossSize = 10 * this.zoomScale;
 
     this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2);
     this.selectedCoordinates = this.currentCoordinates;
@@ -341,11 +331,9 @@ export class RadioSearchComponent implements AfterViewInit {
       context.strokeStyle = '#ff0000';
       context.lineWidth = 2;
 
-      // Horizontal line of the cross
       context.moveTo(mouseX - crossSize, mouseY);
       context.lineTo(mouseX + crossSize, mouseY);
 
-      // Vertical line of the cross
       context.moveTo(mouseX, mouseY - crossSize);
       context.lineTo(mouseX, mouseY + crossSize);
 
@@ -358,11 +346,10 @@ export class RadioSearchComponent implements AfterViewInit {
   querySIMBAD() {
     if (this.selectedCoordinates && this.wcsInfo) {
       if (this.rccords === "equatorial") {
-        console.log(this.wcsInfo.cdelt1,this.naxis1);
-        const url = `https://simbad.cds.unistra.fr/simbad/sim-coo?Coord=${this.selectedCoordinates.ra}d${this.selectedCoordinates.dec}d&CooFrame=Ecl&CooEpoch=2000&CooEqui=2000&CooDefinedFrames=ICRS-J2000&Radius=${Math.round(Math.abs(this.wcsInfo.cdelt1 * 60 * (this.naxis1 / 100)))}&Radius.unit=arcmin&submit=submit+query&CoordList=`;
+        const url = `https://simbad.cds.unistra.fr/simbad/sim-coo?Coord=${this.selectedCoordinates.ra}d${this.selectedCoordinates.dec}d&CooFrame=Ecl&CooEpoch=2000&CooEqui=2000&CooDefinedFrames=ICRS-J2000&Radius=${0.25 * this.beamWidth}&Radius.unit=degree&submit=submit+query&CoordList=`;
         window.open(url, "_blank");
       } else if (this.rccords === "galactic") {
-        const url = `https://simbad.cds.unistra.fr/simbad/sim-coo?Coord=${this.selectedCoordinates.ra}d${this.selectedCoordinates.dec}d&CooFrame=Gal&CooEpoch=2000&CooEqui=2000&CooDefinedFrames=none&Radius=${Math.round(Math.abs(this.wcsInfo.cdelt1 * 60 * (this.naxis1 / 100)))}&Radius.unit=arcmin&submit=submit+query&CoordList=`;
+        const url = `https://simbad.cds.unistra.fr/simbad/sim-coo?Coord=${this.selectedCoordinates.ra}d${this.selectedCoordinates.dec}d&CooFrame=Gal&CooEpoch=2000&CooEqui=2000&CooDefinedFrames=none&Radius=${0.25 * this.beamWidth}&Radius.unit=degree&submit=submit+query&CoordList=`;
         window.open(url, "_blank");
       }
     }
@@ -487,8 +474,6 @@ export class RadioSearchComponent implements AfterViewInit {
     const worldCoordinates = this.getWorldCoordinates(adjustedX, adjustedY, this.scale);
 
     if (worldCoordinates) {
-        // Update coordinates in UI or tooltip
-        console.log("world", worldCoordinates);
         if (worldCoordinates.ra > 360) {
           worldCoordinates.ra -= 360;
         }
@@ -533,8 +518,8 @@ export class RadioSearchComponent implements AfterViewInit {
       const reader = new FileReader();
   
       reader.onload = (e) => {
-        const arrayBuffer = e.target?.result as ArrayBuffer;
-        if (!arrayBuffer) {
+        this.arrayBuffer = e.target?.result as ArrayBuffer;
+        if (!this.arrayBuffer) {
           console.error('Failed to read file as ArrayBuffer.');
           resolve();
           return;
@@ -542,34 +527,35 @@ export class RadioSearchComponent implements AfterViewInit {
   
         try {
           // Parse FITS header
-          const dataUnit = new fitsjs.astro.FITS.DataUnit(null, arrayBuffer);
+          const dataUnit = new fitsjs.astro.FITS.DataUnit(null, this.arrayBuffer);
           const headerBlock = new TextDecoder().decode(dataUnit.buffer!.slice(0, 5760));
-          const header = new fitsjs.astro.FITS.Header(headerBlock);
+          this.header = new fitsjs.astro.FITS.Header(headerBlock);
   
           // Extract header values
-          this.naxis1 = header.get('NAXIS1');
-          this.naxis2 = header.get('NAXIS2');
-          this.rccords = header.get('RCCORDS');
-          this.ra = header.get('CENTERRA');
-          this.dec = header.get('CENTERDE');
-          const bitpix = header.get('BITPIX');
-          const bscale = header.get('BSCALE') || 1;
-          const bzero = header.get('BZERO') || 0;
-          this.lowerFreq = header.get('RCMINFQ');
-          this.upperFreq = header.get('RCMAXFQ');
-          this.targetFreq = ((this.lowerFreq + this.upperFreq) / 2)
+          this.naxis1 = this.header.get('NAXIS1');
+          this.naxis2 = this.header.get('NAXIS2');
+          this.rccords = this.header.get('RCCORDS');
+          this.ra = this.header.get('CENTERRA');
+          this.dec = this.header.get('CENTERDE');
+          const bitpix = this.header.get('BITPIX');
+          const bscale = this.header.get('BSCALE') || 1;
+          const bzero = this.header.get('BZERO') || 0;
+          this.lowerFreq = this.header.get('RCMINFQ');
+          this.upperFreq = this.header.get('RCMAXFQ');
+          this.targetFreq = ((this.lowerFreq + this.upperFreq) / 2);
+          this.beamWidth = this.header.get('BEAM');
 
           if (!this.naxis1 || !this.naxis2 || !bitpix) {
             throw new Error('Invalid or missing header values (NAXIS1, NAXIS2, BITPIX).');
           }
   
           // Calculate data offset and pixel array size
-          const headerLength = this.service.getHeaderLength(arrayBuffer) + 2880;
+          const headerLength = this.service.getHeaderLength(this.arrayBuffer) + 2880;
           const dataOffset = headerLength;
           const bytesPerPixel = Math.abs(bitpix) / 8;
           const rowLength = this.naxis1 * bytesPerPixel;
   
-          const dataView = new DataView(arrayBuffer, dataOffset);
+          const dataView = new DataView(this.arrayBuffer, dataOffset);
           const pixelArray = new Float64Array(this.naxis1 * this.naxis2);
   
           // Read pixel data based on BITPIX
@@ -636,12 +622,12 @@ export class RadioSearchComponent implements AfterViewInit {
   
           // Extract WCS (World Coordinate System) info
           this.wcsInfo = {
-            crpix1: parseFloat(header.get('CRPIX1')) || 0,
-            crpix2: parseFloat(header.get('CRPIX2')) || 0,
-            crval1: parseFloat(header.get('CRVAL1')) || 0,
-            crval2: parseFloat(header.get('CRVAL2')) || 0,
-            cdelt1: parseFloat(header.get('CDELT1')) || 1,
-            cdelt2: parseFloat(header.get('CDELT2')) || 1,
+            crpix1: parseFloat(this.header.get('CRPIX1')) || 0,
+            crpix2: parseFloat(this.header.get('CRPIX2')) || 0,
+            crval1: parseFloat(this.header.get('CRVAL1')) || 0,
+            crval2: parseFloat(this.header.get('CRVAL2')) || 0,
+            cdelt1: parseFloat(this.header.get('CDELT1')) || 1,
+            cdelt2: parseFloat(this.header.get('CDELT2')) || 1,
           };
   
           this.width = Math.abs(this.wcsInfo.cdelt1) * this.naxis1;
@@ -659,6 +645,43 @@ export class RadioSearchComponent implements AfterViewInit {
   
       reader.readAsArrayBuffer(file);
     });
+  }  
+
+
+  saveModifiedFITS(): void {
+    try {
+      if (this.arrayBuffer && this.header && this.ra && this.dec && this.wcsInfo) {
+        let updatedHeader = this.header.block
+          .replace(/CENTERRA= *[\d.-]+/, `CENTERRA= ${String(this.ra - this.sliderXOffset).padStart(20)}`)
+          .replace(/CENTERDE= *[\d.-]+/, `CENTERDE= ${String(this.dec - this.sliderYOffset).padStart(20)}`)
+          .replace(/CRVAL1  = *[\d.-]+/, `CRVAL1  = ${String(this.wcsInfo.crval1 - this.sliderYOffset).padStart(20)}`)
+          .replace(/CRVAL2  = *[\d.-]+/, `CRVAL2  = ${String(this.wcsInfo.crval2 - this.sliderYOffset).padStart(20)}`);
+
+        const headerLength = updatedHeader.length;
+  
+        const paddingSize = 2880 - (headerLength % 2880);
+        updatedHeader = updatedHeader.padEnd(headerLength + paddingSize, ' ');
+
+        const newBuffer = new ArrayBuffer(this.arrayBuffer.byteLength);
+        const newView = new Uint8Array(newBuffer);
+  
+        newView.set(new TextEncoder().encode(updatedHeader), 0);
+
+        const originalView = new Uint8Array(this.arrayBuffer);
+        newView.set(
+          originalView.slice(updatedHeader.length),
+          updatedHeader.length                      
+        );
+
+        const fitsBlob = new Blob([newBuffer], { type: 'application/octet-stream' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(fitsBlob);
+        link.download = 'modified_file.fits';
+        link.click();
+      }
+    } catch (error) {
+      console.error('Error saving modified FITS file:', error);
+    }
   }  
 
 
@@ -984,8 +1007,19 @@ export class RadioSearchComponent implements AfterViewInit {
   }
   
 
+  noUpload(): void {
+    this.dialog.open(DialogContent, {
+      data: { message: "Please upload a Radio Cartographer FITS file!" },
+      width: '300px',
+    });
+  }
+
+
   deleteFITS(): void {
-    // Reset properties to their initial values
+    if (this.fitsLoaded == false) { 
+
+    }
+    
     this.fitsFileName = undefined;
     this.ra = undefined;
     this.dec = undefined;
@@ -1053,5 +1087,27 @@ export class RadioSearchComponent implements AfterViewInit {
   getResults(jobId: number): void {
     this.service.getRadioCatalogResults(jobId)?.subscribe((result: any) => {
     });
+  }
+}
+
+
+@Component({
+  selector: 'app-dialog-content',
+  template: `
+    <h1 mat-dialog-title>Warning!</h1>
+    <div mat-dialog-content>{{ data.message }}</div>
+    <div mat-dialog-actions>
+      <button mat-button (click)="closeDialog()">OK</button>
+    </div>
+  `
+})
+export class DialogContent {
+  constructor(
+    public dialogRef: MatDialogRef<DialogContent>,
+    @Inject(MAT_DIALOG_DATA) public data: { message: string }  // Inject data properly
+  ) {}
+
+  closeDialog(): void {
+    this.dialogRef.close();
   }
 }

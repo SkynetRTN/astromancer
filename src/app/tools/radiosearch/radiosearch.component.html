@@ -63,28 +63,43 @@
       </div>
       
       <!-- Download Button Display -->
-      <div class="download-button-container" [ngStyle]="{'opacity': ra ? 1 : 0}">
+      <div class="download-button-container" [ngStyle]="{'opacity': fitsLoaded ? 1 : 0}">
         <button (click)="saveCanvas()">Download</button>
       </div>
 
-      <div class="delete-button-container" [ngStyle]="{'opacity': ra ? 1 : 0}">
+      <div class="delete-button-container" [ngStyle]="{'opacity': fitsLoaded ? 1 : 0}">
         <button (click)="deleteFITS()">Delete</button>
       </div>
 
-      <div class="query-button-container" *ngIf="selectedCoordinates?.ra != null && selectedCoordinates?.dec != null">
-        <span *ngIf="selectedCoordinates && rccords" [innerHTML]="convertCoordinates(selectedCoordinates.ra, selectedCoordinates.dec, rccords, false)">
+      <div class="query-button-container">
+        <span *ngIf="selectedCoordinates && rccords" 
+              [innerHTML]="convertCoordinates(selectedCoordinates.ra, selectedCoordinates.dec, rccords, false)">
         </span>
-        <button (click)="querySIMBAD()" color="'primary'" style="border-radius: 3px; margin-left: 10px;" mat-raised-button>
+        <button 
+          (click)="fitsLoaded ? querySIMBAD() : noUpload()" 
+          color="'primary'" 
+          style="border-radius: 3px; margin-left: 10px;" 
+          mat-raised-button>
           Query
         </button>
-      </div>        
+      </div>
+      
+      <div class="new-fits-button-container">
+        <button 
+          (click)="fitsLoaded ? saveModifiedFITS() : noUpload()" 
+          color="'primary'" 
+          style="border-radius: 3px; margin-left: 10px;" 
+          mat-raised-button>
+          Save FITS
+        </button>
+      </div>         
     </div>
   </div>
 
   <!-- Right container for highchart -->
   <div class="right-container">
     <app-radiosearch-highchart></app-radiosearch-highchart>
-    <p class="below-text" *ngIf="selectedSource$ | async as selectedSource">
+    <ng-container class="below-text" *ngIf="selectedSource$ | async as selectedSource; else noData">
       <ng-container *ngIf="averageFlux$ | async as averageFlux; else noFlux">
         The uploaded file used a frequency range of {{ lowerFreq || 'N/A' }} MHz to {{ upperFreq || 'N/A' }} MHz. The expected flux for radio source
         {{ selectedSource || 'Unknown Source' }} in this frequency range is {{ averageFlux }} Jy.
@@ -92,9 +107,16 @@
       <ng-template #noFlux>
         There is not enough data to guess the flux at the appropriate frequency!
       </ng-template>
-    </p>
+    </ng-container>
+    <ng-template #noData>
+      Please upload a Radio Cartographer file!
+    </ng-template>
     <div class="button-container">
-      <button (click)="saveGraph()" color="'primary'" style="border-radius: 3px" mat-raised-button>Save Graph</button>
+      <button 
+        (click)="fitsLoaded ? saveGraph() : noUpload()" 
+        color="'primary'" 
+        style="border-radius: 3px" 
+        mat-raised-button>Save Graph</button>
     </div>
   </div>
 </div>

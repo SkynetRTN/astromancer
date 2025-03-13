@@ -56,7 +56,7 @@ export class HonorCodeChartService {
         }
     }
 
-    public saveImageHighChartsOffline(charts: Highcharts.Chart[], column: number, signature: string, chartType: string, callback: (any | null) = null): void {
+    public saveImageHighChartsOffline(charts: Highcharts.Chart[], columns: number, signature: string, chartType: string, callback: (any | null) = null): void {
         if (chartType) {
             if (charts.length === 1) {
                 this.saveImageHighChartOffline(charts[0], chartType, signature, callback);
@@ -73,7 +73,7 @@ export class HonorCodeChartService {
             });
             canvasSubject.pipe(skip(charts.length - 1), take(1)).subscribe(
                 () => {
-                    this.saveCanvasTilesAsJpg(canvasTile, column, signature, chartType);
+                    this.saveCanvasTilesAsJpg(canvasTile, columns, signature, chartType);
                     if (callback) {
                         callback();
                     }

@@ -1,0 +1,50 @@
+.summary-pair {
+  display: flex;
+  flex-direction: row;
+  width: min-content;
+  margin: 5px 0;
+
+  .summary-key {
+    font-weight: bold;
+    width: 140px;
+    margin-right: 5px;
+  }
+
+  .summary-value {
+    width: 120px;
+    margin-left: 5px;
+  }
+}
+
+.mat-divider.mat-divider-horizontal {
+  width: calc(100% - 15px);
+  border-width: 3px;
+  border-radius: 3px;
+}
+
+
+.download-button {
+  margin: 5px 0;
+
+  h3 {
+    margin: 0;
+    width: calc(100% - 15px);
+    text-align: center;
+  }
+
+  .full-button {
+    width: calc(100% - 20px);
+  }
+
+  .half-button {
+    width: calc(50% - 15px);
+  }
+
+  .half-button.left {
+    margin-right: 5px;
+  }
+
+  .half-button.right {
+    margin-left: 5px;
+  }
+}

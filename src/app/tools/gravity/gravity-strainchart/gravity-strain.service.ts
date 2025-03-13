@@ -4,30 +4,28 @@ import {BehaviorSubject, Subject, takeUntil, auditTime} from "rxjs";
 import * as Highcharts from "highcharts";
 
 import {
-  StrainChartInfo,
-  StrainChartInfoStorageObject,
   StrainData,
   StrainDataDict,
   GravityInterface,
   GravityInterfaceImpl,
   StrainStorage,
   fitValuesToGrid
-} from "./gravity.service.util";
+} from "../gravity.service.util";
 
-import {MyData} from "../shared/data/data.interface";
-import {ChartInfo} from "../shared/charts/chart.interface";
-import { UpdateSource } from '../shared/data/utils';
-import { InterfaceService } from './gravity-interface.service';
+import {MyData} from "../../shared/data/data.interface";
+import {ChartInfo} from "../../shared/charts/chart.interface";
+import { UpdateSource } from '../../shared/data/utils';
+import { InterfaceService } from '../gravity-form/gravity-interface.service';
 import { environment } from 'src/environments/environment';
 
 @Injectable()
-export class StrainService implements MyData, ChartInfo, OnDestroy {
+export class StrainService implements MyData, OnDestroy {
   private strainData: StrainData = new StrainData();
   private modelData: StrainData = new StrainData();
 
   private destroy$: Subject<void> = new Subject<void>();
 
-  private gravityChartInfo: StrainChartInfo = new StrainChartInfo();
+  // private gravityChartInfo: StrainChartInfo = new StrainChartInfo();
 
   private storage: StrainStorage = new StrainStorage();
 
@@ -38,8 +36,8 @@ export class StrainService implements MyData, ChartInfo, OnDestroy {
   private modelSubject: Subject<Boolean> = new Subject<Boolean>;
   public model$ = this.modelSubject.asObservable();
 
-  private chartInfoSubject: BehaviorSubject<StrainChartInfo> = new BehaviorSubject<StrainChartInfo>(this.gravityChartInfo);
-  public chartInfo$ = this.chartInfoSubject.asObservable();
+  // private chartInfoSubject: BehaviorSubject<StrainChartInfo> = new BehaviorSubject<StrainChartInfo>(this.gravityChartInfo);
+  // public chartInfo$ = this.chartInfoSubject.asObservable();
 
   private highChart!: Highcharts.Chart;
 
@@ -47,22 +45,7 @@ export class StrainService implements MyData, ChartInfo, OnDestroy {
               private http: HttpClient
   ) {
     this.strainData.setData(this.storage.getData());
-    this.gravityChartInfo.setStorageObject(this.storage.getChartInfo());
-
-    //Interface Changes. May move back here
-    // this.interfaceService.serverParameters$.pipe(
-    //   takeUntil(this.destroy$),
-    //   debounceTime(200)
-    // ).subscribe(
-    //   (source: UpdateSource) => {
-    //     //don't make a request before the user has a chance to fiddle with the interface
-    //     if(source==UpdateSource.INIT) return;
-
-    //     this.fetchModels(this.interfaceService.getTotalMass(),
-    //                     this.interfaceService.getMassRatio(),
-    //                     this.interfaceService.getPhaseShift())
-    //   }
-    // )
+    // this.gravityChartInfo.setStorageObject(this.storage.getChartInfo());
 
     //Changes to the interface that don't require server requests. Maybe should be moved to highchart component.
     this.interfaceService.strainParameters$.pipe(
@@ -80,67 +63,6 @@ export class StrainService implements MyData, ChartInfo, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-  
-
-  /** ChartInfo Methods **/
-
-  getChartTitle(): string {
-    return this.gravityChartInfo.getChartTitle();
-  }
-
-  getDataLabel(): string {
-    return this.gravityChartInfo.getDataLabel();
-  }
-
-  getStorageObject(): any {
-    return this.gravityChartInfo.getStorageObject();
-  }
-
-  getXAxisLabel(): string {
-    return this.gravityChartInfo.getXAxisLabel();
-  }
-
-  getYAxisLabel(): string {
-    return this.gravityChartInfo.getYAxisLabel();
-  }
-
-  setChartTitle(title: string): void {
-    this.gravityChartInfo.setChartTitle(title);
-    this.storage.saveChartInfo(this.gravityChartInfo.getStorageObject());
-    this.chartInfoSubject.next(this.gravityChartInfo);
-  }
-
-  setDataLabel(data: string): void {
-    this.gravityChartInfo.setDataLabel(data);
-    this.storage.saveChartInfo(this.gravityChartInfo.getStorageObject());
-    this.chartInfoSubject.next(this.gravityChartInfo);
-    this.dataSubject.next(true);
-  }
-
-  setStorageObject(storageObject: StrainChartInfoStorageObject): void {
-    this.gravityChartInfo.setStorageObject(storageObject);
-    this.storage.saveChartInfo(this.gravityChartInfo.getStorageObject());
-    this.chartInfoSubject.next(this.gravityChartInfo);
-  }
-
-  setXAxisLabel(xAxis: string): void {
-    this.gravityChartInfo.setXAxisLabel(xAxis);
-    this.storage.saveChartInfo(this.gravityChartInfo.getStorageObject());
-    this.chartInfoSubject.next(this.gravityChartInfo);
-  }
-
-  setYAxisLabel(yAxis: string): void {
-    this.gravityChartInfo.setYAxisLabel(yAxis);
-    this.storage.saveChartInfo(this.gravityChartInfo.getStorageObject());
-    this.chartInfoSubject.next(this.gravityChartInfo);
-  }
-
-  resetChartInfo(): void {
-    this.gravityChartInfo.setStorageObject(StrainChartInfo.getDefaultChartInfo());
-    this.gravityChartInfo.setDataLabel("this.getChannel()");
-    this.storage.saveChartInfo(this.gravityChartInfo.getStorageObject());
-    this.chartInfoSubject.next(this.gravityChartInfo);
   }
 
   /** MyData Methods**/

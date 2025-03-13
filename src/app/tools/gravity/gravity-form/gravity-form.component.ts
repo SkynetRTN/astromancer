@@ -2,10 +2,10 @@ import {Component} from '@angular/core';
 import {Subject, takeUntil} from "rxjs";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 
-import {InterfaceService} from "../gravity-interface.service";
+import {InterfaceService} from "./gravity-interface.service";
 
 import {InputSliderValue} from "../../shared/interface/input-slider/input-slider.component";
-import { SpectogramService } from '../gravity-spectogram.service';
+import { SpectogramService } from '../gravity-spectogram/gravity-spectogram.service';
 
 @Component({
   selector: 'app-gravity-form',

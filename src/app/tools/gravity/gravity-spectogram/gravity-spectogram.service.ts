@@ -4,41 +4,30 @@ import {BehaviorSubject, Subject, takeUntil, debounceTime, auditTime} from "rxjs
 import * as Highcharts from "highcharts";
 
 import {
-  StrainChartInfo,
   StrainChartInfoStorageObject,
-  StrainData,
   SpectoData,
-  StrainDataDict,
-  GravityInterface,
-  GravityInterfaceImpl,
-  StrainStorage,
   SpectogramDataDict,
   ModelDataDict,
   ModelData,
   SpectoAxes
-} from "./gravity.service.util";
+} from "../gravity.service.util";
 
-import {MyData} from "../shared/data/data.interface";
-import {ChartInfo} from "../shared/charts/chart.interface";
-import { UpdateSource } from '../shared/data/utils';
-import { InterfaceService } from './gravity-interface.service';
+import {MyData} from "../../shared/data/data.interface";
+import {ChartInfo} from "../../shared/charts/chart.interface";
+import { UpdateSource } from '../../shared/data/utils';
+import { InterfaceService } from '../gravity-form/gravity-interface.service';
 
 @Injectable()
-export class SpectogramService implements ChartInfo, OnDestroy {
+export class SpectogramService implements OnDestroy {
   private spectoData: SpectoData = new SpectoData();
   private modelData: ModelData = new ModelData();
 
   private destroy$: Subject<void> = new Subject<void>();
 
-  private gravityChartInfo: StrainChartInfo = new StrainChartInfo();
-
   private spectogramSubject: Subject<Boolean> = new Subject<Boolean>;
   public spectogram$ = this.spectogramSubject.asObservable();
   private modelSubject: Subject<Boolean> = new Subject<Boolean>;
   public model$ = this.modelSubject.asObservable();
-
-  private chartInfoSubject: BehaviorSubject<StrainChartInfo> = new BehaviorSubject<StrainChartInfo>(this.gravityChartInfo);
-  public chartInfo$ = this.chartInfoSubject.asObservable();
 
   private highChart!: Highcharts.Chart;
 
@@ -61,60 +50,6 @@ export class SpectogramService implements ChartInfo, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  /** ChartInfo Methods **/
-
-  getChartTitle(): string {
-    return this.gravityChartInfo.getChartTitle();
-  }
-
-  getDataLabel(): string {
-    return this.gravityChartInfo.getDataLabel();
-  }
-
-  getStorageObject(): any {
-    return this.gravityChartInfo.getStorageObject();
-  }
-
-  getXAxisLabel(): string {
-    return this.gravityChartInfo.getXAxisLabel();
-  }
-
-  getYAxisLabel(): string {
-    return this.gravityChartInfo.getYAxisLabel();
-  }
-
-  setChartTitle(title: string): void {
-    this.gravityChartInfo.setChartTitle(title);
-    this.chartInfoSubject.next(this.gravityChartInfo);
-  }
-
-  setDataLabel(data: string): void {
-    this.gravityChartInfo.setDataLabel(data);
-    this.chartInfoSubject.next(this.gravityChartInfo);
-    this.spectogramSubject.next(true);
-  }
-
-  setStorageObject(storageObject: StrainChartInfoStorageObject): void {
-    this.gravityChartInfo.setStorageObject(storageObject);
-    this.chartInfoSubject.next(this.gravityChartInfo);
-  }
-
-  setXAxisLabel(xAxis: string): void {
-    this.gravityChartInfo.setXAxisLabel(xAxis);
-    this.chartInfoSubject.next(this.gravityChartInfo);
-  }
-
-  setYAxisLabel(yAxis: string): void {
-    this.gravityChartInfo.setYAxisLabel(yAxis);
-    this.chartInfoSubject.next(this.gravityChartInfo);
-  }
-
-  resetChartInfo(): void {
-    this.gravityChartInfo.setStorageObject(StrainChartInfo.getDefaultChartInfo());
-    this.gravityChartInfo.setDataLabel("this.getChannel()");
-    this.chartInfoSubject.next(this.gravityChartInfo);
   }
 
   /** MyData Methods**/

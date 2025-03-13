@@ -3,16 +3,13 @@ import {CommonModule} from '@angular/common';
 import {GravityComponent} from './gravity/gravity.component';
 import {SimpleDataButtonModule} from "../shared/simple-data-button/simple-data-button.component";
 import {SimpleGraphButtonModule} from "../shared/simple-graph-button/simple-graph-button.component";
-import {GravityTableComponent} from './gravity-table/gravity-table.component';
 import {HotTableModule} from "@handsontable/angular";
-import {InterfaceService as InterfaceService} from "./gravity-interface.service";
+import {InterfaceService as InterfaceService} from "./gravity-form/gravity-interface.service";
 import {GravityFormComponent} from './gravity-form/gravity-form.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {InterfaceUtilModule} from "../shared/interface/util";
 
-import {GravityChartFormComponent} from './gravity-chart-form/gravity-chart-form.component';
-
-import {GravityHighchartComponent} from './gravity-highchart/gravity-highchart.component';
+import {GravityStrainchartComponent} from './gravity-strainchart/gravity-strainchart.component';
 import { GravitySpectogramComponent } from './gravity-spectogram/gravity-spectogram.component';
 import {HighchartsChartModule} from "highcharts-angular";
 import {RouterModule, Routes} from "@angular/router";
@@ -23,8 +20,10 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatSliderModule} from "@angular/material/slider";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
-import { SpectogramService } from './gravity-spectogram.service';
-import { StrainService } from './gravity-strain.service';
+import { SpectogramService } from './gravity-spectogram/gravity-spectogram.service';
+import { StrainService } from './gravity-strainchart/gravity-strain.service';
+import { ResultSummaryComponent } from './result-summary/result-summary.component';
+import { MatDividerModule } from '@angular/material/divider';
 
 
 const routes: Routes = [
@@ -34,11 +33,10 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     GravityComponent,
-    GravityTableComponent,
     GravityFormComponent,
-    GravityChartFormComponent,
-    GravityHighchartComponent,
-    GravitySpectogramComponent
+    GravityStrainchartComponent,
+    GravitySpectogramComponent,
+    ResultSummaryComponent
   ],
   imports: [
     RouterModule.forChild(routes),
@@ -48,6 +46,7 @@ const routes: Routes = [
     SimpleGraphButtonModule,
     HotTableModule,
     FormsModule,
+    MatDividerModule,
     MatFormFieldModule,
     MatOptionModule,
     MatSelectModule,
@@ -58,7 +57,7 @@ const routes: Routes = [
     MatDialogModule,
     MatButtonModule,
   ],
-  exports: [GravityComponent, RouterModule, GravityHighchartComponent],
+  exports: [GravityComponent, RouterModule, GravityStrainchartComponent],
   providers: [InterfaceService, SpectogramService, StrainService]
 })
 export class GravityModule {

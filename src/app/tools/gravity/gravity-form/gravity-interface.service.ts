@@ -4,18 +4,17 @@ import {BehaviorSubject} from "rxjs";
 import * as Highcharts from "highcharts";
 
 import {
-  StrainChartInfo,
   StrainChartInfoStorageObject,
   StrainData,
   StrainDataDict,
   GravityInterface,
   GravityInterfaceImpl,
   StrainStorage
-} from "./gravity.service.util";
+} from "../gravity.service.util";
 
-import {MyData} from "../shared/data/data.interface";
-import {ChartInfo} from "../shared/charts/chart.interface";
-import { UpdateSource } from '../shared/data/utils';
+import {MyData} from "../../shared/data/data.interface";
+import {ChartInfo} from "../../shared/charts/chart.interface";
+import { UpdateSource } from '../../shared/data/utils';
 
 /**
  * @remarks Service for interface activity

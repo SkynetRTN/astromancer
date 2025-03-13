@@ -4,7 +4,7 @@ import * as Highcharts from "highcharts";
 import Heatmap from "highcharts/modules/heatmap"
 import Boost from "highcharts/modules/boost"
 
-import { SpectogramService } from '../gravity-spectogram.service';
+import { SpectogramService } from './gravity-spectogram.service';
 
 Heatmap(Highcharts)
 Boost(Highcharts)
@@ -32,7 +32,26 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
         }
       },
     },
+    xAxis: {
+      title: {text: "Time"},
+    },
 
+    yAxis: [
+      //Logarithmic axis
+      {
+      title: {text: "Frequency"},
+      endOnTick: false,
+      type: "logarithmic",
+      
+      },
+      //Linear axis
+      {
+        visible: false,
+        endOnTick: false,
+        type: "category"
+        
+      }
+    ],
     
     colorAxis: [{ stops: [
       [0, 'rgb(26, 0, 31)'],
@@ -72,9 +91,6 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
   private destroy$: Subject<any> = new Subject<any>();
 
   constructor(private service: SpectogramService) {
-    this.setChartTitle();
-    this.setChartXAxis();
-    this.setChartYAxis();
   }
 
   chartInitialized($event: Highcharts.Chart) {
@@ -90,10 +106,6 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(() => {
       this.updateSpectogram();
-      //The xAxis of this chart is controlled by the data, not the user. 
-      //It is updated with the data, not with the chart info
-      this.setChartXAxis();
-      this.setChartYAxis();
       this.updateChart();
     });
 
@@ -105,15 +117,6 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
       this.updateModel();
       let t2 = performance.now()
       console.log("Model updated in ", (t2-t1), " milliseconds.")
-      this.updateChart();
-    });
-
-    this.service.chartInfo$.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(() => {
-      this.setChartTitle();
-      // this.setChartXAxis();
-      // this.setChartYAxis();
       this.updateChart();
     });
   }
@@ -162,26 +165,30 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
       data: this.service.getSpectoArray(),
       yAxis:1,
       colorAxis: 0,
+      boostBlending: "add",
       zIndex: 0,
-      // interpolation: true,
-      type: 'scatter',
+      interpolation: true,
+      type: 'heatmap',
       
     });
   }
 
   updateSpectogram() {
     console.log("updateSpectogram()")
+    let axes = this.service.getAxes()
+    this.chartObject.xAxis[0].setExtremes(axes.xmin, axes.xmax, false)
+    this.chartObject.yAxis[0].setExtremes(axes.ymin, axes.ymax, false)
     this.chartObject.series[1].update({
       // boostThreshold: 5000,
       // name: "Spectrum",
-      // colsize: this.service.getAxes().dx,
+      colsize: this.service.getAxes().dx,
       data: this.service.getSpectoArray(),
       // enableMouseTracking: false,
       // yAxis:1,
       // zIndex: 0,
-      // interpolation: true,
-      type: 'scatter',
-    });
+      interpolation: true,
+      type: 'heatmap',
+    },false);
   }
 
   updateModel() {
@@ -198,45 +205,10 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
     this.updateFlag = true;
   }
 
-  private setChartTitle(): void {
-    this.chartOptions.title = {text: this.service.getChartTitle()};
-  }
 
-  //TODO: use set extremes.
-  private setChartXAxis(): void {
-    let axes = this.service.getAxes()
-
-    this.chartOptions.xAxis = {
-      title: {text: this.service.getXAxisLabel()},
-      min: axes.xmin,
-      max: axes.xmax,
-    };
-
-  }
-
-  private setChartYAxis(): void {
-
-    let axes = this.service.getAxes()
-
-    this.chartOptions.yAxis = [
-      //Logarithmic axis
-      {
-      title: {text: this.service.getYAxisLabel()},
-      endOnTick: false,
-      type: "logarithmic",
-
-      min: axes.ymin,
-      max: axes.ymax
-      
-      },
-      //Linear axis
-      {
-        visible: false,
-        endOnTick: false,
-        type: "category"
-        
-      }
-    ]
-  }
-
+  // private setChartAxes(): void {
+  //   let axes = this.service.getAxes()
+  //   this.chartObject.xAxis[0].setExtremes(axes.xmin, axes.xmax, false)
+  //   this.chartObject.yAxis[0].setExtremes(axes.ymin, axes.ymax, false)
+  // }
 }

@@ -3,21 +3,23 @@ import {auditTime, debounceTime, Subject, takeUntil} from "rxjs";
 import * as Highcharts from "highcharts";
 import Boost from "highcharts/modules/boost"
 
-import { StrainService } from '../gravity-strain.service';
+import { StrainService } from './gravity-strain.service';
 
 // Boost(Highcharts)
 
 @Component({
-  selector: 'app-gravity-highchart',
-  templateUrl: './gravity-highchart.component.html',
-  styleUrls: ['./gravity-highchart.component.scss']
+  selector: 'app-gravity-strainchart',
+  templateUrl: './gravity-strainchart.component.html',
+  styleUrls: ['./gravity-strainchart.component.scss']
 })
-export class GravityHighchartComponent implements AfterViewInit, OnDestroy {
+export class GravityStrainchartComponent implements AfterViewInit, OnDestroy {
   Highcharts: typeof Highcharts = Highcharts;
   updateFlag: boolean = true;
   chartConstructor: any = "chart";
   chartObject!: Highcharts.Chart;
   chartOptions: Highcharts.Options = {
+    title:{text: ''},
+
     chart: {
       animation: false,
       styledMode: true,
@@ -39,6 +41,12 @@ export class GravityHighchartComponent implements AfterViewInit, OnDestroy {
     legend: {
       align: 'center',
     },
+    xAxis: {
+      title: {text: "Time"}
+    },
+    yAxis: {
+      title: {text: "Strain"}
+    },
     tooltip: {
       enabled: true,
       shared: false,
@@ -54,9 +62,7 @@ export class GravityHighchartComponent implements AfterViewInit, OnDestroy {
   private destroy$: Subject<any> = new Subject<any>();
 
   constructor(private service: StrainService) {
-    this.setChartTitle();
-    this.setChartXAxis();
-    this.setChartYAxis();
+
   }
 
   chartInitialized($event: Highcharts.Chart) {
@@ -80,15 +86,6 @@ export class GravityHighchartComponent implements AfterViewInit, OnDestroy {
       this.updateModel();
       this.updateChart();
     });
-    this.service.chartInfo$.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(() => {
-      this.setChartTitle();
-      this.setChartXAxis();
-      this.setChartYAxis();
-      this.updateChart();
-    });
-    
   }
 
   ngOnDestroy(): void {
@@ -151,21 +148,4 @@ export class GravityHighchartComponent implements AfterViewInit, OnDestroy {
   private updateChart(): void {
     this.updateFlag = true;
   }
-
-  private setChartTitle(): void {
-    this.chartOptions.title = {text: this.service.getChartTitle()};
-  }
-
-  private setChartXAxis(): void {
-    this.chartOptions.xAxis = {
-      title: {text: this.service.getXAxisLabel()}
-    };
-  }
-
-  private setChartYAxis(): void {
-    this.chartOptions.yAxis = {
-      title: {text: this.service.getYAxisLabel()}
-    };
-  }
-
 }

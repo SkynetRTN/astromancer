@@ -1,0 +1,20 @@
+<div class="summary-pair">
+    <div class="summary-key">Final Mass:</div>
+    <div class="summary-value">{{finalMass.toFixed(3)}}</div>
+</div>
+<div class="summary-pair">
+    <div class="summary-key">Mass Loss:</div>
+    <div class="summary-value">{{massLoss.toFixed(3)}}</div>
+</div>
+<mat-divider></mat-divider>
+<div class="row download-button">
+    <h3>Download Summary</h3>
+    <button class="half-button left" color="primary" mat-raised-button (click)="downloadSummary()">CSV</button>
+    <button class="half-button right" color="primary" mat-raised-button [disabled]="true">PDF</button>
+</div>
+<mat-divider></mat-divider>
+<div class="row download-button">
+    <button class="full-button" color="primary" mat-raised-button
+            [disabled]="false" (click)="downloadPlots()">Download Plots
+    </button>
+</div>

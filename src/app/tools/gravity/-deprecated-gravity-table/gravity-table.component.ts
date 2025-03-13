@@ -6,7 +6,7 @@ import {MyData} from "../../shared/data/data.interface";
 import {HotTableRegisterer} from "@handsontable/angular";
 import Handsontable from "handsontable";
 import {beforePaste} from "../../shared/tables/util";
-import { StrainService } from '../gravity-strain.service';
+import { StrainService } from '../gravity-strainchart/gravity-strain.service';
 
 @Component({
   selector: 'app-gravity-table',

@@ -4,7 +4,9 @@
       <app-gravity-form></app-gravity-form>
     </div>
     <div class="row dynamic">
-      <app-gravity-table></app-gravity-table>
+      <!-- Table is dumb and kinda pointless -->
+      <!-- <app-gravity-table></app-gravity-table> -->
+      <app-result-summary></app-result-summary>
     </div>
     <div class="row button-row">
       <app-simple-data-button (fileUpload$)="uploadHandler($event)"
@@ -17,15 +19,13 @@
     <div class="row dynamic">
       <app-gravity-spectogram></app-gravity-spectogram>
     </div>
-    <div class="row button-row">
     <div class="row dynamic">
-      <app-gravity-highchart></app-gravity-highchart>
+      <app-gravity-strainchart></app-gravity-strainchart>
     </div>
       <!--      <div class="col-6">-->
-      <app-simple-graph-button (chartUserActionObs$)="actionHandler($event)" [isEditChartInfo]="true">
-      </app-simple-graph-button>
+      <!-- <app-simple-graph-button (chartUserActionObs$)="actionHandler($event)" [isEditChartInfo]="true">
+      </app-simple-graph-button> -->
       <!--      </div>-->
       <!--      <div class="col-6">Click and drag to zoom. Hold down the shift key to drag and pan.</div>-->
-    </div>
   </div>
 </div>

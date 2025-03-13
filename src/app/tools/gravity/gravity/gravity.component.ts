@@ -7,11 +7,10 @@ import {auditTime, debounce, debounceTime, Subject, takeUntil, withLatestFrom} f
 import {fitValuesToGrid, ModelDataDict, SpectogramDataDict, StrainDataDict} from "../gravity.service.util";
 import {FileType} from "../../shared/data/FileParser/FileParser.util";
 import {MatDialog} from "@angular/material/dialog";
-import {GravityChartFormComponent} from "../gravity-chart-form/gravity-chart-form.component";
 import { HttpClient } from '@angular/common/http';
-import { StrainService } from '../gravity-strain.service';
-import { SpectogramService } from '../gravity-spectogram.service';
-import { InterfaceService } from '../gravity-interface.service';
+import { StrainService } from '../gravity-strainchart/gravity-strain.service';
+import { SpectogramService } from '../gravity-spectogram/gravity-spectogram.service';
+import { InterfaceService } from '../gravity-form/gravity-interface.service';
 import { UpdateSource } from '../../shared/data/utils';
 import { environment } from 'src/environments/environment';
 
@@ -74,12 +73,14 @@ export class GravityComponent implements OnDestroy {
           let ymin = axes.y[0]
           let ymax = axes.y[1]
 
+          this.spectogramService.setAxes({'dx': dx, 'xmin': xmin, 'xmax': xmax, 'ymin': ymin, 'ymax': ymax})
+
           strain.map((p: number[]) => {
             strainResult.push({Time: p[0], Strain: p[1]})
           })
           this.strainService.setData(strainResult);
 
-          this.spectogramService.setAxes({'dx': dx, 'xmin': xmin, 'xmax': xmax, 'ymin': ymin, 'ymax': ymax})
+
           spectogram.forEach( (y, i) => y.forEach( (value, j) => { 
             spectogramResult.push({x: i*dx + xmin , y: j, value: value })
           } ) )
@@ -88,6 +89,7 @@ export class GravityComponent implements OnDestroy {
 
       this.interfaceService.serverParameters$.pipe(
         takeUntil(this.destroy$),
+        debounceTime(20)
       ).subscribe(
         (source: UpdateSource) => {
           console.log("Server param update")
@@ -104,22 +106,17 @@ export class GravityComponent implements OnDestroy {
   }
 
   actionHandler(actions: ChartAction[]) {
-    actions.forEach((action) => {
-      if (action.action === "addRow") {
-        this.strainService.addRow(-1, 1);
-      } else if (action.action === "saveGraph") {
-        this.saveGraph();
-      } else if (action.action === "resetData") {
-        this.strainService.resetData();
-      } else if (action.action === "editChartInfo") {
-        const dialogRef =
-          this.dialog.open(GravityChartFormComponent, {width: 'fit-content'});
-        dialogRef.afterClosed().pipe().subscribe(result => {
-          if (result === "saveGraph")
-            this.saveGraph();
-        });
-      }
-    })
+    // actions.forEach((action) => {
+    //   if (action.action === "addRow") {
+    //     this.strainService.addRow(-1, 1);
+    //   } else if (action.action === "saveGraph") {
+    //     this.saveGraph();
+    //   } else if (action.action === "resetData") {
+    //     this.strainService.resetData();
+    //   } else if (action.action === "editChartInfo") {
+
+    //   }
+    // })
   }
 
   uploadHandler($event: File) {

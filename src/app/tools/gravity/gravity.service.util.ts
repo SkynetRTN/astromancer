@@ -234,7 +234,7 @@ export class GravityInterfaceImpl implements GravityInterface {
 
   private mergerTime: number = 16;
   private totalMass: number = 25;
-  private massRatio: number = 0;
+  private massRatio: number = 1;
   private phaseShift: number = 0;
   private distance: number = 300;
   private inclination: number = 0;
@@ -346,8 +346,8 @@ export class StrainChartInfo implements ChartInfo {
   public static getDefaultChartInfo(): StrainChartInfoStorageObject {
     return {
       title: "Title",
-      xAxis: "",
-      yAxis: "",
+      xAxis: "Time",
+      yAxis: "Strain",
       data: "Model",
     }
   }
@@ -500,4 +500,15 @@ export function fitValuesToGrid(totalMass: number, massRatio: number, phase: num
 
     return roundedValue
   }
+}
+
+export function calculateMassLoss(totalMass: number, massRatio: number){
+
+  let mass_diff: number = +(((0.053073) - (0.016603 * Math.log(massRatio))) * totalMass)
+
+  if (mass_diff < 0){
+    mass_diff = 0
+  }
+
+  return mass_diff
 }

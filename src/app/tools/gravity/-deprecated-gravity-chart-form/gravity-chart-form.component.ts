@@ -1,7 +1,7 @@
 import {Component, OnDestroy} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
 import {debounceTime, Subject, takeUntil} from "rxjs";
-import {StrainService} from "../gravity-strain.service";
+import {StrainService} from "../gravity-strainchart/gravity-strain.service";
 
 @Component({
   selector: 'app-gravity-chart-form',

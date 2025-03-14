@@ -101,11 +101,13 @@
     <app-radiosearch-highchart></app-radiosearch-highchart>
     <ng-container class="below-text" *ngIf="selectedSource$ | async as selectedSource; else noData">
       <ng-container *ngIf="averageFlux$ | async as averageFlux; else noFlux">
-        The uploaded file used a frequency range of {{ lowerFreq || 'N/A' }} MHz to {{ upperFreq || 'N/A' }} MHz. The expected flux for radio source
-        {{ selectedSource || 'Unknown Source' }} in this frequency range is {{ averageFlux }} Jy.
-      </ng-container>
+        The uploaded file used a frequency range of {{ lowerFreq || 'N/A' }} MHz to {{ upperFreq || 'N/A' }} MHz. 
+        The expected flux for radio source 
+        {{ (params[0].catalog + params[0].identifier) || 'Unknown Source' }} 
+        in this frequency range is {{ averageFlux }} Jy.
+      </ng-container>      
       <ng-template #noFlux>
-        There is not enough data to guess the flux at the appropriate frequency!
+        There is not enough data to guess the flux at the appropriate frequency for radio source {{ (params[0].catalog + params[0].identifier) || 'Unknown Source' }}!
       </ng-template>
     </ng-container>
     <ng-template #noData>

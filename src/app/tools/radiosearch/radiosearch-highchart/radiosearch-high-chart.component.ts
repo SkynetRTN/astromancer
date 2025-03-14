@@ -105,8 +105,9 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
     let linkText = '';
     let hyperlink = '';
 
-    if (this.paramData && this.paramData[0] && this.paramData[0][1] && this.paramData[0][1] !== 0.1) {
-        linkText = "3C " + this.paramData[0][1]; // The part of the title that should be clickable
+    if (this.paramData) {
+        linkText = this.paramData[0][1] + this.paramData[0][2]; // The part of the title that should be clickable
+        console.log(linkText);
         hyperlink = 'https://www.google.com/search?q=Information+for+radio+source+' + linkText; // Set your hyperlink URL
     }
 
@@ -154,7 +155,7 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
     }
 
     const frequencyFluxData = this.processData(this.service.getDataArray());
-    this.paramData = this.processData(this.service.getParamDataArray());
+    this.paramData = this.processParamData(this.service.getParamDataArray());
 
     // Separate data points for y (actual) and fit (line of best fit)
     const actualData = frequencyFluxData.map((point) => ({
@@ -197,8 +198,8 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
             fillColor: '#007bff'
         },
         lineWidth: 1,
-        animation: enableAnimation ? { duration: 2000, easing: 'easeOut' } : false // Disable animation if only 1 point
-    }, false); // No redraw yet
+        animation: enableAnimation ? { duration: 2000, easing: 'easeOut' } : false 
+    }, false);
 
     // Round the y values in fitData to 1 decimal place
     const roundedFitData = fitData.map(point => ({
@@ -265,4 +266,11 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
       return a[0] - b[0];
     });
   }  
+
+  private processParamData(data: [number, string, string][]): [number, string, string][] {
+    return data.filter(([targetFreq, catalog, identifier]) => {
+      return targetFreq > 0; // Only filter based on number
+    }).sort(([a], [b]) => a - b);
+  }
+  
 }

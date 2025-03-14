@@ -467,11 +467,10 @@ export class RadioSearchComponent implements AfterViewInit {
     const worldCoordinates = this.getWorldCoordinates(adjustedX, adjustedY, this.scale);
 
     if (worldCoordinates) {
-        worldCoordinates.ra += this.sliderXOffset;
         worldCoordinates.dec -= this.sliderYOffset;
-        
-        worldCoordinates.ra = ((worldCoordinates.ra - this.ra!) / (Math.cos(Math.PI * worldCoordinates.dec / 180))) + (this.ra!);
 
+        worldCoordinates.ra = ((worldCoordinates.ra - (this.ra! - this.sliderXOffset)) / (Math.cos(Math.PI * worldCoordinates.dec / 180))) + (this.ra! + this.sliderXOffset);
+        
         if (worldCoordinates.ra > 360) {
           worldCoordinates.ra %= 360;
         }

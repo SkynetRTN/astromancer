@@ -409,8 +409,6 @@ export class RadioSearchComponent implements AfterViewInit {
         let scaledX = (pixelX) * scale + this.canvasXOffset; // Degrees applied
         let scaledY = (pixelY - pixelYOffset) * scale + this.canvasYOffset; // Degrees applied
 
-        console.log(scaledX,scaledY);
-
         scaledX = (canvas.width / 2) + (scaledX - (canvas.width / 2)) * Math.cos((source.galLat * Math.PI) / 180) + pixelXOffset;
 
         // Draw the circle
@@ -528,7 +526,6 @@ export class RadioSearchComponent implements AfterViewInit {
           const dataUnit = new fitsjs.astro.FITS.DataUnit(null, this.arrayBuffer);
           const headerBlock = new TextDecoder().decode(dataUnit.buffer!.slice(0, 5760));
           this.header = new fitsjs.astro.FITS.Header(headerBlock);
-          console.log(this.header);
   
           // Extract header values
           this.naxis1 = this.header.get('NAXIS1');
@@ -717,7 +714,6 @@ export class RadioSearchComponent implements AfterViewInit {
           this.dataSource.data = results;
           this.results = results;
 
-          console.log(results);
           this.hiddenResults = hidden_results;
           this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2); // Render image
         },

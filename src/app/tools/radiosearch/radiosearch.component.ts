@@ -224,7 +224,7 @@ export class RadioSearchComponent implements AfterViewInit {
         const pixelY = ((crval2 - sourceDec) / cdelt2) + crpix2;
 
         // Convert slider offsets from degrees to pixels using WCS scale
-        const pixelXOffset = this.sliderXOffset / Math.abs(cdelt1); // Degrees to pixels (X-axis)
+        const pixelXOffset = (this.sliderXOffset / Math.abs(cdelt1)) * this.zoomScale; // Degrees to pixels (X-axis)
         const pixelYOffset = this.sliderYOffset / Math.abs(cdelt2); // Degrees to pixels (Y-axis)
 
         // Apply scaling and offsets for image centering

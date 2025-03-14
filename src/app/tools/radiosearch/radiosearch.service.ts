@@ -120,7 +120,7 @@ export class RadioSearchHighChartService implements ChartInfo, MyData {
     return this.radioSearchData.getDataArray();
   }
 
-  public getParamDataArray(): number[][] {
+  public getParamDataArray(): [number, string, string][] {
     return this.radioSearchData.getParamDataArray();
   }
 

@@ -220,7 +220,7 @@ export class RadioSearchComponent implements AfterViewInit {
         let sourceDec = decList[i];
 
         // Convert source RA/Dec to image coordinates
-        const pixelX = ((sourceRA - crval1) / cdelt1) + crpix1;
+        const pixelX = ((sourceRA - (crval1%360)) / cdelt1) + crpix1;
         const pixelY = ((crval2 - sourceDec) / cdelt2) + crpix2;
 
         // Convert slider offsets from degrees to pixels using WCS scale
@@ -383,33 +383,35 @@ export class RadioSearchComponent implements AfterViewInit {
     const { crpix1, crpix2, crval1, crval2, cdelt1, cdelt2 } = this.wcsInfo;
 
     // Convert slider offsets from degrees to pixels using WCS scale
-    let pixelXOffset = (this.sliderXOffset / Math.abs(cdelt1)); // Degrees to pixels (X-axis)
+    let pixelXOffset = (this.sliderXOffset / Math.abs(cdelt1)) * this.zoomScale; // Degrees to pixels (X-axis)
     let pixelYOffset = this.sliderYOffset / Math.abs(cdelt2); // Degrees to pixels (Y-axis)
 
     // Iterate through each source
     results.forEach(source => {
         let ra: number, dec: number;
-
+  
         // Determine coordinate system
         if (this.rccords === 'equatorial') {
-            ra = source.ra;       // Equatorial coordinates
+            ra = source.ra%360;       // Equatorial coordinates
             dec = source.dec;
         } else if (this.rccords === 'galactic') {
-            ra = source.galLong;
+            ra = source.galLong%360;
             dec = source.galLat;
         } else {
             console.error('Unknown coordinate system:', this.rccords);
             return;
         }
-
-        const pixelX = ((ra - crval1) / cdelt1) + crpix1;
+    
+        const pixelX = ((ra - (crval1%360)) / cdelt1) + crpix1;
         const pixelY = ((crval2 - dec) / cdelt2) + crpix2;
 
         // Apply scaling and offsets (use pixel offsets from degrees!)
         let scaledX = (pixelX) * scale + this.canvasXOffset; // Degrees applied
         let scaledY = (pixelY - pixelYOffset) * scale + this.canvasYOffset; // Degrees applied
 
-        scaledX = (canvas.width / 2) + (scaledX - (canvas.width / 2)) * Math.cos(((source.galLat + this.sliderYOffset) * Math.PI) / 180) + pixelXOffset;
+        console.log(scaledX,scaledY);
+
+        scaledX = (canvas.width / 2) + (scaledX - (canvas.width / 2)) * Math.cos((source.galLat * Math.PI) / 180) + pixelXOffset;
 
         // Draw the circle
         context.beginPath();
@@ -467,14 +469,14 @@ export class RadioSearchComponent implements AfterViewInit {
     const worldCoordinates = this.getWorldCoordinates(adjustedX, adjustedY, this.scale);
 
     if (worldCoordinates) {
-        if (worldCoordinates.ra > 360) {
-          worldCoordinates.ra -= 360;
-        }
-        
         worldCoordinates.ra += this.sliderXOffset;
         worldCoordinates.dec -= this.sliderYOffset;
         
         worldCoordinates.ra = ((worldCoordinates.ra - this.ra!) / (Math.cos(Math.PI * worldCoordinates.dec / 180))) + (this.ra!);
+
+        if (worldCoordinates.ra > 360) {
+          worldCoordinates.ra %= 360;
+        }
 
         this.currentCoordinates = worldCoordinates;
 
@@ -526,12 +528,15 @@ export class RadioSearchComponent implements AfterViewInit {
           const dataUnit = new fitsjs.astro.FITS.DataUnit(null, this.arrayBuffer);
           const headerBlock = new TextDecoder().decode(dataUnit.buffer!.slice(0, 5760));
           this.header = new fitsjs.astro.FITS.Header(headerBlock);
+          console.log(this.header);
   
           // Extract header values
           this.naxis1 = this.header.get('NAXIS1');
           this.naxis2 = this.header.get('NAXIS2');
           this.rccords = this.header.get('RCCORDS');
           this.ra = this.header.get('CENTERRA');
+          this.ra! %= 360;
+
           this.dec = this.header.get('CENTERDE');
           const bitpix = this.header.get('BITPIX');
           const bscale = this.header.get('BSCALE') || 1;
@@ -711,6 +716,8 @@ export class RadioSearchComponent implements AfterViewInit {
 
           this.dataSource.data = results;
           this.results = results;
+
+          console.log(results);
           this.hiddenResults = hidden_results;
           this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2); // Render image
         },

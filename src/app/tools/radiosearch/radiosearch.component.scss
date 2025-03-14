@@ -3,7 +3,7 @@
 .page-container {
   display: flex;
   flex-direction: row;
-  height: 85vh;
+  height: 90vh;
   padding: 2.5vw;
   box-sizing: border-box;
   position: relative;
@@ -184,12 +184,27 @@
   border-radius: 2vh;
 }
 
+.query-button-container {
+  position: absolute;
+  justify-self: center; 
+  right: 5px;
+  bottom: -11%;
+}
+
+.new-fits-button-container {
+  position: absolute;
+  justify-self: center; 
+  left: 5px;
+  bottom: -11%;
+}
+
 .button-container {
   position: relative;
   width: 130px;
   height: auto;
   font-size: 1vw;
   left: 20vw;
+  padding-top: 15px;
   padding-bottom: 15px;
 }
 
@@ -198,23 +213,23 @@
   flex-direction: column;
   flex-grow: 1;
   width: 45%;
-  height: 100%; 
-  min-height: 400px;
+  height: 65%; 
+  min-height: 300px;
   margin-left: 2.5vw; 
   position: relative;
   overflow-y: visible; 
 }
 
 .below-text {
-  font-size: 14px; /* Adjust font size if needed */
+  font-size: 14px; 
   padding-top: 2vh;
-  padding-bottom: 2vh;
-  color: var(--text-color); /* Optional: Customize text color */
+  padding-bottom: 1vh;
+  color: var(--text-color); 
 }
 
 .mat-elevation-z8 { 
-  flex: 1; /* Allow it to grow within the right-container */
-  overflow-y: auto; /* Ensure it can scroll */
+  flex: 1;
+  overflow-y: auto; 
   box-shadow: none;
 }
 

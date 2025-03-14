@@ -26,11 +26,19 @@ export class HonorCodeChartService {
      * @param chart The chart.js that needs to be saved
      * @param signature User's signature
      */
-    saveImage(chart: Chart, signature: string, chartType: string): void {
+    public saveImage(chart: Chart, signature: string, chartType: string): void {
         const canvas = chart.canvas;
         this.saveCanvasAsJpg(canvas, signature, chartType);
     }
 
+    public saveCanvasOffline(canvasElement: HTMLCanvasElement, ChartType: string, signature: string) {
+        return html2canvas(canvasElement, {}).then(
+            (canvas) => {
+                this.saveCanvasAsJpg(canvas, signature, ChartType);
+            }
+        );
+    }
+    
     public saveImageHighChart(chart: Highcharts.Chart, chartType: string, signature: string): void {
         if (chartType && signature) {
             chart.exportChart(

@@ -452,25 +452,26 @@ export class RadioSearchComponent implements AfterViewInit {
   displayCoordinates(event: MouseEvent): void {
     if (!this.canvas || !this.wcsInfo) return;
 
-    // Get the bounding box of the canvas (CSS size)
-    const rect = this.canvas.getBoundingClientRect();
+    const rect = this.canvas.getBoundingClientRect(); // Get bounding rectangle
 
     const scaleX = this.canvas.width / rect.width;  // Scale factor in X
     const scaleY = this.canvas.height / rect.height; // Scale factor in Y
-
-    let x = (event.clientX - rect.left) * scaleX;
-    let y = (this.canvas.height - (event.clientY - rect.top) * scaleY);
-
-    let adjustedX = x - this.canvasXOffset; // Remove horizontal centering offset
-    let adjustedY = y - this.canvasYOffset; // Remove vertical centering offset
+    
+    // Normalize mouse coordinates from CSS size to actual size
+    const x = (event.clientX - rect.left) * scaleX;
+    
+    // **Invert Y-axis** relative to the canvas height
+    const y = (this.canvas.height - (event.clientY - rect.top) * scaleY);
+    
+    // Adjust for image centering inside the canvas
+    const adjustedX = x - this.canvasXOffset; // Remove horizontal centering offset
+    const adjustedY = y - this.canvasYOffset; // Remove vertical centering offset
 
     const worldCoordinates = this.getWorldCoordinates(adjustedX, adjustedY, this.scale);
 
     if (worldCoordinates) {
-        worldCoordinates.ra += this.sliderXOffset;
         worldCoordinates.dec -= this.sliderYOffset;
-        
-        worldCoordinates.ra = ((worldCoordinates.ra - this.ra!) / (Math.cos(Math.PI * worldCoordinates.dec / 180))) + (this.ra!);
+        worldCoordinates.ra = ((worldCoordinates.ra - this.ra! + this.sliderXOffset) / (Math.cos((Math.PI * worldCoordinates.dec) / 180))) + (this.ra!);
 
         if (worldCoordinates.ra > 360) {
           worldCoordinates.ra %= 360;
@@ -650,9 +651,9 @@ export class RadioSearchComponent implements AfterViewInit {
     try {
       if (this.arrayBuffer && this.header && this.ra && this.dec && this.wcsInfo) {
         let updatedHeader = this.header.block
-          .replace(/CENTERRA= *[\d.-]+/, `CENTERRA= ${String(this.ra - this.sliderXOffset).padStart(20)}`)
+          .replace(/CENTERRA= *[\d.-]+/, `CENTERRA= ${String(this.ra + this.sliderXOffset).padStart(20)}`)
           .replace(/CENTERDE= *[\d.-]+/, `CENTERDE= ${String(this.dec - this.sliderYOffset).padStart(20)}`)
-          .replace(/CRVAL1  = *[\d.-]+/, `CRVAL1  = ${String(this.wcsInfo.crval1 - this.sliderYOffset).padStart(20)}`)
+          .replace(/CRVAL1  = *[\d.-]+/, `CRVAL1  = ${String(this.wcsInfo.crval1 + this.sliderXOffset).padStart(20)}`)
           .replace(/CRVAL2  = *[\d.-]+/, `CRVAL2  = ${String(this.wcsInfo.crval2 - this.sliderYOffset).padStart(20)}`);
 
         const headerLength = updatedHeader.length;

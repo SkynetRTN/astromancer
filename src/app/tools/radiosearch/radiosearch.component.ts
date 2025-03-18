@@ -220,7 +220,7 @@ export class RadioSearchComponent implements AfterViewInit {
         let sourceDec = decList[i];
 
         // Convert source RA/Dec to image coordinates
-        const pixelX = ((sourceRA - (crval1%360)) / cdelt1) + crpix1;
+        const pixelX = ((sourceRA - crval1) / cdelt1) + crpix1;
         const pixelY = ((crval2 - sourceDec) / cdelt2) + crpix2;
 
         // Convert slider offsets from degrees to pixels using WCS scale
@@ -402,7 +402,7 @@ export class RadioSearchComponent implements AfterViewInit {
             return;
         }
     
-        const pixelX = ((ra - (crval1%360)) / cdelt1) + crpix1;
+        const pixelX = ((ra - (crval1)) / cdelt1) + crpix1;
         const pixelY = ((crval2 - dec) / cdelt2) + crpix2;
 
         // Apply scaling and offsets (use pixel offsets from degrees!)

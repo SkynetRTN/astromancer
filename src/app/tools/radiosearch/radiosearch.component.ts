@@ -219,9 +219,15 @@ export class RadioSearchComponent implements AfterViewInit {
         let sourceRA = raList[i];
         let sourceDec = decList[i];
 
-        // Convert source RA/Dec to image coordinates
-        const pixelX = ((sourceRA - crval1) / cdelt1) + crpix1;
-        const pixelY = ((crval2 - sourceDec) / cdelt2) + crpix2;
+        let pixelX = 1;
+        let pixelY = 1;
+        if (crval1 > 360 && sourceRA < 180) {
+          pixelX = ((sourceRA + 360 - (crval1)) / cdelt1) + crpix1;
+          pixelY = ((crval2 - sourceDec) / cdelt2) + crpix2;
+        } else {
+          pixelX = ((sourceRA - (crval1)) / cdelt1) + crpix1;
+          pixelY = ((crval2 - sourceDec) / cdelt2) + crpix2;
+        }
 
         // Convert slider offsets from degrees to pixels using WCS scale
         const pixelXOffset = (this.sliderXOffset / Math.abs(cdelt1)) * this.zoomScale; // Degrees to pixels (X-axis)
@@ -401,16 +407,23 @@ export class RadioSearchComponent implements AfterViewInit {
             console.error('Unknown coordinate system:', this.rccords);
             return;
         }
-    
-        const pixelX = ((ra - (crval1)) / cdelt1) + crpix1;
-        const pixelY = ((crval2 - dec) / cdelt2) + crpix2;
+        
+        let pixelX = 1;
+        let pixelY = 1;
+        if (crval1 > 360 && ra < 180) {
+          pixelX = ((ra + 360 - (crval1)) / cdelt1) + crpix1;
+          pixelY = ((crval2 - dec) / cdelt2) + crpix2;
+        } else {
+          pixelX = ((ra - (crval1)) / cdelt1) + crpix1;
+          pixelY = ((crval2 - dec) / cdelt2) + crpix2;
+        }
 
         // Apply scaling and offsets (use pixel offsets from degrees!)
         let scaledX = (pixelX) * scale + this.canvasXOffset; // Degrees applied
         let scaledY = (pixelY - pixelYOffset) * scale + this.canvasYOffset; // Degrees applied
 
         scaledX = (canvas.width / 2) + (scaledX - (canvas.width / 2)) * Math.cos((source.galLat * Math.PI) / 180) + pixelXOffset;
-
+        console.log(scaledX,scaledY);
         // Draw the circle
         context.beginPath();
         context.arc(
@@ -471,11 +484,12 @@ export class RadioSearchComponent implements AfterViewInit {
 
     if (worldCoordinates) {
         worldCoordinates.dec -= this.sliderYOffset;
-        worldCoordinates.ra = ((worldCoordinates.ra - this.ra! + this.sliderXOffset) / (Math.cos((Math.PI * worldCoordinates.dec) / 180))) + (this.ra!);
 
         if (worldCoordinates.ra > 360) {
           worldCoordinates.ra %= 360;
         }
+
+        worldCoordinates.ra = ((worldCoordinates.ra - this.ra! + this.sliderXOffset) / (Math.cos((Math.PI * worldCoordinates.dec) / 180))) + (this.ra!);
 
         this.currentCoordinates = worldCoordinates;
 

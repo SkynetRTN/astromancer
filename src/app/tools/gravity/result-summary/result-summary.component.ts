@@ -76,10 +76,7 @@ export class ResultSummaryComponent {
         // this.plotDownloading = true;
         this.honorCodeService.honored().subscribe((name: string) => {
             this.chartService.saveImageHighChartsOffline(
-                [this.spectoService.getHighChart(), this.strainService.getHighChart(), ], 1, name, "gravity",
-                () => {
-                    this.plotDownloading = false;
-                });
+                [this.spectoService.getHighChart(), this.strainService.getHighChart(), ], 1, name, "gravity");
         });
     }
 }

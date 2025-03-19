@@ -33,13 +33,13 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
       },
     },
     xAxis: {
-      title: {text: "Time"},
+      title: {text: "Time (Seconds)"},
     },
 
     yAxis: [
       //Logarithmic axis
       {
-      title: {text: "Frequency"},
+      title: {text: "Frequency (Hz)"},
       endOnTick: false,
       type: "logarithmic",
       
@@ -58,6 +58,11 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
       [0.2, 'rgb(69, 16, 115)'],
       [0.6, 'rgb(13, 206, 154)'],
       [0.9, 'rgb(195, 255, 0)'],
+      // [0, '#051f39'],
+      // [0.2, '#4a2480'],
+      // [0.6, '#f42e1f'],
+      // [0.9, '#ffffff'],
+
       // [0, '#051f39'],
       // [0.2, '#4a2480'],
       // [0.6, '#c53a9d'],
@@ -144,7 +149,7 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
       // relativeXValue: true,
 
       marker: {
-        symbol: 'circle',
+        enabled: false
       },
       
       type: 'spline',
@@ -160,14 +165,16 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
       }
     });
 
-    this.chartObject.addSeries({
+    console.log("Hewwo I add chart uwu")
+    this.chartObject.addSeries(
+      {
       name: "Spectrum",
       data: this.service.getSpectoArray(),
       yAxis:1,
       colorAxis: 0,
       boostBlending: "add",
       zIndex: 0,
-      interpolation: true,
+      interpolation: false,
       type: 'heatmap',
       
     });
@@ -176,8 +183,12 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
   updateSpectogram() {
     console.log("updateSpectogram()")
     let axes = this.service.getAxes()
-    this.chartObject.xAxis[0].setExtremes(axes.xmin, axes.xmax, false)
     this.chartObject.yAxis[0].setExtremes(axes.ymin, axes.ymax, false)
+    this.chartObject.xAxis[0].setExtremes(axes.xmin, axes.xmax, false)
+
+    //This prevents the glitched yellow spectogram. That wasn't an issue before, so it may be worth looking into other solutions.
+    this.chartObject.series[1].setData([[0,0,0]])
+
     this.chartObject.series[1].update({
       // boostThreshold: 5000,
       // name: "Spectrum",
@@ -186,7 +197,6 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
       // enableMouseTracking: false,
       // yAxis:1,
       // zIndex: 0,
-      interpolation: true,
       type: 'heatmap',
     },false);
   }

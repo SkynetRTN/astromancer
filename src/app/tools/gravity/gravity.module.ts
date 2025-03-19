@@ -8,6 +8,7 @@ import {InterfaceService as InterfaceService} from "./gravity-form/gravity-inter
 import {GravityFormComponent} from './gravity-form/gravity-form.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {InterfaceUtilModule} from "../shared/interface/util";
+import { FileUploadBigComponent } from '../shared/file-upload-big/file-upload-big.component';
 
 import {GravityStrainchartComponent} from './gravity-strainchart/gravity-strainchart.component';
 import { GravitySpectogramComponent } from './gravity-spectogram/gravity-spectogram.component';
@@ -24,6 +25,7 @@ import { SpectogramService } from './gravity-spectogram/gravity-spectogram.servi
 import { StrainService } from './gravity-strainchart/gravity-strain.service';
 import { ResultSummaryComponent } from './result-summary/result-summary.component';
 import { MatDividerModule } from '@angular/material/divider';
+import { GravityDataService } from './gravity-data.service';
 
 
 const routes: Routes = [
@@ -58,7 +60,7 @@ const routes: Routes = [
     MatButtonModule,
   ],
   exports: [GravityComponent, RouterModule, GravityStrainchartComponent],
-  providers: [InterfaceService, SpectogramService, StrainService]
+  providers: [GravityDataService, InterfaceService, SpectogramService, StrainService]
 })
 export class GravityModule {
 }

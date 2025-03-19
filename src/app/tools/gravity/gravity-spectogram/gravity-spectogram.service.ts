@@ -32,7 +32,7 @@ export class SpectogramService implements OnDestroy {
   private highChart!: Highcharts.Chart;
 
   constructor(private interfaceService: InterfaceService) {
-    this.spectoData.setData([{x: 0, y: 0, value: 0}]);
+    this.spectoData.setData([[0,0,0]]);
     this.modelData.setData([]);
 
     this.interfaceService.freqParameters$.pipe(
@@ -62,7 +62,7 @@ export class SpectogramService implements OnDestroy {
     return this.spectoData.getDataArray();
   }
 
-  setSpecto(data: SpectogramDataDict[]): void {
+  setSpecto(data: number[][]): void {
     this.spectoData.setData(data);
     this.spectogramSubject.next(true);
   }
@@ -76,7 +76,7 @@ export class SpectogramService implements OnDestroy {
     return this.spectoData.getAxes()
   }
 
-  setAxes(axes: Partial<SpectoAxes>): void {
+  setAxes(axes: SpectoAxes): void {
     this.spectoData.setAxes(axes)
   }
 
@@ -99,13 +99,13 @@ export class SpectogramService implements OnDestroy {
     });
   }
 
-  setModelData(data: ModelDataDict[]): void {
+  setModelData(data: number[][]): void {
     this.modelData.setData(data);
     this.modelSubject.next(true);
   }
 
   resetModel(): void {
-    this.modelData.setData(ModelData.getDefaultData());
+    this.modelData.setData([]);
     this.modelSubject.next(true);
   }
 

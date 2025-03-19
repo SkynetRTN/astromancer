@@ -2,11 +2,11 @@
   <my-input-slider
     (value)="onChange($event)" [defaultValue]="16"
     [label]="'Merger Time (sec)'" [maxValue]="20"
-    [minValue]="10" [name]="'mergerTime'"
-    [stepValue]="0.01" [value$]="mergerTimeSubject"
+    [minValue]="10" [range$]="range$" [name]="'mergerTime'"
+    [stepValue]="0.001" [value$]="mergerTimeSubject"
   ></my-input-slider>
   <my-input-slider
-    (value)="onChange($event)" [defaultValue]="25" [label]="'Total Mass (solar)'"
+    (value)="onChange($event)" [defaultValue]="50" [label]="'Total Mass (solar)'"
     [maxValue]="250" [minValue]="2.5"
     [name]="'totalMass'" [numOverride]="true"
     [stepValue]="0.01" [value$]="totalMassSubject"

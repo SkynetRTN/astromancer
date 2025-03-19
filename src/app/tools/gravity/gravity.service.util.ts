@@ -4,10 +4,12 @@ import {ChartInfo} from "../shared/charts/chart.interface";
 import {dummyStrainData} from "./constants/chart-gravity-dummydata";
 import { ratioMassLogSpace, totalMassLogSpace, phaseList, totalMassLogSpaceStrain } from "./constants/model-grid";
 
-export enum GravityChart
-{
-  SPECTO = "Specto",
-  STRAIN = "Strain"
+export interface ServerDataRequest {
+  job_id?: number
+  total_mass_strain?: number
+  total_mass_freq?: number
+  mass_ratio?: number
+  phase?: number
 }
 
 export interface StrainDataDict {
@@ -24,36 +26,46 @@ export interface ModelDataDict {
   Frequency: number | null
 }
 
+export interface range {
+  min: number,
+  max: number,
+}
+
 //For the spectogram
 /**
  * @remarks Represents heatmap data for the spectogram
  * @implements {MyData}
  */
 export class SpectoData implements MyData {
-  private dataDict: SpectogramDataDict[];
+  private dataArr: number[][];
   private axes: SpectoAxes;
   
   constructor() {
-    this.dataDict = [];
+    this.dataArr = [];
     this.axes = {};
   }
 
-  public static getDefaultData(): SpectogramDataDict[] {
+  public static getDefaultData(): number[][] {
     return [];
   }
 
   addRow(index: number, amount: number): void {
-    if (index > 0) {
-      for (let i = 0; i < amount; i++) {
-        this.dataDict.splice(index + i, 0, {x: null, y: null, value: null});
-      }
-    } else {
-      this.dataDict.push({x: null, y: null, value: null});
-    }
+    // if (index > 0) {
+    //   for (let i = 0; i < amount; i++) {
+    //     this.dataDict.splice(index + i, 0, {x: null, y: null, value: null});
+    //   }
+    // } else {
+    //   this.dataDict.push({x: null, y: null, value: null});
+    // }
   }
 
   getData(): SpectogramDataDict[] {
-    return this.dataDict;
+    let data: SpectogramDataDict[] = []
+    this.dataArr.forEach((value) => {
+      if(value[0] == null || value[0] == null ) return;
+      data.push({"x": value[0], 'y':value[1], 'value':value[2]})
+    })
+    return data; 
   }
 
   getAxes(): SpectoAxes {
@@ -61,24 +73,19 @@ export class SpectoData implements MyData {
   }
   
   getDataArray(): number[][] {
-    let data: number[][] = [[]]
-    this.dataDict.forEach((value) => {
-      if(value.x == null || value.y == null ) return;
-      data.push([value.x, value.y, value.value? value.value : 0 ])
-    })
-    return data; 
+    return this.dataArr
   }
 
   removeRow(index: number, amount: number): void {
-    this.dataDict = this.dataDict.slice(0, index).concat(this.dataDict.slice(index + amount));
+    this.dataArr = this.dataArr.slice(0, index).concat(this.dataArr.slice(index + amount));
   }
 
-  setData(data: SpectogramDataDict[]): void {
-    this.dataDict = data;
+  setData(data: number[][]): void {
+    this.dataArr = data;
   }
 
-  setAxes(axes: Partial<SpectoAxes>): void {
-    Object.keys(axes).forEach((v) => this.axes[v as keyof SpectoAxes] = axes[v as keyof SpectoAxes])
+  setAxes(axes: SpectoAxes): void {
+    this.axes = axes
   }
 }
 
@@ -98,11 +105,9 @@ export interface SpectoAxes
  * @implements {MyData}
  */
 export class ModelData implements MyData{
-  private dataDict: ModelDataDict[];
-  private dataArr: [];
+  private dataArr: number[][];
 
   constructor() {
-    this.dataDict = [];
     this.dataArr = [];
   }
 
@@ -110,35 +115,30 @@ export class ModelData implements MyData{
     return [];
   }
 
+  //never use this anyways
   addRow(index: number, amount: number): void {
-    if (index > 0) {
-      for (let i = 0; i < amount; i++) {
-        this.dataDict.splice(index + i, 0, {Time: null, Frequency: null});
-      }
-    } else {
-      this.dataDict.push({Time: null, Frequency: null});
-    }
+
   }
 
   getData(): ModelDataDict[] {
-    return this.dataDict;
+    let dataDict: ModelDataDict[] = []
+    this.dataArr.forEach((value) => {
+      if(value[0] == null || value[1]== null ) return;
+      dataDict.push({"Time": +value[0], "Frequency": +value[1]})
+    })
+    return dataDict; 
   }
   
   getDataArray(): number[][] {
-    let data: number[][] = []
-    this.dataDict.forEach((value) => {
-      if(value.Time == null || value.Frequency == null ) return;
-      data.push([+value.Time, +value.Frequency])
-    })
-    return data; 
+    return this.dataArr
   }
 
   removeRow(index: number, amount: number): void {
-    this.dataDict = this.dataDict.slice(0, index).concat(this.dataDict.slice(index + amount));
+    this.dataArr = this.dataArr.slice(0, index).concat(this.dataArr.slice(index + amount));
   }
 
-  setData(data: ModelDataDict[]): void {
-    this.dataDict = data;
+  setData(data: number[][]): void {
+    this.dataArr = data;
   }
 }
 
@@ -147,53 +147,63 @@ export class ModelData implements MyData{
  * @implements {MyData}
  */
 export class StrainData implements MyData {
-  private dataDict: StrainDataDict[];
+  private dataArr: number[][];
+  private axes: SpectoAxes;
 
   constructor() {
-    this.dataDict = StrainData.getDefaultData();
+    this.dataArr = [];
+    this.axes = {};
   }
 
-  public static getDefaultData(): StrainDataDict[] 
+  public static getDefaultData():  number[][] 
   {
-    return dummyStrainData.map((e) => {
-      return {'Time': e.Time, 'Strain': e.Strain}
-    });
+    return [];
   }
 
   addRow(index: number, amount: number): void {
-    if (index > 0) {
-      for (let i = 0; i < amount; i++) {
-        this.dataDict.splice(index + i, 0, {Time: null, Strain: null},);
-      }
-    } else {
-      this.dataDict.push({Time: null, Strain: null},);
-    }
+    // if (index > 0) {
+    //   for (let i = 0; i < amount; i++) {
+    //     this.dataDict.splice(index + i, 0, {Time: null, Strain: null},);
+    //   }
+    // } else {
+    //   this.dataDict.push({Time: null, Strain: null},);
+    // }
   }
 
   getData(): StrainDataDict[] {
-    return this.dataDict;
+    return this.dataArr.filter(
+      (value) => {
+        return value[0] !== null;
+      }
+    ).map( (entry) => { return {"Time": entry[0], "Strain": entry[1]} as StrainDataDict  })
   }
 
   getDataArray(): number[][] {
-    return this.dataDict.filter(
-        (GravityDataDict: StrainDataDict) => {
-          return GravityDataDict.Time !== null;
-        }
-      ).map((entry: StrainDataDict) => [entry.Time, entry.Strain]) as number[][]
+    return this.dataArr
+  }
+
+  getAxes(): SpectoAxes {
+    return this.axes
   }
 
   removeRow(index: number, amount: number): void {
-    this.dataDict = this.dataDict.slice(0, index).concat(this.dataDict.slice(index + amount));
+    this.dataArr = this.dataArr.slice(0, index).concat(this.dataArr.slice(index + amount));
   }
 
-  setData(data: StrainDataDict[]): void {
-    this.dataDict = data;
+  setData(data: number[][]): void {
+    this.dataArr = data;
+  }
+
+  setAxes(axes: SpectoAxes): void {
+    this.axes = axes
   }
 
 }
 
 export interface GravityInterface {
   getMergerTime(): number;
+
+  getMergerRange(): range;
 
   getTotalMass(): number;
 
@@ -206,6 +216,8 @@ export interface GravityInterface {
   getInclination(): number;
 
   setMergerTime(mergerTime: number): void;
+
+  setMergerRange(range: range): void;
 
   setTotalMass(totalMass: number): void;
 
@@ -232,8 +244,9 @@ export interface GravityInterfaceStorageObject {
 
 export class GravityInterfaceImpl implements GravityInterface {
 
+  private mergerRange: range = {'min':10, 'max':20};
   private mergerTime: number = 16;
-  private totalMass: number = 25;
+  private totalMass: number = 50;
   private massRatio: number = 1;
   private phaseShift: number = 0;
   private distance: number = 300;
@@ -241,6 +254,10 @@ export class GravityInterfaceImpl implements GravityInterface {
 
   getMergerTime(): number{
     return this.mergerTime
+  }
+
+  getMergerRange(): range {
+    return this.mergerRange
   }
 
   getTotalMass(): number{
@@ -269,6 +286,10 @@ export class GravityInterfaceImpl implements GravityInterface {
 
   setMergerTime(mergerTime: number): void{
     this.mergerTime = mergerTime
+  }
+
+  setMergerRange(range: range): void {
+    this.mergerRange = range;
   }
 
   setTotalMass(totalMass: number): void{
@@ -422,9 +443,10 @@ export class StrainStorage implements MyStorage {
     }
   }
 
-  getData(): StrainDataDict[] {
+  //TODO: Store the job instead of the data
+  getData(): number[][] {
     if (localStorage.getItem(StrainStorage.dataKey)) {
-      return JSON.parse(localStorage.getItem(StrainStorage.dataKey)!) as StrainDataDict[];
+      return JSON.parse(localStorage.getItem(StrainStorage.dataKey)!) as number[][];
     } else {
       return StrainData.getDefaultData();
     }
@@ -454,7 +476,7 @@ export class StrainStorage implements MyStorage {
     localStorage.setItem(StrainStorage.chartInfoKey, JSON.stringify(chartInfo));
   }
 
-  saveData(data: StrainDataDict[]): void {
+  saveData(data: number[][]): void {
     // localStorage.setItem(GravityStorage.dataKey, JSON.stringify(data));
   }
 
@@ -471,7 +493,7 @@ export class StrainStorage implements MyStorage {
  * @param phase  Angle of the plane of the merger against out view? I'm still not sure.
  * @returns Valid values in a generic object for a server request
  */
-export function fitValuesToGrid(totalMass: number, massRatio: number, phase: number) {
+export function fitValuesToGrid(totalMass: number, massRatio: number, phase: number):  { [key: string]: number } {
 
   // Fitting the sliders to each logspace
 

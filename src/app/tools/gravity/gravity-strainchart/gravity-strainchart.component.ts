@@ -42,10 +42,10 @@ export class GravityStrainchartComponent implements AfterViewInit, OnDestroy {
       align: 'center',
     },
     xAxis: {
-      title: {text: "Time"}
+      title: {text: "Time (Seconds)"}
     },
     yAxis: {
-      title: {text: "Strain"}
+      title: {text: "Strain (1.6 x 10^-23)"}
     },
     tooltip: {
       enabled: true,
@@ -104,7 +104,7 @@ export class GravityStrainchartComponent implements AfterViewInit, OnDestroy {
       type: 'spline',
       lineWidth: 5,
       marker: {
-        // enabled: false,
+        enabled: false,
         symbol: 'circle',
         radius: 3,
       },
@@ -119,19 +119,21 @@ export class GravityStrainchartComponent implements AfterViewInit, OnDestroy {
       data: this.service.getDataArray(),
       type: 'spline',
       marker: {
-        // enabled: false,
+        enabled: false,
         symbol: 'circle',
         radius: 3,
       },
 
       dataGrouping: {
         anchor: "middle",
-        groupPixelWidth: 2
+        groupPixelWidth: 5
       }
     });
   }
 
   updateData() {
+    let axes = this.service.getAxes()
+    this.chartObject.xAxis[0].setExtremes(axes.xmin, axes.xmax, true)
     this.chartObject.series[1].setData(
       this.service.getDataArray(),
       false, false, false

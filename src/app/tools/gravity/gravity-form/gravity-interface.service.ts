@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, Subject} from "rxjs";
 import * as Highcharts from "highcharts";
 
 import {
@@ -9,7 +9,8 @@ import {
   StrainDataDict,
   GravityInterface,
   GravityInterfaceImpl,
-  StrainStorage
+  StrainStorage,
+  range
 } from "../gravity.service.util";
 
 import {MyData} from "../../shared/data/data.interface";
@@ -28,14 +29,22 @@ export class InterfaceService implements GravityInterface{
   private gravityInterface: GravityInterfaceImpl = new GravityInterfaceImpl();
   private gravityStorage: StrainStorage = new StrainStorage();
 
+  //Server request params
   private serverParameterSubject: BehaviorSubject<UpdateSource> = new BehaviorSubject<UpdateSource>(UpdateSource.INIT);
   public serverParameters$ = this.serverParameterSubject.asObservable();
-
+  
+  //params that affect strain model
   private strainParameterSubject: BehaviorSubject<UpdateSource> = new BehaviorSubject<UpdateSource>(UpdateSource.INIT);
   public strainParameters$ = this.strainParameterSubject.asObservable();
 
+  //params that affect freq model
   private freqParameterSubject: BehaviorSubject<UpdateSource> = new BehaviorSubject<UpdateSource>(UpdateSource.INIT);
   public freqParameters$ = this.freqParameterSubject.asObservable();
+
+  private mergerRangeSubject: Subject<void> = new Subject<void>()
+  public mergerRange$ = this.mergerRangeSubject.asObservable();
+
+
 
   constructor() {
     this.strainData.setData(this.gravityStorage.getData());
@@ -45,6 +54,10 @@ export class InterfaceService implements GravityInterface{
 
   getMergerTime(): number {
     return this.gravityInterface.getMergerTime();
+  }
+
+  getMergerRange(): range {
+    return this.gravityInterface.getMergerRange();
   }
 
   getTotalMass(): number {
@@ -77,6 +90,11 @@ export class InterfaceService implements GravityInterface{
     this.gravityInterface.setMergerTime(+mergerTime);
     this.strainParameterSubject.next(UpdateSource.INTERFACE)
     this.freqParameterSubject.next(UpdateSource.INTERFACE)
+  }
+
+  setMergerRange(range: range){
+    this.gravityInterface.setMergerRange(range);
+    this.mergerRangeSubject.next()
   }
 
   setTotalMass(totalMass: number): void {

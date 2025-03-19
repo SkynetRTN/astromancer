@@ -6,8 +6,7 @@ import * as Highcharts from "highcharts";
 import {
   StrainData,
   StrainDataDict,
-  GravityInterface,
-  GravityInterfaceImpl,
+  SpectoAxes,
   StrainStorage,
   fitValuesToGrid
 } from "../gravity.service.util";
@@ -70,7 +69,7 @@ export class StrainService implements MyData, OnDestroy {
   // uploaded data
   addRow(index: number, amount: number): void {
     this.strainData.addRow(index, amount);
-    this.storage.saveData(this.strainData.getData());
+    this.storage.saveData(this.strainData.getDataArray());
     this.dataSubject.next(true);
   }
 
@@ -84,19 +83,27 @@ export class StrainService implements MyData, OnDestroy {
 
   removeRow(index: number, amount: number): void {
     this.strainData.removeRow(index, amount);
-    this.storage.saveData(this.strainData.getData());
+    this.storage.saveData(this.strainData.getDataArray());
     this.dataSubject.next(true);
   }
 
-  setData(data: StrainDataDict[]): void {
+  setData(data:number[][]): void {
     this.strainData.setData(data);
-    this.storage.saveData(this.strainData.getData());
+    this.storage.saveData(this.strainData.getDataArray());
     this.dataSubject.next(true);
+  }
+
+  getAxes(): SpectoAxes {
+    return this.strainData.getAxes()
+  }
+
+  setAxes(axes: SpectoAxes): void {
+    this.strainData.setAxes(axes)
   }
 
   resetData(): void {
-    this.strainData.setData(StrainData.getDefaultData());
-    this.storage.saveData(this.strainData.getData());
+    this.strainData.setData([]);
+    this.storage.saveData(this.strainData.getDataArray());
     this.dataSubject.next(true);
   }
 
@@ -113,7 +120,7 @@ export class StrainService implements MyData, OnDestroy {
   getModelDataArray(ignoreMergerTime: Boolean = false): number[][] {
     if(ignoreMergerTime) return this.modelData.getDataArray();
 
-    //Making a not of this, because it comes from the old interface and the reason for this specific value is not clear.
+    //Making a note of this, because it comes from the old interface and the reason for this specific value is not clear.
     let factor = 100
 
     let mergerTime: number = this.interfaceService.getMergerTime()
@@ -130,14 +137,14 @@ export class StrainService implements MyData, OnDestroy {
 
   // removeModelRow(index: number, amount: number): void
 
-  setModelData(data: StrainDataDict[]): void {
+  setModelData(data: number[][]): void {
     this.modelData.setData(data);
     // this.storage.saveData(this.strainData.getData());
     this.modelSubject.next(true);
   }
 
   resetModelData(): void {
-    this.modelData.setData(StrainData.getDefaultData());
+    this.modelData.setData([]);
     // this.storage.saveData(this.strainData.getData());
     this.modelSubject.next(true);
   }

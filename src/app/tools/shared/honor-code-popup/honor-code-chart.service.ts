@@ -42,45 +42,6 @@ export class HonorCodeChartService {
         }
     }
 
-<<<<<<< HEAD
-    public saveImageHighChartOffline(chart: Highcharts.Chart, ChartType: string, signature: string, callback: (any | null) = null): void {
-        if (ChartType && signature) {
-            const container = chart.container as HTMLElement;
-            html2canvas(container, {}).then(
-                (canvas) => {
-                    this.saveCanvasAsJpg(canvas, signature, ChartType);
-                    if (callback) {
-                        callback();
-                    }
-                }
-            );
-        }
-    }
-
-    public saveImageHighChartsOffline(charts: Highcharts.Chart[], columns: number, signature: string, chartType: string, callback: (any | null) = null): void {
-        if (chartType) {
-            if (charts.length === 1) {
-                this.saveImageHighChartOffline(charts[0], chartType, signature, callback);
-                return;
-            }
-            const canvasTile: HTMLCanvasElement[] = [];
-            const canvasSubject: Subject<number> = new Subject<number>();
-            charts.forEach((chart) => {
-                html2canvas(chart.container, {}).then(
-                    (canvas) => {
-                        canvasTile.push(canvas);
-                        canvasSubject.next(canvasTile.length);
-                    });
-            });
-            canvasSubject.pipe(skip(charts.length - 1), take(1)).subscribe(
-                () => {
-                    this.saveCanvasTilesAsJpg(canvasTile, columns, signature, chartType);
-                    if (callback) {
-                        callback();
-                    }
-                });
-        }
-=======
     public saveImageHighChartOffline(chart: Highcharts.Chart, ChartType: string, signature: string) {
         const container = chart.container as HTMLElement;
         return html2canvas(container, {}).then(
@@ -88,7 +49,6 @@ export class HonorCodeChartService {
                 this.saveCanvasAsJpg(canvas, signature, ChartType);
             }
         );
->>>>>>> a2bdf55d9e7668d5308c13a2d3c165544f39b4e6
     }
 
     public saveImageHighChartsOffline(charts: Highcharts.Chart[], column: number, signature: string, chartType: string): Promise<void> {

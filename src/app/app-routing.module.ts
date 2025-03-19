@@ -17,6 +17,8 @@ const TOOLS_ROUTES: Routes = [
     {path: "variable", loadChildren: () => import('./tools/variable/variable.module').then(m => m.VariableModule)},
     {path: "spectrum", loadChildren: () => import('./tools/spectrum/spectrum.module').then(m => m.SpectrumModule)},
     {path: "dual", loadChildren: () => import('./tools/dual/dual.module').then(m => m.DualModule)},
+    {path: "radio-calibrator", loadChildren: () => import('./tools/radioCalibrate/radioCalibrate.module').then(m => m.RadioCalibrateModule)},
+    {path: "radio-source-identifier", loadChildren: () => import('./tools/radiosearch/radiosearch.module').then(m => m.RadioSearchModule)},
     {path: "cluster", loadChildren: () => import('./tools/cluster/cluster.module').then(m => m.ClusterModule)},
     {path: "gravity", loadChildren: () => import('./tools/gravity/gravity.module').then(m => m.GravityModule)},
     {path: "rc", loadChildren: () => import('./tools/rc/rc.module').then(m => m.RcModule)},

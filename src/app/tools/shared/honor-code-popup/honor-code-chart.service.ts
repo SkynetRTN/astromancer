@@ -6,7 +6,7 @@ import * as Highcharts from 'highcharts';
 import HC_exporting from "highcharts/modules/exporting";
 import HC_offline_exporting from "highcharts/modules/offline-exporting";
 import html2canvas from "html2canvas";
-import {skip, Subject, take} from "rxjs";
+import {BehaviorSubject, from, lastValueFrom, mergeMap, skip, Subject, take, tap} from "rxjs";
 
 /**
  * Services for charts to perform
@@ -42,6 +42,7 @@ export class HonorCodeChartService {
         }
     }
 
+<<<<<<< HEAD
     public saveImageHighChartOffline(chart: Highcharts.Chart, ChartType: string, signature: string, callback: (any | null) = null): void {
         if (ChartType && signature) {
             const container = chart.container as HTMLElement;
@@ -79,9 +80,38 @@ export class HonorCodeChartService {
                     }
                 });
         }
+=======
+    public saveImageHighChartOffline(chart: Highcharts.Chart, ChartType: string, signature: string) {
+        const container = chart.container as HTMLElement;
+        return html2canvas(container, {}).then(
+            (canvas) => {
+                this.saveCanvasAsJpg(canvas, signature, ChartType);
+            }
+        );
+>>>>>>> a2bdf55d9e7668d5308c13a2d3c165544f39b4e6
     }
 
-    private saveCanvasAsJpg(canvas: HTMLCanvasElement, signature: string, chartType?: string): void {
+    public saveImageHighChartsOffline(charts: Highcharts.Chart[], column: number, signature: string, chartType: string): Promise<void> {
+        if (charts.length === 1) {
+            return this.saveImageHighChartOffline(charts[0], chartType, signature);
+        }
+        const canvasTile: HTMLCanvasElement[] = [];
+        return lastValueFrom(
+            from(charts).pipe(
+                mergeMap((chart) => {
+                    const container = chart.container as HTMLElement;
+                    return from(html2canvas(container, {})).pipe(
+                        // Wrap html2canvas in from() to return an observable
+                        tap(canvas => canvasTile.push(canvas))
+                    );
+                })
+            )
+        ).then(() => {
+            return this.saveCanvasTilesAsJpg(canvasTile, column, signature, chartType);
+        });
+    }
+
+    public saveCanvasAsJpg(canvas: HTMLCanvasElement, signature: string, chartType?: string): void {
         this.saveCanvasTilesAsJpg([canvas], 1, signature, chartType);
     }
 
@@ -105,6 +135,7 @@ export class HonorCodeChartService {
         const exifImage = addEXIFToImage(destCanvas.toDataURL('image/jpeg', 1.0), signature, time);
         //create image
         saveAs(dataURLtoBlob(exifImage), this.generateFileName(chartType, signature) + '.jpg');
+        destCanvas.remove();
     }
 
     private generateFileName(chartType?: string, signature?: string): string {

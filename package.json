@@ -34,6 +34,7 @@
     "bootstrap-icons": "^1.10.3",
     "chart.js": "^4.2.1",
     "file-saver": "^2.0.5",
+    "fitsjs": "^0.6.6",
     "handsontable": "13.0.0",
     "highcharts": "^11.1.0",
     "highcharts-angular": "^3.1.2",

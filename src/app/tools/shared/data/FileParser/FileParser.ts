@@ -3,9 +3,13 @@ import {FileType, HeaderRequirement, MyFileParserErrors, MyFileParserStrategy} f
 import {MyFileParserTXT} from "./FileParser.TXT";
 import {MyFileParserDefault} from "./FileParser.Default";
 import {MyFileParserCSV} from "./FileParser.CSV";
+<<<<<<< HEAD
 import { MyFileParserTXTGW } from "./FileParser.TXTGW";
 import { MyFileParserHDF5 } from "./FileParser.HDF5";
 import { HttpClient } from "@angular/common/http";
+=======
+import {MyFileParserFITS} from "./FileParser.FITS";
+>>>>>>> a2bdf55d9e7668d5308c13a2d3c165544f39b4e6
 
 
 export class MyFileParser {
@@ -33,8 +37,13 @@ export class MyFileParser {
       this.strategy = new MyFileParserTXTGW();
     } else if (fileType === FileType.CSV) {
       this.strategy = new MyFileParserCSV();
+<<<<<<< HEAD
     } else if (fileType === FileType.GWF && httpClient) {
       this.strategy = new MyFileParserHDF5(httpClient);
+=======
+    } else if (fileType === FileType.FITS) {
+      this.strategy = new MyFileParserFITS();
+>>>>>>> a2bdf55d9e7668d5308c13a2d3c165544f39b4e6
     } else {
       this.strategy = new MyFileParserDefault();
     }

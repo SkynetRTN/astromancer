@@ -98,8 +98,12 @@
 </div>
 <mat-divider></mat-divider>
 <div class="row download-button">
-    <button class="full-button" color="primary" mat-raised-button
-            [disabled]="true" (click)="downloadPlots()">Download Plots
+    <button class="full-button" color="primary" mat-raised-button (click)="downloadFsrPlots()">Download PM Plot
+    </button>
+</div>
+<mat-divider></mat-divider>
+<div class="row download-button">
+    <button class="full-button" color="primary" mat-raised-button (click)="downloadPlots()">Download Isochrone Plots
     </button>
 </div>
 <mat-divider></mat-divider>
@@ -114,5 +118,5 @@
 </div>
 <mat-divider></mat-divider>
 <div class="row download-button">
-    <button class="full-button" color="primary" mat-raised-button (click)="submitData()">Submit to Astronomicon</button>
+    <button class="full-button" color="primary" mat-raised-button [disabled]="true" (click)="submitData()">Submit to Astronomicon</button>
 </div>

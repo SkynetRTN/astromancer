@@ -82,6 +82,10 @@ export enum FileType {
   TXT = "txt",
   TXTGW = "txtgw",
   CSV = "csv",
+<<<<<<< HEAD
   GWF = "gwf",
+=======
+  FITS = "fits"
+>>>>>>> a2bdf55d9e7668d5308c13a2d3c165544f39b4e6
 }
 

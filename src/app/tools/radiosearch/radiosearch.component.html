@@ -29,7 +29,7 @@
           {{ rccords === 'equatorial' ? 'RA Offset' : 'GalLong Offset' }}: {{ sliderXOffset }}°
         </label>
         <input id="xOffset" type="range" 
-               min="-3" max="3" step="0.1" [(ngModel)]="sliderXOffset" 
+               min="-2" max="2" step="0.02" [(ngModel)]="sliderXOffset" 
                (input)="updateFitsImage()">
       </div>
       
@@ -38,21 +38,21 @@
           {{ rccords === 'equatorial' ? 'Dec Offset' : 'GalLat Offset' }}: {{ sliderYOffset }}°
         </label>
         <input id="yOffset" type="range" 
-               min="-3" max="3" step="0.1" [(ngModel)]="sliderYOffset" 
+               min="-2" max="2" step="0.02" [(ngModel)]="sliderYOffset" 
                (input)="updateFitsImage()">
       </div>
       
       <div class="max-slider-container" [ngStyle]="{'opacity': ra ? 1 : 0}">
         <label for="maxValue">Scale: {{ 200 * maxValue | number:'1.0-0' }}%</label>
         <input id="maxValue" type="range" 
-               min="0" max="1" step="0.05" [(ngModel)]="maxValue" 
+               min="0" max="1" step="0.01" [(ngModel)]="maxValue" 
                (input)="updateFitsImage()">
       </div>
 
       <div class="zoom-slider-container" [ngStyle]="{'opacity': ra ? 1 : 0}">
         <label for="zoom">Zoom: {{ zoomLevel | number:'1.0-0' }}%</label>
         <input id="zoom" type="range" 
-               min="10" max="100" [(ngModel)]="zoomLevel" 
+               min="10" max="100" step="1" [(ngModel)]="zoomLevel" 
                (input)="updateFitsImage()">
       </div>
 
@@ -83,16 +83,26 @@
           Query
         </button>
       </div>
-      
+    
       <div class="new-fits-button-container">
         <button 
-          (click)="fitsLoaded ? saveModifiedFITS() : noUpload()" 
+          (click)="fitsLoaded ? saveFullFITS() : noUpload()" 
           color="'primary'" 
           style="border-radius: 3px; margin-left: 10px;" 
           mat-raised-button>
-          Save FITS
+          Save Full FITS
         </button>
-      </div>         
+      </div>      
+      
+        <!-- <div class="new-single-layer-fits-button-container">
+          <button 
+            (click)="fitsLoaded ? saveSingleLayerFits() : noUpload()" 
+            color="'primary'" 
+            style="border-radius: 3px;" 
+            mat-raised-button>
+            Save Single Layer FITS
+          </button>
+        </div>       -->
     </div>
   </div>
 
@@ -103,11 +113,11 @@
       <ng-container *ngIf="averageFlux$ | async as averageFlux; else noFlux">
         The uploaded file used a frequency range of {{ lowerFreq || 'N/A' }} MHz to {{ upperFreq || 'N/A' }} MHz. 
         The expected flux for radio source 
-        {{ (params[0].catalog + params[0].identifier) || 'Unknown Source' }} 
+        {{ (params[0].catalog + ' ' + params[0].identifier) || 'Unknown Source' }} 
         in this frequency range is {{ averageFlux }} Jy.
       </ng-container>      
       <ng-template #noFlux>
-        There is not enough data to guess the flux at the appropriate frequency for radio source {{ (params[0].catalog + params[0].identifier) || 'Unknown Source' }}!
+        There is not enough data to guess the flux at the appropriate frequency for radio source {{ (params[0].catalog + ' ' + params[0].identifier) || 'Unknown Source' }}!
       </ng-template>
     </ng-container>
     <ng-template #noData>

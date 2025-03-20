@@ -62,6 +62,7 @@ export class RadioSearchComponent implements AfterViewInit {
   currentCoordinates: { ra: number, dec: number } | null = null;
   selectedCoordinates: { ra: number, dec: number} | null = null;
   params: { targetFreq: number, catalog: string, identifier: string }[] = [];
+  pixelArray: Float64Array = new Float64Array(5);
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('fitsCanvas', { static: false }) canvasRef!: ElementRef<HTMLCanvasElement>;
@@ -178,8 +179,8 @@ export class RadioSearchComponent implements AfterViewInit {
     const rect = this.canvas.getBoundingClientRect();
 
     // Normalize mouse coordinates from CSS size to actual size
-    const scaleX = this.canvas.width / rect.width;  // Scale factor in X
-    const scaleY = this.canvas.height / rect.height; // Scale factor in Y
+    const scaleX = this.canvas.width / rect.width;  
+    const scaleY = this.canvas.height / rect.height; 
     const mouseX = (event.clientX - rect.left) * scaleX;
     const mouseY = (event.clientY - rect.top) * scaleY;
 
@@ -237,7 +238,7 @@ export class RadioSearchComponent implements AfterViewInit {
         let scaledX = (pixelX) * this.scale + this.canvasXOffset;
         let scaledY = (pixelY - pixelYOffset) * this.scale + this.canvasYOffset;
 
-        scaledX = (this.canvas!.width / 2) + (scaledX - (this.canvas!.width / 2)) * Math.cos((source.galLat * Math.PI) / 180) + pixelXOffset;
+        scaledX = (this.canvas!.width / 2) + (scaledX - (this.canvas!.width / 2)) * Math.cos((source.galLat * Math.PI) / 180) + (pixelXOffset);// * (this.naxis1/this.canvas!.width));
 
         // Calculate distance from mouse to circle center
         const distance = Math.sqrt(
@@ -262,7 +263,7 @@ export class RadioSearchComponent implements AfterViewInit {
                     0,
                     2 * Math.PI
                 );
-                context.strokeStyle = '#ff0000';
+                context.strokeStyle = '#ff3333';
                 context.lineWidth = 1 + (3 - 1) * ((this.zoomScale - 0.1) / (1 - 0.1));
                 context.stroke();
                 context.closePath();
@@ -298,7 +299,7 @@ export class RadioSearchComponent implements AfterViewInit {
         const crossSize = 10 * this.zoomScale;
 
         context.beginPath();
-        context.strokeStyle = '#ff0000';
+        context.strokeStyle = '#ff3333';
         context.lineWidth = 2;
 
         context.moveTo(mouseX - crossSize, mouseY);
@@ -351,10 +352,10 @@ export class RadioSearchComponent implements AfterViewInit {
   querySIMBAD() {
     if (this.selectedCoordinates && this.wcsInfo) {
       if (this.rccords === "equatorial") {
-        const url = `https://simbad.cds.unistra.fr/simbad/sim-coo?Coord=${this.selectedCoordinates.ra}d${this.selectedCoordinates.dec}d&CooFrame=Ecl&CooEpoch=2000&CooEqui=2000&CooDefinedFrames=ICRS-J2000&Radius=${0.30 * this.beamWidth * 60}&Radius.unit=arcmin&submit=submit+query&CoordList=`;
+        const url = `https://simbad.cds.unistra.fr/simbad/sim-coo?Coord=${this.selectedCoordinates.ra}d${this.selectedCoordinates.dec}d&CooFrame=Ecl&CooEpoch=2000&CooEqui=2000&CooDefinedFrames=ICRS-J2000&Radius=${Math.ceil(0.30 * this.beamWidth * 60)}&Radius.unit=arcmin&submit=submit+query&CoordList=`;
         window.open(url, "_blank");
       } else if (this.rccords === "galactic") {
-        const url = `https://simbad.cds.unistra.fr/simbad/sim-coo?Coord=${this.selectedCoordinates.ra}d${this.selectedCoordinates.dec}d&CooFrame=Gal&CooEpoch=2000&CooEqui=2000&CooDefinedFrames=none&Radius=${0.30 * this.beamWidth * 60}&Radius.unit=arcmin&submit=submit+query&CoordList=`;
+        const url = `https://simbad.cds.unistra.fr/simbad/sim-coo?Coord=${this.selectedCoordinates.ra}d${this.selectedCoordinates.dec}d&CooFrame=Gal&CooEpoch=2000&CooEqui=2000&CooDefinedFrames=none&Radius=${Math.ceil(0.30 * this.beamWidth * 60)}&Radius.unit=arcmin&submit=submit+query&CoordList=`;
         window.open(url, "_blank");
       }
     }
@@ -419,11 +420,12 @@ export class RadioSearchComponent implements AfterViewInit {
         }
 
         // Apply scaling and offsets (use pixel offsets from degrees!)
+        console.log(this.sliderXOffset * (1 / this.wcsInfo!.cdelt1), this.wcsInfo!.cdelt1);
         let scaledX = (pixelX) * scale + this.canvasXOffset; // Degrees applied
         let scaledY = (pixelY - pixelYOffset) * scale + this.canvasYOffset; // Degrees applied
+        console.log(this.canvas!.width/this.naxis1);
+        scaledX = (canvas.width / 2) + (scaledX - (canvas.width / 2)) * Math.cos((source.galLat * Math.PI) / 180) + (pixelXOffset);
 
-        scaledX = (canvas.width / 2) + (scaledX - (canvas.width / 2)) * Math.cos((source.galLat * Math.PI) / 180) + pixelXOffset;
-        console.log(scaledX,scaledY);
         // Draw the circle
         context.beginPath();
         context.arc(
@@ -484,12 +486,12 @@ export class RadioSearchComponent implements AfterViewInit {
 
     if (worldCoordinates) {
         worldCoordinates.dec -= this.sliderYOffset;
-
+        worldCoordinates.ra += this.sliderXOffset;
         if (worldCoordinates.ra > 360) {
           worldCoordinates.ra %= 360;
         }
 
-        worldCoordinates.ra = ((worldCoordinates.ra - this.ra! + this.sliderXOffset) / (Math.cos((Math.PI * worldCoordinates.dec) / 180))) + (this.ra!);
+        worldCoordinates.ra = ((worldCoordinates.ra - this.ra!) / (Math.cos((Math.PI * worldCoordinates.dec) / 180))) + (this.ra!);
 
         this.currentCoordinates = worldCoordinates;
 
@@ -509,8 +511,8 @@ export class RadioSearchComponent implements AfterViewInit {
     // Extract WCS information
     const { crpix1, crpix2, crval1, crval2, cdelt1, cdelt2 } = this.wcsInfo;
 
-    const unscaledX = x / scale; 
-    const unscaledY = y / scale;
+    const unscaledX = (x / scale); 
+    const unscaledY = (y / scale);
 
     // Step 2: Flip Y-axis to match FITS image orientation (bottom-to-top storage)
     const flippedY = this.naxis2 - unscaledY - 1;
@@ -541,7 +543,7 @@ export class RadioSearchComponent implements AfterViewInit {
           const dataUnit = new fitsjs.astro.FITS.DataUnit(null, this.arrayBuffer);
           const headerBlock = new TextDecoder().decode(dataUnit.buffer!.slice(0, 5760));
           this.header = new fitsjs.astro.FITS.Header(headerBlock);
-  
+
           // Extract header values
           this.naxis1 = this.header.get('NAXIS1');
           this.naxis2 = this.header.get('NAXIS2');
@@ -569,18 +571,18 @@ export class RadioSearchComponent implements AfterViewInit {
           const rowLength = this.naxis1 * bytesPerPixel;
   
           const dataView = new DataView(this.arrayBuffer, dataOffset);
-          const pixelArray = new Float64Array(this.naxis1 * this.naxis2);
+          this.pixelArray = new Float64Array(this.naxis1 * this.naxis2);
   
           // Read pixel data based on BITPIX
           const swapEndian = fitsjs.astro.FITS.DataUnit.swapEndian;
           let readMethod: (byteOffset: number, littleEndian?: boolean) => number;
-  
+
           switch (bitpix) {
             case 8:
               for (let y = 0; y < this.naxis2; y++) {
                 const rowOffset = y * rowLength;
                 for (let x = 0; x < this.naxis1; x++) {
-                  pixelArray[y * this.naxis1 + x] = dataView.getUint8(rowOffset + x);
+                  this.pixelArray[y * this.naxis1 + x] = dataView.getUint8(rowOffset + x);
                 }
               }
               break;
@@ -590,7 +592,7 @@ export class RadioSearchComponent implements AfterViewInit {
               for (let y = 0; y < this.naxis2; y++) {
                 const rowOffset = y * rowLength;
                 for (let x = 0; x < this.naxis1; x++) {
-                  pixelArray[y * this.naxis1 + x] = swapEndian.I(readMethod(rowOffset + x * 2, false));
+                  this.pixelArray[y * this.naxis1 + x] = swapEndian.I(readMethod(rowOffset + x * 2, false));
                 }
               }
               break;
@@ -600,7 +602,7 @@ export class RadioSearchComponent implements AfterViewInit {
               for (let y = 0; y < this.naxis2; y++) {
                 const rowOffset = y * rowLength;
                 for (let x = 0; x < this.naxis1; x++) {
-                  pixelArray[y * this.naxis1 + x] = swapEndian.J(readMethod(rowOffset + x * 4, false));
+                  this.pixelArray[y * this.naxis1 + x] = swapEndian.J(readMethod(rowOffset + x * 4, false));
                 }
               }
               break;
@@ -610,17 +612,17 @@ export class RadioSearchComponent implements AfterViewInit {
               for (let y = 0; y < this.naxis2; y++) {
                 const rowOffset = y * rowLength;
                 for (let x = 0; x < this.naxis1; x++) {
-                  pixelArray[y * this.naxis1 + x] = readMethod(rowOffset + x * 4, false);
+                  this.pixelArray[y * this.naxis1 + x] = readMethod(rowOffset + x * 4, false);
                 }
               }
               break;
   
             case -64:
               readMethod = dataView.getFloat64.bind(dataView);
-              for (let y = 0; y < this.naxis2; y++) {
+              for (let y = 0; y < this.naxis2*5; y++) {
                 const rowOffset = y * rowLength;
-                for (let x = 0; x < this.naxis1; x++) {
-                  pixelArray[y * this.naxis1 + x] = readMethod(rowOffset + x * 8, false);
+                for (let x = 0; x < this.naxis1*5; x++) {
+                  this.pixelArray[y * this.naxis1 + x] = readMethod(rowOffset + x * 8, false);
                 }
               }
               break;
@@ -628,11 +630,11 @@ export class RadioSearchComponent implements AfterViewInit {
             default:
               throw new Error(`Unsupported BITPIX value: ${bitpix}`);
           }
-  
+
           // Scale pixel values using BSCALE and BZERO
-          this.scaledData = pixelArray.map((value) => (isNaN(value) ? 0 : bscale * value + bzero));
+          this.scaledData = this.pixelArray.map((value) => (isNaN(value) ? 0 : bscale * value + bzero));
           this.fitsLoaded = true;
-  
+          
           // Extract WCS (World Coordinate System) info
           this.wcsInfo = {
             crpix1: parseFloat(this.header.get('CRPIX1')) || 0,
@@ -661,9 +663,10 @@ export class RadioSearchComponent implements AfterViewInit {
   }  
 
 
-  saveModifiedFITS(): void {
+  saveFullFITS(): void {
     try {
       if (this.arrayBuffer && this.header && this.ra && this.dec && this.wcsInfo) {
+        console.log('crvals',this.wcsInfo.crval1,this.wcsInfo.crval2);
         let updatedHeader = this.header.block
           .replace(/CENTERRA= *[\d.-]+/, `CENTERRA= ${String(this.ra + this.sliderXOffset).padStart(20)}`)
           .replace(/CENTERDE= *[\d.-]+/, `CENTERDE= ${String(this.dec - this.sliderYOffset).padStart(20)}`)
@@ -697,6 +700,62 @@ export class RadioSearchComponent implements AfterViewInit {
     }
   }  
 
+
+  saveSingleLayerFits(): void {
+    try {
+      if (this.arrayBuffer && this.header && this.pixelArray && this.ra && this.dec && this.wcsInfo) {
+        console.log('Saving Single Layer FITS...');
+  
+        // Modify the header (same as in saveFullFITS)
+        let updatedHeader = this.header.block
+          .replace(/CENTERRA= *[\d.-]+/, `CENTERRA= ${String(this.ra + this.sliderXOffset).padStart(20)}`)
+          .replace(/CENTERDE= *[\d.-]+/, `CENTERDE= ${String(this.dec - this.sliderYOffset).padStart(20)}`)
+          .replace(/CRVAL1  = *[\d.-]+/, `CRVAL1  = ${String(this.wcsInfo.crval1 + this.sliderXOffset).padStart(20)}`)
+          .replace(/CRVAL2  = *[\d.-]+/, `CRVAL2  = ${String(this.wcsInfo.crval2 - this.sliderYOffset).padStart(20)}`);
+  
+        const headerLength = updatedHeader.length;
+        const paddingSize = 2880 - (headerLength % 2880);
+        updatedHeader = updatedHeader.padEnd(headerLength + paddingSize, ' ');
+  
+        // Convert the header into bytes
+        const headerBytes = new Uint8Array([...updatedHeader].map(c => c.charCodeAt(0)));
+        console.log('Header Size (bytes):', headerBytes.length);
+  
+        // Extract the first data list
+        const dataUnitSize = this.naxis1 * this.naxis2 * 8; // 8 bytes per Float64 value
+        const firstDataList = new Float64Array(this.pixelArray.slice(0, this.naxis1 * this.naxis2));
+        console.log('Extracted First Data List:', firstDataList);
+  
+        // Convert to Uint8Array
+        const intensityBuffer = new Uint8Array(firstDataList.buffer);
+        console.log('Intensity Buffer Size:', intensityBuffer.length);
+  
+        // Allocate buffer
+        const totalSize = headerBytes.length + intensityBuffer.length;
+        const newBuffer = new ArrayBuffer(totalSize);
+        console.log('Total Buffer Size:', newBuffer.byteLength);
+  
+        // Write header and data into buffer
+        const newView = new Uint8Array(newBuffer);
+        newView.set(new TextEncoder().encode(updatedHeader), 0);
+        newView.set(intensityBuffer, headerBytes.length);
+  
+        console.log('Final FITS Data:', newView);
+  
+        // Create and download the FITS file
+        const fitsBlob = new Blob([newBuffer], { type: 'application/octet-stream' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(fitsBlob);
+        link.download = 'single_layer.fits';
+        link.click();
+      } else {
+        console.error('Missing required data (arrayBuffer, header, or pixelArray).');
+      }
+    } catch (error) {
+      console.error('Error saving modified FITS file:', error);
+    }
+  }  
+  
 
   searchCatalog(): void {
     if (this.rccords && this.ra && this.dec && this.width && this.height) {
@@ -816,10 +875,16 @@ export class RadioSearchComponent implements AfterViewInit {
             [200, 228, 47], [255, 180, 1], [249, 111, 1], [181, 45, 5]
         ];
 
-        value = Math.max(0, Math.min(1, value)); // Clamp between 0 and 1
+        value = Math.max(0, Math.min(1, value)); 
+
+        const r = Math.max(0, Math.min(1, 1.0 - 4.0 * Math.pow(value - 0.75, 2))) * 255;
+        const g = Math.exp(-Math.pow(value - 0.5, 2) / 0.1) * 255;
+        const b = Math.max(0, Math.min(1, 1.0 - 4.0 * Math.pow(value - 0.25, 2))) * 255;
+
+        const color: [number, number, number] = [r, g, b];
         const index = Math.floor(value * (turboRGB.length - 1));
 
-        return turboRGB[index];
+        return color;
     }
 
     // Apply the turbo colormap and create the image data array

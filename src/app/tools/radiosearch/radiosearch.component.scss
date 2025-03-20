@@ -198,6 +198,20 @@
   bottom: -11%;
 }
 
+.new-single-layer-fits-button-container {
+  position: absolute;
+  justify-self: center; 
+  left: 5px;
+  bottom: -17%;
+}
+
+.button-column-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Aligns buttons to the left, change to center if needed */
+  gap: 10px; /* Adds spacing between buttons */
+}
+
 .button-container {
   position: relative;
   width: 130px;

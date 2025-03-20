@@ -106,8 +106,8 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
     let hyperlink = '';
 
     if (this.paramData) {
-        linkText = this.paramData[0][1] + this.paramData[0][2]; // The part of the title that should be clickable
-        hyperlink = 'https://www.google.com/search?q=Information+for+radio+source+' + linkText; // Set your hyperlink URL
+        linkText = this.paramData[0][1] + ' ' + this.paramData[0][2]; 
+        hyperlink = `https://simbad.cds.unistra.fr/simbad/sim-id?Ident=${this.paramData[0][1] + this.paramData[0][2]}&NbIdent=1&Radius=2&Radius.unit=arcmin&submit=submit+id`; 
     }
 
     const clickablePart = linkText

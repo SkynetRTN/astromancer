@@ -52,7 +52,7 @@
       <div class="zoom-slider-container" [ngStyle]="{'opacity': ra ? 1 : 0}">
         <label for="zoom">Zoom: {{ zoomLevel | number:'1.0-0' }}%</label>
         <input id="zoom" type="range" 
-               min="10" max="100" step="1" [(ngModel)]="zoomLevel" 
+               min="10" max="150" step="1" [(ngModel)]="zoomLevel" 
                (input)="updateFitsImage()">
       </div>
 

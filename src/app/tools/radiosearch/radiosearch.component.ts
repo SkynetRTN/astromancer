@@ -229,8 +229,8 @@ export class RadioSearchComponent implements AfterViewInit {
         }
 
         // Convert slider offsets from degrees to pixels using WCS scale
-        const pixelXOffset = (this.sliderXOffset / Math.abs(cdelt1)) * this.zoomScale; // Degrees to pixels (X-axis)
-        const pixelYOffset = this.sliderYOffset / Math.abs(cdelt2); // Degrees to pixels (Y-axis)
+        let pixelXOffset = ((this.sliderXOffset / Math.abs(cdelt1)) * this.zoomScale * scaleX); // Degrees to pixels (X-axis)
+        let pixelYOffset = this.sliderYOffset / Math.abs(cdelt2) * scaleY; // Degrees to pixels (Y-axis)
 
         // Apply scaling and offsets for image centering
         let scaledX = (pixelX) * this.scale + this.canvasXOffset;
@@ -432,7 +432,7 @@ export class RadioSearchComponent implements AfterViewInit {
         context.arc(
             scaledX,
             scaledY,
-            scale * 22 * Math.cos((source.galLat * Math.PI) / 180), // Radius of the circle
+            scale * 22, // Radius of the circle
             0,
             2 * Math.PI
         );
@@ -692,7 +692,7 @@ export class RadioSearchComponent implements AfterViewInit {
         const fitsBlob = new Blob([newBuffer], { type: 'application/octet-stream' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(fitsBlob);
-        link.download = 'modified_file.fits';
+        link.download = 'corrected_' + this.fitsFileName;
         link.click();
       }
     } catch (error) {

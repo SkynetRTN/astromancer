@@ -120,8 +120,6 @@ export class RadioSearchComponent implements AfterViewInit {
   }
 
 
-
-
   // Handle drag enter event (adds shake class)
   onDragEnter(): void {
     this.fileDropZoneRef.nativeElement.classList.add('shake');
@@ -386,18 +384,23 @@ export class RadioSearchComponent implements AfterViewInit {
         return;
     }
 
+    const rect = canvas.getBoundingClientRect(); // Get bounding rectangle
+
+    const scaleX = canvas.width / rect.width;  // Scale factor in X
+    const scaleY = canvas.height / rect.height; // Scale factor in Y
+
     // Use WCS information from wcsInfo
     const { crpix1, crpix2, crval1, crval2, cdelt1, cdelt2 } = this.wcsInfo;
 
     // Convert slider offsets from degrees to pixels using WCS scale
-    let pixelXOffset = (this.sliderXOffset / Math.abs(cdelt1)) * this.zoomScale; // Degrees to pixels (X-axis)
-    let pixelYOffset = this.sliderYOffset / Math.abs(cdelt2); // Degrees to pixels (Y-axis)
+    console.log(scaleX);
+    let pixelXOffset = ((this.sliderXOffset / Math.abs(cdelt1)) * this.zoomScale * scaleX); // Degrees to pixels (X-axis)
+    let pixelYOffset = this.sliderYOffset / Math.abs(cdelt2) * scaleY; // Degrees to pixels (Y-axis)
 
     // Iterate through each source
     results.forEach(source => {
         let ra: number, dec: number;
-  
-        // Determine coordinate system
+
         if (this.rccords === 'equatorial') {
             ra = source.ra%360;       // Equatorial coordinates
             dec = source.dec;
@@ -419,11 +422,9 @@ export class RadioSearchComponent implements AfterViewInit {
           pixelY = ((crval2 - dec) / cdelt2) + crpix2;
         }
 
-        // Apply scaling and offsets (use pixel offsets from degrees!)
-        console.log(this.sliderXOffset * (1 / this.wcsInfo!.cdelt1), this.wcsInfo!.cdelt1);
         let scaledX = (pixelX) * scale + this.canvasXOffset; // Degrees applied
         let scaledY = (pixelY - pixelYOffset) * scale + this.canvasYOffset; // Degrees applied
-        console.log(this.canvas!.width/this.naxis1);
+
         scaledX = (canvas.width / 2) + (scaledX - (canvas.width / 2)) * Math.cos((source.galLat * Math.PI) / 180) + (pixelXOffset);
 
         // Draw the circle
@@ -431,7 +432,7 @@ export class RadioSearchComponent implements AfterViewInit {
         context.arc(
             scaledX,
             scaledY,
-            scale * 22, // Radius of the circle
+            scale * 22 * Math.cos((source.galLat * Math.PI) / 180), // Radius of the circle
             0,
             2 * Math.PI
         );
@@ -666,11 +667,10 @@ export class RadioSearchComponent implements AfterViewInit {
   saveFullFITS(): void {
     try {
       if (this.arrayBuffer && this.header && this.ra && this.dec && this.wcsInfo) {
-        console.log('crvals',this.wcsInfo.crval1,this.wcsInfo.crval2);
         let updatedHeader = this.header.block
-          .replace(/CENTERRA= *[\d.-]+/, `CENTERRA= ${String(this.ra + this.sliderXOffset).padStart(20)}`)
+          .replace(/CENTERRA= *[\d.-]+/, `CENTERRA= ${String(this.ra + (this.sliderXOffset / Math.cos((Math.PI * this.dec) / 180))).padStart(20)}`)
           .replace(/CENTERDE= *[\d.-]+/, `CENTERDE= ${String(this.dec - this.sliderYOffset).padStart(20)}`)
-          .replace(/CRVAL1  = *[\d.-]+/, `CRVAL1  = ${String(this.wcsInfo.crval1 + this.sliderXOffset).padStart(20)}`)
+          .replace(/CRVAL1  = *[\d.-]+/, `CRVAL1  = ${String(this.wcsInfo.crval1 + (this.sliderXOffset / Math.cos((Math.PI * this.dec) / 180))).padStart(20)}`)
           .replace(/CRVAL2  = *[\d.-]+/, `CRVAL2  = ${String(this.wcsInfo.crval2 - this.sliderYOffset).padStart(20)}`);
 
         const headerLength = updatedHeader.length;

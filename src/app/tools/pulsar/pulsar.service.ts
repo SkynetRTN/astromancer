@@ -189,8 +189,8 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         console.log('Checking my data', this.getChartPulsarDataArray());
     
         // Handle case when no pulsar star is selected
-        if (this.getPulsarStar() === PulsarStarOptions.NONE)
-            return { data: [], data2: [] }; // Return empty for both series
+        //if (this.getPulsarStar() === PulsarStarOptions.NONE)
+          //++  return { data: [], data2: [] }; // Return empty for both series
     
         // Get and filter valid data
         const data = this.getChartPulsarDataArray()
@@ -242,10 +242,11 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         pfData2.sort((a, b) => b[0] - a[0]);
     
         // Return two datasets, only including 'data2' if it has values
+        console.log('pfData1', pfData1);
         return pfData2.length > 0
             ? { data: pfData1, data2: pfData2 }
             : { data: pfData1 };
-    }
+                }
     
     
 
@@ -526,9 +527,10 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
     }
 
     getChartPulsarDataArray(): (number | null)[][] {
-        if (this.getPulsarStar() === PulsarStarOptions.NONE) {
-            return [];
-        } else if (this.getPulsarStar() === PulsarStarOptions.SOURCE1) {
+        //if (this.getPulsarStar() === PulsarStarOptions.NONE) {
+          //  return [];
+        //} 
+        if (this.getPulsarStar() === PulsarStarOptions.SOURCE1) {
             return this.getData().filter((row: PulsarDataDict) =>
                 row.jd !== null && row.source1 !== null && row.source2 !== null)
                 .map((row: PulsarDataDict) => [row.jd, row.source1!, row.source2!])
@@ -578,7 +580,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
     getChartPeriodogramDataArray(start: number, end: number): { data1: number[][], data2?: number[][]} {
         const pulsarData = this.getChartPulsarDataArray();
-        console.log('Pulsar data:', pulsarData);
+        console.log('Pulsar periodgram data:', pulsarData);
     
         // Filter valid data for the first two columns
         const validData = this.getData().filter((row: PulsarDataDict) => 

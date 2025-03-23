@@ -116,7 +116,7 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
       let period = value;
 
       
-      this.service.sonification(xValues, yValues, period);
+      //this.service.sonification(xValues, yValues, period);
     });
   }
 

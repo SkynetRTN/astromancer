@@ -69,38 +69,6 @@ export class GravityDataService implements OnDestroy {
             this.fetchSpectogram()
             this.fileUploadSubject.next(true)
 
-            // const spectogramResult: number[][] = [];
-
-            // let strain = data[0]
-            // let spectogram: number[][] = data[1].data
-            // let axes = data[1].axes
-
-            // console.log("Spectogram points: ", spectogram.length * spectogram[0].length)
-            // console.log("Strain points: ", strain.length)
-
-            // let xmin = parseFloat(axes.x[0])
-            // let xmax = parseFloat(axes.x[1])
-            // let dx   = parseFloat(axes.x[2])
-            // let ymin = axes.y[0]
-            // let ymax = axes.y[1]
-
-            // this.spectogramService.setAxes({'dx': dx, 'xmin': xmin, 'xmax': xmax, 'ymin': ymin, 'ymax': ymax})
-            // this.strainService.setAxes({'xmin': xmin, 'xmax': xmax})
-            // this.interfaceService.setMergerRange({'min':xmin, 'max': xmax})
-
-            // // strain.map((p: number[]) => {
-            // //   strainResult.push({Time: p[0], Strain: p[1]})
-            // // })
-            // // this.strainService.setData(strain);
-
-
-            // spectogram.forEach( (y, i) => y.forEach( (value, j) => {
-            // // if(x==null || y==null) return 
-            // spectogramResult.push([i*dx + xmin , j, value?value:0 ])
-            // } ) )
-            // this.spectogramService.setSpecto(spectogramResult)
-            
-            // this.fileUploadSubject.next(true)
         });
         
         //TODO: replace debounceTime with audit, and an observable that emits when the models are retrieved.

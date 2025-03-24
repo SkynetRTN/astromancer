@@ -1,0 +1,39 @@
+<div class="look-up-container" xmlns="http://www.w3.org/1999/html">
+  <div class="row center-content">
+    <h1>Look Up a Cluster</h1>
+  </div>
+  <div class="row center-content">
+    <form (submit)="submit()" [formGroup]="lookUpFrom">
+      <mat-form-field class="search-bar">
+        <input formControlName="min-date" matInput placeholder="From" type="date">
+        <input formControlName="max-date" matInput placeholder="To" type="date">
+        <button (click)="lookUpFrom.controls['name'].setValue('')" *ngIf="lookUpFrom.controls['name'].value"
+                aria-label="clear" mat-icon-button
+                matSuffix type="button">
+          <mat-icon>clear</mat-icon>
+        </button>
+        <button *ngIf="lookUpFrom.controls['name'].value" aria-label="look up" color="warn" mat-icon-button matSuffix>
+          <mat-icon>search</mat-icon>
+        </button>
+      </mat-form-field>
+    </form>
+  </div>
+  <div class="row">
+    <div class="recent-searches">
+      <h2>Results:</h2>
+      <mat-list *ngFor="let events of eventResults">
+        <mat-list-item>
+          <div class="list-name">{{lookup.name}}</div>
+          &emsp; <i>RA:</i> {{lookup.ra.toFixed(2)}}
+          &emsp; <i>Dec:</i> {{lookup.dec.toFixed(2)}}
+          &emsp; <i>Radius:</i> {{lookup.radius.toFixed(2)}}
+          <button (click)="searchRecent(lookup)" aria-label="search" class="recent-search"
+                  mat-icon-button>
+            <mat-icon>search</mat-icon>
+          </button>
+        </mat-list-item>
+        <mat-divider *ngIf="!last"></mat-divider>
+      </mat-list>
+    </div>
+  </div>
+</div>

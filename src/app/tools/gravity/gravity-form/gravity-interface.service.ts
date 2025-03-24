@@ -21,6 +21,7 @@ import { UpdateSource } from '../../shared/data/utils';
  * @remarks Service for interface activity
  * @member { Observable<UpdateSource> } serverParameters$ - interface change that requires a request to the server
  * @member { Observable<UpdateSource> } strainParameters$ - interface change that affects the strain vs time graph
+ * @member { Observable<UpdateSource> } freqParameters$ - interface change that affect the frequency model graph, but dont require a server request
  */
 @Injectable()
 export class InterfaceService implements GravityInterface{

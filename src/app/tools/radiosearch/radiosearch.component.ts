@@ -54,6 +54,7 @@ export class RadioSearchComponent implements AfterViewInit {
   header: fitsjs.astro.FITS.Header | null = null;
 
   dataSource = new MatTableDataSource<any>([]);  // Initialize the data source
+  hdus: any = [];
   results: any = [];
   hiddenResults: any = [];
   private selectedSourceSubject = new BehaviorSubject<any>(null); // Replace `any` with the actual type.
@@ -261,7 +262,7 @@ export class RadioSearchComponent implements AfterViewInit {
                     0,
                     2 * Math.PI
                 );
-                context.strokeStyle = '#ff3333';
+                context.strokeStyle = '#000000';
                 context.lineWidth = 1 + (3 - 1) * ((this.zoomScale - 0.1) / (1 - 0.1));
                 context.stroke();
                 context.closePath();
@@ -297,7 +298,7 @@ export class RadioSearchComponent implements AfterViewInit {
         const crossSize = 10 * this.zoomScale;
 
         context.beginPath();
-        context.strokeStyle = '#ff3333';
+        context.strokeStyle = '#000000';
         context.lineWidth = 2;
 
         context.moveTo(mouseX - crossSize, mouseY);
@@ -332,7 +333,7 @@ export class RadioSearchComponent implements AfterViewInit {
     const context = this.canvas.getContext('2d');
     if (context) {
       context.beginPath();
-      context.strokeStyle = '#ff0000';
+      context.strokeStyle = '#000000';
       context.lineWidth = 2;
 
       context.moveTo(mouseX - crossSize, mouseY);
@@ -530,7 +531,6 @@ export class RadioSearchComponent implements AfterViewInit {
   processFitsFile(file: File): Promise<void> {
     return new Promise((resolve) => {
       const reader = new FileReader();
-  
       reader.onload = (e) => {
         this.arrayBuffer = e.target?.result as ArrayBuffer;
         if (!this.arrayBuffer) {
@@ -538,126 +538,143 @@ export class RadioSearchComponent implements AfterViewInit {
           resolve();
           return;
         }
-  
+      
         try {
-          // Parse FITS header
-          const dataUnit = new fitsjs.astro.FITS.DataUnit(null, this.arrayBuffer);
-          const headerBlock = new TextDecoder().decode(dataUnit.buffer!.slice(0, 5760));
-          this.header = new fitsjs.astro.FITS.Header(headerBlock);
+          const BLOCK_SIZE = 2880;
+          const decoder = new TextDecoder();
+          const buffer = this.arrayBuffer!;
+          let offset = 0;
+      
+          // Prepare to store all HDUs
+          this.hdus = []; // Add this property to your class if not present
+          let isFirstHDU = true;
+              
+          while (offset < buffer.byteLength) {
+            // === Parse Header ===
+            let headerText = '';
+            while (true) {
+              const block = buffer.slice(offset, offset + BLOCK_SIZE);
+              const text = decoder.decode(block);
+              headerText += text;
+              offset += BLOCK_SIZE;
+              if (text.includes('END')) break;
+            }
 
-          // Extract header values
-          this.naxis1 = this.header.get('NAXIS1');
-          this.naxis2 = this.header.get('NAXIS2');
-          this.rccords = this.header.get('RCCORDS');
-          this.ra = this.header.get('CENTERRA');
-          this.ra! %= 360;
-
-          this.dec = this.header.get('CENTERDE');
-          const bitpix = this.header.get('BITPIX');
-          const bscale = this.header.get('BSCALE') || 1;
-          const bzero = this.header.get('BZERO') || 0;
-          this.lowerFreq = this.header.get('RCMINFQ');
-          this.upperFreq = this.header.get('RCMAXFQ');
-          this.targetFreq = ((this.lowerFreq + this.upperFreq) / 2);
-          this.beamWidth = this.header.get('BEAM');
-
-          if (!this.naxis1 || !this.naxis2 || !bitpix) {
-            throw new Error('Invalid or missing header values (NAXIS1, NAXIS2, BITPIX).');
+            if (isFirstHDU) {
+              offset += BLOCK_SIZE; // Skip the extra 2880 bytes after primary header
+              isFirstHDU = false;
+            }
+      
+            const header = new fitsjs.astro.FITS.Header(headerText);
+            const bitpix = header.get('BITPIX');
+            const naxis = header.get('NAXIS');
+            const naxis1 = header.get('NAXIS1');
+            const naxis2 = header.get('NAXIS2');
+            const bscale = header.get('BSCALE') || 1;
+            const bzero = header.get('BZERO') || 0;
+      
+            let pixelArray: Float64Array | null = null;
+            let scaledData: Float64Array | null = null;
+      
+            if (naxis && naxis > 0 && naxis1 && naxis2 && bitpix) {
+              const numPixels = naxis1 * naxis2;
+              const bytesPerPixel = Math.abs(bitpix) / 8;
+              const dataSize = numPixels * bytesPerPixel;
+              const paddedSize = Math.ceil(dataSize / BLOCK_SIZE) * BLOCK_SIZE;
+      
+              const dataView = new DataView(buffer, offset, paddedSize);
+              pixelArray = new Float64Array(numPixels);
+      
+              const swapEndian = fitsjs.astro.FITS.DataUnit.swapEndian;
+              let readMethod: (byteOffset: number, littleEndian?: boolean) => number;
+      
+              switch (bitpix) {
+                case 8:
+                  for (let i = 0; i < numPixels; i++) {
+                    pixelArray[i] = dataView.getUint8(i);
+                  }
+                  break;
+                case 16:
+                  readMethod = dataView.getInt16.bind(dataView);
+                  for (let i = 0; i < numPixels; i++) {
+                    pixelArray[i] = swapEndian.I(readMethod(i * 2, false));
+                  }
+                  break;
+                case 32:
+                  readMethod = dataView.getInt32.bind(dataView);
+                  for (let i = 0; i < numPixels; i++) {
+                    pixelArray[i] = swapEndian.J(readMethod(i * 4, false));
+                  }
+                  break;
+                case -32:
+                  readMethod = dataView.getFloat32.bind(dataView);
+                  for (let i = 0; i < numPixels; i++) {
+                    pixelArray[i] = readMethod(i * 4, false);
+                  }
+                  break;
+                case -64:
+                  readMethod = dataView.getFloat64.bind(dataView);
+                  for (let i = 0; i < numPixels; i++) {
+                    pixelArray[i] = readMethod(i * 8, false);
+                  }
+                  break;
+                default:
+                  throw new Error(`Unsupported BITPIX value: ${bitpix}`);
+              }
+      
+              scaledData = pixelArray.map((v) => isNaN(v) ? 0 : bscale * v + bzero);
+              offset += paddedSize;
+            }
+      
+            // Store each HDU
+            this.hdus.push({
+              header,
+              naxis1,
+              naxis2,
+              bitpix,
+              pixelArray,
+              scaledData,
+            });
           }
-  
-          // Calculate data offset and pixel array size
-          const headerLength = this.service.getHeaderLength(this.arrayBuffer) + 2880;
-          const dataOffset = headerLength;
-          const bytesPerPixel = Math.abs(bitpix) / 8;
-          const rowLength = this.naxis1 * bytesPerPixel;
-  
-          const dataView = new DataView(this.arrayBuffer, dataOffset);
-          this.pixelArray = new Float64Array(this.naxis1 * this.naxis2);
-  
-          // Read pixel data based on BITPIX
-          const swapEndian = fitsjs.astro.FITS.DataUnit.swapEndian;
-          let readMethod: (byteOffset: number, littleEndian?: boolean) => number;
-
-          switch (bitpix) {
-            case 8:
-              for (let y = 0; y < this.naxis2; y++) {
-                const rowOffset = y * rowLength;
-                for (let x = 0; x < this.naxis1; x++) {
-                  this.pixelArray[y * this.naxis1 + x] = dataView.getUint8(rowOffset + x);
-                }
-              }
-              break;
-  
-            case 16:
-              readMethod = dataView.getInt16.bind(dataView);
-              for (let y = 0; y < this.naxis2; y++) {
-                const rowOffset = y * rowLength;
-                for (let x = 0; x < this.naxis1; x++) {
-                  this.pixelArray[y * this.naxis1 + x] = swapEndian.I(readMethod(rowOffset + x * 2, false));
-                }
-              }
-              break;
-  
-            case 32:
-              readMethod = dataView.getInt32.bind(dataView);
-              for (let y = 0; y < this.naxis2; y++) {
-                const rowOffset = y * rowLength;
-                for (let x = 0; x < this.naxis1; x++) {
-                  this.pixelArray[y * this.naxis1 + x] = swapEndian.J(readMethod(rowOffset + x * 4, false));
-                }
-              }
-              break;
-  
-            case -32:
-              readMethod = dataView.getFloat32.bind(dataView);
-              for (let y = 0; y < this.naxis2; y++) {
-                const rowOffset = y * rowLength;
-                for (let x = 0; x < this.naxis1; x++) {
-                  this.pixelArray[y * this.naxis1 + x] = readMethod(rowOffset + x * 4, false);
-                }
-              }
-              break;
-  
-            case -64:
-              readMethod = dataView.getFloat64.bind(dataView);
-              for (let y = 0; y < this.naxis2*5; y++) {
-                const rowOffset = y * rowLength;
-                for (let x = 0; x < this.naxis1*5; x++) {
-                  this.pixelArray[y * this.naxis1 + x] = readMethod(rowOffset + x * 8, false);
-                }
-              }
-              break;
-  
-            default:
-              throw new Error(`Unsupported BITPIX value: ${bitpix}`);
-          }
-
-          // Scale pixel values using BSCALE and BZERO
-          this.scaledData = this.pixelArray.map((value) => (isNaN(value) ? 0 : bscale * value + bzero));
+      
+          // === Use First HDU for display/metadata ===
+          const firstHDU = this.hdus[0];
+          this.header = firstHDU.header;
+          console.log(this.header);
+          this.naxis1 = firstHDU.naxis1;
+          this.naxis2 = firstHDU.naxis2;
+          this.pixelArray = firstHDU.pixelArray!;
+          this.scaledData = firstHDU.scaledData!;
+          this.ra = this.header!.get('CENTERRA') % 360;
+          this.dec = this.header!.get('CENTERDE');
+          this.lowerFreq = this.header!.get('RCMINFQ');
+          this.upperFreq = this.header!.get('RCMAXFQ');
+          this.targetFreq = (this.lowerFreq + this.upperFreq) / 2;
+          this.beamWidth = this.header!.get('BEAM');
+          this.rccords = this.header!.get('RCCORDS');
           this.fitsLoaded = true;
-          
-          // Extract WCS (World Coordinate System) info
+      
           this.wcsInfo = {
-            crpix1: parseFloat(this.header.get('CRPIX1')) || 0,
-            crpix2: parseFloat(this.header.get('CRPIX2')) || 0,
-            crval1: parseFloat(this.header.get('CRVAL1')) || 0,
-            crval2: parseFloat(this.header.get('CRVAL2')) || 0,
-            cdelt1: parseFloat(this.header.get('CDELT1')) || 1,
-            cdelt2: parseFloat(this.header.get('CDELT2')) || 1,
+            crpix1: parseFloat(this.header!.get('CRPIX1')) || 0,
+            crpix2: parseFloat(this.header!.get('CRPIX2')) || 0,
+            crval1: parseFloat(this.header!.get('CRVAL1')) || 0,
+            crval2: parseFloat(this.header!.get('CRVAL2')) || 0,
+            cdelt1: parseFloat(this.header!.get('CDELT1')) || 1,
+            cdelt2: parseFloat(this.header!.get('CDELT2')) || 1,
           };
-  
+      
           this.width = Math.abs(this.wcsInfo.cdelt1) * this.naxis1;
           this.height = Math.abs(this.wcsInfo.cdelt2) * this.naxis2;
-  
-          this.searchCatalog(); // Start a catalog search
-  
+      
+          this.searchCatalog(); // Trigger your search
         } catch (error) {
           console.error('Error processing FITS file:', error);
           this.deleteFITS();
         }
-  
+      
         resolve();
       };
+      
   
       reader.readAsArrayBuffer(file);
     });
@@ -672,9 +689,9 @@ export class RadioSearchComponent implements AfterViewInit {
           .replace(/CENTERDE= *[\d.-]+/, `CENTERDE= ${String(this.dec - this.sliderYOffset).padStart(20)}`)
           .replace(/CRVAL1  = *[\d.-]+/, `CRVAL1  = ${String(this.wcsInfo.crval1 + (this.sliderXOffset / Math.cos((Math.PI * this.dec) / 180))).padStart(20)}`)
           .replace(/CRVAL2  = *[\d.-]+/, `CRVAL2  = ${String(this.wcsInfo.crval2 - this.sliderYOffset).padStart(20)}`);
-
+        console.log(updatedHeader);
         const headerLength = updatedHeader.length;
-  
+        
         const paddingSize = 2880 - (headerLength % 2880);
         updatedHeader = updatedHeader.padEnd(headerLength + paddingSize, ' ');
 
@@ -703,60 +720,110 @@ export class RadioSearchComponent implements AfterViewInit {
 
   saveSingleLayerFits(): void {
     try {
-      if (this.arrayBuffer && this.header && this.pixelArray && this.ra && this.dec && this.wcsInfo) {
-        console.log('Saving Single Layer FITS...');
-  
-        // Modify the header (same as in saveFullFITS)
-        let updatedHeader = this.header.block
-          .replace(/CENTERRA= *[\d.-]+/, `CENTERRA= ${String(this.ra + this.sliderXOffset).padStart(20)}`)
-          .replace(/CENTERDE= *[\d.-]+/, `CENTERDE= ${String(this.dec - this.sliderYOffset).padStart(20)}`)
-          .replace(/CRVAL1  = *[\d.-]+/, `CRVAL1  = ${String(this.wcsInfo.crval1 + this.sliderXOffset).padStart(20)}`)
-          .replace(/CRVAL2  = *[\d.-]+/, `CRVAL2  = ${String(this.wcsInfo.crval2 - this.sliderYOffset).padStart(20)}`);
-  
-        const headerLength = updatedHeader.length;
-        const paddingSize = 2880 - (headerLength % 2880);
-        updatedHeader = updatedHeader.padEnd(headerLength + paddingSize, ' ');
-  
-        // Convert the header into bytes
-        const headerBytes = new Uint8Array([...updatedHeader].map(c => c.charCodeAt(0)));
-        console.log('Header Size (bytes):', headerBytes.length);
-  
-        // Extract the first data list
-        const dataUnitSize = this.naxis1 * this.naxis2 * 8; // 8 bytes per Float64 value
-        const firstDataList = new Float64Array(this.pixelArray.slice(0, this.naxis1 * this.naxis2));
-        console.log('Extracted First Data List:', firstDataList);
-  
-        // Convert to Uint8Array
-        const intensityBuffer = new Uint8Array(firstDataList.buffer);
-        console.log('Intensity Buffer Size:', intensityBuffer.length);
-  
-        // Allocate buffer
-        const totalSize = headerBytes.length + intensityBuffer.length;
-        const newBuffer = new ArrayBuffer(totalSize);
-        console.log('Total Buffer Size:', newBuffer.byteLength);
-  
-        // Write header and data into buffer
-        const newView = new Uint8Array(newBuffer);
-        newView.set(new TextEncoder().encode(updatedHeader), 0);
-        newView.set(intensityBuffer, headerBytes.length);
-  
-        console.log('Final FITS Data:', newView);
-  
-        // Create and download the FITS file
-        const fitsBlob = new Blob([newBuffer], { type: 'application/octet-stream' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(fitsBlob);
-        link.download = 'single_layer.fits';
-        link.click();
-      } else {
-        console.error('Missing required data (arrayBuffer, header, or pixelArray).');
+      if (!(this.arrayBuffer && this.header && this.ra && this.dec && this.wcsInfo)) {
+        console.error("Missing required data");
+        return;
       }
-    } catch (error) {
-      console.error('Error saving modified FITS file:', error);
-    }
-  }  
   
-
+      const buffer = new Uint8Array(this.arrayBuffer);
+  
+      // Step 1: Find HDU offsets
+      function findHDUOffsets(data: Uint8Array): number[] {
+        const offsets = [];
+        let i = 0;
+        while (i < data.length) {
+          const start = i;
+          // Read 2880-byte blocks until END card
+          while (i < data.length) {
+            const block = data.slice(i, i + 2880);
+            const text = new TextDecoder().decode(block);
+            if (text.includes('END')) {
+              i += 2880;
+              break;
+            }
+            i += 2880;
+          }
+          offsets.push(start);
+          // Get BITPIX, NAXIS, NAXISn
+          const headerText = new TextDecoder().decode(data.slice(start, i));
+          const bitpix = parseInt((/BITPIX *= *(-?\d+)/.exec(headerText) || [])[1]);
+          const naxis = parseInt((/NAXIS *= *(\d+)/.exec(headerText) || [])[1]);
+          let size = 1;
+          for (let j = 1; j <= naxis; j++) {
+            const match = new RegExp(`NAXIS${j} *= *(\\d+)`).exec(headerText);
+            const axis = parseInt((match || [])[1]);
+            size *= axis || 1;
+          }
+          let bytesPerPixel = 0;
+          switch (bitpix) {
+            case 8: bytesPerPixel = 1; break;
+            case 16: bytesPerPixel = 2; break;
+            case 32: bytesPerPixel = 4; break;
+            case -32: bytesPerPixel = 4; break;
+            case -64: bytesPerPixel = 8; break;
+            default: bytesPerPixel = 0;
+          }
+          const dataSize = size * bytesPerPixel;
+          const paddedDataSize = Math.ceil(dataSize / 2880) * 2880;
+          i += paddedDataSize;
+        }
+        return offsets;
+      }
+  
+      const offsets = findHDUOffsets(buffer);
+  
+      if (offsets.length < 2) {
+        console.error("Not enough HDUs to crop.");
+        return;
+      }
+  
+      const primaryStart = offsets[0];
+      const extension1Start = offsets[1];
+      const extension2Start = offsets[offsets.length - 5] || buffer.length;
+  
+      // Step 2: Replace HDU 1 header
+      const originalExtension1Header = new TextDecoder().decode(buffer.slice(extension1Start, extension2Start));
+      let updatedHeader = this.header.block
+        .replace(/CENTERRA= *[^\n\/]*/, `CENTERRA= ${String(this.ra + (this.sliderXOffset / Math.cos((Math.PI * this.dec) / 180))).padStart(20)}`)
+        .replace(/CENTERDE= *[^\n\/]*/, `CENTERDE= ${String(this.dec - this.sliderYOffset).padStart(20)}`)
+        .replace(/CRVAL1  = *[^\n\/]*/, `CRVAL1  = ${String(this.wcsInfo.crval1 + (this.sliderXOffset / Math.cos((Math.PI * this.dec) / 180))).padStart(20)}`)
+        .replace(/CRVAL2  = *[^\n\/]*/, `CRVAL2  = ${String(this.wcsInfo.crval2 - this.sliderYOffset).padStart(20)}`);
+  
+      // Make sure END card and 2880-byte padding are present
+      if (!updatedHeader.includes('END')) {
+        updatedHeader += 'END'.padEnd(80, ' ');
+      }
+      const headerLength = updatedHeader.length;
+      const headerPadding = 2880 - (headerLength % 2880);
+      updatedHeader = updatedHeader.padEnd(headerLength + headerPadding, ' ');
+      const encodedHeader = new TextEncoder().encode(updatedHeader);
+  
+      // Step 3: Calculate where HDU 1 data starts
+      const originalHeaderSize = Math.ceil(originalExtension1Header.length / 2880) * 2880;
+      const extension1DataStart = extension1Start + originalHeaderSize;
+      const extension1Data = buffer.slice(extension1DataStart, extension2Start);
+  
+      // Step 4: Build new buffer: HDU 0 + updated HDU 1 header + data
+      const primaryHeaderAndData = buffer.slice(primaryStart, extension1Start);
+      const newBufferSize = primaryHeaderAndData.length + encodedHeader.length + extension1Data.length;
+      const newBuffer = new Uint8Array(newBufferSize);
+      newBuffer.set(primaryHeaderAndData, 0);
+      newBuffer.set(encodedHeader, primaryHeaderAndData.length);
+      newBuffer.set(extension1Data, primaryHeaderAndData.length + encodedHeader.length);
+  
+      // Step 5: Save to file
+      const fitsBlob = new Blob([newBuffer.buffer], { type: 'application/octet-stream' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(fitsBlob);
+      link.download = 'cropped_' + this.fitsFileName;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    } catch (error) {
+      console.error("Error saving single-layer FITS:", error);
+    }
+  }    
+  
+  
   searchCatalog(): void {
     if (this.rccords && this.ra && this.dec && this.width && this.height) {
       this.service.fetchRadioCatalog(this.rccords, this.ra, this.dec, this.width, this.height).subscribe(
@@ -868,24 +935,37 @@ export class RadioSearchComponent implements AfterViewInit {
 
     const imageDataArray = new Uint8ClampedArray(width * height * 4);
 
-    // Turbo colormap
-    function turboColormap(value: number): [number, number, number] {
-        const turboRGB: [number, number, number][] = [
-            [48, 18, 59], [50, 57, 144], [31, 138, 176], [53, 191, 111],
-            [200, 228, 47], [255, 180, 1], [249, 111, 1], [181, 45, 5]
-        ];
-
-        value = Math.max(0, Math.min(1, value)); 
-
-        const r = Math.max(0, Math.min(1, 1.0 - 4.0 * Math.pow(value - 0.75, 2))) * 255;
-        const g = Math.exp(-Math.pow(value - 0.5, 2) / 0.1) * 255;
-        const b = Math.max(0, Math.min(1, 1.0 - 4.0 * Math.pow(value - 0.25, 2))) * 255;
-
-        const color: [number, number, number] = [r, g, b];
-        const index = Math.floor(value * (turboRGB.length - 1));
-
-        return color;
+    function hsvToRgb(h: number, s: number, v: number): [number, number, number] {
+      const c = v * s;
+      const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+      const m = v - c;
+      let r = 0, g = 0, b = 0;
+    
+      if (0 <= h && h < 60)       [r, g, b] = [c, x, 0];
+      else if (60 <= h && h < 120)[r, g, b] = [x, c, 0];
+      else if (120 <= h && h < 180)[r, g, b] = [0, c, x];
+      else if (180 <= h && h < 240)[r, g, b] = [0, x, c];
+      else if (240 <= h && h < 300)[r, g, b] = [x, 0, c];
+      else if (300 <= h && h < 360)[r, g, b] = [c, 0, x];
+    
+      return [
+        Math.round((r + m) * 255),
+        Math.round((g + m) * 255),
+        Math.round((b + m) * 255),
+      ];
     }
+    
+    function rainbowColormap(value: number): [number, number, number] {
+      value = Math.max(0, Math.min(1, value));
+      
+      // Walk hue from 300° (magenta) to 0° (red)
+      const hue = 300 - 300 * value;
+      const saturation = 0.9;
+      const brightness = 1;
+    
+      return hsvToRgb(hue, saturation, brightness);
+    }
+    
 
     // Apply the turbo colormap and create the image data array
     for (let y = 0; y < height; y++) {
@@ -906,10 +986,10 @@ export class RadioSearchComponent implements AfterViewInit {
         } else {
             // Scale intensity using the inverse hyperbolic sine function
             const intensity = normalizedData[srcIndex];
-            const scaledIntensity = (Math.asinh(intensity) / Math.asinh(255)) * this.maxValue;
+            const scaledIntensity = (Math.asinh(intensity * this.maxValue) / Math.asinh(255));
 
             // Get the RGB values from the Turbo colormap
-            [r, g, b] = turboColormap(scaledIntensity);
+            [r, g, b] = rainbowColormap(scaledIntensity);
         }
 
         // Assign the RGB values to the image data array

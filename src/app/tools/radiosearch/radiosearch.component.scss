@@ -58,6 +58,14 @@
   position: absolute;
 }
 
+.color-map {
+  position: absolute;
+  z-index: 4;
+  width: 2vw;
+  padding-top: 1vh;
+  padding-left: 0.5vw;
+}
+
 .coordinates {
   bottom: 1vh;
   left: 0.5vw;
@@ -75,7 +83,7 @@
 
 .dec-slider-container {
   left: -13vw; 
-  top: 40%;
+  top: 44%;
   transform: rotate(270deg) translateY(50%);
   width: 60%;
 }
@@ -89,7 +97,7 @@
 
 .zoom-slider-container {
   right: -13vw;
-  top: 40%;
+  top: 44%;
   transform: rotate(270deg) translateY(-50%);
   width: 60%;
 }
@@ -191,18 +199,25 @@
   bottom: -11%;
 }
 
+.save-drop-down {
+  position: absolute;
+  justify-self: center; 
+  left: 5px;
+  bottom: -18%;
+  padding: 1px 1px;
+}
+
+mat-form-field {
+  width: 10vw !important;
+  font-size: 10px;
+}
+
 .new-fits-button-container {
   position: absolute;
   justify-self: center; 
-  left: 5px;
+  left: 12vw;
   bottom: -11%;
-}
-
-.new-single-layer-fits-button-container {
-  position: absolute;
-  justify-self: center; 
-  left: 5px;
-  bottom: -17%;
+  padding: 1px 1px;
 }
 
 .button-column-container {

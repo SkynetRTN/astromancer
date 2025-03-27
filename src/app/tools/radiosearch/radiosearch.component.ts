@@ -56,6 +56,7 @@ export class RadioSearchComponent implements AfterViewInit {
   selectedLayer: string = 'full';
 
   dataSource = new MatTableDataSource<any>([]);  // Initialize the data source
+  hdus: any = [];
   results: any = [];
   hiddenResults: any = [];
   private selectedSourceSubject = new BehaviorSubject<any>(null); // Replace `any` with the actual type.
@@ -265,7 +266,7 @@ export class RadioSearchComponent implements AfterViewInit {
                     0,
                     2 * Math.PI
                 );
-                context.strokeStyle = '#ff3333';
+                context.strokeStyle = '#000000';
                 context.lineWidth = 1 + (3 - 1) * ((this.zoomScale - 0.1) / (1 - 0.1));
                 context.stroke();
                 context.closePath();
@@ -311,7 +312,7 @@ export class RadioSearchComponent implements AfterViewInit {
         const crossSize = 10 * this.zoomScale;
 
         context.beginPath();
-        context.strokeStyle = '#ff3333';
+        context.strokeStyle = '#000000';
         context.lineWidth = 2;
 
         context.moveTo(mouseX - crossSize, mouseY);
@@ -346,7 +347,7 @@ export class RadioSearchComponent implements AfterViewInit {
     const context = this.canvas.getContext('2d');
     if (context) {
       context.beginPath();
-      context.strokeStyle = '#ff0000';
+      context.strokeStyle = '#000000';
       context.lineWidth = 2;
 
       context.moveTo(mouseX - crossSize, mouseY);
@@ -541,7 +542,6 @@ export class RadioSearchComponent implements AfterViewInit {
   processFitsFile(file: File): Promise<void> {
     return new Promise((resolve) => {
       const reader = new FileReader();
-  
       reader.onload = (e) => {
         this.arrayBuffer = e.target?.result as ArrayBuffer;
         if (!this.arrayBuffer) {
@@ -549,7 +549,7 @@ export class RadioSearchComponent implements AfterViewInit {
           resolve();
           return;
         }
-  
+      
         try {
           // Parse FITS header
           const dataUnit = new fitsjs.astro.FITS.DataUnit(null, this.arrayBuffer);
@@ -646,17 +646,16 @@ export class RadioSearchComponent implements AfterViewInit {
           // Scale pixel values using BSCALE and BZERO
           this.scaledData = this.pixelArray.map((value) => (isNaN(value) ? 0 : bscale * value + bzero));
           this.fitsLoaded = true;
-          
-          // Extract WCS (World Coordinate System) info
+      
           this.wcsInfo = {
-            crpix1: parseFloat(this.header.get('CRPIX1')) || 0,
-            crpix2: parseFloat(this.header.get('CRPIX2')) || 0,
-            crval1: parseFloat(this.header.get('CRVAL1')) || 0,
-            crval2: parseFloat(this.header.get('CRVAL2')) || 0,
-            cdelt1: parseFloat(this.header.get('CDELT1')) || 1,
-            cdelt2: parseFloat(this.header.get('CDELT2')) || 1,
+            crpix1: parseFloat(this.header!.get('CRPIX1')) || 0,
+            crpix2: parseFloat(this.header!.get('CRPIX2')) || 0,
+            crval1: parseFloat(this.header!.get('CRVAL1')) || 0,
+            crval2: parseFloat(this.header!.get('CRVAL2')) || 0,
+            cdelt1: parseFloat(this.header!.get('CDELT1')) || 1,
+            cdelt2: parseFloat(this.header!.get('CDELT2')) || 1,
           };
-  
+      
           this.width = Math.abs(this.wcsInfo.cdelt1) * this.naxis1;
           this.height = Math.abs(this.wcsInfo.cdelt2) * this.naxis2;
   
@@ -665,9 +664,10 @@ export class RadioSearchComponent implements AfterViewInit {
           console.error('Error processing FITS file:', error);
           this.deleteFITS();
         }
-  
+      
         resolve();
       };
+      
   
       reader.readAsArrayBuffer(file);
     });
@@ -691,7 +691,7 @@ export class RadioSearchComponent implements AfterViewInit {
           .replace(/CENTERDE= *[\d.-]+/, `CENTERDE= ${String(this.dec - this.sliderYOffset).padStart(20)}`)
           .replace(/CRVAL1  = *[\d.-]+/, `CRVAL1  = ${String(this.wcsInfo.crval1 + (this.sliderXOffset / Math.cos((Math.PI * this.dec) / 180))).padStart(20)}`)
           .replace(/CRVAL2  = *[\d.-]+/, `CRVAL2  = ${String(this.wcsInfo.crval2 - this.sliderYOffset).padStart(20)}`);
-
+        console.log(updatedHeader);
         const headerLength = updatedHeader.length;
         const paddingSize = (headerLength % 2880);
         
@@ -722,7 +722,7 @@ export class RadioSearchComponent implements AfterViewInit {
         link.click();
       }
     } catch (error) {
-      console.error('Error saving modified FITS file:', error);
+      console.error('Error saving FITS file:', error);
     }
   }  
 
@@ -759,11 +759,11 @@ export class RadioSearchComponent implements AfterViewInit {
         link.click();
       }
     } catch (error) {
-      console.error('Error saving modified FITS file:', error);
+      console.error("Error saving FITS file:", error);
     }
-  }  
+  }    
   
-
+  
   searchCatalog(): void {
     if (this.rccords && this.ra && this.dec && this.width && this.height) {
       this.service.fetchRadioCatalog(this.rccords, this.ra, this.dec, this.width, this.height).subscribe(
@@ -978,7 +978,7 @@ export class RadioSearchComponent implements AfterViewInit {
         } else {
             // Scale intensity using the inverse hyperbolic sine function
             const intensity = normalizedData[srcIndex];
-            const scaledIntensity = (Math.asinh(intensity) / Math.asinh(255)) * this.maxValue;
+            const scaledIntensity = (Math.asinh(intensity * this.maxValue) / Math.asinh(255));
 
             // Get the RGB values from the Turbo colormap
             if (this.selectedColorMap == 'turbo') {

@@ -266,7 +266,7 @@ export class RadioSearchComponent implements AfterViewInit {
                     0,
                     2 * Math.PI
                 );
-                context.strokeStyle = '#000000';
+                context.strokeStyle = '#ff0000';
                 context.lineWidth = 1 + (3 - 1) * ((this.zoomScale - 0.1) / (1 - 0.1));
                 context.stroke();
                 context.closePath();
@@ -312,7 +312,7 @@ export class RadioSearchComponent implements AfterViewInit {
         const crossSize = 10 * this.zoomScale;
 
         context.beginPath();
-        context.strokeStyle = '#000000';
+        context.strokeStyle = '#ff0000';
         context.lineWidth = 2;
 
         context.moveTo(mouseX - crossSize, mouseY);
@@ -347,7 +347,7 @@ export class RadioSearchComponent implements AfterViewInit {
     const context = this.canvas.getContext('2d');
     if (context) {
       context.beginPath();
-      context.strokeStyle = '#000000';
+      context.strokeStyle = '#ff0000';
       context.lineWidth = 2;
 
       context.moveTo(mouseX - crossSize, mouseY);

@@ -24,6 +24,14 @@
     <div class="left-container">
       <canvas #fitsCanvas [ngStyle]="{'opacity': ra ? 1 : 0}" id="fitsCanvas"></canvas>
 
+      <div class="color-map" [ngStyle]="{'opacity': ra ? 1 : 0}">
+        <select id="menu" [(ngModel)]="selectedColorMap" (ngModelChange)="updateFitsImage()" style="width: 6.5vw;">
+          <option value="turbo">Turbo</option>
+          <option value="sls">SLS</option>
+          <option value="rainbow">Rainbow</option>
+        </select>
+      </div>
+
       <div class="ra-slider-container" [ngStyle]="{'opacity': ra ? 1 : 0}">
         <label for="xOffset">
           {{ rccords === 'equatorial' ? 'RA Offset' : 'GalLong Offset' }}: {{ sliderXOffset }}°
@@ -73,7 +81,8 @@
 
       <div class="query-button-container">
         <span *ngIf="selectedCoordinates && rccords" 
-              [innerHTML]="convertCoordinates(selectedCoordinates.ra, selectedCoordinates.dec, rccords, false)">
+              [innerHTML]="convertCoordinates(selectedCoordinates.ra, selectedCoordinates.dec, rccords, false)"
+              style="font-size: clamp(5px, 1vw, 20px);">
         </span>
         <button 
           (click)="fitsLoaded ? querySIMBAD() : noUpload()" 
@@ -83,26 +92,26 @@
           Query
         </button>
       </div>
-    
+
+      <div class="save-drop-down">
+        <mat-form-field appearance="fill" class="save-layer-select">
+          <mat-label>Save Option</mat-label>
+          <mat-select [(value)]="selectedLayer">
+            <mat-option value="full">Full FITS</mat-option>
+            <mat-option value="single">Single Layer FITS</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
       <div class="new-fits-button-container">
         <button 
-          (click)="fitsLoaded ? saveFullFITS() : noUpload()" 
+          (click)="fitsLoaded ? saveFITS() : noUpload()" 
           color="'primary'" 
-          style="border-radius: 3px; margin-left: 10px;" 
+          style="border-radius: 3px;" 
           mat-raised-button>
-          Save Full FITS
+          Save
         </button>
-      </div>      
-      
-        <!-- <div class="new-single-layer-fits-button-container">
-          <button 
-            (click)="fitsLoaded ? saveSingleLayerFits() : noUpload()" 
-            color="'primary'" 
-            style="border-radius: 3px;" 
-            mat-raised-button>
-            Save Single Layer FITS
-          </button>
-        </div>       -->
+      </div>         
     </div>
   </div>
 
@@ -121,7 +130,7 @@
       </ng-template>
     </ng-container>
     <ng-template #noData>
-      Please upload a Radio Cartographer file!
+      Please upload a Radio Cartographer file or select a source!
     </ng-template>
     <div class="button-container">
       <button 

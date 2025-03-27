@@ -52,6 +52,8 @@ export class RadioSearchComponent implements AfterViewInit {
   beamWidth: number = 1;
   arrayBuffer: ArrayBuffer | null = null;
   header: fitsjs.astro.FITS.Header | null = null;
+  selectedColorMap: string = 'turbo';
+  selectedLayer: string = 'full';
 
   dataSource = new MatTableDataSource<any>([]);  // Initialize the data source
   results: any = [];
@@ -61,7 +63,7 @@ export class RadioSearchComponent implements AfterViewInit {
   wcsInfo: { crpix1: number, crpix2: number, crval1: number, crval2: number, cdelt1: number, cdelt2: number } | null = null;
   currentCoordinates: { ra: number, dec: number } | null = null;
   selectedCoordinates: { ra: number, dec: number} | null = null;
-  params: { targetFreq: number, catalog: string, identifier: string }[] = [];
+  params: { targetFreq: number | null, catalog: string | null, identifier: string | null}[] = [];
   pixelArray: Float64Array = new Float64Array(5);
 
   @ViewChild(MatSort) sort!: MatSort;
@@ -213,6 +215,7 @@ export class RadioSearchComponent implements AfterViewInit {
     // Circle radius in pixels
     const radius = this.scale * 22;
 
+    let foundMatch = false;
     this.redrawCircles();
     this.results.forEach((source: any, i: number) => {
         let sourceRA = raList[i];
@@ -244,6 +247,7 @@ export class RadioSearchComponent implements AfterViewInit {
         );
 
         if (distance <= radius && this.canvas !== null) {
+            foundMatch = true;
             selectedSource = this.results[i];
             this.selectedSourceSubject.next(selectedSource.identifier);
 
@@ -287,9 +291,19 @@ export class RadioSearchComponent implements AfterViewInit {
             this.params = [{ targetFreq: this.targetFreq, catalog: selectedSource.catalog, identifier: selectedSource.identifier}];
             this.hcservice.setParams(this.params);
             this.hcservice.setData(scatterData);
-            this.hcservice.setChartTitle('Results for Radio Source ' + selectedSource.catalog + selectedSource.identifier);
+            this.hcservice.setChartTitle('Results for Radio Source' + selectedSource.catalog + selectedSource.identifier);
         }
     });
+
+    if (foundMatch == false) {
+      this.averageFluxSubject.next(null);
+      this.selectedSourceSubject.next(null);
+      this.params = [{ targetFreq: null, catalog: '', identifier: ''}];
+      this.hcservice.setParams(this.params);
+      this.hcservice.setChartTitle('Results for Radio Source');
+      this.hcservice.resetData();
+      this.hcservice.resetChartInfo();
+    };
 
     const context = this.canvas.getContext('2d');
     this.selectedCoordinates = this.currentCoordinates;
@@ -392,12 +406,9 @@ export class RadioSearchComponent implements AfterViewInit {
     // Use WCS information from wcsInfo
     const { crpix1, crpix2, crval1, crval2, cdelt1, cdelt2 } = this.wcsInfo;
 
-    // Convert slider offsets from degrees to pixels using WCS scale
-    console.log(scaleX);
     let pixelXOffset = ((this.sliderXOffset / Math.abs(cdelt1)) * this.zoomScale * scaleX); // Degrees to pixels (X-axis)
     let pixelYOffset = this.sliderYOffset / Math.abs(cdelt2) * scaleY; // Degrees to pixels (Y-axis)
 
-    // Iterate through each source
     results.forEach(source => {
         let ra: number, dec: number;
 
@@ -620,9 +631,9 @@ export class RadioSearchComponent implements AfterViewInit {
   
             case -64:
               readMethod = dataView.getFloat64.bind(dataView);
-              for (let y = 0; y < this.naxis2*5; y++) {
+              for (let y = 0; y < this.naxis2; y++) {
                 const rowOffset = y * rowLength;
-                for (let x = 0; x < this.naxis1*5; x++) {
+                for (let x = 0; x < this.naxis1; x++) {
                   this.pixelArray[y * this.naxis1 + x] = readMethod(rowOffset + x * 8, false);
                 }
               }
@@ -649,8 +660,7 @@ export class RadioSearchComponent implements AfterViewInit {
           this.width = Math.abs(this.wcsInfo.cdelt1) * this.naxis1;
           this.height = Math.abs(this.wcsInfo.cdelt2) * this.naxis2;
   
-          this.searchCatalog(); // Start a catalog search
-  
+          this.searchCatalog(); 
         } catch (error) {
           console.error('Error processing FITS file:', error);
           this.deleteFITS();
@@ -664,6 +674,59 @@ export class RadioSearchComponent implements AfterViewInit {
   }  
 
 
+  saveFITS(): void {
+    if (this.selectedLayer == 'full') {
+      this.saveFullFITS();
+    } else if (this.selectedLayer == 'single') {
+      this.saveSingleLayerFITS();
+    }
+  }
+
+
+  saveSingleLayerFITS(): void {
+    try {
+      if (this.arrayBuffer && this.header && this.ra && this.dec && this.wcsInfo) {
+        let updatedHeader = this.header.block
+          .replace(/CENTERRA= *[\d.-]+/, `CENTERRA= ${String(this.ra + (this.sliderXOffset / Math.cos((Math.PI * this.dec) / 180))).padStart(20)}`)
+          .replace(/CENTERDE= *[\d.-]+/, `CENTERDE= ${String(this.dec - this.sliderYOffset).padStart(20)}`)
+          .replace(/CRVAL1  = *[\d.-]+/, `CRVAL1  = ${String(this.wcsInfo.crval1 + (this.sliderXOffset / Math.cos((Math.PI * this.dec) / 180))).padStart(20)}`)
+          .replace(/CRVAL2  = *[\d.-]+/, `CRVAL2  = ${String(this.wcsInfo.crval2 - this.sliderYOffset).padStart(20)}`);
+
+        const headerLength = updatedHeader.length;
+        const paddingSize = (headerLength % 2880);
+        
+        updatedHeader = updatedHeader.padEnd(headerLength + paddingSize, ' ');
+        const headerBytes = new TextEncoder().encode(updatedHeader);
+        const copyLength = this.naxis1 * this.naxis2 * 8;
+        
+        let totalLength = headerBytes.length + copyLength;
+        totalLength = totalLength + (2880 - (totalLength % 2880));
+        
+        const newBuffer = new ArrayBuffer(totalLength);
+        const newView = new Uint8Array(newBuffer);
+        
+        // Write header
+        newView.set(headerBytes, 0);
+        
+        // Write trimmed image data
+        const originalView = new Uint8Array(this.arrayBuffer);
+        newView.set(
+          originalView.slice(headerBytes.length, headerBytes.length + copyLength),
+          headerBytes.length
+        );        
+
+        const fitsBlob = new Blob([newBuffer], { type: 'application/octet-stream' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(fitsBlob);
+        link.download = 'corrected_sl_' + this.fitsFileName;
+        link.click();
+      }
+    } catch (error) {
+      console.error('Error saving modified FITS file:', error);
+    }
+  }  
+
+
   saveFullFITS(): void {
     try {
       if (this.arrayBuffer && this.header && this.ra && this.dec && this.wcsInfo) {
@@ -674,8 +737,8 @@ export class RadioSearchComponent implements AfterViewInit {
           .replace(/CRVAL2  = *[\d.-]+/, `CRVAL2  = ${String(this.wcsInfo.crval2 - this.sliderYOffset).padStart(20)}`);
 
         const headerLength = updatedHeader.length;
-  
-        const paddingSize = 2880 - (headerLength % 2880);
+
+        const paddingSize = (headerLength % 2880);
         updatedHeader = updatedHeader.padEnd(headerLength + paddingSize, ' ');
 
         const newBuffer = new ArrayBuffer(this.arrayBuffer.byteLength);
@@ -694,62 +757,6 @@ export class RadioSearchComponent implements AfterViewInit {
         link.href = URL.createObjectURL(fitsBlob);
         link.download = 'corrected_' + this.fitsFileName;
         link.click();
-      }
-    } catch (error) {
-      console.error('Error saving modified FITS file:', error);
-    }
-  }  
-
-
-  saveSingleLayerFits(): void {
-    try {
-      if (this.arrayBuffer && this.header && this.pixelArray && this.ra && this.dec && this.wcsInfo) {
-        console.log('Saving Single Layer FITS...');
-  
-        // Modify the header (same as in saveFullFITS)
-        let updatedHeader = this.header.block
-          .replace(/CENTERRA= *[\d.-]+/, `CENTERRA= ${String(this.ra + this.sliderXOffset).padStart(20)}`)
-          .replace(/CENTERDE= *[\d.-]+/, `CENTERDE= ${String(this.dec - this.sliderYOffset).padStart(20)}`)
-          .replace(/CRVAL1  = *[\d.-]+/, `CRVAL1  = ${String(this.wcsInfo.crval1 + this.sliderXOffset).padStart(20)}`)
-          .replace(/CRVAL2  = *[\d.-]+/, `CRVAL2  = ${String(this.wcsInfo.crval2 - this.sliderYOffset).padStart(20)}`);
-  
-        const headerLength = updatedHeader.length;
-        const paddingSize = 2880 - (headerLength % 2880);
-        updatedHeader = updatedHeader.padEnd(headerLength + paddingSize, ' ');
-  
-        // Convert the header into bytes
-        const headerBytes = new Uint8Array([...updatedHeader].map(c => c.charCodeAt(0)));
-        console.log('Header Size (bytes):', headerBytes.length);
-  
-        // Extract the first data list
-        const dataUnitSize = this.naxis1 * this.naxis2 * 8; // 8 bytes per Float64 value
-        const firstDataList = new Float64Array(this.pixelArray.slice(0, this.naxis1 * this.naxis2));
-        console.log('Extracted First Data List:', firstDataList);
-  
-        // Convert to Uint8Array
-        const intensityBuffer = new Uint8Array(firstDataList.buffer);
-        console.log('Intensity Buffer Size:', intensityBuffer.length);
-  
-        // Allocate buffer
-        const totalSize = headerBytes.length + intensityBuffer.length;
-        const newBuffer = new ArrayBuffer(totalSize);
-        console.log('Total Buffer Size:', newBuffer.byteLength);
-  
-        // Write header and data into buffer
-        const newView = new Uint8Array(newBuffer);
-        newView.set(new TextEncoder().encode(updatedHeader), 0);
-        newView.set(intensityBuffer, headerBytes.length);
-  
-        console.log('Final FITS Data:', newView);
-  
-        // Create and download the FITS file
-        const fitsBlob = new Blob([newBuffer], { type: 'application/octet-stream' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(fitsBlob);
-        link.download = 'single_layer.fits';
-        link.click();
-      } else {
-        console.error('Missing required data (arrayBuffer, header, or pixelArray).');
       }
     } catch (error) {
       console.error('Error saving modified FITS file:', error);
@@ -887,6 +894,71 @@ export class RadioSearchComponent implements AfterViewInit {
         return color;
     }
 
+    function slsColormap(value: number): [number, number, number] {
+      // Clamp input to [0, 1]
+      value = Math.max(0, Math.min(1, value));
+  
+      // DS9-style black → rainbow → white gradient
+      const slsRGB: [number, number, number][] = [
+          [0, 0, 0],       // black
+          [75, 0, 130],    // violet
+          [0, 0, 255],     // blue
+          [0, 255, 255],   // cyan
+          [0, 255, 0],     // green
+          [255, 255, 0],   // yellow
+          [255, 128, 0],   // orange
+          [255, 0, 0],     // red
+          [255, 255, 255]  // white
+      ];
+  
+      const n = slsRGB.length - 1;
+      const scaledValue = value * n;
+      const i = Math.floor(scaledValue);
+      const t = scaledValue - i;
+  
+      const [r1, g1, b1] = slsRGB[i];
+      const [r2, g2, b2] = slsRGB[Math.min(i + 1, n)];
+  
+      const r = r1 + t * (r2 - r1);
+      const g = g1 + t * (g2 - g1);
+      const b = b1 + t * (b2 - b1);
+  
+      const color: [number, number, number] = [r, g, b];
+      return color;
+    }
+
+    function hsvToRgb(h: number, s: number, v: number): [number, number, number] {
+      let c = v * s;
+      let x = c * (1 - Math.abs((h / 60) % 2 - 1));
+      let m = v - c;
+      let [r, g, b]: [number, number, number] = [0, 0, 0];
+    
+      if (0 <= h && h < 60)       [r, g, b] = [c, x, 0];
+      else if (60 <= h && h < 120)[r, g, b] = [x, c, 0];
+      else if (120 <= h && h < 180)[r, g, b] = [0, c, x];
+      else if (180 <= h && h < 240)[r, g, b] = [0, x, c];
+      else if (240 <= h && h < 300)[r, g, b] = [x, 0, c];
+      else if (300 <= h && h < 360)[r, g, b] = [c, 0, x];
+    
+      return [
+        Math.round((r + m) * 255),
+        Math.round((g + m) * 255),
+        Math.round((b + m) * 255),
+      ];
+    }
+    
+    function rainbowColormap(intensity: number): [number, number, number] {
+      // Clamp between 0 and 1
+      intensity = Math.max(0, Math.min(1, intensity - 0.03));
+      
+      // Hue goes from 300 (pink) to 0 (red), decreasing
+      const hue = 300 - 300 * intensity;
+      const saturation = 1;
+      const value = 1;
+    
+      return hsvToRgb(hue, saturation, value);
+    }
+    
     // Apply the turbo colormap and create the image data array
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
@@ -909,7 +981,15 @@ export class RadioSearchComponent implements AfterViewInit {
             const scaledIntensity = (Math.asinh(intensity) / Math.asinh(255)) * this.maxValue;
 
             // Get the RGB values from the Turbo colormap
-            [r, g, b] = turboColormap(scaledIntensity);
+            if (this.selectedColorMap == 'turbo') {
+              [r, g, b] = turboColormap(scaledIntensity);
+            } else if (this.selectedColorMap == 'sls') {
+              [r, g, b] = slsColormap(scaledIntensity);
+            } else if (this.selectedColorMap == 'rainbow') {
+              [r, g, b] = rainbowColormap(scaledIntensity);
+            }else {
+              [r, g, b] = turboColormap(scaledIntensity);
+            }
         }
 
         // Assign the RGB values to the image data array

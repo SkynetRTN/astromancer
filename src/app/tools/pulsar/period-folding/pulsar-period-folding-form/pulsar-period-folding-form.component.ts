@@ -114,9 +114,30 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
   sonification() {
     this.periodSubject.subscribe(value => {
       let period = value;
+      const data = this.service.getPeriodFoldingChartData();
 
+      let binnedData = this.service.binData(data['data'], 100);
+      const xValues = binnedData.map(point => point[0]);
+      const yValues = binnedData.map(point => point[1]);
       
-      //this.service.sonification(xValues, yValues, period);
+      this.service.sonification(xValues, yValues, this.service.getPeriodFoldingPeriod()); 
+    });
+  }
+
+  get isPlaying(): boolean {
+    return this.service.isPlaying;
+  }  
+
+  sonificationBrowser() {
+    this.periodSubject.subscribe(value => {
+      let period = value;
+      const data = this.service.getPeriodFoldingChartData();
+
+      let binnedData = this.service.binData(data['data'], 100);
+      const xValues = binnedData.map(point => point[0]);
+      const yValues = binnedData.map(point => point[1]);
+      
+      this.service.sonificationBrowser(xValues, yValues, this.service.getPeriodFoldingPeriod()); 
     });
   }
 

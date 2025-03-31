@@ -4,6 +4,7 @@
     [label]="'Merger Time (sec)'" [maxValue]="20"
     [minValue]="10" [range$]="range$" [name]="'mergerTime'"
     [stepValue]="0.001" [value$]="mergerTimeSubject"
+    [inputPrecision]="3"
   ></my-input-slider>
   <my-input-slider
     (value)="onChange($event)" [defaultValue]="50" [label]="'Total Mass (solar)'"

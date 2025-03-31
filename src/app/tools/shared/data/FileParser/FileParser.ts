@@ -3,7 +3,7 @@ import {FileType, HeaderRequirement, MyFileParserErrors, MyFileParserStrategy} f
 import {MyFileParserTXT} from "./FileParser.TXT";
 import {MyFileParserDefault} from "./FileParser.Default";
 import {MyFileParserCSV} from "./FileParser.CSV";
-import { MyFileParserTXTGW } from "./FileParser.TXTGW";
+import { MyFileParserTXTGW } from "./-deprecated-FileParser.TXTGW";
 import { MyFileParserHDF5 } from "./-deprecated-FileParser.HDF5";
 import { HttpClient } from "@angular/common/http";
 import {MyFileParserFITS} from "./FileParser.FITS";

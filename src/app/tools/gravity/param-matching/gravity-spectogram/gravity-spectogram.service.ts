@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import {BehaviorSubject, Subject, takeUntil, debounceTime, auditTime} from "rxjs";
 import * as Highcharts from "highcharts";
 
+import { environment } from 'src/environments/environment';
 import {
   StrainChartInfoStorageObject,
   SpectoData,
@@ -12,10 +13,11 @@ import {
   SpectoAxes
 } from "../gravity.service.util";
 
-import {MyData} from "../../shared/data/data.interface";
-import {ChartInfo} from "../../shared/charts/chart.interface";
-import { UpdateSource } from '../../shared/data/utils';
+import {MyData} from "../../../shared/data/data.interface";
+import {ChartInfo} from "../../../shared/charts/chart.interface";
+import { UpdateSource } from '../../../shared/data/utils';
 import { InterfaceService } from '../gravity-form/gravity-interface.service';
+import { GravityDataService } from '../../gravity-data.service';
 
 @Injectable()
 export class SpectogramService implements OnDestroy {
@@ -31,9 +33,22 @@ export class SpectogramService implements OnDestroy {
 
   private highChart!: Highcharts.Chart;
 
-  constructor(private interfaceService: InterfaceService) {
+  constructor(
+    private interfaceService: InterfaceService,
+    private data: GravityDataService,
+    private http: HttpClient
+  ) {
     this.spectoData.setData([[0,0,0]]);
     this.modelData.setData([]);
+
+    this.data.jobId$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(
+      (id: number|null) =>
+      {
+        if(id) this.fetchSpectogram(id)
+      }
+    )
 
     this.interfaceService.freqParameters$.pipe(
       takeUntil(this.destroy$),
@@ -120,5 +135,42 @@ export class SpectogramService implements OnDestroy {
   getMergerTime(): number {
     return this.interfaceService.getMergerTime()
   }
+
+  // TODO: handle job not found. Most likely, add a function to DataService that resets the job.
+  private fetchSpectogram(id: number) {
+
+
+    this.http.get(`${environment.apiUrl}/gravity/spectogram`,
+    {params: {'id': id} }).subscribe(
+    (resp: any) => {
+
+        console.log(resp)
+
+        const spectogramResult: number[][] = [];
+
+        let spectogram: number[][] = resp.file.data
+        let axes = resp.file.axes
+
+        console.log("Spectogram points: ", spectogram.length * spectogram[0].length)
+
+        let xmin = parseFloat(axes.x[0])
+        let xmax = parseFloat(axes.x[1])
+        let dx   = parseFloat(axes.x[2])
+        let ymin = axes.y[0]
+        let ymax = axes.y[1]
+
+        this.setAxes({'dx': dx, 'xmin': xmin, 'xmax': xmax, 'ymin': ymin, 'ymax': ymax})
+
+        // TODO: Move.
+        this.interfaceService.setMergerRange({'min':xmin, 'max': xmax})
+
+        spectogram.forEach( (y, i) => y.forEach( (value, j) => {
+        // if(x==null || y==null) return 
+        spectogramResult.push([i*dx + xmin , j, value?value:0 ])
+        } ) )
+        this.setSpecto(spectogramResult)
+
+    })
+}
 
 }

@@ -12,22 +12,21 @@ h1 {
 
 .center-content {
   justify-content: center;
+  align-items: center;
 }
 
-.search-bar {
-  width: 60%;
+.search {
+  flex-direction: column;
+  justify-content: center;
 }
 
-.coordinates {
-  width: 200px;
-}
-
-.recent-searches {
+.results-list {
   display: inline;
   width: 100%;
   text-align: left;
   margin: 20px 40px 0 40px;
-  height: 300px;
+  overflow-y: scroll;
+  height: 500px;
 }
 
 h2 {
@@ -40,21 +39,31 @@ h3 {
 }
 
 mat-list {
-  width: 80%;
+  width: 100%;
+}
+
+.result, .list-name, .column-header, .button-block, .detector {
+  flex-direction: column;
+  height: min-content;
+  display: inline-block;
+  width: 30%;
+  margin-right: 0px;
+  margin-left: 0px;
+}
+
+.button-block {
+  width: 40%
+}
+
+.detector {
+  margin: 3px;
 }
 
 .list-name {
   font-weight: bolder;
   font-size: larger;
-  height: min-content;
-  display: inline-block;
-  width: 90px;
-  margin-right: 30px;
 }
 
-.recent-search {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  transform: scale(0.8);
+.column-header {
+  justify-content: flex-start;
 }

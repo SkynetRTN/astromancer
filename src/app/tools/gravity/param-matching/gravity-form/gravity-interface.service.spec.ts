@@ -1,6 +1,6 @@
 import {TestBed} from '@angular/core/testing';
 
-import {InterfaceService} from './gravity-form/gravity-interface.service';
+import {InterfaceService} from './gravity-interface.service';
 
 describe('GravityService', () => {
   let service: InterfaceService;

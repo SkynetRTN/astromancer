@@ -4,7 +4,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 
 import {InterfaceService} from "./gravity-interface.service";
 
-import {InputSliderValue} from "../../shared/interface/input-slider/input-slider.component";
+import {InputSliderValue} from "../../../shared/interface/input-slider/input-slider.component";
 import { SpectogramService } from '../gravity-spectogram/gravity-spectogram.service';
 import { range } from '../gravity.service.util';
 

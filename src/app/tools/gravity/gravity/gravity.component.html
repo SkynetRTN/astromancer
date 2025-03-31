@@ -1,37 +1,4 @@
 <div class="row tool-container">
-  <div class="col-4">
-    <div class="row">
-      <app-gravity-form></app-gravity-form>
-    </div>
-    <div class="row dynamic">
-      <!-- Table is dumb and kinda pointless -->
-      <!-- <app-gravity-table></app-gravity-table> -->
-      <app-result-summary></app-result-summary>
-    </div>
-    <div class="row button-row">
-      <app-simple-data-button (fileUpload$)="uploadHandler($event)"
-                              (tableUserActionObs$)="actionHandler($event)"
-                              [isUploadData]="true">
-      </app-simple-data-button>
-    </div>
-  </div>
-  <div class="col-8">
-
-    <app-file-upload-big [hidden]="fileUploaded" class="full-container"
-    (fileUpload$)="uploadHandler($event)" [format]="'32 sec, 16 KHz .hdf5 files.'" [sourceLink]="'https://gwosc.org/eventapi/html/O4_Discovery_Papers/GW230529_181500/v1/'"></app-file-upload-big>
-
-    <div [hidden]="!fileUploaded">
-      <div class="row dynamic">
-        <app-gravity-spectogram></app-gravity-spectogram>
-      </div>
-      <div class="row dynamic">
-        <app-gravity-strainchart></app-gravity-strainchart>
-      </div>
-        <!--      <div class="col-6">-->
-        <!-- <app-simple-graph-button (chartUserActionObs$)="actionHandler($event)" [isEditChartInfo]="true">
-        </app-simple-graph-button> -->
-        <!--      </div>-->
-        <!--      <div class="col-6">Click and drag to zoom. Hold down the shift key to drag and pan.</div>-->
-    </div>
-  </div>
+    <app-data-source *ngIf="!(dataReady)"></app-data-source>
+    <app-gravity-param-matching *ngIf="(dataReady)"></app-gravity-param-matching>
 </div>

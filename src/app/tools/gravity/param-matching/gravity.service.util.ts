@@ -1,8 +1,8 @@
-import {MyData} from "../shared/data/data.interface";
-import {MyStorage} from "../shared/storage/storage.interface";
-import {ChartInfo} from "../shared/charts/chart.interface";
-import {dummyStrainData} from "./constants/chart-gravity-dummydata";
-import { ratioMassLogSpace, totalMassLogSpace, phaseList, totalMassLogSpaceStrain } from "./constants/model-grid";
+import {MyData} from "../../shared/data/data.interface";
+import {MyStorage} from "../../shared/storage/storage.interface";
+import {ChartInfo} from "../../shared/charts/chart.interface";
+import { GravityInterfaceStorageObject } from "../storage/gravity-storage.service.util";
+import { ratioMassLogSpace, totalMassLogSpace, phaseList, totalMassLogSpaceStrain } from "../param-matching/constants/model-grid";
 
 export interface ServerDataRequest {
   job_id?: number
@@ -232,16 +232,6 @@ export interface GravityInterface {
   resetInterface(): void;
 }
 
-export interface GravityInterfaceStorageObject {
-  mergerTime: number;
-  totalMass: number;
-  massRatio: number;
-  phaseShift: number;
-  distance: number;
-  inclination: number;
-}
-
-
 export class GravityInterfaceImpl implements GravityInterface {
 
   private mergerRange: range = {'min':10, 'max':20};
@@ -281,7 +271,7 @@ export class GravityInterfaceImpl implements GravityInterface {
   }
 
   resetInterface(): void {
-    this.setStorageObject(this.getDefaultStorageObject());
+    this.setStorageObject(GravityInterfaceImpl.getDefaultStorageObject());
   }
 
   setMergerTime(mergerTime: number): void{
@@ -314,30 +304,30 @@ export class GravityInterfaceImpl implements GravityInterface {
 
   getStorageObject(): GravityInterfaceStorageObject {
     return {
-      mergerTime: this.mergerTime,
-      totalMass: this.totalMass,
-      massRatio: this.massRatio,
-      phaseShift: this.phaseShift,
+      merger_time: this.mergerTime,
+      total_mass: this.totalMass,
+      mass_ratio: this.massRatio,
+      phase: this.phaseShift,
       distance: this.distance,
       inclination: this.inclination
     };
   }
 
   setStorageObject(storageObject: GravityInterfaceStorageObject): void {
-    this.setMergerTime(storageObject.mergerTime);
-    this.setTotalMass(storageObject.totalMass);
-    this.setMassRatio(storageObject.massRatio);
-    this.setPhaseShift(storageObject.phaseShift);
+    this.setMergerTime(storageObject.merger_time);
+    this.setTotalMass(storageObject.total_mass);
+    this.setMassRatio(storageObject.mass_ratio);
+    this.setPhaseShift(storageObject.phase);
     this.setDistance(storageObject.distance);
     this.setInclination(storageObject.inclination);
   }
 
-  getDefaultStorageObject(): GravityInterfaceStorageObject {
+  static getDefaultStorageObject(): GravityInterfaceStorageObject {
     return {
-      mergerTime: 16,
-      totalMass: 25,
-      massRatio: 1,
-      phaseShift: 0,
+      merger_time: 16,
+      total_mass: 25,
+      mass_ratio: 1,
+      phase: 0,
       distance: 300,
       inclination: 0
     };
@@ -428,62 +418,6 @@ export class SpectoChartInfo extends StrainChartInfo {
   constructor() {
     super()
   }
-}
-
-export class StrainStorage implements MyStorage {
-  private static readonly dataKey: string = 'strainData';
-  private static readonly interfaceKey: string = 'strainInterface';
-  private static readonly chartInfoKey: string = 'strainChartInfo';
-
-  getChartInfo(): StrainChartInfoStorageObject {
-    if (localStorage.getItem(StrainStorage.chartInfoKey)) {
-      return JSON.parse(localStorage.getItem(StrainStorage.chartInfoKey)!) as StrainChartInfoStorageObject;
-    } else {
-      return StrainChartInfo.getDefaultChartInfo();
-    }
-  }
-
-  //TODO: Store the job instead of the data
-  getData(): number[][] {
-    if (localStorage.getItem(StrainStorage.dataKey)) {
-      return JSON.parse(localStorage.getItem(StrainStorage.dataKey)!) as number[][];
-    } else {
-      return StrainData.getDefaultData();
-    }
-  }
-
-  getInterface(): GravityInterfaceStorageObject {
-    if (localStorage.getItem(StrainStorage.interfaceKey)) {
-      return JSON.parse(localStorage.getItem(StrainStorage.interfaceKey) as string);
-    } else {
-      return new GravityInterfaceImpl().getDefaultStorageObject();
-    }
-  }
-
-  resetChartInfo(): void {
-    localStorage.setItem(StrainStorage.chartInfoKey, JSON.stringify(StrainChartInfo.getDefaultChartInfo()));
-  }
-
-  resetData(): void {
-    localStorage.setItem(StrainStorage.dataKey, JSON.stringify(StrainData.getDefaultData()));
-  }
-
-  resetInterface(): void {
-    localStorage.setItem(StrainStorage.interfaceKey, JSON.stringify(new GravityInterfaceImpl().getDefaultStorageObject()));
-  }
-
-  saveChartInfo(chartInfo: StrainChartInfoStorageObject): void {
-    localStorage.setItem(StrainStorage.chartInfoKey, JSON.stringify(chartInfo));
-  }
-
-  saveData(data: number[][]): void {
-    // localStorage.setItem(GravityStorage.dataKey, JSON.stringify(data));
-  }
-
-  saveInterface(interfaceInfo: GravityInterfaceStorageObject): void {
-    localStorage.setItem(StrainStorage.interfaceKey, JSON.stringify(interfaceInfo));
-  }
-
 }
 
 /**

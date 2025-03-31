@@ -1,8 +1,8 @@
 import {Component} from '@angular/core';
-import { downloadCsv } from '../../cluster/result/result.utils';
-import { getDateString } from '../../shared/charts/utils';
-import {HonorCodeChartService} from "../../shared/honor-code-popup/honor-code-chart.service";
-import {HonorCodePopupService} from "../../shared/honor-code-popup/honor-code-popup.service";
+import { downloadCsv } from '../../../cluster/result/result.utils';
+import { getDateString } from '../../../shared/charts/utils';
+import {HonorCodeChartService} from "../../../shared/honor-code-popup/honor-code-chart.service";
+import {HonorCodePopupService} from "../../../shared/honor-code-popup/honor-code-popup.service";
 import {HttpClient} from "@angular/common/http";
 import { InterfaceService } from '../gravity-form/gravity-interface.service';
 import { calculateMassLoss } from '../gravity.service.util';

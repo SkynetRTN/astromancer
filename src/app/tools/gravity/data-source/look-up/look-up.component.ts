@@ -1,11 +1,8 @@
 import {Component} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
-import {ClusterDataSourceService} from "../cluster-data-source.service";
-import {ClusterLookUpData} from "../cluster-data-source.service.util";
 import {MatDialog} from "@angular/material/dialog";
-import {FetchComponent} from "../pop-ups/fetch/fetch.component";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import { GravityEvent } from '../gravity-data-source.service.utils';
+import { GravityDataSourceService } from '../gravity-data-source-service';
+import { dateToGPS, GravityEvent, SearchParams } from '../gravity-data-source.service.utils';
 
 @Component({
   selector: 'app-look-up',
@@ -14,55 +11,32 @@ import { GravityEvent } from '../gravity-data-source.service.utils';
 })
 export class LookUpComponent {
   value = '';
-  lookUpFrom = new FormGroup({
-    min_date: new FormControl(),
-    max_date: new FormControl(),
+  lookUpForm = new FormGroup({
+    min_date: new FormControl<Date>(new Date(2015,9,14)),
+    max_date: new FormControl<Date>(new Date()),
   })
-  
+
   events: GravityEvent[] = [];
 
-  constructor(private dataSourceService: ClusterDataSourceService,
-              private dialog: MatDialog,
-              private snackBar: MatSnackBar) {
-    this.dataSourceService.lookUpData$.subscribe(
-      data => {
-        if (data !== null)
-          this.dialog.open(FetchComponent,
-            {
-              width: 'fit-content',
-              disableClose: true,
-              data: data
-            });
-        else
-          this.snackBar.open(`No Cluster Named "${this.lookUpFrom.controls['name'].value}" Found`,
-            "OK");
-      });
+  constructor(private dataSourceService: GravityDataSourceService,
+              private dialog: MatDialog) 
+  {
+    dataSourceService.results$.subscribe((events) => {
+      this.events = events;
+    })
   }
 
   submit() {
-    this.dataSourceService.lookUpCluster(this.lookUpFrom.controls['name'].value!);
+    let params: SearchParams = {
+      min_time: this.lookUpForm.controls['min_date'].value ? dateToGPS(this.lookUpForm.controls['min_date'].value) : undefined,
+      max_time: this.lookUpForm.controls['max_date'].value ? dateToGPS(this.lookUpForm.controls['max_date'].value) : undefined,
+    }
+
+    this.dataSourceService.submitSearchParams(params)
   }
 
-  typeCoordinates() {
-    this.dialog.open(FetchComponent,
-      {
-        width: 'fit-content',
-        disableClose: true,
-        data: {
-          name: null,
-          ra: null,
-          dec: null,
-          radius: null,
-        }
-      });
-  }
-
-  searchRecent(lookup: ClusterLookUpData) {
-    this.dataSourceService.pushRecentSearch(lookup);
-    this.dialog.open(FetchComponent, {
-      width: 'fit-content',
-      disableClose: true,
-      data: lookup
-    });
+  selectEvent(event_url: string, detector: string)
+  {
+    this.dataSourceService.selectFileVersion(event_url, detector)
   }
 }

@@ -1,36 +1,50 @@
 <div class="look-up-container" xmlns="http://www.w3.org/1999/html">
   <div class="row center-content">
-    <h1>Look Up a Cluster</h1>
+    <h1>Look Up a Gravitational Wave Event</h1>
   </div>
   <div class="row center-content">
-    <form (submit)="submit()" [formGroup]="lookUpFrom">
-      <mat-form-field class="search-bar">
-        <input formControlName="min-date" matInput placeholder="From" type="date">
-        <input formControlName="max-date" matInput placeholder="To" type="date">
-        <button (click)="lookUpFrom.controls['name'].setValue('')" *ngIf="lookUpFrom.controls['name'].value"
-                aria-label="clear" mat-icon-button
-                matSuffix type="button">
-          <mat-icon>clear</mat-icon>
-        </button>
-        <button *ngIf="lookUpFrom.controls['name'].value" aria-label="look up" color="warn" mat-icon-button matSuffix>
-          <mat-icon>search</mat-icon>
-        </button>
+    <form (submit)="submit()" [formGroup]="lookUpForm">
+
+      <mat-form-field class="col-4">
+        <input matInput [matDatepicker]="begin" placeholder="From Date" formControlName="min_date">
+        <mat-datepicker-toggle matSuffix [for]="begin"></mat-datepicker-toggle>
+        <mat-datepicker #begin></mat-datepicker>
       </mat-form-field>
+      <mat-form-field class="col-4">
+
+        <input matInput [matDatepicker]="end" placeholder="Until Date" formControlName="max_date">
+        <mat-datepicker-toggle matSuffix [for]="end"></mat-datepicker-toggle>
+        <mat-datepicker #end></mat-datepicker>
+
+        
+      </mat-form-field>
+      
+      <button aria-label="look up" color="warn" mat-icon-button matSuffix>
+        <mat-icon class="search">search</mat-icon>
+      </button>
+      
     </form>
   </div>
   <div class="row">
-    <div class="recent-searches">
+    <div class="results-list">
       <h2>Results:</h2>
-      <mat-list *ngFor="let events of eventResults">
+      <div class="column-header">Name</div>
+      <div class="column-header">Date</div>
+      <div class="column-header">Detector Data</div>
+
+      <mat-divider></mat-divider>
+      <mat-list *ngFor="let event of events; last as last">
         <mat-list-item>
-          <div class="list-name">{{lookup.name}}</div>
-          &emsp; <i>RA:</i> {{lookup.ra.toFixed(2)}}
-          &emsp; <i>Dec:</i> {{lookup.dec.toFixed(2)}}
-          &emsp; <i>Radius:</i> {{lookup.radius.toFixed(2)}}
-          <button (click)="searchRecent(lookup)" aria-label="search" class="recent-search"
-                  mat-icon-button>
-            <mat-icon>search</mat-icon>
-          </button>
+          <div class="list-name">{{event.Name}}</div>
+          <div class="result"> {{event.Time}}</div>
+
+          <!-- Download Buttons -->
+          <div class="button-block">
+            <button class="detector" *ngFor="let Detector of event.Detectors" (click)="selectEvent(event.URL, Detector)" color="primary" mat-flat-button>
+                {{Detector}}
+            </button>
+          </div>
+
         </mat-list-item>
         <mat-divider *ngIf="!last"></mat-divider>
       </mat-list>

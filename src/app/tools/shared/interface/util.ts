@@ -4,8 +4,9 @@ import {MatInputModule} from "@angular/material/input";
 import { MatIconModule } from "@angular/material/icon";
 import {MatSliderModule} from "@angular/material/slider";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {NgIf} from "@angular/common";
+import {JsonPipe, NgIf} from "@angular/common";
 import { FileUploadBigComponent } from "../file-upload-big/file-upload-big.component";
+import { ErrorComponent } from "../error-popup/error.component";
 
 @NgModule({
     imports: [
@@ -14,13 +15,15 @@ import { FileUploadBigComponent } from "../file-upload-big/file-upload-big.compo
         MatSliderModule,
         ReactiveFormsModule,
         FormsModule,
+        JsonPipe,
         NgIf
     ],
   exports: [
     InputSliderComponent,
-    FileUploadBigComponent
+    FileUploadBigComponent,
+    ErrorComponent
   ],
-  declarations: [InputSliderComponent, FileUploadBigComponent]
+  declarations: [InputSliderComponent, FileUploadBigComponent, ErrorComponent]
 })
 export class InterfaceUtilModule {
 }

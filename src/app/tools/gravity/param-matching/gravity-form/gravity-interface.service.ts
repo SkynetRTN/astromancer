@@ -9,13 +9,12 @@ import {
   StrainDataDict,
   GravityInterface,
   GravityInterfaceImpl,
-  StrainStorage,
   range
 } from "../gravity.service.util";
 
-import {MyData} from "../../shared/data/data.interface";
-import {ChartInfo} from "../../shared/charts/chart.interface";
-import { UpdateSource } from '../../shared/data/utils';
+import {MyData} from "../../../shared/data/data.interface";
+import {ChartInfo} from "../../../shared/charts/chart.interface";
+import { UpdateSource } from '../../../shared/data/utils';
 
 /**
  * @remarks Service for interface activity
@@ -28,7 +27,6 @@ export class InterfaceService implements GravityInterface{
   private strainData: StrainData = new StrainData();
   
   private gravityInterface: GravityInterfaceImpl = new GravityInterfaceImpl();
-  private gravityStorage: StrainStorage = new StrainStorage();
 
   //Server request params
   private serverParameterSubject: BehaviorSubject<UpdateSource> = new BehaviorSubject<UpdateSource>(UpdateSource.INIT);
@@ -48,7 +46,7 @@ export class InterfaceService implements GravityInterface{
 
 
   constructor() {
-    this.strainData.setData(this.gravityStorage.getData());
+
   }
   
   /** GravityInterface Methods **/
@@ -83,7 +81,6 @@ export class InterfaceService implements GravityInterface{
 
   resetInterface(): void {
     this.gravityInterface.resetInterface();
-    this.gravityStorage.resetInterface();
     this.serverParameterSubject.next(UpdateSource.RESET);
   }
 

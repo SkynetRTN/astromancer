@@ -1,18 +1,18 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {GravityTableComponent} from './gravity-table.component';
+import {ParamMatching} from './param-matching.component';
 
-describe('GravityTableComponent', () => {
-  let component: GravityTableComponent;
-  let fixture: ComponentFixture<GravityTableComponent>;
+describe('GravityComponent', () => {
+  let component: ParamMatching;
+  let fixture: ComponentFixture<ParamMatching>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [GravityTableComponent]
+      declarations: [ParamMatching]
     })
       .compileComponents();
 
-    fixture = TestBed.createComponent(GravityTableComponent);
+    fixture = TestBed.createComponent(ParamMatching);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

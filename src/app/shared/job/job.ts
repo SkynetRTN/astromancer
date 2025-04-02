@@ -40,12 +40,12 @@ export class Job {
   public createJob(payload: any): void {
     let contenttype = "multipart/form-data"
 
-    if(!(payload instanceof FormData))
-    {
-      console.log("json detected")
-      contenttype = 'application/json'
-      payload = JSON.stringify(payload)
-    }
+    // if(!(payload instanceof FormData))
+    // {
+    //   console.log("json detected")
+    //   contenttype = 'application/json'
+    //   payload = JSON.stringify(payload)
+    // }
 
     this.http.post(
       `${environment.apiUrl}${this.url}`,

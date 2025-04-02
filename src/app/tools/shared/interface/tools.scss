@@ -18,13 +18,13 @@
 
 @media screen and (min-width: 1441px) {
   .tool-container {
+
     padding: 20px 55px;
   }
   .button-row {
     padding-left: 20px;
   }
 }
-
 
 .tool-container {
   display: flex;
@@ -46,7 +46,7 @@
     flex-flow: column;
   }
 
-  .dynamic, {
+  .dynamic {
     flex: min-content;
   }
 }
@@ -75,7 +75,7 @@
     flex: 2;
   }
 
-  .dynamic, {
+  .dynamic {
     height: 1200px;
     flex: min-content;
   }

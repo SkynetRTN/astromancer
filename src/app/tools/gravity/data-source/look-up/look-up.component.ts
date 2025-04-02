@@ -35,8 +35,8 @@ export class LookUpComponent {
     this.dataSourceService.submitSearchParams(params)
   }
 
-  selectEvent(event_url: string, detector: string)
+  selectEvent(name: string, detector: string)
   {
-    this.dataSourceService.selectFileVersion(event_url, detector)
+    this.dataSourceService.selectFileVersion(name, detector)
   }
 }

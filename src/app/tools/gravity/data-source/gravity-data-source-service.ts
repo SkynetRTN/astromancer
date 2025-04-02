@@ -54,9 +54,9 @@ export class GravityDataSourceService implements OnDestroy {
         this.eventLookUp(params)
     }
 
-    public selectFileVersion(event_url: string, detector: string)
+    public selectFileVersion(name: string, detector: string)
     {
-        this.fileLookUp(event_url, detector)
+        this.fileLookUp(name, detector)
     }
 
     public setPage(page: number)
@@ -95,7 +95,7 @@ export class GravityDataSourceService implements OnDestroy {
                     Name: element["shortName"],
                     Detectors: element['detectors'],
                     Time: time.toLocaleDateString(),
-                    URL: element["detail_url"]
+                    URL: element["doi"]
                 }
             });
 
@@ -104,49 +104,51 @@ export class GravityDataSourceService implements OnDestroy {
     }
 
     //If, in the future, we allow users to actually use different durations/sample rates of files, create enums for these values
-    private fileLookUp(eventURL: string, detector: string, sample_rate: number = 16, duration: number = 32) {
+    private fileLookUp(name: string, detector: string, sample_rate: number = 16, duration: number = 32) {
 
-        let payload = {
-            'detector': detector,
-            'sample-rate': sample_rate,
-            'duration': duration,
-            'file-format': 'hdf5',
-            // 'page': page
-        }
+        this.dataService.selectionHandler(name, detector)
         
-        //making a request and then another request feels bad, but thats the api. This
-        this.http.get(`${eventURL}/strain-files`,
-            {'params': payload}
-        ).subscribe((resp: any) => {
-            try {
-                let url = resp.results[0]["download_url"] as string
-                let time = resp.results[0]["gps_start"] as number
+        // let payload = {
+        //     'detector': detector,
+        //     'sample-rate': sample_rate,
+        //     'duration': duration,
+        //     'file-format': 'hdf5',
+        //     // 'page': page
+        // }
+        
+        // //making a request and then another request feels bad, but thats the api. This
+        // this.http.get(`${eventURL}/strain-files`,
+        //     {'params': payload}
+        // ).subscribe((resp: any) => {
+        //     try {
+        //         let url = resp.results[0]["download_url"] as string
+        //         let time = resp.results[0]["gps_start"] as number
 
-                console.log(url)
+        //         console.log(url)
 
-                // this.dialog.open(BufferComponent, {data: { progress: interval(10) }})
+        //         // this.dialog.open(BufferComponent, {data: { progress: interval(10) }})
                 
-                const xhr = new XMLHttpRequest();
-                xhr.open('GET', url);
-                xhr.responseType = 'blob';
+        //         const xhr = new XMLHttpRequest();
+        //         xhr.open('GET', url);
+        //         xhr.responseType = 'blob';
 
-                xhr.onload = () => {
-                    if (xhr.status === 200) {
-                        const blob = xhr.response;
+        //         xhr.onload = () => {
+        //             if (xhr.status === 200) {
+        //                 const blob = xhr.response;
 
-                        //Do what we always do.
-                        this.fileUpload(blob, time)
-        }
+        //                 //Do what we always do.
+        //                 this.fileUpload(blob, time)
+        // }
     };
 
-    xhr.send();
-            }
+    // xhr.send();
+    //         }
 
-            catch(e) {
-                this.dialog.open(ErrorComponent, {data: {message: "Couldn't fetch that file... Try a different event or version!"}})
-            }
-        })
-    }
+    //         catch(e) {
+    //             this.dialog.open(ErrorComponent, {data: {message: "Couldn't fetch that file... Try a different event or version!"}})
+    //         }
+    //     })
+    // }
 
     public fileUpload(file: File, gps_time?: number)
     {

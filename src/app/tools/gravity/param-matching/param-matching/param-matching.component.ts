@@ -24,6 +24,10 @@ export class ParamMatching implements OnDestroy {
 
   }
 
+  reset() {
+    this.dataService.reset()
+  }
+
   uploadHandler($event: File) {
     this.dataService.uploadHandler($event)
   }

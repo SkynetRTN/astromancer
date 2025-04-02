@@ -35,12 +35,12 @@
       <mat-divider></mat-divider>
       <mat-list *ngFor="let event of events; last as last">
         <mat-list-item>
-          <div class="list-name">{{event.Name}}</div>
+          <div class="list-name"><a href="{{event.URL}}" target="_blank">{{event.Name}}</a></div>
           <div class="result"> {{event.Time}}</div>
 
           <!-- Download Buttons -->
           <div class="button-block">
-            <button class="detector" *ngFor="let Detector of event.Detectors" (click)="selectEvent(event.URL, Detector)" color="primary" mat-flat-button>
+            <button class="detector" *ngFor="let Detector of event.Detectors" (click)="selectEvent(event.Name, Detector)" color="primary" mat-flat-button>
                 {{Detector}}
             </button>
           </div>

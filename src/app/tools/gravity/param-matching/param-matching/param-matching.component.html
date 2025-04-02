@@ -4,15 +4,13 @@
       <app-gravity-form></app-gravity-form>
     </div>
     <div class="row dynamic">
-      <!-- Table is dumb and kinda pointless -->
-      <!-- <app-gravity-table></app-gravity-table> -->
       <app-result-summary></app-result-summary>
     </div>
     <div class="row button-row">
-      <!-- <app-simple-data-button (fileUpload$)="uploadHandler($event)"
-                              (tableUserActionObs$)="actionHandler($event)"
-                              [isUploadData]="true">
-      </app-simple-data-button> -->
+      <div class="row download-button">
+        <button class="row button-row" i18n mat-raised-button (click)="reset()">Select new data
+        </button>
+    </div>
     </div>
   </div>
   <div class="col-8">

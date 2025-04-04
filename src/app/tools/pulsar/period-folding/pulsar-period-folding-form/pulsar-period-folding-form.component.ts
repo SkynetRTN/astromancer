@@ -23,10 +23,25 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
     = new BehaviorSubject<number>(this.service.getPeriodFoldingPhase());
   calSubject: BehaviorSubject<number>
     = new BehaviorSubject<number>(this.service.getPeriodFoldingCal());
-  periodMin: number = this.service.getPeriodogramStartPeriod();
-  periodMax: number = this.service.getJdRange();
-  periodStep: number = this.getPeriodStep();
+  speedSubject: BehaviorSubject<number>
+    = new BehaviorSubject<number>(this.service.getPeriodFoldingSpeed());
+
+  calFile: boolean = true;
+  periodMin: number = this.service.getJdRange();
+  periodMax: number = 200;
+  periodStep: number = 0.1;
+  showSlider = true;
   private destroy$: Subject<void> = new Subject<void>();
+
+  ngOnInit(): void {
+    this.service.lightCurveOptionValid$.subscribe(value => {
+      this.calFile = value;
+    
+      setTimeout(() => {
+        this.periodSubject.next(this.service.getPeriodFoldingPeriod());
+      });
+    });    
+  }   
 
   constructor(private service: PulsarService,
               private honorCodeService: HonorCodePopupService,
@@ -40,6 +55,7 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
       period: new FormControl(this.periodMin),
       phase: new FormControl(0),
       cal: new FormControl(1),
+      speed: new FormControl(1)
     });
     this.formGroup.controls['chartTitle'].valueChanges.pipe(
       debounceTime(200),
@@ -61,6 +77,16 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
     ).subscribe((label: string) => {
       this.service.setPeriodFoldingYAxisLabel(label);
     });
+    this.formGroup.controls['cal'].valueChanges.pipe(
+      debounceTime(200),
+    ).subscribe((label: number) => {  
+      this.service.setPeriodFoldingCal(label);
+    });
+    this.formGroup.controls['speed'].valueChanges.pipe(
+      debounceTime(200),
+    ).subscribe((label: number) => {
+      this.service.setPeriodFoldingSpeed(label);
+    });
     this.formGroup.controls['displayPeriod'].valueChanges.pipe(
       debounceTime(200),
     ).subscribe((period: PulsarDisplayPeriod) => {
@@ -74,11 +100,13 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
       this.formGroup.controls['dataLabel'].setValue(this.service.getPeriodFoldingDataLabel(), {emitEvent: false});
       this.formGroup.controls['xAxisLabel'].setValue(this.service.getPeriodFoldingXAxisLabel(), {emitEvent: false});
       this.formGroup.controls['yAxisLabel'].setValue(this.service.getPeriodFoldingYAxisLabel(), {emitEvent: false});
+      this.formGroup.controls['cal'].setValue(this.service.getPeriodFoldingCal(), {emitEvent: false});
+      this.formGroup.controls['speed'].setValue(this.service.getPeriodFoldingSpeed(), {emitEvent: false});
       this.formGroup.controls['displayPeriod'].setValue(this.service.getPeriodFoldingDisplayPeriod(), {emitEvent: false});
       if (source !== UpdateSource.INTERFACE) {
         this.periodSubject.next(this.service.getPeriodFoldingPeriod());
         this.phaseSubject.next(this.service.getPeriodFoldingPhase());
-        this.phaseSubject.next(this.service.getPeriodFoldingCal());
+        this.calSubject.next(this.service.getPeriodFoldingCal());
       }
     });
     this.service.periodogramForm$.pipe(
@@ -90,12 +118,15 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
       takeUntil(this.destroy$),
     ).subscribe(() => {
       this.periodMin = this.service.getPeriodogramStartPeriod();
-      this.periodMax = this.service.getJdRange();
+      if (this.calFile == true) {
+        this.periodMax = this.service.getJdRange();
+      } else {
+        this.periodMax = this.service.getPeriodFoldingPeriod();
+      }
       this.periodStep = this.getPeriodStep();
     });
   }
-
-
+  
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
@@ -107,20 +138,45 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
     })
   }
 
+  resetSliderWithValue(newValue: number) {
+    this.showSlider = false; // destroy the component
+    setTimeout(() => {
+      this.periodSubject = new BehaviorSubject<number>(newValue); // or .next(...) if subject stays the same
+      this.showSlider = true; // recreate the component
+    });
+  }  
+
   resetForm() {
     this.service.resetPeriodFoldingForm();
+  }
+
+  resetPulsar() {
+    window.location.reload();
   }
 
   sonification() {
     this.periodSubject.subscribe(value => {
       let period = value;
-      const data = this.service.getPeriodFoldingChartData();
 
-      let binnedData = this.service.binData(data['data'], 100);
-      const xValues = binnedData.map(point => point[0]);
-      const yValues = binnedData.map(point => point[1]);
+      if (this.calFile) {
+        const data = this.service.getPeriodFoldingChartData();
+        let binnedData = this.service.binData(data['data'], 100);
+        const xValues = binnedData.map(point => point[0]);
+        const yValues = binnedData.map(point => point[1]);
+
+        let binnedData2 = this.service.binData(data['data2'], 100);
+        const yValues2 = binnedData2.map(point => point[1]);
+        
+        this.service.sonification(xValues, yValues, yValues2, this.service.getPeriodFoldingPeriod()); 
+      } else {
+        const rawData = this.service.getData()
+        .filter(item => item.jd !== null && item.source1 !== null);
       
-      this.service.sonification(xValues, yValues, this.service.getPeriodFoldingPeriod()); 
+        const xValues = rawData.map(item => Number(item.jd));
+        const yValues = rawData.map(item => Number(item.source1));
+        
+        this.service.sonification(xValues, yValues, null, this.service.getPeriodFoldingPeriod());
+      }
     });
   }
 
@@ -131,35 +187,50 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
   sonificationBrowser() {
     this.periodSubject.subscribe(value => {
       let period = value;
-      const data = this.service.getPeriodFoldingChartData();
 
-      let binnedData = this.service.binData(data['data'], 100);
-      const xValues = binnedData.map(point => point[0]);
-      const yValues = binnedData.map(point => point[1]);
+      if (this.calFile) {
+        const data = this.service.getPeriodFoldingChartData();
+        let binnedData = this.service.binData(data['data'], 100);
+        const xValues = binnedData.map(point => point[0]);
+        const yValues = binnedData.map(point => point[1]);
+
+        let binnedData2 = this.service.binData(data['data2'], 100);
+        const yValues2 = binnedData2.map(point => point[1]);
+        
+        this.service.sonificationBrowser(xValues, yValues, yValues2, this.service.getPeriodFoldingPeriod()); 
+      } else {
+        const rawData = this.service.getData()
+        .filter(item => item.jd !== null && item.source1 !== null);
       
-      this.service.sonificationBrowser(xValues, yValues, this.service.getPeriodFoldingPeriod()); 
+        const xValues = rawData.map(item => Number(item.jd));
+        const yValues = rawData.map(item => Number(item.source1));
+        
+        this.service.sonificationBrowser(xValues, yValues, null, this.service.getPeriodFoldingPeriod());
+      }
     });
   }
 
   onChange($event: InputSliderValue) {
     if ($event.key === 'period') {
-      this.service.setPeriodFoldingPeriod($event.value);
+      if (this.calFile) {
+        this.service.setPeriodFoldingPeriod($event.value);
+      };
       this.periodStep = this.getPeriodStep();
     } else if ($event.key === 'phase') {
       this.service.setPeriodFoldingPhase($event.value);
     } else if ($event.key === 'calibration') {
       this.service.setPeriodFoldingCal($event.value);
+    } else if ($event.key === 'speed') {
+      this.service.setPeriodFoldingSpeed($event.value);
     }
   }
 
   getPeriodStep() {
     const someVal = Math.pow(this.service.getPeriodFoldingPeriod(), 2) * 0.01 / this.service.getJdRange();
     if (someVal > 10e-6) {
-      // step = round((periodFoldingForm.period_num.value/range)*0.01, 4)
       return parseFloat(someVal.toFixed(4));
     } else {
       return 10e-6;
     }
   }
-
 }

@@ -204,11 +204,9 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
             .filter((entry) => entry[0] !== null) 
             .sort((a, b) => a[0]! - b[0]!);
     
-        console.log('oriih', data);
         const minJD = data[0][0]!;
         const period = Number(this.getPeriodFoldingPeriod());
         const phase = this.getPeriodFoldingPhase();
-        console.log(period);
 
         // Initialize arrays for two series
         let pfData1: number[][] = []; // For source1
@@ -244,7 +242,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
    
         pfData1.sort((a, b) => b[0] - a[0]);
         pfData2.sort((a, b) => b[0] - a[0]);
-        console.log('new', pfData1);
+
         return pfData2.length > 0
             ? { data: pfData1, data2: pfData2 }
             : { data: pfData1 };

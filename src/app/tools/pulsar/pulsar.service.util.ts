@@ -380,7 +380,7 @@ export class PulsarPeriodogram implements PulsarPeriodogramInterface {
       dataLabel: PulsarPeriodogram.defaultHash,
       points: 1000,
       method: false,
-      startPeriod: 0.1,
+      startPeriod: 1,
       endPeriod: 10,
     }
   }
@@ -485,6 +485,7 @@ export interface PulsarPeriodFoldingStorageObject {
   period: number;
   phase: number;
   cal: number;
+  speed: number;
   title: string;
   xAxisLabel: string;
   yAxisLabel: string;
@@ -531,6 +532,7 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
   private period: number;
   private phase: number;
   private cal: number;
+  private speed: number;
   private title: string;
   private xAxisLabel: string;
   private yAxisLabel: string;
@@ -541,6 +543,7 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
     this.period = PulsarPeriodFolding.getDefaultStorageObject().period;
     this.phase = PulsarPeriodFolding.getDefaultStorageObject().phase;
     this.cal = PulsarPeriodFolding.getDefaultStorageObject().cal;
+    this.speed = PulsarPeriodFolding.getDefaultStorageObject().speed;
     this.title = PulsarPeriodFolding.getDefaultStorageObject().title;
     this.xAxisLabel = PulsarPeriodFolding.getDefaultStorageObject().xAxisLabel;
     this.yAxisLabel = PulsarPeriodFolding.getDefaultStorageObject().yAxisLabel;
@@ -553,6 +556,7 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
       period: -1,
       phase: 0,
       cal: 1,
+      speed: 1,
       title: "Title",
       xAxisLabel: "x",
       yAxisLabel: "y",
@@ -578,6 +582,10 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
 
   getPeriodFoldingCal(): number {
     return this.cal;
+  }
+
+  getPeriodFoldingSpeed(): number {
+    return this.speed;
   }
 
   getPeriodFoldingTitle(): string {
@@ -612,6 +620,10 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
     this.cal = cal;
   }
 
+  setPeriodFoldingSpeed(speed: number): void {
+    this.speed = speed;
+  }
+
   setPeriodFoldingTitle(title: string): void {
     this.title = title;
   }
@@ -630,6 +642,7 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
       period: this.period,
       phase: this.phase,
       cal: this.cal,
+      speed: this.speed,
       title: this.title,
       xAxisLabel: this.xAxisLabel,
       yAxisLabel: this.yAxisLabel,

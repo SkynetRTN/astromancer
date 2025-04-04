@@ -1,1 +1,4 @@
 <app-cluster-stepper></app-cluster-stepper>
+<div class="loading-block" [hidden]="!(service.loading$ | async)">
+    <mat-spinner class="wait-spinner" [diameter]="128"></mat-spinner>
+</div>

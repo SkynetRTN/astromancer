@@ -97,6 +97,7 @@ export class PmChartComponent implements AfterViewInit {
 
     chartInitialized($event: Highcharts.Chart) {
         this.chartObject = $event;
+        this.service.setFsrCharts(this.chartObject, 0);
     }
 
     private updateData() {

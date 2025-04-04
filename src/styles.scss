@@ -134,6 +134,10 @@ $dark-theme: mat.define-dark-theme($dark-primary, $dark-accent, $dark-warn);
     background-color: map-get($dark-primary, darker);
   }
 
+  .p {
+    color: map-get($dark-primary, 700);
+  }
+
   //Handsontable Dark Theme
 
   --background: #000;
@@ -394,7 +398,7 @@ $dark-hc-theme: map_merge(
     background-color: map-get($dark-hc-primary, darker) !important;
   }
 
-  p {
+  .p {
     color: mat.get-color-from-palette(mat.$yellow-palette, 500);
   }
 

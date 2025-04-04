@@ -332,7 +332,7 @@ export class ClusterDataService {
         return this.galacticLatitude;
     }
 
-    public downloadSources() {
+    public downloadSources(studentName: string) {
         // Creating a Blob for having a csv file format
         // and passing the data with type
         const csvColumns = ['id', 'ra', 'dec', 'distance', 'pm_ra', 'pm_dec'];
@@ -358,7 +358,7 @@ export class ClusterDataService {
             }
             csvData.push(row);
         }
-        downloadCsv(csvColumns, csvData, `cluster_sources_${getDateString()}`);
+        downloadCsv(csvColumns, csvData, `${studentName}_cluster_sources_${getDateString()}`);
     }
 
     private setCluster(cluster: ClusterMWSC) {

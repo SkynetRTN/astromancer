@@ -752,6 +752,7 @@ backgroundSubtraction(frequency: number[], flux: number[], dt: number): number[]
             return;
         }
 
+        const originalPeriod = period;
         if (yValues2) {
             const cal = this.getPeriodFoldingCal();
             yValues = yValues.map((y, i) => y + cal * yValues2[i]);
@@ -832,7 +833,7 @@ backgroundSubtraction(frequency: number[], flux: number[], dt: number): number[]
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'sonification.wav';
+        a.download = String(originalPeriod) + 's_pulsar_sonification.wav';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);

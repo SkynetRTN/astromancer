@@ -78,13 +78,12 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
 
   setData() {
     const data = this.service.getPeriodFoldingChartData();
-    const bins = 100; // Number of bins
-  
-    // Bin and process primary series (pfData1)
-    const binnedData1 = this.binData(data['data'], bins);
+    const bins = 100; 
+
+    const binnedData1 = this.service.binData(data['data'], bins);
     
     this.chartObject.addSeries({
-      name: 'Source 1', // Label for first series
+      name: 'Source 1', 
       data: binnedData1,
       type: 'line',
       marker: {
@@ -93,17 +92,18 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
       }
     });
   
-    // Process and bin secondary series (pfData2) if it exists
-    if (data['data2']) {
+    const sum = data['data2'].reduce((total, pair) => total + pair[1], 0);
+    if (sum != 0) {
       const calibration = this.service.getPeriodFoldingCal();
       const adjustedData2 = data['data2'].map(point => [point[0], point[1] * calibration]);
   
-      const binnedData2 = this.binData(adjustedData2, bins);
+      const binnedData2 = this.service.binData(adjustedData2, bins);
   
       this.chartObject.addSeries({
-        name: 'Source 2', // Label for second series
-        data: binnedData2, // Use binned data
+        name: 'Source 2', 
+        data: binnedData2,
         type: 'line',
+        color: 'purple',
         marker: {
           symbol: 'circle',
           radius: 2,
@@ -113,26 +113,40 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
   }  
   
 
-  updateData() {
+  updateData() {  
     const data = this.service.getPeriodFoldingChartData();
-    const bins = 100; // Number of bins
-  
-    // Update the first series (pfData1) with binned data
-    const binnedData1 = this.binData(data['data'], bins);
-    this.chartObject.series[0].setData(binnedData1);
-  
-    // Handle the second series (pfData2)
+    const displayPeriod = Number(this.service.getPeriodFoldingDisplayPeriod());
+    const period = Number(this.service.getPeriodFoldingPeriod());
+    const phase = Number(this.service.getPeriodFoldingPhase());
+    
     if (data['data2']) {
+      const bins = 100; 
+  
+      const binnedData1 = this.service.binData(data['data'], bins);
+
+      const phaseRolledData1 = binnedData1.map(([x, y]) => {
+        const shifted = x + (phase * period);
+        const rolled = shifted >= period * displayPeriod? shifted - period * displayPeriod : shifted;
+        return [rolled, y];
+      });
+      
+      this.chartObject.series[0].setData(phaseRolledData1);
+
       const calibration = this.service.getPeriodFoldingCal();
       const adjustedData2 = data['data2'].map(point => [point[0], point[1] * calibration]);
-  
-      const binnedData2 = this.binData(adjustedData2, bins);
+
+      const binnedData2 = this.service.binData(adjustedData2, bins);
+      const phaseRolledData2 = binnedData2.map(([x, y]) => {
+        const shifted = x + (phase * period);
+        const rolled = shifted > period * displayPeriod ? shifted - period * displayPeriod : shifted;
+        return [rolled, y];
+      });
+      
   
       if (this.chartObject.series.length < 2) {
-        // Add the second series if not already present
         this.chartObject.addSeries({
           name: 'Source 2',
-          data: binnedData2, // Use binned data
+          data: phaseRolledData2,
           type: 'line',
           marker: {
             symbol: 'circle',
@@ -140,12 +154,37 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
           }
         });
       } else {
-        // Update the existing second series
-        this.chartObject.series[1].setData(binnedData2);
+        this.chartObject.series[1].setData(phaseRolledData2);
       }
     } else if (this.chartObject.series.length > 1) {
-      // Remove the second series if it exists but no data is available
       this.chartObject.series[1].remove();
+    }
+
+    const sum = data['data2'].reduce((sum, item) => sum + item[1], 0) === 0;
+    
+    if (sum) {
+      const initialData = this.service.getData()
+      .filter(item => item.jd !== null && item.source1 !== null)
+      .map(item => ({ frequency: item.jd!, channel1: item.source1!, channel2: item.source2!}));
+
+      const chartData = initialData.map(item => {
+        const rawX = (item.frequency / initialData.length) * period + (period * phase);
+        const wrappedX = ((rawX % period) + period) % period;
+        return [wrappedX, item.channel1];
+      });
+
+      if (displayPeriod == 2) {
+        const secondCycle = chartData.map(([x, y]) => [x + period, y]);
+        const finalChartData = [...chartData, ...secondCycle];
+
+        this.chartObject.series[0].setData(finalChartData, true);
+      } else {
+        this.chartObject.series[0].setData(chartData, true);
+      }
+
+      if (this.chartObject.series.length > 1) { 
+        this.chartObject.series[1].remove();
+      }
     }
   }  
   
@@ -185,44 +224,6 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
 
     this.chartObject.xAxis[0].setExtremes(0, parseFloat(p.toString()));
   }
-
-  private binData(data: number[][], bins: number): number[][] {
-    if (data.length === 0) return [];
-  
-    // Retrieve the phase value
-    const phase = this.service.getPeriodFoldingPhase();
-    const period = this.service.getPeriodFoldingPeriod();
-
-    // Calculate bin size
-    const xMin = Math.min(...data.map(point => point[0]));
-    const xMax = Math.max(...data.map(point => point[0]));
-    const binSize = (xMax - xMin) / bins;
-  
-    // Initialize bins
-    const binnedData: { x: number; ySum: number; count: number }[] = Array(bins)
-      .fill(0)
-      .map((_, index) => ({
-        // Shift bin center by phase
-        x: xMin + index * binSize + binSize / 2,
-        ySum: 0,
-        count: 0,
-      }));
-  
-    // Populate bins
-    data.forEach(([x, y]) => {
-      const binIndex = Math.floor((x - xMin) / binSize);
-      if (binIndex >= 0 && binIndex < bins) {
-        binnedData[binIndex].ySum += y;
-        binnedData[binIndex].count += 1;
-      }
-    });
-  
-    // Compute averages
-    return binnedData
-      .filter(bin => bin.count > 0) // Ignore empty bins
-      .map(bin => [bin.x, bin.ySum / bin.count]);
-  }
-  
   
   private updateChart(): void {
     this.updateFlag = true;

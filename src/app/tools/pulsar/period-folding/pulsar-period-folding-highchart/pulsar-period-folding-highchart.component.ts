@@ -103,7 +103,6 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
         name: 'Source 2', 
         data: binnedData2,
         type: 'line',
-        color: 'purple',
         marker: {
           symbol: 'circle',
           radius: 2,
@@ -117,13 +116,13 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
     const data = this.service.getPeriodFoldingChartData();
     const displayPeriod = Number(this.service.getPeriodFoldingDisplayPeriod());
     const period = Number(this.service.getPeriodFoldingPeriod());
+    console.log(period);
     const phase = Number(this.service.getPeriodFoldingPhase());
     
     if (data['data2']) {
       const bins = 100; 
   
       const binnedData1 = this.service.binData(data['data'], bins);
-
       const phaseRolledData1 = binnedData1.map(([x, y]) => {
         const shifted = x + (phase * period);
         const rolled = shifted >= period * displayPeriod? shifted - period * displayPeriod : shifted;
@@ -142,27 +141,14 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
         return [rolled, y];
       });
       
-  
-      if (this.chartObject.series.length < 2) {
-        this.chartObject.addSeries({
-          name: 'Source 2',
-          data: phaseRolledData2,
-          type: 'line',
-          marker: {
-            symbol: 'circle',
-            radius: 2,
-          }
-        });
-      } else {
-        this.chartObject.series[1].setData(phaseRolledData2);
-      }
-    } else if (this.chartObject.series.length > 1) {
-      this.chartObject.series[1].remove();
+      this.chartObject.series[1].setData(phaseRolledData2);
     }
 
     const sum = data['data2'].reduce((sum, item) => sum + item[1], 0) === 0;
-    
     if (sum) {
+      if (this.chartObject.series.length > 1) {
+        this.chartObject.series[1].remove();
+      }
       const initialData = this.service.getData()
       .filter(item => item.jd !== null && item.source1 !== null)
       .map(item => ({ frequency: item.jd!, channel1: item.source1!, channel2: item.source2!}));

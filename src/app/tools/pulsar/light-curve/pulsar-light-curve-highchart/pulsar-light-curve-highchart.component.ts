@@ -36,6 +36,13 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
       enabled: true,
       shared: false,
     },
+    exporting: {
+      buttons: {
+        contextButton: {
+          enabled: false,
+        }
+      }
+    }
   };
   
   chartInitialized($event: Highcharts.Chart) {
@@ -76,7 +83,6 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
     this.pulsarService.data$.pipe(
       takeUntil(this.destroy$)
     ).subscribe((data) => {
-      console.log('Raw data:', data); // Debugging log
     
       // Filter out invalid data (null values)
       const filteredData = this.pulsarService.getData()
@@ -122,13 +128,11 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
   }
 
   private updateChartData(data: { frequency: number, channel1: number, channel2: number }[]): void {
-    console.log('Updating chart data:'); // Debugging log
     const chartData = data.map(item => [item.frequency, item.channel1]); // Main data
     const calData = data.map(item => [item.frequency, item.channel2]); // Calibration data
   
     // Check if series exists before updating or adding
     if (this.chartObject.series.length > 0) {
-      // Update first series for 'channel1'
       this.chartObject.series[0].setData(chartData, true);
   
       // If the second series exists, update it
@@ -154,7 +158,7 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
         name: this.dataLabel1, // First series name
         type: 'line',
         data: chartData,
-        lineWidth: .1, // Thin line
+        lineWidth: .1, 
         marker: {
           enabled: true,
           radius: 2,
@@ -166,7 +170,7 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
         name: this.dataLabel2, // Second series name
         type: 'line',
         data: calData,
-        lineWidth: .1, // Thin line
+        lineWidth: .1, 
         marker: {
           enabled: true,
           radius: 2,
@@ -175,8 +179,6 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
       });
     }
   }
-
-
 
   
   updateSources() {

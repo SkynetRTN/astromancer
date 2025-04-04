@@ -16,10 +16,10 @@ export class PulsarComponent implements OnDestroy {
      this.service.lightCurveOptionValid$.pipe(
        takeUntil(this.destroy$)
      ).subscribe((lightCurveFormValid) => {
-      console.log("tab index changed", lightCurveFormValid);
       this.lightCurveFormValid = lightCurveFormValid;
-      if (!this.lightCurveFormValid){ this.pulsarTabindex = 2;}
-      
+      if (!this.lightCurveFormValid){ 
+        this.pulsarTabindex = 2;
+      }
      });
   }
 

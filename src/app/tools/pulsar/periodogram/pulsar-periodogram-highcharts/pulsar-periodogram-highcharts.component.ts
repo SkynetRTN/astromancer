@@ -103,8 +103,7 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
     // Iterate through each series, updating or adding if necessary
     let seriesIndex = 0; // Tracks the current series index
     Object.entries(periodogramData).forEach(([key, data]) => {
-      // Update the primary series
-      console.log(key)
+
       if (this.chartObject.series.length > seriesIndex) {
         this.chartObject.series[seriesIndex].update({
           name: `Channel ${seriesIndex + 1}`,

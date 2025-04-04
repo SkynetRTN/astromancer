@@ -32,6 +32,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
     private pulsarChartInfo: PulsarChartInfo = new PulsarChartInfo();
     private pulsarPeriodogram: PulsarPeriodogram = new PulsarPeriodogram();
     private pulsarPeriodFolding: PulsarPeriodFolding = new PulsarPeriodFolding();
+
     isPlaying = false;
     private audioCtx: AudioContext | null = null;
     private audioSource: AudioBufferSourceNode | null = null;
@@ -63,7 +64,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
     private highChartPeriodogram!: Highcharts.Chart;
     private highChartPeriodFolding!: Highcharts.Chart;
     private tabIndex: number;
-    private LightCurveOptionValid: boolean = true;
+    LightCurveOptionValid: boolean = true;
 
     constructor() {
         this.pulsarData.setData(this.pulsarStorage.getData());
@@ -85,7 +86,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
     private combinedDataSubject = new BehaviorSubject<any[]>([]);
     combinedData$ = this.combinedDataSubject.asObservable();
     
-    private LightCurveOptionValidSubject = new BehaviorSubject<boolean>(true);
+    LightCurveOptionValidSubject = new BehaviorSubject<boolean>(true);
     lightCurveOptionValid$ = this.LightCurveOptionValidSubject.asObservable();
 
     // ChartInfo Methods
@@ -106,6 +107,10 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
     getPeriodFoldingCal(): number {
         return this.pulsarPeriodFolding.getPeriodFoldingCal();
+    }
+
+    getPeriodFoldingSpeed(): number {
+        return this.pulsarPeriodFolding.getPeriodFoldingSpeed();
     }
 
     getPeriodFoldingTitle(): string {
@@ -155,6 +160,13 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         this.periodFoldingDataSubject.next(this.pulsarData);
     }
 
+    setPeriodFoldingSpeed(speed: number): void {
+        this.pulsarPeriodFolding.setPeriodFoldingSpeed(speed);
+        this.pulsarStorage.savePeriodFolding(this.pulsarPeriodFolding.getPeriodFoldingStorageObject());
+        this.periodFoldingFormSubject.next(UpdateSource.INTERFACE);
+        this.periodFoldingDataSubject.next(this.pulsarData);
+    }
+
     setPeriodFoldingTitle(title: string): void {
         this.pulsarPeriodFolding.setPeriodFoldingTitle(title);
         this.pulsarStorage.savePeriodFolding(this.pulsarPeriodFolding.getPeriodFoldingStorageObject());
@@ -178,7 +190,6 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         this.pulsarStorage.savePeriodFolding(this.pulsarPeriodFolding.getPeriodFoldingStorageObject());
         this.periodFoldingFormSubject.next(UpdateSource.INTERFACE);
         this.periodFoldingDataSubject.next(this.pulsarData);
-
     }
 
     resetPeriodFoldingForm(): void {
@@ -189,18 +200,16 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
     }
 
     getPeriodFoldingChartData(): { [key: string]: number[][] } {
-        console.log('Checking my data', this.getChartPulsarDataArray());
-    
-        // Get and filter valid data
         const data = this.getChartPulsarDataArray()
-            .filter((entry) => entry[0] !== null) // Ensure JD is not null
-            .sort((a, b) => a[0]! - b[0]!); // Sort by JD
+            .filter((entry) => entry[0] !== null) 
+            .sort((a, b) => a[0]! - b[0]!);
     
-        // Extract period and phase
+        console.log('oriih', data);
         const minJD = data[0][0]!;
-        const period = this.getPeriodFoldingPeriod();
+        const period = Number(this.getPeriodFoldingPeriod());
         const phase = this.getPeriodFoldingPhase();
-    
+        console.log(period);
+
         // Initialize arrays for two series
         let pfData1: number[][] = []; // For source1
         let pfData2: number[][] = []; // For source2 (optional)
@@ -208,20 +217,17 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         if (period !== 0 && period !== null) {
             for (let i = 0; i < data.length; i++) {
                 // Calculate x-axis (phase folded JD)
-                let temp_x = phase * period + floatMod((data[i][0]! - minJD), period);
+                let temp_x = period + floatMod((data[i][0]! - minJD), period);
                 if (temp_x > period) {
                     temp_x -= period;
                 }
     
-                // Push data for series 1
                 pfData1.push([temp_x, data[i][1]!]);
     
-                // Conditionally push data for series 2 if it is not null
                 if (data[i][2] !== null) {
                     pfData2.push([temp_x, data[i][2]!]);
                 }
     
-                // Handle double period display
                 if (this.getPeriodFoldingDisplayPeriod() === PulsarDisplayPeriod.TWO) {
                     let new_x = temp_x + parseFloat(period as any);
     
@@ -235,20 +241,15 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
                 }
             }
         }
-    
-        // Sort data
+   
         pfData1.sort((a, b) => b[0] - a[0]);
         pfData2.sort((a, b) => b[0] - a[0]);
-    
-        // Return two datasets, only including 'data2' if it has values
-        console.log('pfData1', pfData1);
+        console.log('new', pfData1);
         return pfData2.length > 0
             ? { data: pfData1, data2: pfData2 }
             : { data: pfData1 };
-                }
+    }
     
-    
-
 
     /** Periodogram Interface */
 
@@ -368,7 +369,6 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         return parseFloat((Math.max(...jdArray) - Math.min(...jdArray)).toFixed(4));
     }
 
-
     getLabels(isHz: boolean): { startPeriodLabel: string, endPeriodLabel: string } {
         let startPeriodLabel: string;
         let endPeriodLabel: string;
@@ -381,6 +381,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
             endPeriodLabel = 'End Period (Hz)';
             this.setPeriodogramEndPeriod(1 / currentStart);
             this.setPeriodogramStartPeriod(1 / currentEnd);
+            this.setPeriodogramMethod(false);
         } else {
             startPeriodLabel = 'Start Period (sec)';
             endPeriodLabel = 'End Period (sec)';
@@ -490,7 +491,6 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         this.pulsarInterface.setLightCurveOptionValid(valid);
         this.LightCurveOptionValidSubject.next(valid);
         this.LightCurveOptionValid = valid;
-        console.log("light curve was set in pulsar.service", this.LightCurveOptionValid);
     }
 
     setPulsarStar(pulsarStar: PulsarStarOptions): void {
@@ -526,21 +526,10 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
     }
 
     getChartPulsarDataArray(): (number | null)[][] {
-        //if (this.getPulsarStar() === PulsarStarOptions.NONE) {
-          //  return [];
-        //} 
-        if (this.getPulsarStar() === PulsarStarOptions.SOURCE1) {
-            return this.getData().filter((row: PulsarDataDict) =>
-                row.jd !== null && row.source1 !== null && row.source2 !== null)
-                .map((row: PulsarDataDict) => [row.jd, row.source1!, row.source2!])
-        } else {
-            return this.getData().filter((row: PulsarDataDict) =>
-                row.jd !== null && row.source1 !== null && row.source2 !== null)
-                .map((row: PulsarDataDict) => [row.jd, row.source2!, row.source1!])
-        }
+        return this.getData().filter((row: PulsarDataDict) =>
+            row.jd !== null && row.source1 !== null && row.source2 !== null)
+            .map((row: PulsarDataDict) => [row.jd, row.source1!, row.source2!] as [number,number,number])
     }
-
-    /** MyData implementation */
 
     addRow(index: number, amount: number): void {
         this.pulsarData.addRow(index, amount);
@@ -579,7 +568,6 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
     getChartPeriodogramDataArray(start: number, end: number): { data1: number[][], data2?: number[][]} {
         const pulsarData = this.getChartPulsarDataArray();
-        console.log('Pulsar periodgram data:', pulsarData);
     
         // Filter valid data for the first two columns
         const validData = this.getData().filter((row: PulsarDataDict) => 
@@ -689,13 +677,11 @@ backgroundSubtraction(frequency: number[], flux: number[], dt: number): number[]
       }
     
       getCombinedData(): any[] {
-    if (this.combinedDataSubject.value == null) {
-        
-        console.log("combinedDataSubject is null", this.combinedDataSubject.value);
+        if (this.combinedDataSubject.value == null) {
+
         return this.getData();
       } else {
         
-        console.log("combinedDataSubject is not null", this.getData());
         return this.combinedDataSubject.value;
       }
     }
@@ -726,6 +712,10 @@ backgroundSubtraction(frequency: number[], flux: number[], dt: number): number[]
 
     binData(data: number[][], bins: number): number[][] {
         if (data.length === 0) return [];
+      
+        // Retrieve the phase value
+        const phase = this.getPeriodFoldingPhase();
+        const period = this.getPeriodFoldingPeriod();
     
         // Calculate bin size
         const xMin = Math.min(...data.map(point => point[0]));
@@ -757,27 +747,43 @@ backgroundSubtraction(frequency: number[], flux: number[], dt: number): number[]
           .map(bin => [bin.x, bin.ySum / bin.count]);
     }
 
-    sonification(xValues: number[], yValues: number[], period: number, lengthInSeconds: number = 60) {
+
+    sonification(xValues: number[], yValues: number[], yValues2: number[] | null, period: number) {
         if (yValues.length === 0) {
             console.error("No data to sonify.");
             return;
         }
-    
-        const sampleRate = 44100; 
-        const interpolationFactor = 4;
-    
-        const numRepeats = Math.ceil(lengthInSeconds / period);
-        let repeatedYValues: number[] = [];
-        for (let i = 0; i < numRepeats; i++) {
-            repeatedYValues = repeatedYValues.concat(yValues);
+
+        if (yValues2) {
+            const cal = this.getPeriodFoldingCal();
+            yValues = yValues.map((y, i) => y + cal * yValues2[i]);
+            period = period * (1 / this.getPeriodFoldingSpeed()) * Number(this.getPeriodFoldingDisplayPeriod());
+        } else {
+            period = period * (1 / this.getPeriodFoldingSpeed());
         }
     
+        let lengthInSeconds = 60;
+        const sampleRate = 88200; 
+        const interpolationFactor = 4;
+        const displayPeriod = this.getPeriodFoldingDisplayPeriod();
+
+        let numRepeats = Math.ceil((lengthInSeconds / period) * Number(displayPeriod)) + 5;
+        
+        if (numRepeats * yValues.length > 500) {
+            numRepeats = 500;
+        }; 
+        
+        let repeatedYValues: number[] = [];
+        for (let i = 0; i < numRepeats; i++) {
+          repeatedYValues = repeatedYValues.concat(yValues);
+        }
+      
         const interpolatedY = this.interpolateLinear(repeatedYValues, interpolationFactor);
         const numPoints = interpolatedY.length;
-    
-        const durationPerPoint = (numRepeats * period) / numPoints;
-        const totalSamples = Math.floor(sampleRate * lengthInSeconds);
+      
+        const durationPerPoint = ((numRepeats * period) / numPoints);
         const samplesPerPoint = Math.floor(sampleRate * durationPerPoint);
+        const totalSamples = Math.floor(sampleRate * lengthInSeconds);
     
         const minY = Math.min(...interpolatedY);
         const maxY = Math.max(...interpolatedY);
@@ -836,14 +842,13 @@ backgroundSubtraction(frequency: number[], flux: number[], dt: number): number[]
     }
     
 
-    sonificationBrowser(xValues: number[], yValues: number[], period: number, lengthInSeconds: number = 60) {
+    sonificationBrowser(xValues: number[], yValues: number[], yValues2: number[] | null, period: number) {
         if (this.isPlaying) {
           this.audioSource?.stop();
           this.audioCtx?.close();
           this.audioCtx = null;
           this.audioSource = null;
           this.isPlaying = false;
-          console.log("Playback stopped.");
           return;
         }
       
@@ -851,11 +856,27 @@ backgroundSubtraction(frequency: number[], flux: number[], dt: number): number[]
           console.error("No data to sonify.");
           return;
         }
-      
-        const sampleRate = 44100;
+
+        if (yValues2) {
+            const cal = this.getPeriodFoldingCal();
+            yValues = yValues.map((y, i) => y + cal * yValues2[i]);
+            period = period * (1 / this.getPeriodFoldingSpeed()) * Number(this.getPeriodFoldingDisplayPeriod());
+        } else {
+            period = period * (1 / this.getPeriodFoldingSpeed());
+        }
+
+        let lengthInSeconds = 60;
+        const sampleRate = 88200;
         const interpolationFactor = 4;
-      
-        const numRepeats = Math.ceil(lengthInSeconds / period);
+        const displayPeriod = this.getPeriodFoldingDisplayPeriod();
+
+        let numRepeats = Math.ceil((lengthInSeconds / period) * Number(displayPeriod));
+
+        console.log((numRepeats / Number(displayPeriod)) * period);
+        if (numRepeats * yValues.length > 500) {
+            numRepeats = 500;
+        }; 
+
         let repeatedYValues: number[] = [];
         for (let i = 0; i < numRepeats; i++) {
           repeatedYValues = repeatedYValues.concat(yValues);
@@ -864,8 +885,8 @@ backgroundSubtraction(frequency: number[], flux: number[], dt: number): number[]
         const interpolatedY = this.interpolateLinear(repeatedYValues, interpolationFactor);
         const numPoints = interpolatedY.length;
       
-        const durationPerPoint = (numRepeats * period) / numPoints;
-        const samplesPerPoint = Math.floor(sampleRate * durationPerPoint);
+        const durationPerPoint = ((numRepeats * period) / numPoints);
+        const samplesPerPoint = Math.max(1, Math.floor(sampleRate * durationPerPoint));
         const totalSamples = Math.floor(sampleRate * lengthInSeconds);
       
         const minY = Math.min(...interpolatedY);
@@ -896,11 +917,9 @@ backgroundSubtraction(frequency: number[], flux: number[], dt: number): number[]
           this.audioCtx?.close();
           this.audioCtx = null;
           this.audioSource = null;
-          console.log("Playback finished.");
         };
       
         this.isPlaying = true;
-        console.log("Playback started.");
     }      
       
        

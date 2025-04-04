@@ -40,15 +40,11 @@ return; }
     onBackScaleChange(value: number): void {
 
     let chartData = this.pulsarService.getCombinedData();
-    
-   // console.log("rawdata1", chartData);
   
     // Extract data for processing
     const jd = chartData.map(item => item.jd ?? 0);
     const source1 = chartData.map(item => item.source1 ?? 0);
     const source2 = chartData.map(item => item.source2 ?? 0);
-  
-    //console.log("rawdata1", source1);
   
     // Apply background subtraction based on the provided backScale
     const subtractedSource1 = this.pulsarService.backgroundSubtraction(jd, source1, value);
@@ -61,31 +57,7 @@ return; }
       source2: subtractedSource2[index],
     }));
     
-    console.log(value, "new data", chartData);
     // Set updated data back to the service
     this.pulsarService.setData(chartData);
     }
-    /*
-    let currentData = this.pulsarService.getData();
-    console.log("currentData", currentData);
-    let channel1 = this.pulsarService.backgroundSubtraction(
-      currentData.map(dataPoint => dataPoint.frequency).filter((freq): freq is number => freq !== null),
-      currentData.map(dataPoint => dataPoint.channel1).filter((channel): channel is number => channel !== null),
-      this.pulsarService.getbackScale()
-    );
-    let channel2 = this.pulsarService.backgroundSubtraction(
-      currentData.map(dataPoint => dataPoint.frequency).filter((freq): freq is number => freq !== null),
-      currentData.map(dataPoint => dataPoint.channel2).filter((channel): channel is number => channel !== null),
-      this.pulsarService.getbackScale()
-    );
-
-    const combinedData = currentData.map((row, index) => ({
-      frequency: row.frequency as number,
-      channel1: channel1[index] as number,
-      channel2: channel2[index] as number,
-    }));
-
-    console.log("here it is", combinedData);
-    */
-    // this.pulsarService.updateData(combinedData);
   }

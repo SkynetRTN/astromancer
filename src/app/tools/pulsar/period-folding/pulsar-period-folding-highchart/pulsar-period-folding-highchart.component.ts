@@ -116,10 +116,10 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
     const data = this.service.getPeriodFoldingChartData();
     const displayPeriod = Number(this.service.getPeriodFoldingDisplayPeriod());
     const period = Number(this.service.getPeriodFoldingPeriod());
-    console.log(period);
     const phase = Number(this.service.getPeriodFoldingPhase());
     
-    if (data['data2']) {
+    const sum = data['data2'].reduce((sum, item) => sum + item[1], 0) === 0;
+    if (sum == false) {
       const bins = 100; 
   
       const binnedData1 = this.service.binData(data['data'], bins);
@@ -144,11 +144,11 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
       this.chartObject.series[1].setData(phaseRolledData2);
     }
 
-    const sum = data['data2'].reduce((sum, item) => sum + item[1], 0) === 0;
-    if (sum) {
+    if (sum == true) {
       if (this.chartObject.series.length > 1) {
         this.chartObject.series[1].remove();
       }
+
       const initialData = this.service.getData()
       .filter(item => item.jd !== null && item.source1 !== null)
       .map(item => ({ frequency: item.jd!, channel1: item.source1!, channel2: item.source2!}));
@@ -163,13 +163,16 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
         const secondCycle = chartData.map(([x, y]) => [x + period, y]);
         const finalChartData = [...chartData, ...secondCycle];
 
-        this.chartObject.series[0].setData(finalChartData, true);
+        this.chartObject.series[0].setData(finalChartData);
+        this.chartObject.series[0].update({
+          type: 'line', // Explicitly define type
+          marker: {
+            enabled: true, // Ensure points are visible
+            radius: 3
+          }
+        });
       } else {
-        this.chartObject.series[0].setData(chartData, true);
-      }
-
-      if (this.chartObject.series.length > 1) { 
-        this.chartObject.series[1].remove();
+        this.chartObject.series[0].setData(chartData);
       }
     }
   }  

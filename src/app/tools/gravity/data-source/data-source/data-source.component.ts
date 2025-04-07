@@ -5,9 +5,9 @@ import { GravityStorageService } from '../../storage/gravity-storage.service';
 import { GravityDataSourceService } from '../gravity-data-source-service';
 
 @Component({
-    selector: 'app-data-source',
+    selector: 'app-gravity-data-source',
     templateUrl: './data-source.component.html',
-    styleUrls: ['./data-source.component.scss', "../../../shared/interface/tools.scss"]
+    styleUrls: ['./data-source.component.scss', '../../../shared/interface/tools.scss']
 })
 export class DataSourceComponent {
 

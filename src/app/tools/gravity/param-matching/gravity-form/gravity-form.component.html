@@ -1,0 +1,38 @@
+<div [formGroup]="formGroup" class="container">
+  <my-input-slider
+    (value)="onChange($event)" [defaultValue]="16"
+    [label]="'Merger Time (sec)'" [maxValue]="20"
+    [minValue]="10" [range$]="range$" [name]="'mergerTime'"
+    [stepValue]="0.001" [value$]="mergerTimeSubject"
+    [inputPrecision]="3"
+  ></my-input-slider>
+  <my-input-slider
+    (value)="onChange($event)" [defaultValue]="50" [label]="'Total Mass (solar)'"
+    [maxValue]="250" [minValue]="2.5"
+    [name]="'totalMass'" [numOverride]="true"
+    [stepValue]="0.01" [value$]="totalMassSubject"
+  ></my-input-slider>
+  <my-input-slider
+    (value)="onChange($event)" [defaultValue]="1" [label]="'Mass Ratio'"
+    [maxValue]="10" [minValue]="1"
+    [name]="'massRatio'" [numOverride]="true"
+    [stepValue]="0.01" [value$]="massRatioSubject"
+  ></my-input-slider>
+  <my-input-slider
+    (value)="onChange($event)" [defaultValue]="0" [label]="'Phase Shift'"
+    [maxValue]="180" [minValue]="0" [name]="'phaseShift'"
+    [stepValue]="0.01" [value$]="phaseShiftSubject"
+  ></my-input-slider>
+  <my-input-slider
+  (value)="onChange($event)" [defaultValue]="300" [label]="'Distance (Mpc)'"
+  [maxValue]="10000" [minValue]="10"
+  [name]="'distance'" [numOverride]="true"
+  [stepValue]="0.01" [value$]="distanceSubject"
+  ></my-input-slider>
+  <my-input-slider
+    (value)="onChange($event)" [defaultValue]="0" [label]="'Inclination (°)'"
+    [maxValue]="90" [minValue]="0" [name]="'inclination'"
+    [stepValue]="0.01" [value$]="inclinationSubject"
+  ></my-input-slider>
+  <output name="Final Mass"></output>
+</div>

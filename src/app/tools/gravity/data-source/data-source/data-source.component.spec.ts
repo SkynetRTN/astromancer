@@ -13,6 +13,7 @@ describe('DataSourceComponent', () => {
       .compileComponents();
 
     fixture = TestBed.createComponent(DataSourceComponent);
+
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

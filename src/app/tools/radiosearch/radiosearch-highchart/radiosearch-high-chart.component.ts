@@ -50,8 +50,7 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
       type: 'logarithmic', // Log scale for y-axis
       title: {
         text: 'Flux Density (Jy)'
-      },
-      min: 0.1
+      }
     }
   };
 
@@ -106,13 +105,13 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
     let linkText = '';
     let hyperlink = '';
 
-    if (this.paramData && this.paramData[0] && this.paramData[0][1] && this.paramData[0][1] !== 0.1) {
-        linkText = this.paramData[0][1]; // The part of the title that should be clickable
-        hyperlink = 'https://vizier.cds.unistra.fr/viz-bin/VizieR-5?-ref=VIZ6684740f2d87a&-out.add=.&-source=VIII/1A/3c&recno=' + linkText; // Set your hyperlink URL
+    if (this.paramData) {
+        linkText = this.paramData[0][1] + ' ' + this.paramData[0][2]; 
+        hyperlink = `https://simbad.cds.unistra.fr/simbad/sim-id?Ident=${this.paramData[0][1] + this.paramData[0][2]}&NbIdent=1&Radius=2&Radius.unit=arcmin&submit=submit+id`; 
     }
 
     const clickablePart = linkText
-        ? ` <a href="${hyperlink}" target="_blank" style="text-decoration: underline; color: blue;">${linkText}</a>`
+        ? ` <a href="${hyperlink}" target="_blank" style="text-decoration: underline; color: teal;">${linkText}</a>`
         : '';
 
     this.chartOptions.title = {
@@ -155,7 +154,7 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
     }
 
     const frequencyFluxData = this.processData(this.service.getDataArray());
-    this.paramData = this.processData(this.service.getParamDataArray());
+    this.paramData = this.processParamData(this.service.getParamDataArray());
 
     // Separate data points for y (actual) and fit (line of best fit)
     const actualData = frequencyFluxData.map((point) => ({
@@ -198,25 +197,22 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
             fillColor: '#007bff'
         },
         lineWidth: 1,
-        animation: enableAnimation ? { duration: 2000, easing: 'easeOut' } : false // Disable animation if only 1 point
-    }, false); // No redraw yet
+        animation: enableAnimation ? { duration: 2000, easing: 'easeOut' } : false 
+    }, false);
 
     // Round the y values in fitData to 1 decimal place
     const roundedFitData = fitData.map(point => ({
       x: point.x,
-      y: parseFloat(point.y.toFixed(1)) // Round y to 1 decimal place
+      y: parseFloat(point.y.toFixed(1)) 
     }));
 
     // Add the fit data series (scatter for the fit)
     this.chartObject?.addSeries({
       name: "Fit",
-      type: 'scatter',
-      data: roundedFitData, // Use rounded data
+      type: 'line',
+      data: roundedFitData,
       marker: {
-          enabled: true,
-          symbol: 'triangle',
-          radius: 4,
-          fillColor: '#007bff'
+          enabled: false
       },
       lineWidth: 1,
       animation: enableAnimation ? { duration: 2000, easing: 'easeOut' } : false // Disable animation if only 1 point
@@ -238,8 +234,8 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
     // Update y-axis range
     this.chartOptions.yAxis = {
         title: { text: this.service.getYAxisLabel() },
-        min: Math.min(...actualData.map(point => point.y)) / 4,
-        max: Math.max(...actualData.map(point => point.y)) * 4
+        min: Math.min(...actualData.map(point => point.y)) * 0.8,
+        max: Math.max(...actualData.map(point => point.y)) * 1.05
     };
 
     // Apply chart updates and force a single redraw
@@ -269,4 +265,11 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
       return a[0] - b[0];
     });
   }  
+
+  private processParamData(data: [number, string, string][]): [number, string, string][] {
+    return data.filter(([targetFreq, catalog, identifier]) => {
+      return targetFreq > 0; // Only filter based on number
+    }).sort(([a], [b]) => a - b);
+  }
+  
 }

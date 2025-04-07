@@ -19,6 +19,18 @@ import {environment} from "../../../environments/environment";
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+
+// @Injectable()
+// export class RadioSearchCanvasService {
+//   private fileSource = new BehaviorSubject<File | null>(null);
+//   currentFile = this.fileSource.asObservable();
+
+//   updateFile(file: File) {
+//     this.fileSource.next(file);
+//   }
+// }
+
+
 @Injectable()
 export class RadioSearchHighChartService implements ChartInfo, MyData {
   private chartInfo: RadioSearchChartInfo = new RadioSearchChartInfo();
@@ -108,7 +120,7 @@ export class RadioSearchHighChartService implements ChartInfo, MyData {
     return this.radioSearchData.getDataArray();
   }
 
-  public getParamDataArray(): number[][] {
+  public getParamDataArray(): [number, string, string][] {
     return this.radioSearchData.getParamDataArray();
   }
 
@@ -210,19 +222,19 @@ export class RadioSearchService {
 
 
   public getRadioCatalogResults(id: number | null): Observable<any> | void {
-  if (id !== null) {
-    // Return the Observable so you can subscribe to it outside this method
-    return this.http.get<any>(`${environment.apiUrl}/radiosearch/radio-catalog/query`, { 
-      params: { 'id': id.toString() }
-    }).pipe(
-      map((resp: any) => {
-        const sources: Source[] = resp['output_sources'];  // Extract sources from the response
-        this.setSources(sources);  // Set the sources in storage
-        return resp;  // Return the response or sources if needed
-      })
-    );
-  }
-  return;  // If id is null, return void
+    if (id !== null) {
+      // Return the Observable so you can subscribe to it outside this method
+      return this.http.get<any>(`${environment.apiUrl}/radiosearch/radio-catalog/query`, { 
+        params: { 'id': id.toString() }
+      }).pipe(
+        map((resp: any) => {
+          const sources: Source[] = resp['output_sources'];  // Extract sources from the response
+          this.setSources(sources);  // Set the sources in storage
+          return resp;  // Return the response or sources if needed
+        })
+      );
+    }
+    return;  // If id is null, return void
   }
 
 
@@ -262,88 +274,11 @@ export class RadioSearchService {
 
 
   fetchRadioCatalog(rccords: string, ra: number, dec: number, width: number, height: number): Observable<any> {
-    // Build the payload with RA, Dec, width, and height
-  const payload = {rccords, ra, dec, width, height };
-
-  return this.http.post(`${environment.apiUrl}/radiosearch/radio-catalog/query`, payload);
+    const payload = {rccords, ra, dec, width, height };
+    return this.http.post(`${environment.apiUrl}/radiosearch/radio-catalog/query`, payload);
   }
 
 
-  // Method to process and extract a frame from the FITS image
-  getFrame(
-    fitsImage: any,
-    frame: number,
-    callback: (arr: Float64Array, opts?: any) => void,
-    opts?: any
-    ): void {
-    const frameInfo = fitsImage.frameOffsets[frame];
-    if (!frameInfo) {
-      console.error(`Frame ${frame} not found in frameOffsets.`);
-      return;
-    }
-
-    const begin = frameInfo.begin;
-    const end = begin + fitsImage.frameLength;
-
-    if (end > fitsImage.buffer.byteLength) {
-      console.error('Attempting to access data beyond buffer limits.');
-      return;
-    }
-
-    const frameData = fitsImage.buffer.slice(begin, end);
-
-    // Check if the buffer length matches the expected frame size
-    const expectedByteLength = fitsImage.width * fitsImage.height * fitsImage.bytes;
-    if (frameData.byteLength !== expectedByteLength) {
-      console.error('Frame data length mismatch. Expected:', expectedByteLength, 'Got:', frameData.byteLength);
-      return;
-    }
-
-    try {
-      const pixelArray = new Float64Array(frameData);
-
-      // Apply BZERO and BSCALE if needed
-      for (let i = 0; i < pixelArray.length; i++) {
-        pixelArray[i] = fitsImage.bzero + fitsImage.bscale * pixelArray[i];
-      }
-
-      // Call the callback with the processed data
-      callback(pixelArray, opts);
-    } catch (error) {
-      console.error('Error processing frame data:', error);
-    }
-  }
-
-  // Utility function to convert FITS image data to ImageData format for display
-  public convertFitsToImageData(imageData: Float64Array, width: number, height: number): ImageData {
-    const imageDataArray = new Uint8ClampedArray(width * height * 4); // RGBA array
-
-    // Normalize and map the FITS data to the canvas data array
-    let min = Infinity;
-    let max = -Infinity;
-
-    for (let i = 0; i < imageData.length; i++) {
-      if (imageData[i] < min) min = imageData[i];
-      if (imageData[i] > max) max = imageData[i];
-    }
-
-    for (let i = 0; i < imageData.length; i++) {
-      // Normalize the pixel value to 0-255 range
-      const normalizedValue = Math.floor(255 * (imageData[i] - min) / (max - min));
-
-      // Set the RGBA values
-      const index = i * 4;
-      imageDataArray[index] = normalizedValue; // Red channel
-      imageDataArray[index + 1] = normalizedValue; // Green channel
-      imageDataArray[index + 2] = normalizedValue; // Blue channel
-      imageDataArray[index + 3] = 255; // Alpha channel (fully opaque)
-    }
-
-    return new ImageData(imageDataArray, width, height);
-  }
-
-
-  // Helper functions for RA and Dec conversions
   public convertToHMS(ra: number): string {
     const hours = Math.floor(ra / 15);
     const minutes = Math.floor((ra / 15 - hours) * 60);

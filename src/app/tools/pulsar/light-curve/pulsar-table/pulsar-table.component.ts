@@ -25,7 +25,7 @@ export class PulsarTableComponent implements AfterViewInit, OnDestroy {
         this.service.combinedData$.pipe(
             takeUntil(this.destroy$)
         ).subscribe((data: PulsarDataDict[]) => {
-            this.dataSet = this.limitPrecision(this.service.getCombinedData());
+            this.dataSet = this.limitPrecision(this.service.getData());
             this.table.renderTable();
         })
     }

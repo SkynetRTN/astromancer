@@ -60,6 +60,11 @@
       <button (click)="resetForm()" mat-raised-button>Reset Form</button>
     </div>
   </div>
+  <div class="row" style="padding-top: 5%">
+    <div class="col-12">
+      <button (click)="compute()" mat-raised-button>Compute!</button>
+    </div>
+  </div>
 </form>
 
 <form [formGroup]="formGroup" class="pulsar-form-vertical">
@@ -101,10 +106,32 @@
   </div>
   <div class="row">
     <div class="col-6">
+      <mat-form-field>
+        <mat-label>Points</mat-label>
+        <input [formControlName]="'numPoints'" matInput step="1" type="number">
+      </mat-form-field>
+    </div>
+    <div class="col-6">
+      <mat-form-field>
+        <mat-label i18n>Period Shown</mat-label>
+        <mat-select [formControlName]="'methodLS'">
+          <mat-option [value]="false">Period</mat-option>
+          <mat-option [value]="true">Frequency</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6">
       <button (click)="saveGraph()" mat-raised-button>Save Graph</button>
     </div>
     <div class="col-6">
       <button (click)="resetForm()" mat-raised-button>Reset Form</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <button (click)="compute()" mat-raised-button>Compute!</button>
     </div>
   </div>
 </form>

@@ -26,20 +26,9 @@ export class PulsarLightCurveFormComponent implements OnInit {
       this.onBackScaleChange(value);
     });
   }
-
-
-  updateBackScale(value: number): void {
-    if (value == null) {
-      // Delay the execution of the code by 500 milliseconds if value is null
-return; }
-     else {
-      // Update the backScale value in the service or perform any other necessary actions
-      this.pulsarService.setbackScale(value);
-    }
-  }
-    onBackScaleChange(value: number): void {
-
-    let chartData = this.pulsarService.getCombinedData();
+  
+  onBackScaleChange(value: number): void {
+    let chartData = this.pulsarService.getData();
   
     // Extract data for processing
     const jd = chartData.map(item => item.jd ?? 0);

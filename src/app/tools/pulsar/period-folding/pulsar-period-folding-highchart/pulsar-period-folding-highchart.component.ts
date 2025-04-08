@@ -83,7 +83,7 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
     const binnedData1 = this.service.binData(data['data'], bins);
     
     this.chartObject.addSeries({
-      name: 'Source 1', 
+      name: 'Channel 1', 
       data: binnedData1,
       type: 'line',
       marker: {
@@ -100,7 +100,7 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
       const binnedData2 = this.service.binData(adjustedData2, bins);
   
       this.chartObject.addSeries({
-        name: 'Source 2', 
+        name: 'Channel 2', 
         data: binnedData2,
         type: 'line',
         marker: {
@@ -108,7 +108,26 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
           radius: 2,
         }
       });
-    }
+
+      const diffData = binnedData1.map((point, i) => {
+        const x = point[0];
+        const yDiff = point[1] - binnedData2[i][1];
+        return [x, yDiff];
+      });
+      diffData.sort((a, b) => a[0] - b[0]);
+
+      this.chartObject.addSeries({
+        name: 'Difference', 
+        data: diffData,
+        type: 'line',
+        visible: false,
+        connectEnds: false,
+        marker: {
+          symbol: 'circle',
+          radius: 2,
+        }
+      });      
+    } 
   }  
   
 
@@ -142,10 +161,22 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
       });
       
       this.chartObject.series[1].setData(phaseRolledData2);
+
+      const diffData = phaseRolledData1.map((point, i) => {
+        const x = point[0];
+        const yDiff = point[1] - phaseRolledData2[i][1];
+        return [x, yDiff];
+      });
+      diffData.sort((a, b) => a[0] - b[0]);
+
+      this.chartObject.series[2].setData(diffData);
     }
 
     if (sum == true) {
-      if (this.chartObject.series.length > 1) {
+      if (this.chartObject.series.length > 2) {
+        this.chartObject.series[1].remove();
+        this.chartObject.series[2].remove();
+      } else if (this.chartObject.series.length > 1) {
         this.chartObject.series[1].remove();
       }
 
@@ -165,9 +196,9 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
 
         this.chartObject.series[0].setData(finalChartData);
         this.chartObject.series[0].update({
-          type: 'line', // Explicitly define type
+          type: 'line', 
           marker: {
-            enabled: true, // Ensure points are visible
+            enabled: true, 
             radius: 3
           }
         });

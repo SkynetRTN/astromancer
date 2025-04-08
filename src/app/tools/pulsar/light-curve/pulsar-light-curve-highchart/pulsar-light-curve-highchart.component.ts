@@ -46,14 +46,10 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
   };
   
   chartInitialized($event: Highcharts.Chart) {
-    this.chartObject = $event; // Use the instance passed from (chartInstance)
+    this.chartObject = $event;
     this.pulsarService.setHighChartLightCurve(this.chartObject);
-  
-    // Set initial chart data
-    const initialData = this.pulsarService.resetData()
-    // this.updateChartData(initialData);
-  }  
 
+  }  
 
   private destroy$: Subject<any> = new Subject<any>();
 
@@ -84,7 +80,6 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
       takeUntil(this.destroy$)
     ).subscribe((data) => {
     
-      // Filter out invalid data (null values)
       const filteredData = this.pulsarService.getData()
       .filter(item => item.jd !== null && item.source1 !== null && item.source2 !== null) // Exclude null values
       .map(item => ({ frequency: item.jd!, channel1: item.source1!, channel2: item.source2! })); // Assert non-null values

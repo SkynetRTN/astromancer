@@ -13,17 +13,20 @@ import {
 } from "../pulsar-light-curve-chart-form/pulsar-light-curve-chart-form.component";
 import { jsDocComment } from '@angular/compiler';
 import {BehaviorSubject} from 'rxjs';
+import { chart } from 'highcharts';
 
 @Component({
   selector: 'app-pulsar-light-curve',
   templateUrl: './pulsar-light-curve.component.html',
   styleUrls: ['./pulsar-light-curve.component.scss', '../../../shared/interface/tools.scss']
 })
-export class PulsarLightCurveComponent implements OnInit, OnDestroy {
+export class PulsarLightCurveComponent implements OnDestroy {
   private destroy$ = new Subject<void>();
   ts: number[] = [];
   xs: number[] = [];
   ys: number[] = [];
+  chartData: {jd: number, source1: number, source2: number}[] = [];
+  calFile: boolean = false;
   rawData: PulsarDataDict[] = [];
   private backScaleSubject = new BehaviorSubject<number>(3); // Default value 3
   backScale$ = this.backScaleSubject.asObservable();
@@ -32,17 +35,6 @@ export class PulsarLightCurveComponent implements OnInit, OnDestroy {
               private honorCodeService: HonorCodePopupService,
               private chartService: HonorCodeChartService,
               public dialog: MatDialog) {}
-
-  ngOnInit(): void {
-    // Subscribe to backScale value changes
-    this.service.backScale$.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(() => {
-      const backScale = this.service.getbackScale();
-      this.rawData = this.service.getCombinedData();
-      this.processChartData(backScale); // Call processChartData with the new backScale value
-    });
-  }
 
   actionHandler(actions: TableAction[]) {
     actions.forEach((action) => {
@@ -73,6 +65,7 @@ export class PulsarLightCurveComponent implements OnInit, OnDestroy {
       let type = "cal";
       if (lines[0].slice(0, 7) == "# Input") {
         type = "standard";
+        this.calFile = false;
         this.service.setLightCurveOptionValid(false);
       
         const lines = file.replace(/\r\n/g, '\n').split('\n'); 
@@ -132,10 +125,12 @@ export class PulsarLightCurveComponent implements OnInit, OnDestroy {
           source1: source1[index],
           source2: 0,
         }));
-      
+        
         this.service.setData(chartData);
+        this.service.setPeriodFoldingSpeed(1);
       } else {
         type = "cal";
+        this.calFile = true;
           
         let filteredLines = lines.filter(line => !line.startsWith('#') && line.trim() !== '');
         filteredLines = filteredLines.filter(line => !line.endsWith('0 '));
@@ -172,32 +167,77 @@ export class PulsarLightCurveComponent implements OnInit, OnDestroy {
 
         this.rawData = combinedData;
         this.service.setData(combinedData);
-        this.service.setCombinedData(combinedData);
-        let chartData = combinedData;
+        this.chartData = combinedData;
 
-        const jd = chartData.map(item => item.jd);
-        const source1 = chartData.map(item => item.source1);
-        const source2 = chartData.map(item => item.source2);
+        const jd = this.chartData.map(item => item.jd);
+        const source1 = this.chartData.map(item => item.source1);
+        const source2 = this.chartData.map(item => item.source2);
 
         const subtractedsource1 = this.service.backgroundSubtraction(jd, source1, this.service.getbackScale());
         const subtractedsource2 = this.service.backgroundSubtraction(jd, source2, this.service.getbackScale());
 
-        chartData = chartData.map((item, index) => ({
+        this.chartData = this.chartData.map((item, index) => ({
           jd: jd[index],
           source1: subtractedsource1[index],
           source2: subtractedsource2[index],
         }));
-        this.service.setData(chartData);
+        this.service.setData(this.chartData);
       };
 
     };
     reader.readAsText($event); // Read the file as text
   }
 
+  sonification() {
+    this.chartData = this.service.getData().filter(
+      (d): d is { jd: number; source1: number; source2: number } => d.jd !== null
+    );    
+
+    // Extract individual time series
+    const source1 = this.chartData.map(d => [d.jd, d.source1]);
+    const source2 = this.chartData.map(d => [d.jd, d.source2]);
+
+    // Bin the data
+    let binnedData = this.service.binData(source1, 100);
+    const xValues = binnedData.map(point => point[0]);
+    const yValues = binnedData.map(point => point[1]);
+
+    let binnedData2 = this.service.binData(source2, 100);
+    const yValues2 = binnedData2.map(point => point[1]);
+
+    const duration = xValues[xValues.length - 1] - xValues[0];
+    
+    this.service.sonification(xValues, yValues, yValues2, duration); 
+  }
+
+  get isPlaying(): boolean {
+    return this.service.isPlaying;
+  }  
+
+  sonificationBrowser() {
+    this.chartData = this.service.getData().filter(
+      (d): d is { jd: number; source1: number; source2: number } => d.jd !== null
+    );    
+    
+    const source1 = this.chartData.map(d => [d.jd, d.source1]);
+    const source2 = this.chartData.map(d => [d.jd, d.source2]);
+
+    let binnedData = this.service.binData(source1, 100);
+    const xValues = binnedData.map(point => point[0]);
+    const yValues = binnedData.map(point => point[1]);
+
+    let binnedData2 = this.service.binData(source2, 100);
+    const yValues2 = binnedData2.map(point => point[1]);
+
+    const duration = xValues[xValues.length - 1] - xValues[0];
+
+    this.service.sonificationBrowser(xValues, yValues, yValues2, duration); 
+  }
+
   processChartData(backScale: number): void {
     if (!this.rawData) {
       console.log("No data available");
-      return; // Exit early if no data is available
+      return;
     }
 
     let chartData = this.rawData;

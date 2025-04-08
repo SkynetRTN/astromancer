@@ -55,7 +55,7 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
       this.setChartYAxis();
       this.updateChart();
     });
-    this.service.periodogramData$.pipe(
+    this.service.isComputing$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
       this.updateData();

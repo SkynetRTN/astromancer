@@ -41,6 +41,13 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
         this.periodSubject.next(this.service.getPeriodFoldingPeriod());
       });
     });    
+
+    const data = this.service.getPeriodFoldingChartData();
+    const sum = data['data2'].reduce((sum, item) => sum + item[1], 0) === 0;
+    if (sum == true) {
+      this.periodMax = this.service.getPeriodFoldingPeriod();
+      this.calFile = false;
+    }
   }   
 
   constructor(private service: PulsarService,
@@ -151,6 +158,7 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
   }
 
   resetPulsar() {
+    this.service.resetData();   
     window.location.reload();
   }
 

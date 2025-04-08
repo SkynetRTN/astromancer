@@ -131,7 +131,7 @@ export class RadioCalibrateData {
             a_3 = 0.0170
             mnu_0 = 0
             mdeltlog = 0
-            nu_0 = 1 //should be null, just need to avoid dividing by zero -- Math.log(nu / nu_0) will never be zero because nu is never negative or zero
+            nu_0 = 1 //should be null, just need to avoid dividing by zero -- Math.log10(nu / nu_0) will never be zero because nu is never negative or zero
             varianceLogF_0 = 0.0046 ** 2
             variancea_1 = 0.011 ** 2
             variencea_2 = 0.0075 ** 2
@@ -148,7 +148,7 @@ export class RadioCalibrateData {
             a_3 = -0.0275
             mnu_0 = -0.00044
             mdeltlog = 0
-            nu_0 = 1 //should be null, just need to avoid dividing by zero -- Math.log(nu / nu_0) will never be zero because nu is never negative or zero
+            nu_0 = 1 //should be null, just need to avoid dividing by zero -- Math.log10(nu / nu_0) will never be zero because nu is never negative or zero
             varianceLogF_0 = 0.0044 ** 2
             variancea_1 = 0.014 ** 2
             variencea_2 = 0.0081 ** 2
@@ -165,7 +165,7 @@ export class RadioCalibrateData {
             a_3 = -0.073
             mnu_0 = 0
             mdeltlog = 0
-            nu_0 = 1 //should be null, just need to avoid dividing by zero -- Math.log(nu / nu_0) will never be zero because nu is never negative or zero
+            nu_0 = 1 //should be null, just need to avoid dividing by zero -- Math.log10(nu / nu_0) will never be zero because nu is never negative or zero
             varianceLogF_0 = 0.0045 ** 2
             variancea_1 = 0.017 ** 2
             variencea_2 = 0.0031 ** 2
@@ -178,24 +178,24 @@ export class RadioCalibrateData {
         let deltax = (this.input.endFreq - this.input.startFreq) / 100000
         for (let nu = this.input.startFreq; nu < this.input.endFreq + deltax; nu = nu + deltax) {
             if (nu == this.input.startFreq || nu == this.input.endFreq) {
-                let equation14 = logF_0 + a_1 * Math.log(nu / nu_ref) + a_2 * (Math.log(nu / nu_ref)) ** 2 + a_3 * (Math.log(nu / nu_ref)) ** 3
-                    + (mnu_0 * (t - t_ref) + mdeltlog * (t - t_0) * Math.log(nu / nu_0))
+                let equation14 = logF_0 + a_1 * Math.log10(nu / nu_ref) + a_2 * (Math.log10(nu / nu_ref)) ** 2 + a_3 * (Math.log10(nu / nu_ref)) ** 3
+                    + (mnu_0 * (t - t_ref) + mdeltlog * (t - t_0) * Math.log10(nu / nu_0))
                 // Keeping the temporal component in the equation, since they will drop anyway for all unecessary sources
-                let equation15 = Math.sqrt(varianceLogF_0 + variancea_1 * (Math.log(nu / nu_ref)) ** 2 + variencea_2 * (Math.log(nu / nu_ref)) ** 4
-                    + variencea_3 * (Math.log(nu / nu_ref)) ** 6 + variencemnu_0 * (t - t_ref) ** 2 + variencemdeltlog * (Math.log(nu / nu_0)) ** 2 * (t - t_0) ** 2)
-                let effectiveFreq = nu * 10 ** (logF_0 + a_1 * Math.log(nu / nu_ref) + a_2 * (Math.log(nu / nu_ref)) ** 2 + a_3 * (Math.log(nu / nu_ref)) ** 3
-                    + (mnu_0 * (t - t_ref) + mdeltlog * (t - t_0) * Math.log(nu / nu_0)))
+                let equation15 = Math.sqrt(varianceLogF_0 + variancea_1 * (Math.log10(nu / nu_ref)) ** 2 + variencea_2 * (Math.log10(nu / nu_ref)) ** 4
+                    + variencea_3 * (Math.log10(nu / nu_ref)) ** 6 + variencemnu_0 * (t - t_ref) ** 2 + variencemdeltlog * (Math.log10(nu / nu_0)) ** 2 * (t - t_0) ** 2)
+                let effectiveFreq = nu * 10 ** (logF_0 + a_1 * Math.log10(nu / nu_ref) + a_2 * (Math.log10(nu / nu_ref)) ** 2 + a_3 * (Math.log10(nu / nu_ref)) ** 3
+                    + (mnu_0 * (t - t_ref) + mdeltlog * (t - t_0) * Math.log10(nu / nu_0)))
                 fluxSum += 10 ** (equation14)
                 sigmaFluxSum += 10 ** (equation14 + equation15)
                 effectiveFreqSum += effectiveFreq
             }
             if (this.input.startFreq < nu && nu < this.input.endFreq) {
-                let equation14 = logF_0 + a_1 * Math.log(nu / nu_ref) + a_2 * (Math.log(nu / nu_ref)) ** 2 + a_3 * (Math.log(nu / nu_ref)) ** 3
-                    + (mnu_0 * (t - t_ref) + mdeltlog * (t - t_0) * Math.log(nu / nu_0))
-                let equation15 = Math.sqrt(varianceLogF_0 + variancea_1 * (Math.log(nu / nu_ref)) ** 2 + variencea_2 * (Math.log(nu / nu_ref)) ** 4
-                    + variencea_3 * (Math.log(nu / nu_ref)) ** 6 + variencemnu_0 * (t - t_ref) ** 2 + variencemdeltlog * (Math.log(nu / nu_0)) ** 2 * (t - t_0) ** 2)
-                let effectiveFreq = nu * 10 ** (logF_0 + a_1 * Math.log(nu / nu_ref) + a_2 * (Math.log(nu / nu_ref)) ** 2 + a_3 * (Math.log(nu / nu_ref)) ** 3
-                    + (mnu_0 * (t - t_ref) + mdeltlog * (t - t_0) * Math.log(nu / nu_0)))
+                let equation14 = logF_0 + a_1 * Math.log10(nu / nu_ref) + a_2 * (Math.log10(nu / nu_ref)) ** 2 + a_3 * (Math.log10(nu / nu_ref)) ** 3
+                    + (mnu_0 * (t - t_ref) + mdeltlog * (t - t_0) * Math.log10(nu / nu_0))
+                let equation15 = Math.sqrt(varianceLogF_0 + variancea_1 * (Math.log10(nu / nu_ref)) ** 2 + variencea_2 * (Math.log10(nu / nu_ref)) ** 4
+                    + variencea_3 * (Math.log10(nu / nu_ref)) ** 6 + variencemnu_0 * (t - t_ref) ** 2 + variencemdeltlog * (Math.log10(nu / nu_0)) ** 2 * (t - t_0) ** 2)
+                let effectiveFreq = nu * 10 ** (logF_0 + a_1 * Math.log10(nu / nu_ref) + a_2 * (Math.log10(nu / nu_ref)) ** 2 + a_3 * (Math.log10(nu / nu_ref)) ** 3
+                    + (mnu_0 * (t - t_ref) + mdeltlog * (t - t_0) * Math.log10(nu / nu_0)))
                 fluxSum += 10 ** (equation14) * 2
                 // adding equation 14 to 15 gives us the value of the flux one sigma above the average -- our method of getting uncertainty
                 sigmaFluxSum += 10 ** (equation14 + equation15) * 2

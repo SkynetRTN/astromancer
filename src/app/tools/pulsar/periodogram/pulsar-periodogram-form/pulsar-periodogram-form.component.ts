@@ -12,8 +12,6 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 })
 export class PulsarPeriodogramFormComponent implements OnDestroy {
   formGroup: any;
-  startPeriodLabel: string = 'Start Period (sec)';  
-  endPeriodLabel: string = 'End Period (sec)';
 
   private destroy$: Subject<void> = new Subject<void>();
 
@@ -25,6 +23,8 @@ export class PulsarPeriodogramFormComponent implements OnDestroy {
       dataLabel: new FormControl(this.service.getPeriodogramDataLabel()),
       xAxisLabel: new FormControl(this.service.getPeriodogramXAxisLabel()),
       yAxisLabel: new FormControl(this.service.getPeriodogramYAxisLabel()),
+      startPeriodLabel: new FormControl(this.service.getPeriodogramStartPeriodLabel()),
+      endPeriodLabel: new FormControl(this.service.getPeriodogramEndPeriodLabel()),
       startPeriod: new FormControl(this.service.getPeriodogramStartPeriod(), [Validators.required]),
       endPeriod: new FormControl(this.service.getPeriodogramEndPeriod(), [Validators.required]),
       numPoints: new FormControl(this.service.getPeriodogramPoints(), [Validators.required]),
@@ -49,60 +49,56 @@ export class PulsarPeriodogramFormComponent implements OnDestroy {
       this.service.setPeriodogramYAxisLabel(label);
     });
 
-    this.formGroup.controls['dataLabel'].valueChanges.pipe(
-      debounceTime(200),
-    ).subscribe((label: string) => {
-      this.service.setPeriodogramDataLabel(label);
-    });
+    // this.formGroup.controls['dataLabel'].valueChanges.pipe(
+    //   debounceTime(200),
+    // ).subscribe((label: string) => {
+    //   this.service.setPeriodogramDataLabel(label);
+    // });
 
-    this.formGroup.controls['startPeriod'].valueChanges.pipe(
-      debounceTime(200),
-    ).subscribe((start: number) => {
-      this.service.setPeriodogramStartPeriod(start);
-    });
+    // this.formGroup.controls['startPeriod'].valueChanges.pipe(
+    //   debounceTime(200),
+    // ).subscribe((start: number) => {
+    //   this.service.setPeriodogramStartPeriod(start);
+    // });
 
-    this.formGroup.controls['endPeriod'].valueChanges.pipe(
-      debounceTime(200),
-    ).subscribe((end: number) => {
-      this.service.setPeriodogramEndPeriod(end);
-    });
+    // this.formGroup.controls['endPeriod'].valueChanges.pipe(
+    //   debounceTime(200),
+    // ).subscribe((end: number) => {
+    //   this.service.setPeriodogramEndPeriod(end);
+    // });
 
-    this.formGroup.controls['numPoints'].valueChanges.pipe(
-      debounceTime(200),
-    ).subscribe((points: number) => {
-      this.service.setPeriodogramPoints(points);
-    });
+    // this.formGroup.controls['numPoints'].valueChanges.pipe(
+    //   debounceTime(200),
+    // ).subscribe((points: number) => {
+    //   this.service.setPeriodogramPoints(points);
+    // });
 
-    this.formGroup.controls['methodLS'].valueChanges.pipe(
-      debounceTime(200),
-    ).subscribe((method: boolean) => {
-      this.service.setPeriodogramMethod(method);
-    });
+    // this.formGroup.controls['methodLS'].valueChanges.pipe(
+    //   debounceTime(200),
+    // ).subscribe((method: boolean) => {
+    //   this.service.setPeriodogramMethod(method);
+    // });
 
-    const methodLSValue = this.formGroup.get('methodLS')?.value;
-    this.service.getLabels(methodLSValue);
+    // const methodLSValue = this.formGroup.get('methodLS')?.value;
+    // this.service.getLabels(methodLSValue);
   
     this.formGroup.controls['methodLS'].valueChanges.pipe(
       debounceTime(200),
     ).subscribe((value: boolean) => {
-      // Retrieve the labels
       const labels = this.service.getLabels(value);
       
-      // Assign the returned labels
-      this.startPeriodLabel = labels.startPeriodLabel;
-      this.endPeriodLabel = labels.endPeriodLabel;
+      this.service.setPeriodogramStartPeriodLabel(labels.startPeriodLabel);
+      this.service.setPeriodogramEndPeriodLabel(labels.endPeriodLabel);
     
-      // Update the method
       this.service.setPeriodogramMethod(value);
     });
 
     this.service.periodogramForm$.pipe(
       takeUntil(this.destroy$),
     ).subscribe(info => {
-      this.formGroup.controls['chartTitle'].setValue(this.service.getPeriodogramTitle(), {emitEvent: false});
-      this.formGroup.controls['xAxisLabel'].setValue(this.service.getPeriodogramXAxisLabel(), {emitEvent: false});
-      this.formGroup.controls['yAxisLabel'].setValue(this.service.getPeriodogramYAxisLabel(), {emitEvent: false});
       this.formGroup.controls['dataLabel'].setValue(this.service.getPeriodogramDataLabel(), {emitEvent: false});
+      this.formGroup.controls['startPeriodLabel'].setValue(this.service.getPeriodogramStartPeriodLabel(), {emitEvent: false});
+      this.formGroup.controls['endPeriodLabel'].setValue(this.service.getPeriodogramEndPeriodLabel(), {emitEvent: false});
       this.formGroup.controls['startPeriod'].setValue(this.service.getPeriodogramStartPeriod(), {emitEvent: false});
       this.formGroup.controls['endPeriod'].setValue(this.service.getPeriodogramEndPeriod(), {emitEvent: false});
       this.formGroup.controls['numPoints'].setValue(this.service.getPeriodogramPoints(), {emitEvent: false});
@@ -116,6 +112,26 @@ export class PulsarPeriodogramFormComponent implements OnDestroy {
     this.destroy$.complete();
   }
 
+  compute() {
+    const values = this.formGroup.value;
+  
+    this.service.setPeriodogramDataLabel(values.dataLabel);
+    
+    this.service.setPeriodogramStartPeriod(values.startPeriod);
+    this.service.setPeriodogramEndPeriod(values.endPeriod);
+  
+    this.service.setPeriodogramPoints(values.numPoints);
+    this.service.compute(true);
+  }
+
+  get startPeriodLabel(): string {
+    return this.formGroup?.get('startPeriodLabel')?.value || 'Start Period (sec)';
+  }
+  
+  get endPeriodLabel(): string {
+    return this.formGroup?.get('endPeriodLabel')?.value || 'End Period (sec)';
+  }  
+  
   saveGraph() {
     this.honorCodeService.honored().subscribe((name: string) => {
       this.chartService.saveImageHighChartOffline(this.service.getHighChartPeriodogram(), "Pulsar Periodogram", name);

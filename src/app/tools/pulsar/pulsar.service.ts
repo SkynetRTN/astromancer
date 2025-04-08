@@ -59,6 +59,10 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
     private periodFoldingFormSubject: BehaviorSubject<UpdateSource>
         = new BehaviorSubject<UpdateSource>(UpdateSource.INIT);
     public periodFoldingForm$ = this.periodFoldingFormSubject.asObservable();
+    private isComputingSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public isComputing$ = this.isComputingSubject.asObservable();
+
+
 
     private highChartLightCurve!: Highcharts.Chart;
     private highChartPeriodogram!: Highcharts.Chart;
@@ -280,6 +284,14 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         return this.pulsarPeriodogram.getPeriodogramMethod();
     }
 
+    getPeriodogramStartPeriodLabel(): string {
+        return this.pulsarPeriodogram.getPeriodogramStartPeriodLabel();
+    }
+
+    getPeriodogramEndPeriodLabel(): string {
+        return this.pulsarPeriodogram.getPeriodogramEndPeriodLabel();
+    }
+
     getPeriodogramStartPeriod(): number {
         return this.pulsarPeriodogram.getPeriodogramStartPeriod();
     }
@@ -331,6 +343,20 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         this.periodogramDataSubject.next(this.pulsarData);
     }
 
+    setPeriodogramStartPeriodLabel(startPeriodLabel: string): void {
+        this.pulsarPeriodogram.setPeriodogramStartPeriodLabel(startPeriodLabel);
+        this.pulsarStorage.savePeriodogram(this.pulsarPeriodogram.getPeriodogramStorageObject());
+        this.periodogramFormSubject.next(this.pulsarPeriodogram);
+        this.periodogramDataSubject.next(this.pulsarData);
+    }
+
+    setPeriodogramEndPeriodLabel(endPeriodLabel: string): void {
+        this.pulsarPeriodogram.setPeriodogramEndPeriodLabel(endPeriodLabel);
+        this.pulsarStorage.savePeriodogram(this.pulsarPeriodogram.getPeriodogramStorageObject());
+        this.periodogramFormSubject.next(this.pulsarPeriodogram);
+        this.periodogramDataSubject.next(this.pulsarData);
+    }
+
     setPeriodogramStartPeriod(startPeriod: number): void {
         this.pulsarPeriodogram.setPeriodogramStartPeriod(startPeriod);
         this.pulsarStorage.savePeriodogram(this.pulsarPeriodogram.getPeriodogramStorageObject());
@@ -351,6 +377,14 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         this.pulsarStorage.savePeriodogram(this.pulsarPeriodogram.getPeriodogramStorageObject());
         this.periodogramFormSubject.next(this.pulsarPeriodogram);
         this.periodogramDataSubject.next(this.pulsarData);
+    }
+
+    compute(compute: boolean) {
+        if (this.isComputingSubject.getValue() == false) {
+            this.isComputingSubject.next(true)
+        } else if (this.isComputingSubject.getValue() == true) {
+            this.isComputingSubject.next(false)
+        }
     }
 
     resetPeriodogram(): void {
@@ -375,8 +409,8 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         const currentEnd = Number(this.getPeriodogramEndPeriod());
     
         if (isHz) {
-            startPeriodLabel = 'Start Period (Hz)';
-            endPeriodLabel = 'End Period (Hz)';
+            startPeriodLabel = 'Start Frequency (Hz)';
+            endPeriodLabel = 'End Frequency (Hz)';
             this.setPeriodogramEndPeriod(1 / currentStart);
             this.setPeriodogramStartPeriod(1 / currentEnd);
             this.setPeriodogramMethod(false);
@@ -440,11 +474,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
     }
 
     setDataLabel(data: string): void {
-        if (this.getPulsarStar() === PulsarStarOptions.NONE) {
-            this.pulsarChartInfo.setDataLabels(data);
-        } else {
-            this.pulsarChartInfo.setDataLabel(data);
-        }
+        this.pulsarChartInfo.setDataLabel(data);
         this.pulsarStorage.saveChartInfo(this.pulsarChartInfo.getStorageObject());
         this.chartInfoSubject.next(this.pulsarChartInfo);
         this.dataSubject.next(this.pulsarData);
@@ -556,13 +586,13 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         ]
       }
     
-/*
-    public setData(dataDict: PulsarDataDict[]): void {
-        this.pulsarData.setData(dataDict);
-        this.dataSubject.next(this.getData());
-        return this.pulsarData.getChartSourcesDataArray();
-    }
-        */
+
+    // public setData(dataDict: PulsarDataDict[]): void {
+    //     this.pulsarData.setData(dataDict);
+    //     this.dataSubject.next(this.getData());
+    //     return this.pulsarData.getChartSourcesDataArray();
+    // }
+        
 
     getChartPeriodogramDataArray(start: number, end: number): { data1: number[][], data2?: number[][]} {
         const pulsarData = this.getChartPulsarDataArray();
@@ -605,39 +635,31 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         this.periodogramDataSubject.next(this.pulsarData);
         this.periodFoldingDataSubject.next(this.pulsarData);
     }
-/*
-    // Reset Methods
-    public resetData(): void {
-        const defaultData = PulsarData.getDefaultDataAsArray();
-        this.setData(defaultData);
-        this.setCombinedData(defaultData)
-        this.dataSubject.next(this.getData());
-    }
-*/
-median(arr: number[]) {
-    arr = arr.filter(num => !isNaN(num));
-    const mid = Math.floor(arr.length / 2);
-    const nums = arr.sort((a, b) => a - b);
-    return arr.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2;
-}
 
-backgroundSubtraction(frequency: number[], flux: number[], dt: number): number[] {
-    let n = Math.min(frequency.length, flux.length);
-    const subtracted = [];
-
-    let jmin = 0;
-    let jmax = 0;
-    for (let i = 0; i < n; i++) {
-        while (jmin < n && frequency[jmin] < frequency[i] - (dt / 2)) {
-            jmin++;
-        }
-        while (jmax < n && frequency[jmax] <= frequency[i] + (dt / 2)) {
-            jmax++;
-        }
-        let fluxmed = this.median(flux.slice(jmin, jmax));
-        subtracted.push(flux[i] - fluxmed); 
+    median(arr: number[]) {
+        arr = arr.filter(num => !isNaN(num));
+        const mid = Math.floor(arr.length / 2);
+        const nums = arr.sort((a, b) => a - b);
+        return arr.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2;
     }
-    return subtracted;
+
+    backgroundSubtraction(frequency: number[], flux: number[], dt: number): number[] {
+        let n = Math.min(frequency.length, flux.length);
+        const subtracted = [];
+
+        let jmin = 0;
+        let jmax = 0;
+        for (let i = 0; i < n; i++) {
+            while (jmin < n && frequency[jmin] < frequency[i] - (dt / 2)) {
+                jmin++;
+            }
+            while (jmax < n && frequency[jmax] <= frequency[i] + (dt / 2)) {
+                jmax++;
+            }
+            let fluxmed = this.median(flux.slice(jmin, jmax));
+            subtracted.push(flux[i] - fluxmed); 
+        }
+        return subtracted;
     }    
 
     setData(data: any[]): void {
@@ -674,7 +696,7 @@ backgroundSubtraction(frequency: number[], flux: number[], dt: number): number[]
         this.combinedDataSubject.next(data);
       }
     
-      getCombinedData(): any[] {
+    getCombinedData(): any[] {
         if (this.combinedDataSubject.value == null) {
 
         return this.getData();
@@ -705,7 +727,7 @@ backgroundSubtraction(frequency: number[], flux: number[], dt: number): number[]
     }
 
     private getDefaultDataLabel(): string {
-        return `Pulsar Star Mag - Reference Star Mag)`
+        return `Pulsar Star`
     }
 
     binData(data: number[][], bins: number): number[][] {
@@ -770,6 +792,7 @@ backgroundSubtraction(frequency: number[], flux: number[], dt: number): number[]
         
         if (numRepeats * yValues.length > 500) {
             numRepeats = 500;
+            lengthInSeconds = Math.min(60, numRepeats * period * (1 / this.getPeriodFoldingSpeed()));
         }; 
         
         let repeatedYValues: number[] = [];
@@ -871,9 +894,9 @@ backgroundSubtraction(frequency: number[], flux: number[], dt: number): number[]
 
         let numRepeats = Math.ceil((lengthInSeconds / period) * Number(displayPeriod));
 
-        console.log((numRepeats / Number(displayPeriod)) * period);
         if (numRepeats * yValues.length > 500) {
             numRepeats = 500;
+            lengthInSeconds = Math.min(60, numRepeats * period * (1 / this.getPeriodFoldingSpeed()));
         }; 
 
         let repeatedYValues: number[] = [];
@@ -919,7 +942,7 @@ backgroundSubtraction(frequency: number[], flux: number[], dt: number): number[]
         };
       
         this.isPlaying = true;
-    }      
+    }         
       
        
     interpolateLinear(data: number[], factor: number): number[] {

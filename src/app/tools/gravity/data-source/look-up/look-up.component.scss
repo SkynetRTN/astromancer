@@ -22,11 +22,20 @@ h1 {
   justify-content: center;
 }
 
-.results-list {
+.results-list, .results-header {
+  margin: 0px 40px 0 40px;
   display: inline;
   width: 100%;
   text-align: left;
-  margin: 20px 40px 0 40px;
+}
+
+.search-form {
+  margin: 0px 40px 0 40px;
+  display: inline;
+  width: 100%;
+}
+
+.results-list {
   overflow-y: scroll;
   height: 500px;
 }
@@ -60,25 +69,33 @@ h3 {
   }
 }
 
-mat-list {
+mat-list, form {
   width: 100%;
 }
 
-.result, .list-name, .column-header, .button-block, .detector {
+mat-list-item {
+  padding: 0;
+}
+
+.result, .list-name, .column-header, .button-block, .detector, .date-label {
   flex-direction: column;
   height: min-content;
   display: inline-block;
   width: 30%;
+  overflow-x: clip;
   margin-right: 0px;
   margin-left: 0px;
 }
 
 .button-block {
-  width: 40%
+  width: 40%;
 }
 
 .detector {
   margin: 3px;
+  max-width: 30%;
+  min-width: 10%;
+  flex: 1, 0, auto;
 }
 
 .list-name {
@@ -88,4 +105,9 @@ mat-list {
 
 .column-header {
   justify-content: flex-start;
+}
+
+.date-label {
+  margin: 3px;
+  width:20%
 }

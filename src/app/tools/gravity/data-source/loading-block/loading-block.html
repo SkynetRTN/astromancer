@@ -1,0 +1,7 @@
+
+<div *ngIf="(loading$ | async)" class="loading-block">
+    <div class="column">
+        <mat-spinner class="wait-spinner" [diameter]="128"></mat-spinner>
+        <div>{{status$ | async}}</div>
+    </div>
+</div>

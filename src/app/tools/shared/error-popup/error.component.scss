@@ -1,3 +1,5 @@
+
+
 .error-container {
   padding: 20px;
 }
@@ -8,20 +10,20 @@ button {
 }
 
 @media screen and (min-width: 900px) {
-  .cluster-data-source-pop-up {
+  .error-pop-up {
     width: 500px;
     flex-direction: column;
   }
 }
 
 @media screen and (max-width: 900px) {
-  .cluster-data-source-pop-up {
+  .error-pop-up {
     width: 80vw;
     flex-direction: row;
   }
 }
 
-.cluster-data-source-pop-ups-card {
+.error-pop-ups-card {
   margin: 0px !important;
   width: 100% !important;
   height: min-content !important;

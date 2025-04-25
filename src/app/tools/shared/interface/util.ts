@@ -7,11 +7,14 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {JsonPipe, NgIf} from "@angular/common";
 import { FileUploadBigComponent } from "../file-upload-big/file-upload-big.component";
 import { ErrorComponent } from "../error-popup/error.component";
+import { DragNDropDirective } from "../file-upload-big/drag-n-drop.directive";
+import { MatDialogModule } from "@angular/material/dialog";
 
 @NgModule({
     imports: [
         MatIconModule,
         MatInputModule,
+        MatDialogModule,
         MatSliderModule,
         ReactiveFormsModule,
         FormsModule,
@@ -23,7 +26,7 @@ import { ErrorComponent } from "../error-popup/error.component";
     FileUploadBigComponent,
     ErrorComponent
   ],
-  declarations: [InputSliderComponent, FileUploadBigComponent, ErrorComponent]
+  declarations: [InputSliderComponent, FileUploadBigComponent, ErrorComponent, DragNDropDirective]
 })
 export class InterfaceUtilModule {
 }

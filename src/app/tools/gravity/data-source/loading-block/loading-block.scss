@@ -1,0 +1,29 @@
+.loading-block {
+    position: absolute;
+    top: 64px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    z-index: 2;
+    display: block;
+    width: 100%;
+    height: calc(100% - 64px);
+
+    background-color: rgba(0,0,0, 0.4);
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+
+    justify-content: center;
+    text-align: center;
+
+    height: 100%;
+}
+
+.wait-spinner {
+    align-self: center;
+    opacity: 1;
+}

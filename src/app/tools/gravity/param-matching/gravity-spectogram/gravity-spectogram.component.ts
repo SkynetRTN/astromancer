@@ -165,7 +165,6 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
       }
     });
 
-    console.log("Hewwo I add chart uwu")
     this.chartObject.addSeries(
       {
       name: "Spectrum",

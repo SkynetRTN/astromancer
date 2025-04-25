@@ -24,7 +24,8 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatSliderModule} from "@angular/material/slider";
 import { MatIconModule } from '@angular/material/icon';
 import {MatInputModule} from "@angular/material/input";
-import {MatButtonModule} from "@angular/material/button";
+import { MatButtonModule} from "@angular/material/button";
+import { MatPaginatorModule } from '@angular/material/paginator'
 
 import { SpectogramService } from './param-matching/gravity-spectogram/gravity-spectogram.service';
 import { StrainService } from './param-matching/gravity-strainchart/gravity-strain.service';
@@ -39,7 +40,7 @@ import { DataSourceComponent } from './data-source/data-source/data-source.compo
 import { GravityDataSourceService } from './data-source/gravity-data-source-service';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { BufferComponent } from './data-source/buffer-popup/buffer-popup';
+import { LoadingBlockComponent } from './data-source/loading-block/loading-block';
 import { MatCardModule } from '@angular/material/card';
 
 
@@ -53,7 +54,7 @@ const routes: Routes = [
     GravityComponent,
     LookUpComponent,
     ParamMatching,
-    BufferComponent,
+    LoadingBlockComponent,
     GravityFormComponent,
     GravityStrainchartComponent,
     GravitySpectogramComponent,
@@ -72,11 +73,12 @@ const routes: Routes = [
     MatDatepickerModule,
     MatDividerModule,
     MatFormFieldModule,
+    MatGridListModule,
     MatIconModule,
     MatInputModule,
-    MatGridListModule,
     MatListModule,
     MatOptionModule,
+    MatPaginatorModule,
     MatProgressSpinnerModule,
     MatSelectModule,
     MatSliderModule,

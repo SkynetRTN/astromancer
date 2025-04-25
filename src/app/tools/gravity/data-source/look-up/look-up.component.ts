@@ -2,7 +2,8 @@ import {Component} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
 import {MatDialog} from "@angular/material/dialog";
 import { GravityDataSourceService } from '../gravity-data-source-service';
-import { dateToGPS, GravityEvent, SearchParams } from '../gravity-data-source.service.utils';
+import { dateToGPS, GravityEvent, Pagination, SearchParams } from '../gravity-data-source.service.utils';
+import { DatasetController } from 'chart.js';
 
 @Component({
   selector: 'app-look-up',
@@ -12,17 +13,25 @@ import { dateToGPS, GravityEvent, SearchParams } from '../gravity-data-source.se
 export class LookUpComponent {
   value = '';
   lookUpForm = new FormGroup({
-    min_date: new FormControl<Date>(new Date(2015,9,14)),
+    min_date: new FormControl<Date>(new Date(2015,8,13)),
     max_date: new FormControl<Date>(new Date()),
   })
 
   events: GravityEvent[] = [];
+
+  pagination: Pagination = {
+    total_items: 0,
+    page_length: 20}
 
   constructor(private dataSourceService: GravityDataSourceService,
               private dialog: MatDialog) 
   {
     dataSourceService.results$.subscribe((events) => {
       this.events = events;
+    })
+
+    dataSourceService.pagination$.subscribe((page) => {
+      this.pagination = page
     })
   }
 
@@ -38,5 +47,10 @@ export class LookUpComponent {
   selectEvent(name: string, detector: string)
   {
     this.dataSourceService.selectFileVersion(name, detector)
+  }
+
+  selectPage(index: number)
+  {
+    this.dataSourceService.setPage(index)
   }
 }

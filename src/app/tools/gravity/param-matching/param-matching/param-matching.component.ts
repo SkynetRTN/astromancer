@@ -6,7 +6,7 @@ import { GravityDataService } from '../../gravity-data.service';
 @Component({
   selector: 'app-gravity-param-matching',
   templateUrl: './param-matching.component.html',
-  styleUrls: ['./param-matching.component.scss', "../../shared/interface/tools.scss"]
+  styleUrls: ['./param-matching.component.scss', ]
 })
 export class ParamMatching implements OnDestroy {
 

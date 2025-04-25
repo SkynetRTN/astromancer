@@ -17,6 +17,12 @@ export class FileUploadBigComponent {
   }
 
   onFileUpload($event: Event) {
+    console.log("Upload")
     this.fileUpload$.emit(($event.target as HTMLInputElement).files![0]);
+  }
+
+  onFileDrop(file: File) {
+    console.log(file)
+    this.fileUpload$.emit(file)
   }
 }

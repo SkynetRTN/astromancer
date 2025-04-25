@@ -1,6 +1,6 @@
-<div class="cluster-data-source-pop-up">
+<div class="error-pop-up">
   <div class="error-container">
-    <h1>File Upload Error: <i>{{data.error?.status}}</i></h1>
+    <h1>{{data.title}}: <i>{{data.error?.status}}</i></h1>
     <h2>Error Message:</h2>
     <pre *ngIf="data.error != null">{{data.error?.error.errors | json}}</pre>
     <p *ngIf="data.message != null">{{data.message}}</p>

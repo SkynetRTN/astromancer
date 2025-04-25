@@ -1,5 +1,5 @@
 <div class="prompt-container">
-  <div class="row drop-zone" clusterDragNDrop>
+  <div class="row drop-zone" dragNDrop (fileDrop)="onFileDrop($event)">
     <div (click)="fileInput.click()" class="click-zone">
       <h3 class="big-title">Drop to Upload</h3>
       <mat-icon class="big-icon">upload</mat-icon>

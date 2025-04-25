@@ -2,9 +2,11 @@
 <!--  <div class="row" class="title">-->
 <!--    <h1><i>Get Started!</i> by:</h1>-->
 <!--  </div>-->
+<app-loading-block [progress$]="dataProgress$" [status$]="dataStatus$"></app-loading-block>
 <div class="row tool-container">
+  
   <div class="col-6">
-    <app-file-upload-big [hidden]="jobReady()" class="full-container"
+    <app-file-upload-big class="full-container"
       (fileUpload$)="uploadHandler($event)" [format]="'32 sec, 16 KHz .hdf5 files.'" [sourceLink]="'https://gwosc.org/eventapi/html/O4_Discovery_Papers/GW230529_181500/v1/'">
     </app-file-upload-big>
   </div>

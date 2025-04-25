@@ -11,7 +11,7 @@ export class ErrorComponent {
     protected readonly JSON = JSON;
 
     //Maybe remove the help email? 
-    constructor(@Inject(MAT_DIALOG_DATA) public data: { error: HttpErrorResponse | null, message: string | null, emailSubject?: string }) {
+    constructor(@Inject(MAT_DIALOG_DATA) public data: { error: HttpErrorResponse | null, title: string | null, message: string | null, emailSubject?: string }) {
         if(!data.emailSubject) data.emailSubject = "Astromancer Error"
     }
 }

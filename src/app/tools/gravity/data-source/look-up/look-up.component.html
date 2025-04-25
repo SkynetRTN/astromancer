@@ -2,14 +2,15 @@
   <div class="row center-content">
     <h1>Look Up a Gravitational Wave Event</h1>
   </div>
-  <div class="row center-content">
-    <form (submit)="submit()" [formGroup]="lookUpForm">
+  <div class="row">
+    <form class="search-form" (submit)="submit()" [formGroup]="lookUpForm">
 
       <mat-form-field class="col-4">
         <input matInput [matDatepicker]="begin" placeholder="From Date" formControlName="min_date">
         <mat-datepicker-toggle matSuffix [for]="begin"></mat-datepicker-toggle>
         <mat-datepicker #begin></mat-datepicker>
       </mat-form-field>
+      <div class="date-label">Until</div>
       <mat-form-field class="col-4">
 
         <input matInput [matDatepicker]="end" placeholder="Until Date" formControlName="max_date">
@@ -26,16 +27,20 @@
     </form>
   </div>
   <div class="row">
-    <div class="results-list">
+    <div class="results-header">
       <h2>Results:</h2>
       <div class="column-header">Name</div>
       <div class="column-header">Date</div>
       <div class="column-header">Detector Data</div>
-
       <mat-divider></mat-divider>
+    </div>
+    <div class="results-list">
+
+      
       <mat-list *ngFor="let event of events; last as last">
         <mat-list-item>
-          <div class="list-name"><a href="{{event.URL}}" target="_blank">{{event.Name}}</a></div>
+          <!-- <a href="{{event.URL}}" target="_blank"> {{event.Name}} </a>-->
+          <div class="list-name">{{event.Name}}</div>
           <div class="result"> {{event.Time}}</div>
 
           <!-- Download Buttons -->
@@ -50,4 +55,10 @@
       </mat-list>
     </div>
   </div>
+  <!-- [pageSizeOptions]="[5, 10, 25, 100]" -->
+  <mat-paginator class="results-header" [length]="pagination.total_items"
+              [pageSize]="pagination.page_length"
+              (page)="selectPage($event.pageIndex)">
+</mat-paginator>
+
 </div>

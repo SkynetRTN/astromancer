@@ -18,8 +18,8 @@ export class GravityComponent implements OnDestroy {
     private dataService: GravityDataService,
     private http: HttpClient) {
 
-      dataService.dataReady$.subscribe((d) => {
-        this.dataReady = d
+      dataService.jobProgress$.subscribe((p) => {
+        this.dataReady = p>=100
       })
   }
 

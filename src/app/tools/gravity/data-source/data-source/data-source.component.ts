@@ -3,6 +3,8 @@ import {MatDialog} from "@angular/material/dialog";
 import {JobStatus} from "../../../../shared/job/job";
 import { GravityStorageService } from '../../storage/gravity-storage.service';
 import { GravityDataSourceService } from '../gravity-data-source-service';
+import { GravityDataService } from '../../gravity-data.service';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Component({
     selector: 'app-data-source',
@@ -11,25 +13,26 @@ import { GravityDataSourceService } from '../gravity-data-source-service';
 })
 export class DataSourceComponent {
 
-    
+    public dataProgress$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+    public dataStatus$: BehaviorSubject<string> = new BehaviorSubject<string>("Loading...")
 
     constructor(
         private storageService: GravityStorageService,
-        private dataSourceService: GravityDataSourceService
-    ) {
+        private dataSourceService: GravityDataSourceService,
+        private dataService: GravityDataService
+    )
+    {
+        this.dataService.jobProgress$.subscribe((p) => {
+            this.dataProgress$.next(p)
+        })
+
+        this.dataService.dataStatus$.subscribe((s) => {
+            this.dataStatus$.next(s)
+        })
     }
 
     public uploadHandler(file: File)
     {
         this.dataSourceService.fileUpload(file)
-    }
-
-    public jobReady(): boolean {
-        const job = this.storageService.getJob();
-        if (job === null) {
-            return false;
-        }
-        const jobComplete: boolean = job.status === JobStatus.COMPLETED;
-        return jobComplete;
     }
 }

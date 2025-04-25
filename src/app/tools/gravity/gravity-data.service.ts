@@ -1,24 +1,11 @@
 import {Injectable, OnDestroy} from '@angular/core';
-import {BehaviorSubject, Subject, takeUntil, debounceTime, withLatestFrom} from "rxjs";
-import * as Highcharts from "highcharts";
-import { environment } from 'src/environments/environment';
-
-import {
-  fitValuesToGrid
-} from "./param-matching/gravity.service.util";
-
-import { StrainService } from './param-matching/gravity-strainchart/gravity-strain.service';
-import { SpectogramService } from './param-matching/gravity-spectogram/gravity-spectogram.service';
-import { InterfaceService } from './param-matching/gravity-form/gravity-interface.service';
+import {BehaviorSubject, Subject, takeUntil, debounceTime, withLatestFrom, distinct} from "rxjs";
 import { HttpClient } from '@angular/common/http';
 
-import { UpdateSource } from '../shared/data/utils';
-
 import { Job, JobType, JobStatus } from 'src/app/shared/job/job';
-import { MyFileParser } from '../shared/data/FileParser/FileParser';
-import {FileType} from "../shared/data/FileParser/FileParser.util";
-import { GravityDataSourceService } from './data-source/gravity-data-source-service';
 import { GravityStorageService } from './storage/gravity-storage.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ErrorComponent } from '../shared/error-popup/error.component';
 
 @Injectable()
 export class GravityDataService implements OnDestroy {
@@ -28,20 +15,24 @@ export class GravityDataService implements OnDestroy {
     private jobIdSubject: BehaviorSubject<number | null> = new BehaviorSubject<number | null>(null);
     public jobId$ = this.jobIdSubject.asObservable()
 
-    private dataReadySubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    public dataReady$ = this.dataReadySubject.asObservable()
+    private jobProgressSubject: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+    public jobProgress$ = this.jobProgressSubject.asObservable()
+
+    private dataStatusSubject: BehaviorSubject<string> = new BehaviorSubject<string>("Loading...");
+    public dataStatus$ = this.dataStatusSubject.asObservable()
     
     constructor(
         // private dataSourceService: GravityDataSourceService,
         private storageService:  GravityStorageService,
-        private http: HttpClient,) 
+        private http: HttpClient,
+        private dialog: MatDialog) 
     {
         this.init() 
     }
 
     public reset() {
         this.storageService.resetDataSource();
-        this.dataReadySubject.next(false)
+        this.jobProgressSubject.next(0)
         // this.initValues();
         // this.sourcesSubject.next(this.sources);
     }
@@ -73,6 +64,8 @@ export class GravityDataService implements OnDestroy {
         if(gps_time) payload.append('time', gps_time.toString())
 
         this.jobBuilder(gravJob)
+
+        this.dataStatusSubject.next("Sending Data For Processing...")
         gravJob.createJob(payload)
     }
 
@@ -80,18 +73,31 @@ export class GravityDataService implements OnDestroy {
         let gravJob = new Job("/gravity/event" , JobType.PROCESS_GRAVITY_DATA, this.http, 500);
         let payload = {name: name, detector: detector}
 
-        this.jobBuilder(gravJob) 
+        this.jobBuilder(gravJob)
+
+        this.dataStatusSubject.next("Fetching Gravity Data...")
         gravJob.createJob(payload)
     }
 
     jobBuilder(gravJob: Job) {
+        this.jobProgressSubject.next(1)
         
         gravJob.statusUpdate$.pipe(
         takeUntil(this.destroy$),
-        takeUntil(gravJob.complete$)
+        takeUntil(gravJob.complete$),
+        distinct()
         ).subscribe(
         (status: JobStatus) => {
-            if(status == JobStatus.FAILED) alert("error: failed to retrieve data.");
+
+            //This feels like it would fit better in dataSourceSubject...
+            switch(status)
+            {
+                case JobStatus.FAILED: this.jobProgressSubject.next(0); break;
+                case JobStatus.PENDING: this.dataStatusSubject.next("Waiting For Processing..."); break;
+                case JobStatus.RUNNING: this.dataStatusSubject.next("Processing Data..."); break;
+                case JobStatus.COMPLETED: this.dataStatusSubject.next("Retrieving Data..."); break;
+                default: break;
+            }
         });
 
         gravJob.progressUpdate$.pipe(
@@ -99,7 +105,8 @@ export class GravityDataService implements OnDestroy {
         takeUntil(gravJob.complete$)
         ).subscribe(
         (progress: any) => {
-        console.log(progress);
+            console.log("Job Progress: " + progress)
+            this.jobProgressSubject.next(progress)
         });
         
         gravJob.complete$.pipe(
@@ -108,8 +115,13 @@ export class GravityDataService implements OnDestroy {
         (complete) => {
 
             if(!complete)
-                //do error handling
+            {    
+                this.jobProgressSubject.next(0)
+                let error = gravJob.getError()
+                this.dialog.open(ErrorComponent, {data: {error: error, title: "Data not found", message: error?.error['error']}})
+                
                 return;
+            }
 
             console.log("Job complete")
 
@@ -121,7 +133,7 @@ export class GravityDataService implements OnDestroy {
                 this.storageService.setJob(gravJob.getStorageObject())
             }
             
-            this.dataReadySubject.next(true)
+            this.jobProgressSubject.next(100)
         });
     }
 }

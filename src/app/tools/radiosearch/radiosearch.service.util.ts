@@ -23,7 +23,8 @@ export interface Source {
 
 export interface RadioSearchParamDataDict {
   targetFreq: number | null;
-  threeC: number | null;
+  catalog: string | null;
+  identifier: string | null;
 }
 
 export interface RadioSearchChartInfoStorageObject {
@@ -114,18 +115,18 @@ export class RadioSearchData implements MyData {
   // Convert default data to RadioSearchDataDict[]
   public static getDefaultDataAsArray(): RadioSearchDataDict[] {
     return [
-      { frequency: 38, flux: 2430, flux_fit: 2302 },
-      { frequency: 159, flux: 1500, flux_fit: 1601 },
-      { frequency: 178, flux: 1534, flux_fit: 1556 },
-      { frequency: 1491.5, flux: 1300, flux_fit: 908 },
-      { frequency: 1400, flux: 930, flux_fit: 922 },
-      { frequency: 5000, flux: 680, flux_fit: 668 }
+      { frequency: null, flux: null, flux_fit: null },
+      // { frequency: 159, flux: 1500, flux_fit: 1601 },
+      // { frequency: 178, flux: 1534, flux_fit: 1556 },
+      // { frequency: 1491.5, flux: 1300, flux_fit: 908 },
+      // { frequency: 1400, flux: 930, flux_fit: 922 },
+      // { frequency: 5000, flux: 680, flux_fit: 668 }
     ];
   }
 
   public static getDefaultParamDataAsArray(): RadioSearchParamDataDict[] {
     return [
-      { targetFreq: 1491.5, threeC: 0.1}
+      { targetFreq: null, catalog: null, identifier: null}
     ];
   }
 
@@ -150,8 +151,8 @@ export class RadioSearchData implements MyData {
     return this.radioSearchDataDict.map(({ frequency, flux, flux_fit }) => [frequency, flux, flux_fit] as [number, number, number]);
   }
 
-  public getParamDataArray(): number[][] {
-    return this.radioSearchParamDataDict.map(({ targetFreq, threeC }) => [targetFreq, threeC] as [number, number]);
+  public getParamDataArray(): [number, string, string][] {
+    return this.radioSearchParamDataDict.map(({ targetFreq, catalog, identifier }) => [targetFreq, catalog, identifier] as [number, string, string]);
   }
 
   // Set data with type checking and persistence

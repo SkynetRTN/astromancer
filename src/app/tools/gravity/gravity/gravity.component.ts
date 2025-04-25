@@ -6,7 +6,7 @@ import { GravityDataService } from '../gravity-data.service';
 @Component({
   selector: 'app-gravity',
   templateUrl: './gravity.component.html',
-  styleUrls: ['./gravity.component.scss', "../../shared/interface/tools.scss"]
+  styleUrls: ['./gravity.component.scss', '../../shared/interface/tools.scss']
 })
 export class GravityComponent implements OnDestroy {
 

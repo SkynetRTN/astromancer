@@ -18,13 +18,16 @@ const TOOLS_ROUTES: Routes = [
     {path: "spectrum", loadChildren: () => import('./tools/spectrum/spectrum.module').then(m => m.SpectrumModule)},
     {path: "dual", loadChildren: () => import('./tools/dual/dual.module').then(m => m.DualModule)},
     {path: "radio-calibrator", loadChildren: () => import('./tools/radioCalibrate/radioCalibrate.module').then(m => m.RadioCalibrateModule)},
-    {path: "radio-source-identifier", loadChildren: () => import('./tools/radiosearch/radiosearch.module').then(m => m.RadioSearchModule)},
+    {path: "radio-source-finder", loadChildren: () => import('./tools/radiosearch/radiosearch.module').then(m => m.RadioSearchModule)},
+    {path: "pulsar", loadChildren: () => import('./tools/pulsar/pulsar.module').then(m => m.PulsarModule)},
     {path: "cluster", loadChildren: () => import('./tools/cluster/cluster.module').then(m => m.ClusterModule)},
     {path: "gravity", loadChildren: () => import('./tools/gravity/gravity.module').then(m => m.GravityModule)},
     {path: "rc", loadChildren: () => import('./tools/rc/rc.module').then(m => m.RcModule)},
     {path: "settings", loadChildren: () => import('./shared/settings/settings.module').then(m => m.SettingsModule)},
     {path: '', redirectTo: '/home', pathMatch: 'full'},
-    {path: '**', component: PageNotFoundComponent, title: $localize`:page-not-found:Page Not Found`}
+    {path: '**', component: PageNotFoundComponent, title: $localize`:page-not-found:Page Not Found`},
+
+    
 ]
 
 /**

@@ -28,6 +28,7 @@ import {SpectrumModule} from "./tools/spectrum/spectrum.module";
 import {DualModule} from "./tools/dual/dual.module";
 import {RadioCalibrateModule} from "./tools/radioCalibrate/radioCalibrate.module";
 import {RadioSearchModule} from './tools/radiosearch/radiosearch.module';
+import {PulsarModule} from './tools/pulsar/pulsar.module';
 import {RcModule} from "./tools/rc/rc.module";
 import {NgOptimizedImage} from "@angular/common";
 import { GravityModule } from './tools/gravity/gravity.module';
@@ -62,7 +63,6 @@ registerAllModules();
         DualModule,
         GravityModule,
         RadioCalibrateModule,
-        RadioSearchModule,
         RcModule,
         NgOptimizedImage,
     ],

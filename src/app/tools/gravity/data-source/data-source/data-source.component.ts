@@ -7,9 +7,9 @@ import { GravityDataService } from '../../gravity-data.service';
 import { BehaviorSubject, Subject } from 'rxjs';
 
 @Component({
-    selector: 'app-data-source',
+    selector: 'app-gravity-data-source',
     templateUrl: './data-source.component.html',
-    styleUrls: ['./data-source.component.scss', "../../../shared/interface/tools.scss"]
+    styleUrls: ['./data-source.component.scss', '../../../shared/interface/tools.scss']
 })
 export class DataSourceComponent {
 

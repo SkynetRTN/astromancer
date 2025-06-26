@@ -29,6 +29,7 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
       events: {
         redraw: ()=> {
           console.log("Spectogram Redraw")
+          if(this.chartObject.series && this.chartObject.series[1]) console.log(this.chartObject.series[1].data)
         }
       },
     },
@@ -185,9 +186,11 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
     let axes = this.service.getAxes()
     this.chartObject.yAxis[0].setExtremes(axes.ymin, axes.ymax, false)
     this.chartObject.xAxis[0].setExtremes(axes.xmin, axes.xmax, false)
+    console.log("Spectogram limits set")
 
     //This prevents the glitched yellow spectogram. That wasn't an issue before, so it may be worth looking into other solutions.
     this.chartObject.series[1].setData([[0,0,0]])
+    console.log("Old spectogram data cleared")
 
     this.chartObject.series[1].update({
       // boostThreshold: 5000,
@@ -199,6 +202,7 @@ export class GravitySpectogramComponent implements AfterViewInit, OnDestroy {
       // zIndex: 0,
       type: 'heatmap',
     },false);
+    console.log("New spectogram data set")
   }
 
   updateModel() {

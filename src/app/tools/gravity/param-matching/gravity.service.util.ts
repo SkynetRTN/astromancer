@@ -41,7 +41,7 @@ export class SpectoData implements MyData {
   private axes: SpectoAxes;
   
   constructor() {
-    this.dataArr = [];
+    this.dataArr = [[0,0,0]];
     this.axes = {};
   }
 

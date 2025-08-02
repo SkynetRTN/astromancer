@@ -1,10 +1,5 @@
 .home-container {
   padding: 20px;
-  overflow: scroll;
-}
-
-.tool-container {
-  padding: 0 !important;
   width: 100%;
 }
 
@@ -18,8 +13,23 @@ h1, h2 {
 }
 
 .tile-container {
-  height: 450px;
+  display: inline-block;
+  height: 600px;
+  width: 450px;
   padding: 20px;
+  margin: 0 calc((33% - 450px) / 2);
+}
+
+@media screen and (max-width: 1350px) {
+  .tile-container {
+    margin: 0 calc((50% - 450px) / 2);
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .tile-container {
+    margin: 0 calc((100% - 450px) / 2);
+  }
 }
 
 .tile-container:hover {
@@ -34,8 +44,8 @@ h1, h2 {
 }
 
 .chart-preview {
-  height: 300px;
   width: 100%;
+  height: 400px;
   pointer-events: none;
 }
 
@@ -46,3 +56,9 @@ h1, h2 {
   cursor: default !important;
 }
 
+.thumbnail {
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  margin: 10px 0;
+}

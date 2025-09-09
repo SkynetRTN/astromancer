@@ -25,6 +25,7 @@ import {VenusModule} from "./tools/venus/venus.module";
 import {VariableModule} from "./tools/variable/variable.module";
 import {ScatterModule} from "./tools/scatter/scatter.module";
 import {SpectrumModule} from "./tools/spectrum/spectrum.module";
+import {GalaxyModule} from "./tools/galaxy/galaxy.module";
 import {DualModule} from "./tools/dual/dual.module";
 import {RadioCalibrateModule} from "./tools/radioCalibrate/radioCalibrate.module";
 import {RadioSearchModule} from './tools/radiosearch/radiosearch.module';
@@ -58,6 +59,7 @@ registerAllModules();
         VariableModule,
         ScatterModule,
         SpectrumModule,
+        GalaxyModule,
         DualModule,
         RadioCalibrateModule,
         RadioSearchModule,

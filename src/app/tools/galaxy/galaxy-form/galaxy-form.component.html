@@ -1,0 +1,12 @@
+<div class="container">
+  <form class="h-fit">
+    <mat-form-field appearance="fill">
+      <mat-label i18n>Select a Channel</mat-label>
+      <mat-select (selectionChange)="onSelect()" [formControl]="form" name="channel">
+        <mat-option *ngFor="let channel of channelOptions" [value]="channel">
+          {{channel}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</div>

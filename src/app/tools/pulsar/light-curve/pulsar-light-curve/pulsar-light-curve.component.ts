@@ -60,7 +60,6 @@ export class PulsarLightCurveComponent implements OnDestroy {
     reader.onload = () => {
       const file = reader.result as string;
 
-      // Split the file into lines
       const lines = file.split('\n');
       let type = "cal";
       if (lines[0].slice(0, 7) == "# Input") {
@@ -165,8 +164,25 @@ export class PulsarLightCurveComponent implements OnDestroy {
           source2: row['XX1'] as number
         }));
 
+        let totalDiff = 0;
+
+        for (let i = 1; i < this.ts.length; i++) {
+          totalDiff += this.ts[i] - this.ts[i - 1];
+        }
+
+        let avgDiff = Math.round(totalDiff / (this.ts.length - 1) * 2 * 100000) / 100000;
+
+        if (this.service.getPeriodogramMethod()) {
+          avgDiff = 1 / avgDiff
+          this.service.setPeriodogramEndPeriod(avgDiff);
+        } else {
+          this.service.setPeriodogramStartPeriod(avgDiff);
+        };
+
         this.rawData = combinedData;
         this.service.setData(combinedData);
+        this.service.setCombinedData(combinedData);
+        
         this.chartData = combinedData;
 
         const jd = this.chartData.map(item => item.jd);

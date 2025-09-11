@@ -117,6 +117,10 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         return this.pulsarPeriodFolding.getPeriodFoldingSpeed();
     }
 
+    getPeriodFoldingBins(): number {
+        return this.pulsarPeriodFolding.getPeriodFoldingBins();
+    }
+
     getPeriodFoldingTitle(): string {
         return this.pulsarPeriodFolding.getPeriodFoldingTitle();
     }
@@ -166,6 +170,13 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
     setPeriodFoldingSpeed(speed: number): void {
         this.pulsarPeriodFolding.setPeriodFoldingSpeed(speed);
+        this.pulsarStorage.savePeriodFolding(this.pulsarPeriodFolding.getPeriodFoldingStorageObject());
+        this.periodFoldingFormSubject.next(UpdateSource.INTERFACE);
+        this.periodFoldingDataSubject.next(this.pulsarData);
+    }
+
+    setPeriodFoldingBins(bins: number): void {
+        this.pulsarPeriodFolding.setPeriodFoldingBins(bins);
         this.pulsarStorage.savePeriodFolding(this.pulsarPeriodFolding.getPeriodFoldingStorageObject());
         this.periodFoldingFormSubject.next(UpdateSource.INTERFACE);
         this.periodFoldingDataSubject.next(this.pulsarData);
@@ -809,19 +820,31 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         // --- Generate audio ---
         const frequency = 1 / period;
         if (frequency < 400) {
-            // Burst mode
+            // --- Burst mode (TV static style) ---
             const interp1 = interpolateArray(normY1);
             const interp2 = normY2 ? interpolateArray(normY2) : null;
+
             const numPoints = interp1.length;
             const durationPerPoint = period / numPoints;
             const samplesPerPoint = Math.max(1, Math.floor(sampleRate * durationPerPoint));
             const totalSamples = audioData1.length;
 
             for (let i = 0; i < totalSamples; i++) {
+                // Pick index into interpolated data
                 const pointIndex = Math.floor((i % (numPoints * samplesPerPoint)) / samplesPerPoint);
-                audioData1[i] = (interp1[Math.min(pointIndex, numPoints - 1)] * 2 - 1) * (Math.random() * 0.2 + 0.9);
+
+                // Amplitude modulation values [0..1]
+                const amp1 = interp1[Math.min(pointIndex, numPoints - 1)];
+                const amp2 = interp2 ? interp2[Math.min(pointIndex, numPoints - 1)] : 0;
+
+                // White noise carrier [-1..1]
+                const noise1 = Math.random() * 2 - 1;
+                const noise2 = Math.random() * 2 - 1; // independent stereo noise (optional)
+
+                // Modulate noise by data
+                audioData1[i] = noise1 * amp1;
                 if (numChannels === 2 && interp2) {
-                    audioData2![i] = (interp2[Math.min(pointIndex, numPoints - 1)] * 2 - 1) * (Math.random() * 0.2 + 0.9) * cal;
+                    audioData2![i] = noise2 * amp2 * cal;
                 }
             }
         } else {
@@ -959,23 +982,32 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
         // --- Generate audio data ---
         if (frequency < 400) {
-            // Burst mode
+            // --- Burst mode using noise (TV static style) ---
             const numPoints1 = interp1.length;
             const numPoints2 = interp2 ? interp2.length : 0;
+
             const durationPerPoint1 = period / numPoints1;
             const samplesPerPoint1 = Math.max(1, Math.floor(sampleRate * durationPerPoint1));
+
             const durationPerPoint2 = interp2 ? period / numPoints2 : 1;
             const samplesPerPoint2 = interp2 ? Math.max(1, Math.floor(sampleRate * durationPerPoint2)) : 1;
 
             for (let i = 0; i < totalSamples; i++) {
+                // White noise carrier in [-1,1]
+                const noise = (Math.random() * 2 - 1);
+
+                // Channel 1 (modulated noise)
                 const idx1 = Math.floor((i % (numPoints1 * samplesPerPoint1)) / samplesPerPoint1);
-                audioData1[i] = (interp1[idx1] * 2 - 1) * (Math.random() * 0.2 + 0.9);
+                const volume1 = interp1[idx1]; // [0..1]
+                audioData1[i] = noise * volume1;
 
                 if (numChannels === 2 && interp2) {
+                    // Channel 2 (separately modulated noise)
                     const idx2 = Math.floor((i % (numPoints2 * samplesPerPoint2)) / samplesPerPoint2);
-                    audioData2![i] = (interp2[idx2] * 2 - 1) * (Math.random() * 0.2 + 0.9) * cal;
+                    const volume2 = interp2[idx2];
+                    audioData2![i] = noise * volume2; // can also use independent noise if you want stereo "spread"
                 }
-            };
+            }
         } else {
             // Waveform mode
             for (let i = 0; i < totalSamples; i++) {
@@ -995,9 +1027,10 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         // --- Normalize per channel to [-0.95, 0.95] ---
         const normalizeFloat32 = (arr: Float32Array) => {
             let maxAbs = 0;
+            const gain = 0.7;
             for (const v of arr) maxAbs = Math.max(maxAbs, Math.abs(v));
             if (maxAbs > 0) {
-                const scale = 0.95 / maxAbs;
+                const scale = (0.95 / maxAbs) * gain;
                 for (let i = 0; i < arr.length; i++) arr[i] *= scale;
             }
         };

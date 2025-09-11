@@ -512,6 +512,7 @@ export interface PulsarPeriodFoldingStorageObject {
   phase: number;
   cal: number;
   speed: number;
+  bins: number;
   title: string;
   xAxisLabel: string;
   yAxisLabel: string;
@@ -559,6 +560,7 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
   private phase: number;
   private cal: number;
   private speed: number;
+  private bins: number;
   private title: string;
   private xAxisLabel: string;
   private yAxisLabel: string;
@@ -570,6 +572,7 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
     this.phase = PulsarPeriodFolding.getDefaultStorageObject().phase;
     this.cal = PulsarPeriodFolding.getDefaultStorageObject().cal;
     this.speed = PulsarPeriodFolding.getDefaultStorageObject().speed;
+    this.bins = PulsarPeriodFolding.getDefaultStorageObject().bins;
     this.title = PulsarPeriodFolding.getDefaultStorageObject().title;
     this.xAxisLabel = PulsarPeriodFolding.getDefaultStorageObject().xAxisLabel;
     this.yAxisLabel = PulsarPeriodFolding.getDefaultStorageObject().yAxisLabel;
@@ -583,6 +586,7 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
       phase: 0,
       cal: 1,
       speed: 1,
+      bins: 100,
       title: "Title",
       xAxisLabel: "x",
       yAxisLabel: "y",
@@ -612,6 +616,10 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
 
   getPeriodFoldingSpeed(): number {
     return this.speed;
+  }
+
+  getPeriodFoldingBins(): number {
+    return this.bins;
   }
 
   getPeriodFoldingTitle(): string {
@@ -650,6 +658,10 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
     this.speed = speed;
   }
 
+  setPeriodFoldingBins(bins: number): void {
+    this.bins = bins;
+  }
+
   setPeriodFoldingTitle(title: string): void {
     this.title = title;
   }
@@ -669,6 +681,7 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
       phase: this.phase,
       cal: this.cal,
       speed: this.speed,
+      bins: this.bins,
       title: this.title,
       xAxisLabel: this.xAxisLabel,
       yAxisLabel: this.yAxisLabel,

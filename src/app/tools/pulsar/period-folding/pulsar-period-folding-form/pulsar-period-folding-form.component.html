@@ -61,16 +61,22 @@
   </div>
   <div class="row">
     <ng-container *ngIf="calFile; else speedSlider">
-      <div class="col-6">
+      <div class="col-4">
         <mat-form-field>
           <mat-label>Calibration</mat-label>
           <input matInput [formControlName]="'cal'" type="number" step="0.01" min="0.5" max="2">
         </mat-form-field>
       </div>
-      <div class="col-6">
+      <div class="col-4">
         <mat-form-field>
           <mat-label>Speed</mat-label>
           <input matInput [formControlName]="'speed'" type="number" step="0.01" min="0.01" max="5">
+        </mat-form-field>
+      </div>    
+      <div class="col-4">
+        <mat-form-field>
+          <mat-label>Bins</mat-label>
+          <input matInput [formControlName]="'bins'" type="number" step="10" min="10" max="1000">
         </mat-form-field>
       </div>      
     </ng-container>
@@ -182,7 +188,7 @@
       </my-input-slider>
     </div>
     <ng-container *ngIf="calFile">
-      <div class="col-6">
+      <div class="col-4">
         <my-input-slider (value)="onChange($event)"
                          [defaultValue]="0"
                          [label]="'Calibration'"
@@ -192,7 +198,7 @@
                          [value$]="calSubject">
         </my-input-slider>
       </div>
-      <div class="col-6">
+      <div class="col-4">
         <my-input-slider (value)="onChange($event)"
                          [defaultValue]="0"
                          [label]="'Speed'"
@@ -200,6 +206,16 @@
                          [minValue]="0.01"
                          [name]="'speed'"
                          [value$]="speedSubject">
+        </my-input-slider>
+      </div>
+      <div class="col-4">
+        <my-input-slider (value)="onChange($event)"
+                         [defaultValue]="100"
+                         [label]="'Bins'"
+                         [maxValue]="1000"
+                         [minValue]="10"
+                         [name]="'speed'"
+                         [value$]="binsSubject">
         </my-input-slider>
       </div>
     </ng-container>

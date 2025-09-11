@@ -25,6 +25,8 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
     = new BehaviorSubject<number>(this.service.getPeriodFoldingCal());
   speedSubject: BehaviorSubject<number>
     = new BehaviorSubject<number>(this.service.getPeriodFoldingSpeed());
+  binsSubject: BehaviorSubject<number>
+    = new BehaviorSubject<number>(this.service.getPeriodFoldingBins());
 
   calFile: boolean = true;
   periodMin: number = this.service.getJdRange();
@@ -62,7 +64,8 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
       period: new FormControl(this.periodMin),
       phase: new FormControl(0),
       cal: new FormControl(1),
-      speed: new FormControl(1)
+      speed: new FormControl(1),
+      bins: new FormControl(100)
     });
     this.formGroup.controls['chartTitle'].valueChanges.pipe(
       debounceTime(200),
@@ -94,6 +97,11 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
     ).subscribe((label: number) => {
       this.service.setPeriodFoldingSpeed(label);
     });
+    this.formGroup.controls['bins'].valueChanges.pipe(
+      debounceTime(200),
+    ).subscribe((label: number) => {
+      this.service.setPeriodFoldingBins(label);
+    });
     this.formGroup.controls['displayPeriod'].valueChanges.pipe(
       debounceTime(200),
     ).subscribe((period: PulsarDisplayPeriod) => {
@@ -109,6 +117,7 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
       this.formGroup.controls['yAxisLabel'].setValue(this.service.getPeriodFoldingYAxisLabel(), {emitEvent: false});
       this.formGroup.controls['cal'].setValue(this.service.getPeriodFoldingCal(), {emitEvent: false});
       this.formGroup.controls['speed'].setValue(this.service.getPeriodFoldingSpeed(), {emitEvent: false});
+      this.formGroup.controls['bins'].setValue(this.service.getPeriodFoldingBins(), {emitEvent: false});
       this.formGroup.controls['displayPeriod'].setValue(this.service.getPeriodFoldingDisplayPeriod(), {emitEvent: false});
       if (source !== UpdateSource.INTERFACE) {
         this.periodSubject.next(this.service.getPeriodFoldingPeriod());
@@ -168,11 +177,11 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
 
       if (this.calFile) {
         const data = this.service.getPeriodFoldingChartData();
-        let binnedData = this.service.binData(data['data'], 100 * parseInt(this.service.getPeriodFoldingDisplayPeriod()));
+        let binnedData = this.service.binData(data['data'], this.service.getPeriodFoldingBins());
         const xValues = binnedData.map(point => point[0]);
         const yValues = binnedData.map(point => point[1]);
 
-        let binnedData2 = this.service.binData(data['data2'], 100 * parseInt(this.service.getPeriodFoldingDisplayPeriod()));
+        let binnedData2 = this.service.binData(data['data2'], this.service.getPeriodFoldingBins());
         const yValues2 = binnedData2.map(point => point[1]);
         
         this.service.sonification(xValues, yValues, yValues2, this.service.getPeriodFoldingPeriod()); 
@@ -198,11 +207,11 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
 
       if (this.calFile) {
         const data = this.service.getPeriodFoldingChartData();
-        let binnedData = this.service.binData(data['data'], 100 * parseInt(this.service.getPeriodFoldingDisplayPeriod()));
+        let binnedData = this.service.binData(data['data'], this.service.getPeriodFoldingBins());
         const xValues = binnedData.map(point => point[0]);
         const yValues = binnedData.map(point => point[1]);
 
-        let binnedData2 = this.service.binData(data['data2'], 100 * parseInt(this.service.getPeriodFoldingDisplayPeriod()));
+        let binnedData2 = this.service.binData(data['data2'], this.service.getPeriodFoldingBins());
         const yValues2 = binnedData2.map(point => point[1]);
         
         this.service.sonificationBrowser(xValues, yValues, yValues2, this.service.getPeriodFoldingPeriod()); 

@@ -214,11 +214,11 @@ export class PulsarLightCurveComponent implements OnDestroy {
     const source2 = this.chartData.map(d => [d.jd, d.source2]);
 
     // Bin the data
-    let binnedData = this.service.binData(source1, 100);
+    let binnedData = this.service.binData(source1, this.service.getPeriodFoldingBins());
     const xValues = binnedData.map(point => point[0]);
     const yValues = binnedData.map(point => point[1]);
 
-    let binnedData2 = this.service.binData(source2, 100);
+    let binnedData2 = this.service.binData(source2, this.service.getPeriodFoldingBins());
     const yValues2 = binnedData2.map(point => point[1]);
 
     const duration = xValues[xValues.length - 1] - xValues[0];
@@ -238,11 +238,11 @@ export class PulsarLightCurveComponent implements OnDestroy {
     const source1 = this.chartData.map(d => [d.jd, d.source1]);
     const source2 = this.chartData.map(d => [d.jd, d.source2]);
 
-    let binnedData = this.service.binData(source1, 100);
+    let binnedData = this.service.binData(source1, this.service.getPeriodFoldingBins());
     const xValues = binnedData.map(point => point[0]);
     const yValues = binnedData.map(point => point[1]);
 
-    let binnedData2 = this.service.binData(source2, 100);
+    let binnedData2 = this.service.binData(source2, this.service.getPeriodFoldingBins());
     const yValues2 = binnedData2.map(point => point[1]);
 
     const duration = xValues[xValues.length - 1] - xValues[0];

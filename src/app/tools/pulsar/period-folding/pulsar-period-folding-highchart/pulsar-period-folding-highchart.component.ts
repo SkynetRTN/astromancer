@@ -78,8 +78,7 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
 
   setData() {
     const data = this.service.getPeriodFoldingChartData();
-    const bins = 100 * parseInt(this.service.getPeriodFoldingDisplayPeriod()); 
-    console.log(bins);
+    const bins = this.service.getPeriodFoldingBins() * parseInt(this.service.getPeriodFoldingDisplayPeriod()); 
     const binnedData1 = this.service.binData(data['data'], bins);
     
     this.chartObject.addSeries({
@@ -177,7 +176,7 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
 
     if (!sum) {
       // --- Case A: both data and data2 present ---
-      const binsPerPeriod = 100;
+      const binsPerPeriod = this.service.getPeriodFoldingBins();
 
       // Main dataset
       const binnedData1 = foldAndBin(data['data'] as [number, number][], binsPerPeriod);

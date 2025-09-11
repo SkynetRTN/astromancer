@@ -87,24 +87,24 @@
       </div>
     </ng-template>
   </div>
-  <div class="row" style="padding-bottom: 5%">
-    <div class="col-12">
-      <button (click)="sonificationBrowser()" mat-raised-button>
+  <div class="row" style="padding-bottom: 5%;">
+    <div class="col-6">
+      <button (click)="sonificationBrowser()" mat-raised-button style="width: 100%;">
         {{ isPlaying ? 'Stop' : 'Sonify' }}
-      </button>      
-    </div>
-  </div>
-  <div class="row" style="padding-bottom: 5%">
-    <div class="col-6">
-      <button (click)="sonification()" mat-raised-button style="white-space: nowrap;">Save Sonify</button>
+      </button>
     </div>
     <div class="col-6">
-      <button (click)="saveGraph()" mat-raised-button>Save Graph</button>
+      <button (click)="sonification()" mat-raised-button style="white-space: nowrap; width: 100%;">Save Sonify</button>
     </div>
   </div>
-  <div class="row">
-    <div class="col-12">
-      <button (click)="resetPulsar()" mat-raised-button>Reset Pulsar!</button>
+  <div class="row" style="padding-bottom: 5%;">
+    <div class="col-6">
+      <button (click)="saveGraph()" mat-raised-button style="width: 100%;">Save Graph</button>
+    </div>
+    <div class="col-6">
+      <button (click)="resetPulsar()" mat-raised-button style="width: 100%;">
+        Reset Tool!
+      </button>
     </div>
   </div>
 </form>
@@ -145,19 +145,21 @@
     <div class="col-6">
       <ng-container *ngIf="calFile; else fixedSlider">
         <my-input-slider (value)="onChange($event)" [defaultValue]="periodMax"
-                        [inputPrecision]="4"
-                        [isLog]="true" [label]="'Period (sec)'"
-                        [maxValue]="periodMax" [minValue]="0.001" [name]="'period'"
-                        [stepValue]="periodStep" [step]="periodStep" [value$]="periodSubject">
+                         [inputPrecision]="4"
+                         [isLog]="true" [label]="'Period (sec)'"
+                         [maxValue]="periodMax" [minValue]="0.001"
+                         [name]="'period'"
+                         [stepValue]="periodStep" [step]="periodStep" [value$]="periodSubject">
         </my-input-slider>
       </ng-container>
       <ng-template #fixedSlider>
         <my-input-slider (value)="onChange($event)" [defaultValue]="periodMax"
-                        [inputPrecision]="4"
-                        [isLog]="false" [label]="'Period (sec)'"
-                        [maxValue]="periodMax" [minValue]="periodMax" [name]="'period'"
-                        [stepValue]="periodStep" [step]="periodStep" [value$]="periodSubject">
-        </my-input-slider>        
+                         [inputPrecision]="4"
+                         [isLog]="false" [label]="'Period (sec)'"
+                         [maxValue]="periodMax" [minValue]="periodMax"
+                         [name]="'period'"
+                         [stepValue]="periodStep" [step]="periodStep" [value$]="periodSubject">
+        </my-input-slider>
       </ng-template>
     </div>
     <div class="col-6">
@@ -167,49 +169,59 @@
                        [name]="'phase'" [value$]="phaseSubject">
       </my-input-slider>
     </div>
-    <div class="row">
-      <div class="col-12">
-        <ng-container *ngIf="calFile; else speedSlider">
-          <my-input-slider (value)="onChange($event)"
-                           [defaultValue]="0"
-                           [label]="'Calibration'"
-                           [maxValue]="2"
-                           [minValue]="0.5"
-                           [name]="'calibration'"
-                           [value$]="calSubject">
-          </my-input-slider>
-        </ng-container>
-        <ng-template #speedSlider>
-          <my-input-slider (value)="onChange($event)"
-                           [defaultValue]="0"
-                           [label]="'Speed'"
-                           [maxValue]="2"
-                           [minValue]="0.01"
-                           [name]="'speed'"
-                           [value$]="speedSubject">
-          </my-input-slider>
-        </ng-template>
-      </div>
-    </div>    
-  </div>
-  <div class="row" style="padding-bottom: 5%">
-    <div class="col-12">
-      <button (click)="sonificationBrowser()" mat-raised-button>
-        {{ isPlaying ? 'Stop' : 'Sonify' }}
-      </button>      
-    </div>
-  </div>
-  <div class="row" style="padding-bottom: 5%">
-    <div class="col-6">
-      <button (click)="sonification()" mat-raised-button style="white-space: nowrap;">Save Sonify</button>
-    </div>
-    <div class="col-6">
-      <button (click)="saveGraph()" mat-raised-button>Save Graph</button>
-    </div>
   </div>
   <div class="row">
-    <div class="col-12">
-      <button (click)="resetPulsar()" mat-raised-button>Reset Pulsar!</button>
+    <div class="col-12" *ngIf="!calFile">
+      <my-input-slider (value)="onChange($event)"
+                       [defaultValue]="0"
+                       [label]="'Speed'"
+                       [maxValue]="2"
+                       [minValue]="0.01"
+                       [name]="'speed'"
+                       [value$]="speedSubject">
+      </my-input-slider>
+    </div>
+    <ng-container *ngIf="calFile">
+      <div class="col-6">
+        <my-input-slider (value)="onChange($event)"
+                         [defaultValue]="0"
+                         [label]="'Calibration'"
+                         [maxValue]="2"
+                         [minValue]="0.5"
+                         [name]="'calibration'"
+                         [value$]="calSubject">
+        </my-input-slider>
+      </div>
+      <div class="col-6">
+        <my-input-slider (value)="onChange($event)"
+                         [defaultValue]="0"
+                         [label]="'Speed'"
+                         [maxValue]="2"
+                         [minValue]="0.01"
+                         [name]="'speed'"
+                         [value$]="speedSubject">
+        </my-input-slider>
+      </div>
+    </ng-container>
+  </div>
+  <div class="row" style="padding-bottom: 2%;">
+    <div class="col-6">
+      <button (click)="sonificationBrowser()" mat-raised-button style="width: 100%;">
+        {{ isPlaying ? 'Stop' : 'Sonify' }}
+      </button>
+    </div>
+    <div class="col-6">
+      <button (click)="sonification()" mat-raised-button style="white-space: nowrap; width: 100%;">Save Sonify</button>
+    </div>
+  </div>
+  <div class="row" style="padding-bottom: 2%;">
+    <div class="col-6">
+      <button (click)="saveGraph()" mat-raised-button style="width: 100%;">Save Graph</button>
+    </div>
+    <div class="col-6">
+      <button (click)="resetPulsar()" mat-raised-button style="width: 100%;">
+        Reset Tool!
+      </button>
     </div>
   </div>
 </form>

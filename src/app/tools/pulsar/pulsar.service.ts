@@ -1012,14 +1012,14 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
             // Waveform mode
             for (let i = 0; i < totalSamples; i++) {
                 const t = i / sampleRate;
-                const phase = (t % period) / period;
 
-                const idx1 = Math.floor(phase * interp1.length);
-                audioData1[i] = interp1[idx1] * 2 - 1;
+                // Instead of forcing modulo, just advance through data naturally
+                const idx1 = Math.floor((t / period) * interp1.length) % interp1.length;
+                audioData1[i] = (interp1[idx1] * 2 - 1);
 
                 if (numChannels === 2 && interp2) {
-                    const idx2 = Math.floor(phase * interp2.length);
-                    audioData2![i] = interp2[idx2] * 2 - 1;
+                    const idx2 = Math.floor((t / period) * interp2.length) % interp2.length;
+                    audioData2![i] = (interp2[idx2] * 2 - 1);
                 }
             }
         }

@@ -17,6 +17,10 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
     chart: {
       animation: false,
       styledMode: false,
+      zooming: {
+        type: 'x',
+        key: 'shift',
+      },
     },
     legend: {
       align: 'center',

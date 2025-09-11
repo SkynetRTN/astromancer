@@ -19,6 +19,10 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
     chart: {
       animation: false,
       styledMode: true,
+      zooming: {
+        type: 'x',
+        key: 'shift',
+      },
     },
     yAxis: {
     },

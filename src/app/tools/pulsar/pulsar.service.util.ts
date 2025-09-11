@@ -287,10 +287,10 @@ export class PulsarData implements MyData {
 
   public static getDefaultDataDict(): PulsarDataDict[] {
     const data: PulsarDataDict[] = [];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 100; i++) {
       const randomData = (): number => parseFloat((Math.random() * 10000).toFixed(2));
       data.push({
-        jd: randomData()+i*10000,
+        jd: i,
         source1: randomData(),
         source2: randomData(),
       });

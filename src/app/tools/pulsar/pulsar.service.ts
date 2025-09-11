@@ -35,7 +35,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
     isPlaying = false;
     private audioCtx: AudioContext | null = null;
-    private audioSource: AudioBufferSourceNode | null = null;
+    private audioSource: AudioBufferSourceNode | OscillatorNode | null = null;
 
     private dataSubject: BehaviorSubject<PulsarData>
         = new BehaviorSubject<PulsarData>(this.pulsarData);
@@ -230,17 +230,17 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
                     pfData2.push([temp_x, data[i][2]!]);
                 }
     
-                if (this.getPeriodFoldingDisplayPeriod() === PulsarDisplayPeriod.TWO) {
-                    let new_x = temp_x + parseFloat(period as any);
+                // if (this.getPeriodFoldingDisplayPeriod() === PulsarDisplayPeriod.TWO) {
+                //     let new_x = temp_x + parseFloat(period as any);
     
-                    // Push second cycle for series 1
-                    pfData1.push([new_x, data[i][1]!]);
+                //     // Push second cycle for series 1
+                //     pfData1.push([new_x, data[i][1]!]);
     
-                    // Push second cycle for series 2 if not null
-                    if (data[i][2] !== null) {
-                        pfData2.push([new_x, data[i][2]!]);
-                    }
-                }
+                //     // Push second cycle for series 2 if not null
+                //     if (data[i][2] !== null) {
+                //         pfData2.push([new_x, data[i][2]!]);
+                //     }
+                // }
             }
         }
    
@@ -694,8 +694,8 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
     setCombinedData(data: any[]): void {
         this.combinedDataSubject.next(data);
-      }
-    
+    }
+
     getCombinedData(): any[] {
         if (this.combinedDataSubject.value == null) {
 
@@ -768,183 +768,267 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
     }
 
 
-    sonification(xValues: number[], yValues: number[], yValues2: number[] | null, period: number) {
+    sonification(
+        xValues: number[],
+        yValues: number[],
+        yValues2: number[] | null,
+        period: number
+    ) {
         if (yValues.length === 0) {
             console.error("No data to sonify.");
             return;
         }
 
+        const cal = this.getPeriodFoldingCal();
         const originalPeriod = period;
-        if (yValues2) {
-            const cal = this.getPeriodFoldingCal();
-            yValues = yValues.map((y, i) => y + cal * yValues2[i]);
-            period = period * (1 / this.getPeriodFoldingSpeed()) * Number(this.getPeriodFoldingDisplayPeriod());
-        } else {
-            period = period * (1 / this.getPeriodFoldingSpeed());
-        }
-    
-        let lengthInSeconds = 60;
-        const sampleRate = 88200; 
-        const interpolationFactor = 4;
-        const displayPeriod = this.getPeriodFoldingDisplayPeriod();
+        const sampleRate = 44100;
+        const durationSeconds = 60;
+        const numChannels = yValues2 ? 2 : 1;
 
-        let numRepeats = Math.ceil((lengthInSeconds / period) * Number(displayPeriod)) + 5;
+        // --- Period folding ---
+        period *= 1 / this.getPeriodFoldingSpeed();
+
+        // --- Joint normalization across channels ---
+        const normalize = (arr: number[]) => {
+            const min = Math.min(...arr);
+            const max = Math.max(...arr);
+            return arr.map(y => (y - min) / (max - min || 1));
+        };
+
+        const normY1 = normalize(yValues);
+        const normY2 = yValues2 ? normalize(yValues2) : null;
+
+        // --- Adaptive interpolation ---
+        const minSamplesPerCycle = Math.max(64, Math.floor(sampleRate / (1 / period)));
+        const interpFactor = Math.ceil(minSamplesPerCycle / normY1.length);
+        const interpolateArray = (arr: number[]) => this.interpolateLinear(arr, interpFactor);
+
+        const audioData1 = new Float32Array(durationSeconds * sampleRate);
+        const audioData2 = numChannels === 2 ? new Float32Array(durationSeconds * sampleRate) : null;
         
-        if (numRepeats * yValues.length > 500) {
-            numRepeats = 500;
-            lengthInSeconds = Math.min(60, numRepeats * period * (1 / this.getPeriodFoldingSpeed()));
-        }; 
-        
-        let repeatedYValues: number[] = [];
-        for (let i = 0; i < numRepeats; i++) {
-          repeatedYValues = repeatedYValues.concat(yValues);
+        // --- Generate audio ---
+        const frequency = 1 / period;
+        if (frequency < 400) {
+            // Burst mode
+            const interp1 = interpolateArray(normY1);
+            const interp2 = normY2 ? interpolateArray(normY2) : null;
+            const numPoints = interp1.length;
+            const durationPerPoint = period / numPoints;
+            const samplesPerPoint = Math.max(1, Math.floor(sampleRate * durationPerPoint));
+            const totalSamples = audioData1.length;
+
+            for (let i = 0; i < totalSamples; i++) {
+                const pointIndex = Math.floor((i % (numPoints * samplesPerPoint)) / samplesPerPoint);
+                audioData1[i] = (interp1[Math.min(pointIndex, numPoints - 1)] * 2 - 1) * (Math.random() * 0.2 + 0.9);
+                if (numChannels === 2 && interp2) {
+                    audioData2![i] = (interp2[Math.min(pointIndex, numPoints - 1)] * 2 - 1) * (Math.random() * 0.2 + 0.9) * cal;
+                }
+            }
+        } else {
+            // Waveform mode
+            const interp1 = interpolateArray(normY1);
+            const interp2 = normY2 ? interpolateArray(normY2) : null;
+            const numPoints = interp1.length;
+
+            for (let i = 0; i < audioData1.length; i++) {
+                const t = i / sampleRate;
+                const phase = (t % period) / period;
+                const index = Math.floor(phase * numPoints);
+                audioData1[i] = interp1[index] * 2 - 1;
+                if (numChannels === 2 && interp2) {
+                    audioData2![i] = interp2[index] * 2 - 1;
+                }
+            }
         }
-      
-        const interpolatedY = this.interpolateLinear(repeatedYValues, interpolationFactor);
-        const numPoints = interpolatedY.length;
-      
-        const durationPerPoint = ((numRepeats * period) / numPoints);
-        const samplesPerPoint = Math.floor(sampleRate * durationPerPoint);
-        const totalSamples = Math.floor(sampleRate * lengthInSeconds);
-    
-        const minY = Math.min(...interpolatedY);
-        const maxY = Math.max(...interpolatedY);
-        const normalizedY = interpolatedY.map(y => (y - minY) / (maxY - minY || 1));
-    
-        const audioData = new Float32Array(totalSamples);
-        const constantFreq = 440;
-    
-        for (let i = 0; i < totalSamples; i++) {
-            const time = i / sampleRate;
-            const pointIndex = Math.floor(i / samplesPerPoint);
-            const volume = normalizedY[Math.min(pointIndex, normalizedY.length - 1)];
-            audioData[i] = volume * Math.sin(2 * Math.PI * constantFreq * time);
+
+        let globalMaxAbs = 0;
+        for (let i = 0; i < audioData1.length; i++) {
+            globalMaxAbs = Math.max(globalMaxAbs, Math.abs(audioData1[i]));
+            if (numChannels === 2 && audioData2) globalMaxAbs = Math.max(globalMaxAbs, Math.abs(audioData2[i]));
         }
-    
-        // Convert to 16-bit PCM
-        const int16Data = new Int16Array(totalSamples);
-        for (let i = 0; i < totalSamples; i++) {
-            int16Data[i] = Math.max(-32767, Math.min(32767, Math.floor(audioData[i] * 32767)));
+        if (globalMaxAbs > 0) {
+            const scale = 0.95 / globalMaxAbs;
+            for (let i = 0; i < audioData1.length; i++) {
+                audioData1[i] *= scale;
+                if (numChannels === 2 && audioData2) audioData2[i] *= scale;
+            }
         }
-    
+
+        // --- Convert to interleaved 16-bit PCM ---
+        const int16Data = new Int16Array(audioData1.length * numChannels);
+        const gain = 1;
+        for (let i = 0; i < audioData1.length; i++) {
+            int16Data[i * numChannels] = Math.floor(audioData1[i] * gain * 32767);
+            if (numChannels === 2 && audioData2) {
+                int16Data[i * 2 + 1] = Math.floor(audioData2[i] * gain * 32767);
+            }
+        }
+
+        // --- Write WAV header ---
         const bytesPerSample = 2;
-        const dataSize = totalSamples * bytesPerSample;
+        const dataSize = int16Data.length * bytesPerSample;
         const buffer = new ArrayBuffer(44 + dataSize);
         const view = new DataView(buffer);
-    
-        // WAV Header
-        this.writeString(view, 0, 'RIFF');
+
+        this.writeString(view, 0, "RIFF");
         view.setUint32(4, 36 + dataSize, true);
-        this.writeString(view, 8, 'WAVE');
-        this.writeString(view, 12, 'fmt ');
-        view.setUint32(16, 16, true);
-        view.setUint16(20, 1, true);
-        view.setUint16(22, 1, true);
+        this.writeString(view, 8, "WAVE");
+        this.writeString(view, 12, "fmt ");
+        view.setUint32(16, 16, true); // fmt chunk size
+        view.setUint16(20, 1, true); // PCM format
+        view.setUint16(22, numChannels, true);
         view.setUint32(24, sampleRate, true);
-        view.setUint32(28, sampleRate * bytesPerSample, true);
-        view.setUint16(32, bytesPerSample, true);
+        view.setUint32(28, sampleRate * numChannels * bytesPerSample, true);
+        view.setUint16(32, numChannels * bytesPerSample, true);
         view.setUint16(34, 16, true);
-        this.writeString(view, 36, 'data');
+        this.writeString(view, 36, "data");
         view.setUint32(40, dataSize, true);
-    
+
         for (let i = 0, offset = 44; i < int16Data.length; i++, offset += 2) {
             view.setInt16(offset, int16Data[i], true);
         }
-    
-        // Trigger download
-        const blob = new Blob([new Uint8Array(buffer)], { type: 'audio/wav' });
+
+        // --- Download WAV ---
+        const blob = new Blob([new Uint8Array(buffer)], { type: "audio/wav" });
         const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
+        const a = document.createElement("a");
         a.href = url;
-        a.download = String(originalPeriod) + 's_pulsar_sonification.wav';
+        a.download = `${originalPeriod}s_pulsar_sonification.wav`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
     }
-    
 
-    sonificationBrowser(xValues: number[], yValues: number[], yValues2: number[] | null, period: number) {
+
+    sonificationBrowser(
+        xValues: number[],
+        yValues: number[],
+        yValues2: number[] | null,
+        period: number
+    ) {
         if (this.isPlaying) {
-          this.audioSource?.stop();
-          this.audioCtx?.close();
-          this.audioCtx = null;
-          this.audioSource = null;
-          this.isPlaying = false;
-          return;
+            this.audioSource?.stop();
+            this.audioCtx?.close();
+            this.audioCtx = null;
+            this.audioSource = null;
+            this.isPlaying = false;
+            return;
         }
-      
+
         if (yValues.length === 0) {
-          console.error("No data to sonify.");
-          return;
+            console.error("No data to sonify.");
+            return;
         }
 
+        const cal = this.getPeriodFoldingCal();
+        const numChannels = yValues2 ? 2 : 1;
+        const sampleRate = 44100;
+        const durationSeconds = 60;
+
+        // --- Apply period folding ---
+        period *= 1 / this.getPeriodFoldingSpeed();
+
+        // --- Apply calibration to yValues2 ---
         if (yValues2) {
-            const cal = this.getPeriodFoldingCal();
-            yValues = yValues.map((y, i) => y + cal * yValues2[i]);
-            period = period * (1 / this.getPeriodFoldingSpeed()) * Number(this.getPeriodFoldingDisplayPeriod());
+            for (let i = 0; i < yValues2.length; i++) yValues2[i] *= cal;
+        }
+
+        // --- Normalize each channel separately to [0,1] ---
+        const normalize = (arr: number[]) => {
+            const min = Math.min(...arr);
+            const max = Math.max(...arr);
+            return arr.map(y => (y - min) / (max - min || 1));
+        };
+
+        const normY1 = normalize(yValues);
+        const normY2 = yValues2 ? normalize(yValues2) : null;
+
+        // --- Adaptive interpolation ---
+        const frequency = 1 / period;
+        const minSamplesPerCycle = Math.max(64, Math.floor(sampleRate / frequency));
+        const interpFactor1 = Math.ceil(minSamplesPerCycle / normY1.length);
+        const interpFactor2 = normY2 ? Math.ceil(minSamplesPerCycle / normY2.length) : 1;
+
+        const interp1 = this.interpolateLinear(normY1, interpFactor1);
+        const interp2 = normY2 ? this.interpolateLinear(normY2, interpFactor2) : null;
+
+        const totalSamples = durationSeconds * sampleRate;
+        const audioData1 = new Float32Array(totalSamples);
+        const audioData2 = numChannels === 2 ? new Float32Array(totalSamples) : null;
+
+        // --- Generate audio data ---
+        if (frequency < 400) {
+            // Burst mode
+            const numPoints1 = interp1.length;
+            const numPoints2 = interp2 ? interp2.length : 0;
+            const durationPerPoint1 = period / numPoints1;
+            const samplesPerPoint1 = Math.max(1, Math.floor(sampleRate * durationPerPoint1));
+            const durationPerPoint2 = interp2 ? period / numPoints2 : 1;
+            const samplesPerPoint2 = interp2 ? Math.max(1, Math.floor(sampleRate * durationPerPoint2)) : 1;
+
+            for (let i = 0; i < totalSamples; i++) {
+                const idx1 = Math.floor((i % (numPoints1 * samplesPerPoint1)) / samplesPerPoint1);
+                audioData1[i] = (interp1[idx1] * 2 - 1) * (Math.random() * 0.2 + 0.9);
+
+                if (numChannels === 2 && interp2) {
+                    const idx2 = Math.floor((i % (numPoints2 * samplesPerPoint2)) / samplesPerPoint2);
+                    audioData2![i] = (interp2[idx2] * 2 - 1) * (Math.random() * 0.2 + 0.9) * cal;
+                }
+            };
         } else {
-            period = period * (1 / this.getPeriodFoldingSpeed());
+            // Waveform mode
+            for (let i = 0; i < totalSamples; i++) {
+                const t = i / sampleRate;
+                const phase = (t % period) / period;
+
+                const idx1 = Math.floor(phase * interp1.length);
+                audioData1[i] = interp1[idx1] * 2 - 1;
+
+                if (numChannels === 2 && interp2) {
+                    const idx2 = Math.floor(phase * interp2.length);
+                    audioData2![i] = interp2[idx2] * 2 - 1;
+                }
+            }
         }
 
-        let lengthInSeconds = 60;
-        const sampleRate = 88200;
-        const interpolationFactor = 4;
-        const displayPeriod = this.getPeriodFoldingDisplayPeriod();
+        // --- Normalize per channel to [-0.95, 0.95] ---
+        const normalizeFloat32 = (arr: Float32Array) => {
+            let maxAbs = 0;
+            for (const v of arr) maxAbs = Math.max(maxAbs, Math.abs(v));
+            if (maxAbs > 0) {
+                const scale = 0.95 / maxAbs;
+                for (let i = 0; i < arr.length; i++) arr[i] *= scale;
+            }
+        };
 
-        let numRepeats = Math.ceil((lengthInSeconds / period) * Number(displayPeriod));
+        normalizeFloat32(audioData1);
+        if (numChannels === 2 && audioData2) normalizeFloat32(audioData2);
 
-        if (numRepeats * yValues.length > 500) {
-            numRepeats = 500;
-            lengthInSeconds = Math.min(60, numRepeats * period * (1 / this.getPeriodFoldingSpeed()));
-        }; 
-
-        let repeatedYValues: number[] = [];
-        for (let i = 0; i < numRepeats; i++) {
-          repeatedYValues = repeatedYValues.concat(yValues);
-        }
-      
-        const interpolatedY = this.interpolateLinear(repeatedYValues, interpolationFactor);
-        const numPoints = interpolatedY.length;
-      
-        const durationPerPoint = ((numRepeats * period) / numPoints);
-        const samplesPerPoint = Math.max(1, Math.floor(sampleRate * durationPerPoint));
-        const totalSamples = Math.floor(sampleRate * lengthInSeconds);
-      
-        const minY = Math.min(...interpolatedY);
-        const maxY = Math.max(...interpolatedY);
-        const normalizedY = interpolatedY.map(y => (y - minY) / (maxY - minY || 1));
-      
-        const audioData = new Float32Array(totalSamples);
-        const constantFreq = 440;
-      
-        for (let i = 0; i < totalSamples; i++) {
-          const time = i / sampleRate;
-          const pointIndex = Math.floor(i / samplesPerPoint);
-          const volume = normalizedY[Math.min(pointIndex, normalizedY.length - 1)];
-          audioData[i] = volume * Math.sin(2 * Math.PI * constantFreq * time);
-        }
-      
+        // --- AudioContext buffer setup ---
         this.audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
-        const buffer = this.audioCtx.createBuffer(1, audioData.length, sampleRate);
-        buffer.copyToChannel(audioData, 0);
-      
+        const buffer = this.audioCtx.createBuffer(numChannels, totalSamples, sampleRate);
+        buffer.getChannelData(0).set(audioData1);
+        if (numChannels === 2 && audioData2) buffer.getChannelData(1).set(audioData2);
+
         this.audioSource = this.audioCtx.createBufferSource();
         this.audioSource.buffer = buffer;
+        this.audioSource.loop = true;
         this.audioSource.connect(this.audioCtx.destination);
         this.audioSource.start();
-      
+        this.audioSource.stop(this.audioCtx.currentTime + durationSeconds);
+
         this.audioSource.onended = () => {
-          this.isPlaying = false;
-          this.audioCtx?.close();
-          this.audioCtx = null;
-          this.audioSource = null;
+            this.isPlaying = false;
+            this.audioCtx?.close();
+            this.audioCtx = null;
+            this.audioSource = null;
         };
-      
+
         this.isPlaying = true;
-    }         
-      
-       
+    }
+
+
     interpolateLinear(data: number[], factor: number): number[] {
         const result: number[] = [];
         for (let i = 0; i < data.length - 1; i++) {

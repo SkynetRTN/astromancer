@@ -168,11 +168,11 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
 
       if (this.calFile) {
         const data = this.service.getPeriodFoldingChartData();
-        let binnedData = this.service.binData(data['data'], 100);
+        let binnedData = this.service.binData(data['data'], 100 * parseInt(this.service.getPeriodFoldingDisplayPeriod()));
         const xValues = binnedData.map(point => point[0]);
         const yValues = binnedData.map(point => point[1]);
 
-        let binnedData2 = this.service.binData(data['data2'], 100);
+        let binnedData2 = this.service.binData(data['data2'], 100 * parseInt(this.service.getPeriodFoldingDisplayPeriod()));
         const yValues2 = binnedData2.map(point => point[1]);
         
         this.service.sonification(xValues, yValues, yValues2, this.service.getPeriodFoldingPeriod()); 
@@ -198,11 +198,11 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
 
       if (this.calFile) {
         const data = this.service.getPeriodFoldingChartData();
-        let binnedData = this.service.binData(data['data'], 100);
+        let binnedData = this.service.binData(data['data'], 100 * parseInt(this.service.getPeriodFoldingDisplayPeriod()));
         const xValues = binnedData.map(point => point[0]);
         const yValues = binnedData.map(point => point[1]);
 
-        let binnedData2 = this.service.binData(data['data2'], 100);
+        let binnedData2 = this.service.binData(data['data2'], 100 * parseInt(this.service.getPeriodFoldingDisplayPeriod()));
         const yValues2 = binnedData2.map(point => point[1]);
         
         this.service.sonificationBrowser(xValues, yValues, yValues2, this.service.getPeriodFoldingPeriod()); 

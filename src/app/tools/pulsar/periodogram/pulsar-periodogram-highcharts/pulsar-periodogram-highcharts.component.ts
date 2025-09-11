@@ -16,7 +16,7 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
   chartOptions: Highcharts.Options = {
     chart: {
       animation: false,
-      styledMode: true,
+      styledMode: false,
     },
     legend: {
       align: 'center',
@@ -71,54 +71,105 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
    * Handles the initial creation of series from periodogram data.
    */
   setData() {
-    const periodogramData = this.service.getChartPeriodogramDataArray(
-      this.service.getPeriodogramStartPeriod(),
-      this.service.getPeriodogramEndPeriod()
-    );
+    const start = this.service.getPeriodogramStartPeriod();
+    const end = this.service.getPeriodogramEndPeriod();
+    const periodogramData = this.service.getChartPeriodogramDataArray(start, end);
 
-    // Process each periodogram data set and add two series for each
+    // Add periodogram channels
     Object.entries(periodogramData).forEach(([key, data], index) => {
-      // Add the primary line series
       this.chartObject.addSeries({
-        name: `Channel 1`,
-        data: data,
-        type: 'line',
+        id: `channel-${index}`,
+        name: `Channel ${index + 1}`,
+        type: "line",
+        data,
         marker: {
-          symbol: 'circle',
+          symbol: "circle",
           radius: 3,
-        }
+        },
       });
     });
+
+    // Add static confidence lines
+    this.addConfidenceLines(start, end);
   }
 
   /**
    * Handles dynamic updates of the series data.
    */
   updateData() {
-    const periodogramData = this.service.getChartPeriodogramDataArray(
-      this.service.getPeriodogramStartPeriod(),
-      this.service.getPeriodogramEndPeriod()
-    );
+    const start = this.service.getPeriodogramStartPeriod();
+    const end = this.service.getPeriodogramEndPeriod();
+    const periodogramData = this.service.getChartPeriodogramDataArray(start, end);
 
-    // Iterate through each series, updating or adding if necessary
-    let seriesIndex = 0; // Tracks the current series index
+    // Update or add channel series
+    let index = 0;
     Object.entries(periodogramData).forEach(([key, data]) => {
+      const seriesId = `channel-${index}`;
+      const existing = this.chartObject.get(seriesId);
 
-      if (this.chartObject.series.length > seriesIndex) {
-        this.chartObject.series[seriesIndex].update({
-          name: `Channel ${seriesIndex + 1}`,
-          data: data,
-          type: 'line',
+      if (existing) {
+        (existing as Highcharts.Series).setData(data, true);
+      } else {
+        this.chartObject.addSeries({
+          id: seriesId,
+          name: `Channel ${index + 1}`,
+          type: "line",
+          data,
+          marker: {
+            symbol: "circle",
+            radius: 3,
+          },
         });
       }
-      seriesIndex++;
+      index++;
     });
 
-    // Remove extra series if data has fewer series now
-    while (seriesIndex < this.chartObject.series.length) {
-      this.chartObject.series[this.chartObject.series.length - 1].remove();
-    }
+    // Remove excess series if fewer channels now
+    this.chartObject.series
+      .filter((s: any) => s.userOptions.id?.startsWith("channel-"))
+      .slice(index)
+      .forEach((s: any) => s.remove());
+
+    // Update confidence lines
+    this.addConfidenceLines(start, end);
   }
+
+  /**
+   * Adds or updates horizontal confidence lines.
+   */
+  private addConfidenceLines(x0: number, x1: number) {
+    const points = this.service.getPeriodogramPoints();
+    const levels = [
+      { id: "conf-50", name: "50% Confidence", alpha: 0.5, color: "red" },
+      { id: "conf-95", name: "95% Confidence", alpha: 0.05, color: "orange" },
+      { id: "conf-99", name: "99% Confidence", alpha: 0.01, color: "green" },
+    ];
+
+    levels.forEach(({ id, name, alpha, color }) => {
+      const z = -Math.log(1 - (1 - alpha) ** (1 / points));
+      const data: [number, number][] = [
+        [x0, z],
+        [x1, z],
+      ];
+
+      const existing = this.chartObject.get(id);
+      if (existing) {
+        (existing as Highcharts.Series).setData(data, true);
+      } else {
+        this.chartObject.addSeries({
+          id,
+          name,
+          type: "line",
+          data,
+          color,
+          dashStyle: "ShortDash",
+          marker: { enabled: false },
+          enableMouseTracking: false,
+        });
+      }
+    });
+  }
+
 
   ngOnDestroy(): void {
     this.destroy$.next(null);

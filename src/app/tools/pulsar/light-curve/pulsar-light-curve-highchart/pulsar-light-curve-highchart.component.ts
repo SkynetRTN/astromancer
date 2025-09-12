@@ -141,7 +141,7 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
           data: calData,
           lineWidth: .1, // Thin line
           marker: {
-            enabled: true,
+            enabled: false,
             radius: 2,
             symbol: 'triangle', // Different marker for distinction
           },
@@ -155,7 +155,7 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
         data: chartData,
         lineWidth: .1, 
         marker: {
-          enabled: true,
+          enabled: false,
           radius: 2,
           symbol: 'circle',
         },
@@ -167,7 +167,7 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
         data: calData,
         lineWidth: .1, 
         marker: {
-          enabled: true,
+          enabled: false,
           radius: 2,
           symbol: 'triangle',
         },

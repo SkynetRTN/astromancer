@@ -97,6 +97,19 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
     this.addConfidenceLines(start, end);
   }
 
+  private findLocalMax(points: [number, number][]): [number, number][] {
+      let globalMax = points[0];
+
+      for (let i = 1; i < points.length; i++) {
+          if (points[i][1] > globalMax[1]) {
+              globalMax = points[i];
+          }
+      }
+
+      return [globalMax];
+  }
+
+
   /**
    * Handles dynamic updates of the series data.
    */
@@ -136,6 +149,22 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
 
     // Update confidence lines
     this.addConfidenceLines(start, end);
+
+    const data1: [number, number][] = periodogramData.data1.map(p => {
+      const obj = p as unknown as { x: number; y: number }; 
+      return [obj.x, obj.y];
+    });
+    const data2: [number, number][] | undefined = periodogramData.data2
+      ? periodogramData.data2.map(p => {
+          const obj = p as unknown as { x: number; y: number };
+          return [obj.x, obj.y];
+        })
+      : undefined;
+
+    const maxima1 = this.findLocalMax(data1);
+    const maxima2 = data2 ? this.findLocalMax(data2) : [];
+
+    this.addLocalMaxima(maxima1, maxima2);
   }
 
   /**
@@ -144,9 +173,9 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
   private addConfidenceLines(x0: number, x1: number) {
     const points = this.service.getPeriodogramPoints();
     const levels = [
-      { id: "conf-50", name: "50% Confidence", alpha: 0.5, color: "red" },
-      { id: "conf-95", name: "95% Confidence", alpha: 0.05, color: "orange" },
-      { id: "conf-99", name: "99% Confidence", alpha: 0.01, color: "green" },
+      { id: "conf-1-sigma", name: "67.3% Confidence", alpha: 1-0.673, color: "red" },
+      { id: "conf-2-sigma", name: "95.4% Confidence", alpha: 1-0.954, color: "orange" },
+      { id: "conf-3-sigma", name: "99.73% Confidence", alpha: 1-0.9973, color: "green" },
     ];
 
     levels.forEach(({ id, name, alpha, color }) => {
@@ -168,6 +197,35 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
           color,
           dashStyle: "ShortDash",
           marker: { enabled: false },
+          enableMouseTracking: false,
+        });
+      }
+    });
+  }
+
+  private addLocalMaxima(maxima1: [Number, Number][], maxima2: [Number, Number][]) {
+
+    const levels = [
+      { id: "point-1", data: maxima1, color: "red" },
+      { id: "point-2", data: maxima2, color: "red" },
+    ];
+
+    levels.forEach(({ id, data, color }) => {
+      const existing = this.chartObject.get(id);
+      if (existing) {
+        (existing as Highcharts.Series).setData(data, true);
+      } else {
+        this.chartObject.addSeries({
+          id,
+          type: "scatter",
+          data,
+          color,
+          showInLegend: false,
+          marker: { 
+            enabled: true,
+            radius: 6,
+            symbol: "circle"
+           },
           enableMouseTracking: false,
         });
       }

@@ -14,6 +14,13 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
   chartConstructor: any = "chart";
   chartObject!: Highcharts.Chart;
   chartOptions: Highcharts.Options = {
+    title: {
+      text: "Title",
+      style: {
+        fontWeight: "normal",
+        fontSize: "14px"
+      }
+    },
     chart: {
       animation: false,
       styledMode: false,

@@ -28,25 +28,27 @@ export class PulsarLightCurveFormComponent implements OnInit {
   }
   
   onBackScaleChange(value: number): void {
-    let chartData = this.pulsarService.getData();
-  
-    // Extract data for processing
-    const jd = chartData.map(item => item.jd ?? 0);
-    const source1 = chartData.map(item => item.source1 ?? 0);
-    const source2 = chartData.map(item => item.source2 ?? 0);
-  
-    // Apply background subtraction based on the provided backScale
-    const subtractedSource1 = this.pulsarService.backgroundSubtraction(jd, source1, value);
-    const subtractedSource2 = this.pulsarService.backgroundSubtraction(jd, source2, value);
-  
-    // Update chart data with background-subtracted values
-    chartData = chartData.map((item, index) => ({
-      jd: jd[index],
-      source1: subtractedSource1[index],
-      source2: subtractedSource2[index],
-    }));
+    if (typeof value === 'number' && !isNaN(value)) {
+      let chartData = this.pulsarService.getData();
     
-    // Set updated data back to the service
-    this.pulsarService.setData(chartData);
+      // Extract data for processing
+      const jd = chartData.map(item => item.jd ?? 0);
+      const source1 = chartData.map(item => item.source1 ?? 0);
+      const source2 = chartData.map(item => item.source2 ?? 0);
+    
+      // Apply background subtraction based on the provided backScale
+      const subtractedSource1 = this.pulsarService.backgroundSubtraction(jd, source1, value);
+      const subtractedSource2 = this.pulsarService.backgroundSubtraction(jd, source2, value);
+    
+      // Update chart data with background-subtracted values
+      chartData = chartData.map((item, index) => ({
+        jd: jd[index],
+        source1: subtractedSource1[index],
+        source2: subtractedSource2[index],
+      }));
+      
+      // Set updated data back to the service
+      this.pulsarService.setData(chartData);
+      }
     }
   }

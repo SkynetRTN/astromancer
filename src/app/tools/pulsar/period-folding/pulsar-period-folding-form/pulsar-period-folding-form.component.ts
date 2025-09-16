@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import {Component, OnDestroy, OnChanges} from '@angular/core';
 import {BehaviorSubject, debounceTime, Subject, takeUntil} from "rxjs";
 import {PulsarService} from "../../pulsar.service";
 import {HonorCodePopupService} from "../../../shared/honor-code-popup/honor-code-popup.service";
@@ -29,8 +29,8 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
     = new BehaviorSubject<number>(this.service.getPeriodFoldingBins());
 
   calFile: boolean = true;
-  periodMin: number = this.service.getJdRange();
-  periodMax: number = 200;
+  periodMin: number = this.service.getPeriodogramStartPeriod();
+  periodMax: number = this.service.getPeriodogramEndPeriod();
   periodStep: number = 0.1;
   showSlider = true;
   private destroy$: Subject<void> = new Subject<void>();
@@ -61,7 +61,7 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
       xAxisLabel: new FormControl(this.service.getPeriodFoldingXAxisLabel()),
       yAxisLabel: new FormControl(this.service.getPeriodFoldingYAxisLabel()),
       displayPeriod: new FormControl(this.service.getPeriodFoldingDisplayPeriod()),
-      period: new FormControl(this.periodMin),
+      period: new FormControl((this.service.getPeriodogramStartPeriod() + this.service.getPeriodogramEndPeriod()) / 2),
       phase: new FormControl(0),
       cal: new FormControl(1),
       speed: new FormControl(1),
@@ -128,15 +128,18 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
     this.service.periodogramForm$.pipe(
       takeUntil(this.destroy$),
     ).subscribe(() => {
-      this.periodStep = this.getPeriodStep();
+      if (this.service.getPeriodogramMethod() === false) {
+        this.periodMin = this.service.getPeriodogramStartPeriod();
+        this.periodMax = this.service.getPeriodogramEndPeriod();
+      } else {
+        this.periodMax = 1 / this.service.getPeriodogramStartPeriod();
+        this.periodMin = 1 / this.service.getPeriodogramEndPeriod();
+      };
     });
     this.service.data$.pipe(
       takeUntil(this.destroy$),
     ).subscribe(() => {
-      this.periodMin = this.service.getPeriodogramStartPeriod();
-      if (this.calFile == true) {
-        this.periodMax = this.service.getJdRange();
-      } else {
+      if (this.calFile == false) {
         this.periodMax = this.service.getPeriodFoldingPeriod();
       }
       this.periodStep = this.getPeriodStep();
@@ -162,20 +165,14 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
     });
   }  
 
-  resetForm() {
-    this.service.resetPeriodFoldingForm();
-  }
-
   resetPulsar() {
+    this.service.resetPeriodFoldingForm();
     this.service.resetData();   
     window.location.reload();
   }
 
   sonification() {
-    this.periodSubject.subscribe(value => {
-      let period = value;
-
-      if (this.calFile) {
+    if (this.calFile) {
         const data = this.service.getPeriodFoldingChartData();
         let binnedData = this.service.binData(data['data'], this.service.getPeriodFoldingBins());
         const xValues = binnedData.map(point => point[0]);
@@ -194,7 +191,6 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
         
         this.service.sonification(xValues, yValues, null, this.service.getPeriodFoldingPeriod());
       }
-    });
   }
 
   get isPlaying(): boolean {
@@ -202,10 +198,7 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
   }  
 
   sonificationBrowser() {
-    this.periodSubject.subscribe(value => {
-      let period = value;
-
-      if (this.calFile) {
+    if (this.calFile) {
         const data = this.service.getPeriodFoldingChartData();
         let binnedData = this.service.binData(data['data'], this.service.getPeriodFoldingBins());
         const xValues = binnedData.map(point => point[0]);
@@ -224,7 +217,6 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
         
         this.service.sonificationBrowser(xValues, yValues, null, this.service.getPeriodFoldingPeriod());
       }
-    });
   }
 
   onChange($event: InputSliderValue) {

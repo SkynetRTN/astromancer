@@ -35,17 +35,17 @@
     <div class="col-12">
       <ng-container *ngIf="calFile; else fixedSlider">
         <my-input-slider (value)="onChange($event)" [defaultValue]="periodMax"
-                        [inputPrecision]="4"
-                        [isLog]="true" [label]="'Period (sec)'"
-                        [maxValue]="200" [minValue]="0.001" [name]="'period'"
-                        [stepValue]="0.001" [step]="0.001" [value$]="periodSubject">
+                        [inputPrecision]="5"
+                        [isLog]="false" [label]="'Period (sec)'"
+                        [maxValue]="periodMax" [minValue]="periodMin" [name]="'period'"
+                        [stepValue]="(periodMax-periodMin) / 1000" [step]="(periodMax-periodMin) / 1000" [value$]="periodSubject">
         </my-input-slider>
       </ng-container>
       <ng-template #fixedSlider>
         <my-input-slider (value)="onChange($event)" [defaultValue]="periodMax"
-                        [inputPrecision]="4" [label]="'Period (sec)'"
+                        [inputPrecision]="5" [label]="'Period (sec)'"
                         [maxValue]="periodMax" [minValue]="periodMax" [name]="'period'"
-                        [stepValue]="periodStep" [step]="periodStep" [value$]="periodSubject">
+                        [stepValue]="0" [step]="0" [value$]="periodSubject">
         </my-input-slider>        
       </ng-template>
     </div>
@@ -83,7 +83,7 @@
     <ng-template #speedSlider>
       <div class="col-12">
         <my-input-slider (value)="onChange($event)"
-                        [defaultValue]="0"
+                        [defaultValue]="1"
                         [label]="'Speed'"
                         [maxValue]="2"
                         [minValue]="0.01"
@@ -108,8 +108,8 @@
       <button (click)="saveGraph()" mat-raised-button style="width: 100%;">Save Graph</button>
     </div>
     <div class="col-6">
-      <button (click)="resetPulsar()" mat-raised-button style="width: 100%;">
-        Reset Tool!
+      <button mat-raised-button color="warn" (click)="resetPulsar()" style="width: 100%;">
+        Reset Data
       </button>
     </div>
   </div>
@@ -151,20 +151,20 @@
     <div class="col-6">
       <ng-container *ngIf="calFile; else fixedSlider">
         <my-input-slider (value)="onChange($event)" [defaultValue]="periodMax"
-                         [inputPrecision]="4"
-                         [isLog]="true" [label]="'Period (sec)'"
-                         [maxValue]="periodMax" [minValue]="0.001"
+                         [inputPrecision]="5"
+                         [isLog]="false" [label]="'Period (sec)'"
+                         [maxValue]="periodMax" [minValue]="periodMin"
                          [name]="'period'"
-                         [stepValue]="periodStep" [step]="periodStep" [value$]="periodSubject">
+                         [stepValue]="(periodMax-periodMin) / 1000" [step]="(periodMax-periodMin) / 1000" [value$]="periodSubject">
         </my-input-slider>
       </ng-container>
       <ng-template #fixedSlider>
         <my-input-slider (value)="onChange($event)" [defaultValue]="periodMax"
-                         [inputPrecision]="4"
+                         [inputPrecision]="5"
                          [isLog]="false" [label]="'Period (sec)'"
                          [maxValue]="periodMax" [minValue]="periodMax"
                          [name]="'period'"
-                         [stepValue]="periodStep" [step]="periodStep" [value$]="periodSubject">
+                         [stepValue]="0" [step]="0" [value$]="periodSubject">
         </my-input-slider>
       </ng-template>
     </div>
@@ -179,7 +179,7 @@
   <div class="row">
     <div class="col-12" *ngIf="!calFile">
       <my-input-slider (value)="onChange($event)"
-                       [defaultValue]="0"
+                       [defaultValue]="1"
                        [label]="'Speed'"
                        [maxValue]="2"
                        [minValue]="0.01"
@@ -190,7 +190,7 @@
     <ng-container *ngIf="calFile">
       <div class="col-4">
         <my-input-slider (value)="onChange($event)"
-                         [defaultValue]="0"
+                         [defaultValue]="1"
                          [label]="'Calibration'"
                          [maxValue]="2"
                          [minValue]="0.5"
@@ -200,7 +200,7 @@
       </div>
       <div class="col-4">
         <my-input-slider (value)="onChange($event)"
-                         [defaultValue]="0"
+                         [defaultValue]="1"
                          [label]="'Speed'"
                          [maxValue]="2"
                          [minValue]="0.01"
@@ -235,8 +235,8 @@
       <button (click)="saveGraph()" mat-raised-button style="width: 100%;">Save Graph</button>
     </div>
     <div class="col-6">
-      <button (click)="resetPulsar()" mat-raised-button style="width: 100%;">
-        Reset Tool!
+      <button mat-raised-button color="warn" (click)="resetPulsar()" style="width: 100%;">
+        Reset Data
       </button>
     </div>
   </div>

@@ -381,8 +381,8 @@ export class PulsarPeriodogram implements PulsarPeriodogramInterface {
   public static getDefaultPeriodogram(): PulsarPeriodogramStorageObject {
     return {
       title: "Title",
-      xAxisLabel: "x",
-      yAxisLabel: "y",
+      xAxisLabel: "Period (sec)",
+      yAxisLabel: "Power Spectrum",
       dataLabel: PulsarPeriodogram.defaultHash,
       points: 1000,
       method: false,
@@ -453,11 +453,11 @@ export class PulsarPeriodogram implements PulsarPeriodogramInterface {
   }
 
   setPeriodogramPoints(points: number): void {
-    this.points = points
+    this.points = points;
   } 
   
   setPeriodogramMethod(method: boolean): void {
-    this.method = method
+    this.method = method;
   } 
 
   setPeriodogramStartPeriodLabel(startPeriodLabel: string): void {
@@ -480,6 +480,8 @@ export class PulsarPeriodogram implements PulsarPeriodogramInterface {
     this.title = storageObject.title;
     this.xAxisLabel = storageObject.xAxisLabel;
     this.yAxisLabel = storageObject.yAxisLabel;
+    this.points = storageObject.points;
+    this.method = storageObject.method;
     this.dataLabel = storageObject.dataLabel;
     this.startPeriod = storageObject.startPeriod;
     this.endPeriod = storageObject.endPeriod;
@@ -581,11 +583,11 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
 
   public static getDefaultStorageObject(): PulsarPeriodFoldingStorageObject {
     return {
-      displayPeriod: PulsarDisplayPeriod.TWO,
-      period: -1,
+      displayPeriod: PulsarDisplayPeriod.ONE,
+      period: 0.01,
       phase: 0,
       cal: 1,
-      speed: 1,
+      speed: 1.0,
       bins: 100,
       title: "Title",
       xAxisLabel: "x",
@@ -693,12 +695,14 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
     this.displayPeriod = storageObject.displayPeriod;
     this.period = storageObject.period;
     this.phase = storageObject.phase;
+    this.cal = storageObject.cal;
+    this.speed = storageObject.speed;
+    this.bins = storageObject.bins;
     this.title = storageObject.title;
     this.xAxisLabel = storageObject.xAxisLabel;
     this.yAxisLabel = storageObject.yAxisLabel;
     this.dataLabel = storageObject.dataLabel;
   }
-
 }
 
 

@@ -415,21 +415,22 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
     getLabels(isHz: boolean): { startPeriodLabel: string, endPeriodLabel: string } {
         let startPeriodLabel: string;
         let endPeriodLabel: string;
-    
+
         const currentStart = Number(this.getPeriodogramStartPeriod());
         const currentEnd = Number(this.getPeriodogramEndPeriod());
-    
+        
         if (isHz) {
             startPeriodLabel = 'Start Frequency (Hz)';
             endPeriodLabel = 'End Frequency (Hz)';
             this.setPeriodogramEndPeriod(1 / currentStart);
             this.setPeriodogramStartPeriod(1 / currentEnd);
-            this.setPeriodogramMethod(false);
+            this.setPeriodogramXAxisLabel('Period (Hz)');
         } else {
             startPeriodLabel = 'Start Period (sec)';
             endPeriodLabel = 'End Period (sec)';
             this.setPeriodogramEndPeriod(1 / currentStart);
             this.setPeriodogramStartPeriod(1 / currentEnd);
+            this.setPeriodogramXAxisLabel('Period (sec)');
         }
     
         // Return both labels

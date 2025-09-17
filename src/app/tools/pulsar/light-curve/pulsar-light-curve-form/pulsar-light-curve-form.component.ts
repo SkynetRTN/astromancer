@@ -16,7 +16,6 @@ export class PulsarLightCurveFormComponent implements OnInit {
     // Initialize the form group with controls
     this.formGroup = this.fb.group({
       backScale: [3, Validators.required],
-
     });
   }
 
@@ -29,8 +28,8 @@ export class PulsarLightCurveFormComponent implements OnInit {
   
   onBackScaleChange(value: number): void {
     if (typeof value === 'number' && !isNaN(value)) {
-      let chartData = this.pulsarService.getData();
-    
+      let chartData = this.pulsarService.getCombinedData();
+
       // Extract data for processing
       const jd = chartData.map(item => item.jd ?? 0);
       const source1 = chartData.map(item => item.source1 ?? 0);

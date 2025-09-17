@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import {MyTable} from "../../../shared/tables/table-interface";
-import {PulsarDataDict} from "../../pulsar.service.util";
+import {PulsarData, PulsarDataDict} from "../../pulsar.service.util";
 import {Subject, takeUntil} from "rxjs";
 import {PulsarService} from "../../pulsar.service";
 import {MyData} from "../../../shared/data/data.interface";

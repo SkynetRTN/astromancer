@@ -708,6 +708,7 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
 
 export class PulsarStorage implements MyStorage {
   private dataKey: string = "pulsarData";
+  private combinedDataKey: string = "pulsarCombinedData";
   private interfaceKey: string = "pulsarInterface";
   private chartInfoKey: string = "pulsarChartInfo";
   private periodogramKey: string = "pulsarPeriodogram";
@@ -784,6 +785,10 @@ export class PulsarStorage implements MyStorage {
 
   saveData(data: PulsarDataDict[]): void {
     localStorage.setItem(this.dataKey, JSON.stringify(data));
+  }
+
+  saveCombinedData(data: PulsarDataDict[]): void {
+    localStorage.setItem(this.combinedDataKey, JSON.stringify(data));
   }
 
   saveInterface(interfaceInfo: PulsarInterfaceStorageObject): void {

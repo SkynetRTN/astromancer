@@ -15,7 +15,7 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
   chartConstructor: any = "chart";
   chartObject!: Highcharts.Chart;
   chartTitle: string = 'Title';
-  xAxisLabel: string = '';
+  xAxisLabel: string = 'x';
   yAxisLabel: string = 'y';
   dataLabel1: string = 'Channel 1';
   dataLabel2: string = 'Channel 2';
@@ -48,7 +48,6 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
   chartInitialized($event: Highcharts.Chart) {
     this.chartObject = $event;
     this.pulsarService.setHighChartLightCurve(this.chartObject);
-
   }  
 
   private destroy$: Subject<any> = new Subject<any>();

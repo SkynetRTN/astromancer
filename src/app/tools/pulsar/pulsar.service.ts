@@ -72,6 +72,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
     constructor() {
         this.pulsarData.setData(this.pulsarStorage.getData());
+        this.setCombinedData(this.pulsarData.getData());
         this.pulsarInterface.setStorageObject(this.pulsarStorage.getInterface());
         this.pulsarChartInfo.setStorageObject(this.pulsarStorage.getChartInfo());
         this.pulsarPeriodogram.setPeriodogramStorageObject(this.pulsarStorage.getPeriodogram());

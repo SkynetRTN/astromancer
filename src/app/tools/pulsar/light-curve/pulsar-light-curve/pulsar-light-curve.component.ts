@@ -42,8 +42,9 @@ export class PulsarLightCurveComponent implements OnDestroy {
         this.service.addRow(-1, 1);
       } else if (action.action === "saveGraph") {
         this.saveGraph();
-      } else if (action.action === "resetGraphInfo") {
-        this.resetGraphInfo();
+      } else if (action.action === "resetData" && this.rawData.length > 10) {
+        this.service.setCombinedData(this.rawData);
+        this.processChartData(this.service.getbackScale());
       } else if (action.action === "editChartInfo") {
         const dialogRef =
           this.dialog.open(PulsarLightCurveChartFormComponent, { width: 'fit-content' });
@@ -199,7 +200,6 @@ export class PulsarLightCurveComponent implements OnDestroy {
         }));
         this.service.setData(this.chartData);
       };
-
     };
     reader.readAsText($event); // Read the file as text
   }

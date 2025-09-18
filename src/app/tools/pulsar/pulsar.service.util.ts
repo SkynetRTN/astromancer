@@ -287,10 +287,10 @@ export class PulsarData implements MyData {
 
   public static getDefaultDataDict(): PulsarDataDict[] {
     const data: PulsarDataDict[] = [];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 100; i++) {
       const randomData = (): number => parseFloat((Math.random() * 10000).toFixed(2));
       data.push({
-        jd: randomData()+i*10000,
+        jd: i,
         source1: randomData(),
         source2: randomData(),
       });
@@ -381,8 +381,8 @@ export class PulsarPeriodogram implements PulsarPeriodogramInterface {
   public static getDefaultPeriodogram(): PulsarPeriodogramStorageObject {
     return {
       title: "Title",
-      xAxisLabel: "x",
-      yAxisLabel: "y",
+      xAxisLabel: "Period (sec)",
+      yAxisLabel: "Power Spectrum",
       dataLabel: PulsarPeriodogram.defaultHash,
       points: 1000,
       method: false,
@@ -453,11 +453,11 @@ export class PulsarPeriodogram implements PulsarPeriodogramInterface {
   }
 
   setPeriodogramPoints(points: number): void {
-    this.points = points
+    this.points = points;
   } 
   
   setPeriodogramMethod(method: boolean): void {
-    this.method = method
+    this.method = method;
   } 
 
   setPeriodogramStartPeriodLabel(startPeriodLabel: string): void {
@@ -480,6 +480,8 @@ export class PulsarPeriodogram implements PulsarPeriodogramInterface {
     this.title = storageObject.title;
     this.xAxisLabel = storageObject.xAxisLabel;
     this.yAxisLabel = storageObject.yAxisLabel;
+    this.points = storageObject.points;
+    this.method = storageObject.method;
     this.dataLabel = storageObject.dataLabel;
     this.startPeriod = storageObject.startPeriod;
     this.endPeriod = storageObject.endPeriod;
@@ -512,6 +514,7 @@ export interface PulsarPeriodFoldingStorageObject {
   phase: number;
   cal: number;
   speed: number;
+  bins: number;
   title: string;
   xAxisLabel: string;
   yAxisLabel: string;
@@ -559,6 +562,7 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
   private phase: number;
   private cal: number;
   private speed: number;
+  private bins: number;
   private title: string;
   private xAxisLabel: string;
   private yAxisLabel: string;
@@ -570,6 +574,7 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
     this.phase = PulsarPeriodFolding.getDefaultStorageObject().phase;
     this.cal = PulsarPeriodFolding.getDefaultStorageObject().cal;
     this.speed = PulsarPeriodFolding.getDefaultStorageObject().speed;
+    this.bins = PulsarPeriodFolding.getDefaultStorageObject().bins;
     this.title = PulsarPeriodFolding.getDefaultStorageObject().title;
     this.xAxisLabel = PulsarPeriodFolding.getDefaultStorageObject().xAxisLabel;
     this.yAxisLabel = PulsarPeriodFolding.getDefaultStorageObject().yAxisLabel;
@@ -578,11 +583,12 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
 
   public static getDefaultStorageObject(): PulsarPeriodFoldingStorageObject {
     return {
-      displayPeriod: PulsarDisplayPeriod.TWO,
-      period: -1,
+      displayPeriod: PulsarDisplayPeriod.ONE,
+      period: 0.01,
       phase: 0,
       cal: 1,
-      speed: 1,
+      speed: 1.0,
+      bins: 100,
       title: "Title",
       xAxisLabel: "x",
       yAxisLabel: "y",
@@ -612,6 +618,10 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
 
   getPeriodFoldingSpeed(): number {
     return this.speed;
+  }
+
+  getPeriodFoldingBins(): number {
+    return this.bins;
   }
 
   getPeriodFoldingTitle(): string {
@@ -650,6 +660,10 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
     this.speed = speed;
   }
 
+  setPeriodFoldingBins(bins: number): void {
+    this.bins = bins;
+  }
+
   setPeriodFoldingTitle(title: string): void {
     this.title = title;
   }
@@ -669,6 +683,7 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
       phase: this.phase,
       cal: this.cal,
       speed: this.speed,
+      bins: this.bins,
       title: this.title,
       xAxisLabel: this.xAxisLabel,
       yAxisLabel: this.yAxisLabel,
@@ -680,17 +695,20 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
     this.displayPeriod = storageObject.displayPeriod;
     this.period = storageObject.period;
     this.phase = storageObject.phase;
+    this.cal = storageObject.cal;
+    this.speed = storageObject.speed;
+    this.bins = storageObject.bins;
     this.title = storageObject.title;
     this.xAxisLabel = storageObject.xAxisLabel;
     this.yAxisLabel = storageObject.yAxisLabel;
     this.dataLabel = storageObject.dataLabel;
   }
-
 }
 
 
 export class PulsarStorage implements MyStorage {
   private dataKey: string = "pulsarData";
+  private combinedDataKey: string = "pulsarCombinedData";
   private interfaceKey: string = "pulsarInterface";
   private chartInfoKey: string = "pulsarChartInfo";
   private periodogramKey: string = "pulsarPeriodogram";
@@ -767,6 +785,10 @@ export class PulsarStorage implements MyStorage {
 
   saveData(data: PulsarDataDict[]): void {
     localStorage.setItem(this.dataKey, JSON.stringify(data));
+  }
+
+  saveCombinedData(data: PulsarDataDict[]): void {
+    localStorage.setItem(this.combinedDataKey, JSON.stringify(data));
   }
 
   saveInterface(interfaceInfo: PulsarInterfaceStorageObject): void {

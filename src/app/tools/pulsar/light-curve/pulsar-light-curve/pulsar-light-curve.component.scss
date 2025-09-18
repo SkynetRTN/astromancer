@@ -28,3 +28,9 @@
   transition-duration: 0.4s; /* Make the transition smooth */
   cursor: pointer; /* Pointer/hand icon */
 }
+
+
+.col-4, .col-8, .col-12 {
+  display: flex;
+  flex-flow: column;
+}

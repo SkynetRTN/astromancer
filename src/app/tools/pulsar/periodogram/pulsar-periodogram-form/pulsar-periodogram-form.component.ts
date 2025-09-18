@@ -28,7 +28,7 @@ export class PulsarPeriodogramFormComponent implements OnDestroy {
       startPeriod: new FormControl(this.service.getPeriodogramStartPeriod(), [Validators.required]),
       endPeriod: new FormControl(this.service.getPeriodogramEndPeriod(), [Validators.required]),
       numPoints: new FormControl(this.service.getPeriodogramPoints(), [Validators.required]),
-      methodLS: new FormControl(this.service.getPeriodogramMethod(), [Validators.required]),
+      methodLS: new FormControl(this.service.getPeriodogramMethod()),
     });
 
     this.formGroup.controls['chartTitle'].valueChanges.pipe(
@@ -85,6 +85,7 @@ export class PulsarPeriodogramFormComponent implements OnDestroy {
     this.formGroup.controls['methodLS'].valueChanges.pipe(
       debounceTime(200),
     ).subscribe((value: boolean) => {
+
       const labels = this.service.getLabels(value);
       
       this.service.setPeriodogramStartPeriodLabel(labels.startPeriodLabel);
@@ -121,6 +122,7 @@ export class PulsarPeriodogramFormComponent implements OnDestroy {
     this.service.setPeriodogramEndPeriod(values.endPeriod);
   
     this.service.setPeriodogramPoints(values.numPoints);
+
     this.service.compute(true);
   }
 
@@ -139,6 +141,11 @@ export class PulsarPeriodogramFormComponent implements OnDestroy {
   }
 
   resetForm() {
+    this.formGroup.patchValue({
+      chartTitle: 'Title',
+      xAxisLabel: 'Period (sec)',
+      yAxisLabel: 'Power Spectrum'
+    });
     this.service.resetPeriodogram();
   }
 }

@@ -42,8 +42,9 @@ export class PulsarLightCurveComponent implements OnDestroy {
         this.service.addRow(-1, 1);
       } else if (action.action === "saveGraph") {
         this.saveGraph();
-      } else if (action.action === "resetGraphInfo") {
-        this.resetGraphInfo();
+      } else if (action.action === "resetData" && this.rawData.length > 10) {
+        this.service.setCombinedData(this.rawData);
+        this.processChartData(this.service.getbackScale());
       } else if (action.action === "editChartInfo") {
         const dialogRef =
           this.dialog.open(PulsarLightCurveChartFormComponent, { width: 'fit-content' });
@@ -60,7 +61,6 @@ export class PulsarLightCurveComponent implements OnDestroy {
     reader.onload = () => {
       const file = reader.result as string;
 
-      // Split the file into lines
       const lines = file.split('\n');
       let type = "cal";
       if (lines[0].slice(0, 7) == "# Input") {
@@ -165,8 +165,25 @@ export class PulsarLightCurveComponent implements OnDestroy {
           source2: row['XX1'] as number
         }));
 
+        let totalDiff = 0;
+
+        for (let i = 1; i < this.ts.length; i++) {
+          totalDiff += this.ts[i] - this.ts[i - 1];
+        }
+
+        let avgDiff = Math.round(totalDiff / (this.ts.length - 1) * 2 * 100000) / 100000;
+
+        if (this.service.getPeriodogramMethod()) {
+          avgDiff = 1 / avgDiff
+          this.service.setPeriodogramEndPeriod(avgDiff);
+        } else {
+          this.service.setPeriodogramStartPeriod(avgDiff);
+        };
+
         this.rawData = combinedData;
         this.service.setData(combinedData);
+        this.service.setCombinedData(combinedData);
+        
         this.chartData = combinedData;
 
         const jd = this.chartData.map(item => item.jd);
@@ -183,7 +200,6 @@ export class PulsarLightCurveComponent implements OnDestroy {
         }));
         this.service.setData(this.chartData);
       };
-
     };
     reader.readAsText($event); // Read the file as text
   }
@@ -198,11 +214,11 @@ export class PulsarLightCurveComponent implements OnDestroy {
     const source2 = this.chartData.map(d => [d.jd, d.source2]);
 
     // Bin the data
-    let binnedData = this.service.binData(source1, 100);
+    let binnedData = this.service.binData(source1, this.service.getPeriodFoldingBins());
     const xValues = binnedData.map(point => point[0]);
     const yValues = binnedData.map(point => point[1]);
 
-    let binnedData2 = this.service.binData(source2, 100);
+    let binnedData2 = this.service.binData(source2, this.service.getPeriodFoldingBins());
     const yValues2 = binnedData2.map(point => point[1]);
 
     const duration = xValues[xValues.length - 1] - xValues[0];
@@ -222,11 +238,11 @@ export class PulsarLightCurveComponent implements OnDestroy {
     const source1 = this.chartData.map(d => [d.jd, d.source1]);
     const source2 = this.chartData.map(d => [d.jd, d.source2]);
 
-    let binnedData = this.service.binData(source1, 100);
+    let binnedData = this.service.binData(source1, this.service.getPeriodFoldingBins());
     const xValues = binnedData.map(point => point[0]);
     const yValues = binnedData.map(point => point[1]);
 
-    let binnedData2 = this.service.binData(source2, 100);
+    let binnedData2 = this.service.binData(source2, this.service.getPeriodFoldingBins());
     const yValues2 = binnedData2.map(point => point[1]);
 
     const duration = xValues[xValues.length - 1] - xValues[0];

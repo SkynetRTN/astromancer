@@ -6,16 +6,6 @@
     <div class="row dynamic">
       <app-pulsar-table></app-pulsar-table>
     </div>
-    <div class="row" style="padding-top: 5%">
-      <div class="col-6">
-        <button (click)="sonificationBrowser()" mat-raised-button>
-          {{ isPlaying ? 'Stop' : 'Sonify' }}
-        </button>      
-      </div>
-      <div class="col-6">
-        <button (click)="sonification()" mat-raised-button>Save Sonify</button>
-      </div>
-    </div>
     <div class="row button-row">
       <app-simple-data-button class="custom-button" (fileUpload$)="uploadHandler($event)"
                               (tableUserActionObs$)="actionHandler($event)"
@@ -28,8 +18,15 @@
       <app-pulsar-light-curve-highchart></app-pulsar-light-curve-highchart>
     </div>
     <div class="row button-row">
-      <app-simple-graph-button class="custom-button" (chartUserActionObs$)="actionHandler($event)" [isEditChartInfo]="true">
-      </app-simple-graph-button>
-    </div>
+      <div class="col-6">
+        <app-simple-graph-button class="custom-button"
+          (chartUserActionObs$)="actionHandler($event)"
+          [isEditChartInfo]="true">
+        </app-simple-graph-button>
+      </div>
+      <div class="col-6 d-flex justify-content-end">
+        <app-pulsar-light-curve-sonifier></app-pulsar-light-curve-sonifier>
+      </div>
+    </div>    
   </div>
 </div>

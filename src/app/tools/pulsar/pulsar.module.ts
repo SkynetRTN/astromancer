@@ -29,6 +29,7 @@ import {RouterModule, Routes} from "@angular/router";
 import {MatDialogModule} from "@angular/material/dialog";
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PulsarLightCurveChartFormComponent } from './light-curve/pulsar-light-curve-chart-form/pulsar-light-curve-chart-form.component';
+import { PulsarLightCurveSonifierComponent } from './light-curve/pulsar-light-curve-sonifier/pulsar-light-curve-sonifier.component';
 
 
 const routes: Routes = [
@@ -48,7 +49,8 @@ const routes: Routes = [
     PulsarPeriodogramFormComponent,
     PulsarPeriodFoldingComponent,
     PulsarPeriodFoldingFormComponent,
-    PulsarPeriodFoldingHighchartComponent
+    PulsarPeriodFoldingHighchartComponent,
+    PulsarLightCurveSonifierComponent
   ],
   imports: [
     RouterModule.forChild(routes),

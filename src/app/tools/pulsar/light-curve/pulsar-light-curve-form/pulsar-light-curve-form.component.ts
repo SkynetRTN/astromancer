@@ -11,11 +11,17 @@ import { on } from 'events';
 })
 export class PulsarLightCurveFormComponent implements OnInit {
   formGroup: FormGroup;
+  dataOptions: { label: string; value: string }[] = [];
 
   constructor(private fb: FormBuilder, private pulsarService: PulsarService) {
-    // Initialize the form group with controls
+    this.dataOptions = [
+      { label: 'Raw', value: 'raw' },
+      { label: 'Subtracted', value: 'subtracted' }
+    ];
+
     this.formGroup = this.fb.group({
       backScale: [3, Validators.required],
+      dataOptions: ['raw', Validators.required]
     });
   }
 
@@ -24,11 +30,14 @@ export class PulsarLightCurveFormComponent implements OnInit {
     this.formGroup.get('backScale')?.valueChanges.subscribe(value => {
       this.onBackScaleChange(value);
     });
+    this.formGroup.get('dataOptions')?.valueChanges.subscribe(value => {
+      this.onDataOptionsChange(value);
+    });
   }
   
   onBackScaleChange(value: number): void {
     if (typeof value === 'number' && !isNaN(value)) {
-      let chartData = this.pulsarService.getCombinedData();
+      let chartData = this.pulsarService.getRawData();
 
       // Extract data for processing
       const jd = chartData.map(item => item.jd ?? 0);
@@ -50,4 +59,8 @@ export class PulsarLightCurveFormComponent implements OnInit {
       this.pulsarService.setData(chartData);
       }
     }
+
+  onDataOptionsChange(value: string): void{
+    this.pulsarService.setTableType(value);
+  }
   }

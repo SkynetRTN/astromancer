@@ -25,6 +25,7 @@ import {floatMod, lombScargle, UpdateSource} from "../shared/data/utils";
 @Injectable()
 export class PulsarService implements MyData, PulsarInterface, ChartInfo, PulsarPeriodogramInterface, PulsarPeriodFoldingInterface {
     private pulsarData: PulsarData = new PulsarData();
+    private pulsarTableType: string = 'raw';
     private pulsarInterface: PulsarInterfaceImpl = new PulsarInterfaceImpl();
     private highChart!: Highcharts.Chart;
     private pulsarStorage: PulsarStorage = new PulsarStorage();
@@ -40,6 +41,10 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
     private dataSubject: BehaviorSubject<PulsarData>
         = new BehaviorSubject<PulsarData>(this.pulsarData);
     public data$ = this.dataSubject.asObservable();
+
+    private tableTypeSubject: BehaviorSubject<string>
+        = new BehaviorSubject<string>(this.pulsarTableType);
+    public tableType$ = this.tableTypeSubject.asObservable();
 
     private interfaceSubject: BehaviorSubject<PulsarInterface>
         = new BehaviorSubject<PulsarInterface>(this.pulsarInterface);
@@ -72,7 +77,8 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
     constructor() {
         this.pulsarData.setData(this.pulsarStorage.getData());
-        this.setCombinedData(this.pulsarData.getData());
+        this.pulsarData.setRawData(this.pulsarStorage.getRawData());
+        this.pulsarData.setCombinedData(this.pulsarStorage.getCombinedData());
         this.pulsarInterface.setStorageObject(this.pulsarStorage.getInterface());
         this.pulsarChartInfo.setStorageObject(this.pulsarStorage.getChartInfo());
         this.pulsarPeriodogram.setPeriodogramStorageObject(this.pulsarStorage.getPeriodogram());
@@ -241,18 +247,6 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
                 if (data[i][2] !== null) {
                     pfData2.push([temp_x, data[i][2]!]);
                 }
-    
-                // if (this.getPeriodFoldingDisplayPeriod() === PulsarDisplayPeriod.TWO) {
-                //     let new_x = temp_x + parseFloat(period as any);
-    
-                //     // Push second cycle for series 1
-                //     pfData1.push([new_x, data[i][1]!]);
-    
-                //     // Push second cycle for series 2 if not null
-                //     if (data[i][2] !== null) {
-                //         pfData2.push([new_x, data[i][2]!]);
-                //     }
-                // }
             }
         }
    
@@ -425,7 +419,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
             endPeriodLabel = 'End Frequency (Hz)';
             this.setPeriodogramEndPeriod(1 / currentStart);
             this.setPeriodogramStartPeriod(1 / currentEnd);
-            this.setPeriodogramXAxisLabel('Period (Hz)');
+            this.setPeriodogramXAxisLabel('Frequency (Hz)');
         } else {
             startPeriodLabel = 'Start Period (sec)';
             endPeriodLabel = 'End Period (sec)';
@@ -582,6 +576,18 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         return this.pulsarData.getData();
     }
 
+    getCombinedData(): PulsarDataDict[] {
+        return this.pulsarData.getCombinedData();
+    }
+
+    getRawData(): PulsarDataDict[] {
+        return this.pulsarData.getRawData();
+    }
+
+    getTableType(): string {
+        return this.pulsarData.getTableType();
+    }
+
     getDataArray(): (number | null)[][] {
         return this.pulsarData.getDataArray();
     }
@@ -683,10 +689,32 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         this.periodFoldingDataSubject.next(this.pulsarData);
     }
 
+    setCombinedData(data: any[]): void {
+        this.pulsarData.setCombinedData(data);
+        this.pulsarStorage.saveCombinedData(this.pulsarData.getCombinedData());
+        this.dataSubject.next(this.pulsarData);
+    }
+
+    setRawData(data: any[]): void {
+        this.pulsarData.setRawData(data);
+        this.pulsarStorage.saveRawData(this.pulsarData.getRawData());
+        this.dataSubject.next(this.pulsarData);
+    }
+
+    setTableType(type: string): void {
+        this.pulsarData.setTableType(type);
+        this.pulsarStorage.saveTableType(this.pulsarData.getTableType());
+        this.tableTypeSubject.next(this.pulsarTableType);
+    }
+
     resetData(): void {
         this.pulsarData.setData(PulsarData.getDefaultDataDict());
-        this.setCombinedData(this.pulsarData.getData());
+        this.pulsarData.setRawData(this.pulsarData.getData());
+        this.pulsarData.setCombinedData(this.pulsarData.getData());
         this.pulsarStorage.saveData(this.pulsarData.getData());
+        this.pulsarStorage.saveRawData(this.pulsarData.getData());
+        this.pulsarStorage.saveCombinedData(this.pulsarData.getData());
+
         this.dataSubject.next(this.pulsarData);
         this.periodogramDataSubject.next(this.pulsarData);
         this.periodFoldingDataSubject.next(this.pulsarData);
@@ -703,20 +731,6 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
     setTabIndex(index: number): void {
         this.tabIndexSubject.next(index);
         this.pulsarStorage.saveTabIndex(index);
-    }
-
-    setCombinedData(data: any[]): void {
-        this.combinedDataSubject.next(data);
-    }
-
-    getCombinedData(): any[] {
-        if (this.combinedDataSubject.value == null) {
-
-        return this.getData();
-      } else {
-        
-        return this.combinedDataSubject.value;
-      }
     }
 
     getHighChartLightCurve(): Highcharts.Chart {
@@ -801,15 +815,24 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         // --- Period folding ---
         period *= 1 / this.getPeriodFoldingSpeed();
 
-        // --- Joint normalization across channels ---
-        const normalize = (arr: number[]) => {
-            const min = Math.min(...arr);
-            const max = Math.max(...arr);
-            return arr.map(y => (y - min) / (max - min || 1));
+        // --- Apply calibration to yValues2 ---
+        if (yValues2) {
+            for (let i = 0; i < yValues2.length; i++) yValues2[i] *= cal;
+        }
+
+        // --- Compute global min and max across both channels ---
+        const allValues = yValues2 ? yValues.concat(yValues2) : yValues;
+        const globalMin = Math.min(...allValues);
+        const globalMax = Math.max(...allValues);
+
+        // --- Normalize function using global min/max ---
+        const normalizeGlobal = (arr: number[]) => {
+            return arr.map(y => (y - globalMin) / (globalMax - globalMin || 1));
         };
 
-        const normY1 = normalize(yValues);
-        const normY2 = yValues2 ? normalize(yValues2) : null;
+        // --- Apply global normalization ---
+        const normY1 = normalizeGlobal(yValues);
+        const normY2 = yValues2 ? normalizeGlobal(yValues2) : null;
 
         // --- Adaptive interpolation ---
         const minSamplesPerCycle = Math.max(64, Math.floor(sampleRate / (1 / period)));
@@ -918,7 +941,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = `${originalPeriod}s_pulsar_sonification.wav`;
+        a.download = `${this.getChartTitle()}_sonification.wav`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -959,15 +982,19 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
             for (let i = 0; i < yValues2.length; i++) yValues2[i] *= cal;
         }
 
-        // --- Normalize each channel separately to [0,1] ---
-        const normalize = (arr: number[]) => {
-            const min = Math.min(...arr);
-            const max = Math.max(...arr);
-            return arr.map(y => (y - min) / (max - min || 1));
+        // --- Compute global min and max across both channels ---
+        const allValues = yValues2 ? yValues.concat(yValues2) : yValues;
+        const globalMin = Math.min(...allValues);
+        const globalMax = Math.max(...allValues);
+
+        // --- Normalize function using global min/max ---
+        const normalizeGlobal = (arr: number[]) => {
+            return arr.map(y => (y - globalMin) / (globalMax - globalMin || 1));
         };
 
-        const normY1 = normalize(yValues);
-        const normY2 = yValues2 ? normalize(yValues2) : null;
+        // --- Apply global normalization ---
+        const normY1 = normalizeGlobal(yValues);
+        const normY2 = yValues2 ? normalizeGlobal(yValues2) : null;
 
         // --- Adaptive interpolation ---
         const frequency = 1 / period;
@@ -1026,19 +1053,29 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
             }
         }
 
-        // --- Normalize per channel to [-0.95, 0.95] ---
-        const normalizeFloat32 = (arr: Float32Array) => {
-            let maxAbs = 0;
-            const gain = 0.7;
+    // --- Global normalization to [-0.95, 0.95] across all channels ---
+    const normalizeFloat32Global = (channels: Float32Array[]) => {
+        const gain = 0.7;
+
+        // Find the global maximum absolute value across all channels
+        let maxAbs = 0;
+        for (const arr of channels) {
             for (const v of arr) maxAbs = Math.max(maxAbs, Math.abs(v));
-            if (maxAbs > 0) {
-                const scale = (0.95 / maxAbs) * gain;
+        }
+
+        if (maxAbs > 0) {
+            const scale = (0.95 / maxAbs) * gain;
+            for (const arr of channels) {
                 for (let i = 0; i < arr.length; i++) arr[i] *= scale;
             }
-        };
+        }
+    };
 
-        normalizeFloat32(audioData1);
-        if (numChannels === 2 && audioData2) normalizeFloat32(audioData2);
+    // Usage
+    const channels: Float32Array[] = [audioData1];
+    if (numChannels === 2 && audioData2) channels.push(audioData2);
+
+    normalizeFloat32Global(channels);
 
         // --- AudioContext buffer setup ---
         this.audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();

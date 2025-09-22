@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
-import { Subject, takeUntil } from "rxjs";
+import { first, Subject, takeUntil } from "rxjs";
 import { PulsarService } from "../../pulsar.service";
 import * as Highcharts from 'highcharts';
 import More from "highcharts/highcharts-more";
@@ -84,18 +84,23 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
     const data = this.service.getPeriodFoldingChartData();
     const bins = this.service.getPeriodFoldingBins() * parseInt(this.service.getPeriodFoldingDisplayPeriod()); 
     const binnedData1 = this.service.binData(data['data'], bins);
+
+    const sum = data['data2'].reduce((total, pair) => total + pair[1], 0);
+
+    const hasData2 = Array.isArray(data['data2']) &&
+                 data['data2'].some(pair => pair[1] !== 0);
+
+    const firstSeriesName = hasData2 ? 'Polarization XX' : 'Data';
     
     this.chartObject.addSeries({
-      name: 'Channel 1', 
+      name: firstSeriesName, 
       data: binnedData1,
       type: 'line',
       marker: {
-        symbol: 'circle',
-        radius: 2,
+        enabled: false,
       }
     });
   
-    const sum = data['data2'].reduce((total, pair) => total + pair[1], 0);
     if (sum != 0) {
       const calibration = this.service.getPeriodFoldingCal();
       const adjustedData2 = data['data2'].map(point => [point[0], point[1] * calibration]);
@@ -103,12 +108,11 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
       const binnedData2 = this.service.binData(adjustedData2, bins);
   
       this.chartObject.addSeries({
-        name: 'Channel 2', 
+        name: 'Polarization YY', 
         data: binnedData2,
         type: 'line',
         marker: {
-          symbol: 'circle',
-          radius: 2,
+          enabled: false,
         }
       });
 
@@ -126,10 +130,27 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
         visible: false,
         connectEnds: false,
         marker: {
-          symbol: 'circle',
-          radius: 2,
+          enabled: false,
         }
-      });      
+      });     
+      
+      const sumData = binnedData1.map((point, i) => {
+        const x = point[0];
+        const yDiff = point[1] + binnedData2[i][1];
+        return [x, yDiff];
+      });
+      sumData.sort((a, b) => a[0] - b[0]);
+
+      this.chartObject.addSeries({
+        name: 'Sum', 
+        data: sumData,
+        type: 'line',
+        visible: false,
+        connectEnds: false,
+        marker: {
+          enabled: false,
+        }
+      });
     } 
   }  
   
@@ -195,10 +216,10 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
 
       // Update chart
       this.chartObject.series[0].setData(finalData1);
-      this.chartObject.series[0].update({ type: 'line', marker: { enabled: true, radius: 3 } }, false);
+      this.chartObject.series[0].update({ type: 'line', marker: { enabled: false} }, false);
 
       this.chartObject.series[1].setData(finalData2);
-      this.chartObject.series[1].update({ type: 'line', marker: { enabled: true, radius: 3 } }, false);
+      this.chartObject.series[1].update({ type: 'line', marker: { enabled: false} }, false);
 
       // Difference dataset
       const n = Math.min(finalData1.length, finalData2.length);
@@ -208,8 +229,17 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
       }
       diffData.sort((a, b) => a[0] - b[0]);
 
+      const sumData: [number, number][] = [];
+      for (let i = 0; i < n; i++) {
+        sumData.push([finalData1[i][0], finalData1[i][1] + finalData2[i][1]]);
+      }
+      sumData.sort((a, b) => a[0] - b[0]);
+
       this.chartObject.series[2].setData(diffData);
-      this.chartObject.series[2].update({ type: 'line', marker: { enabled: true, radius: 3 } }, false);
+      this.chartObject.series[2].update({ type: 'line', marker: { enabled: false} }, false);
+
+      this.chartObject.series[3].setData(sumData);
+      this.chartObject.series[3].update({ type: 'line', marker: { enabled: false} }, false);
 
       this.chartObject.redraw?.();
 
@@ -235,7 +265,7 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
       const finalChartData = duplicateIfNeeded(chartData);
 
       this.chartObject.series[0].setData(finalChartData);
-      this.chartObject.series[0].update({ type: 'line', marker: { enabled: true, radius: 3 } });
+      this.chartObject.series[0].update({ name: 'Data', type: 'line', marker: { enabled: false} });
 
       this.chartObject.redraw?.();
     }

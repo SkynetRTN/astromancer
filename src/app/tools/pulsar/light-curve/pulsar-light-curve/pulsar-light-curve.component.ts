@@ -40,10 +40,11 @@ export class PulsarLightCurveComponent implements OnDestroy {
     actions.forEach((action) => {
       if (action.action === "addRow") {
         this.service.addRow(-1, 1);
-      } else if (action.action === "saveGraph") {
+      } else if (action.action === "saveGraph") { 
         this.saveGraph();
-      } else if (action.action === "resetData" && this.rawData.length > 10) {
-        this.service.setCombinedData(this.rawData);
+      } else if (action.action === "resetData") {
+        this.service.setRawData(this.service.getCombinedData())
+        this.rawData = this.service.getRawData();
         this.processChartData(this.service.getbackScale());
       } else if (action.action === "editChartInfo") {
         const dialogRef =
@@ -60,7 +61,7 @@ export class PulsarLightCurveComponent implements OnDestroy {
     const reader = new FileReader();
     reader.onload = () => {
       const file = reader.result as string;
-
+      
       const lines = file.split('\n');
       let type = "cal";
       if (lines[0].slice(0, 7) == "# Input") {
@@ -80,7 +81,6 @@ export class PulsarLightCurveComponent implements OnDestroy {
                 this.service.setPeriodFoldingPeriod(Math.round((period / 1000) * 10000) / 10000);
               }
             }
-            break;
           }
         }
 
@@ -131,14 +131,64 @@ export class PulsarLightCurveComponent implements OnDestroy {
       } else {
         type = "cal";
         this.calFile = true;
+        
+        let filteredLines = lines
+          .filter(line => !line.startsWith('#') && line.trim() !== '') 
+          .filter(line => {
+            const columns = line.trim().split(/\s+/);
+            const lastValue = parseFloat(columns[columns.length - 1]);
+            return lastValue !== 0;
+          });
+        let commentLines = lines.filter(line => line.startsWith('#'));
           
-        let filteredLines = lines.filter(line => !line.startsWith('#') && line.trim() !== '');
-        filteredLines = filteredLines.filter(line => !line.endsWith('0 '));
+        let period: number | null = null;
+        let srcName: string | null = null;
+        let utc: number | null = null;
+        let utcString: string | null = null;
+
+        for (const line of commentLines) {
+          if (line.startsWith('# P_topo')) {
+            const match = line.match(/P_topo\s*\(ms\)\s*=\s*([\d.]+)/);
+            if (match) {
+              period = parseFloat(match[1]);
+              if (!isNaN(period)) {
+                this.service.setPeriodFoldingPeriod(
+                  Math.round((period / 1000) * 10000) / 10000
+                );
+              }
+            }
+
+          } else if (line.startsWith('#     SRC_NAME=')) {
+            const match = line.match(/SRC_NAME=([^\s#]+)/);
+            if (match) {
+              srcName = match[1];
+            }
+
+          } else if (line.startsWith('#          UTC=')) {
+            const match = line.match(/UTC=([\d.]+)/);
+            if (match) {
+              utc = parseFloat(match[1]);
+              if (!isNaN(utc)) {
+                const hours = Math.floor(utc / 3600);
+                const minutes = Math.floor((utc % 3600) / 60);
+                const seconds = Math.floor(utc % 60);
+                utcString =
+                  `${hours.toString().padStart(2, '0')}:` +
+                  `${minutes.toString().padStart(2, '0')}:` +
+                  `${seconds.toString().padStart(2, '0')}`;
+              }
+            }
+          }
+        }
+
+        if (utcString && srcName) {
+          this.service.setChartTitle(srcName + ' ' + utcString);
+        };
 
         // Extract headers and data rows
         const headers = [
           'UTC_Time(s)', 'Ra(hr)', 'Dec(deg)', 'Az(deg)', 'El(deg)',
-          'YY1', 'XX1', 'Cal', 'Sweeps'
+          'XX1', 'YY1', 'Cal', 'Sweeps'
         ];
 
         const rows = filteredLines.map(line => {
@@ -155,12 +205,12 @@ export class PulsarLightCurveComponent implements OnDestroy {
         });
 
         // Prepare data for computation
-        this.ts = rows.map(row => row['UTC_Time(s)'] as number);
+        this.ts = rows.map(row => (row['UTC_Time(s)'] as number) - (utc ?? 0));
         this.ys = rows.map(row => row['YY1'] as number);
         this.xs = rows.map(row => row['XX1'] as number);
 
         const combinedData = rows.map(row => ({
-          jd: row['UTC_Time(s)'] as number,
+          jd: row['UTC_Time(s)'] as number - (utc ?? 0),
           source1: row['YY1'] as number,
           source2: row['XX1'] as number
         }));
@@ -182,6 +232,7 @@ export class PulsarLightCurveComponent implements OnDestroy {
 
         this.rawData = combinedData;
         this.service.setData(combinedData);
+        this.service.setRawData(combinedData);
         this.service.setCombinedData(combinedData);
         
         this.chartData = combinedData;
@@ -210,16 +261,9 @@ export class PulsarLightCurveComponent implements OnDestroy {
     );    
 
     // Extract individual time series
-    const source1 = this.chartData.map(d => [d.jd, d.source1]);
-    const source2 = this.chartData.map(d => [d.jd, d.source2]);
-
-    // Bin the data
-    let binnedData = this.service.binData(source1, this.service.getPeriodFoldingBins());
-    const xValues = binnedData.map(point => point[0]);
-    const yValues = binnedData.map(point => point[1]);
-
-    let binnedData2 = this.service.binData(source2, this.service.getPeriodFoldingBins());
-    const yValues2 = binnedData2.map(point => point[1]);
+    const xValues = this.chartData.map(d => d.jd);
+    const yValues = this.chartData.map(d => d.source1);
+    const yValues2 = this.chartData.map(d => d.source2);
 
     const duration = xValues[xValues.length - 1] - xValues[0];
     
@@ -234,21 +278,16 @@ export class PulsarLightCurveComponent implements OnDestroy {
     this.chartData = this.service.getData().filter(
       (d): d is { jd: number; source1: number; source2: number } => d.jd !== null
     );    
-    
-    const source1 = this.chartData.map(d => [d.jd, d.source1]);
-    const source2 = this.chartData.map(d => [d.jd, d.source2]);
 
-    let binnedData = this.service.binData(source1, this.service.getPeriodFoldingBins());
-    const xValues = binnedData.map(point => point[0]);
-    const yValues = binnedData.map(point => point[1]);
-
-    let binnedData2 = this.service.binData(source2, this.service.getPeriodFoldingBins());
-    const yValues2 = binnedData2.map(point => point[1]);
+    const xValues = this.chartData.map(d => d.jd);
+    const yValues = this.chartData.map(d => d.source1);
+    const yValues2 = this.chartData.map(d => d.source2);
 
     const duration = xValues[xValues.length - 1] - xValues[0];
 
     this.service.sonificationBrowser(xValues, yValues, yValues2, duration); 
   }
+
 
   processChartData(backScale: number): void {
     if (!this.rawData) {

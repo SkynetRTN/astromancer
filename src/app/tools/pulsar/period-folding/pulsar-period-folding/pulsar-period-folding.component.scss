@@ -3,5 +3,10 @@
   flex-flow: column;
 }
 
-.period-folding {
+.col-md-3 {
+  flex: 0 0 auto;   
+}
+
+.col-md-3 app-pulsar-period-folding-form {
+  transform: translateY(-30px);
 }

@@ -165,8 +165,13 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
     });
   }  
 
+  resetForm() {
+    this.service.resetPeriodFoldingForm();
+  }
+
   resetPulsar() {
     this.service.resetPeriodFoldingForm();
+    this.service.resetChartInfo();
     this.service.resetData();   
     window.location.reload();
   }

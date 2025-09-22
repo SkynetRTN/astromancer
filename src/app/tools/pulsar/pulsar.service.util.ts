@@ -152,12 +152,12 @@ export class PulsarChartInfo implements ChartInfo {
     return {
       chartTitle: "Title",
       frequencyLabel: "Frequency",
-      channel1Label: "Channel 1",
+      channel1Label: "Polarization XX",
       title: "Title",
-      xAxisLabel: "",
-      yAxisLabel: "y",
-      dataLabels: ["Channel 1", "Channel 2"],
-      dataLabel: "Channel 1",
+      xAxisLabel: "Time (sec)",
+      yAxisLabel: "Intensity",
+      dataLabels: ["Polarization XX", "Polarization YY"],
+      dataLabel: "Polarization YY",
     }
   }
 
@@ -249,9 +249,24 @@ export class PulsarData implements MyData {
   private frequencyData: number[] = [];
   private channel1Data: number[] = [];
   private pulsarDataDict: PulsarDataDict[] = [];
+  private pulsarCombinedDataDict: PulsarDataDict[] = [];
+  private pulsarRawDataDict: PulsarDataDict[] = [];
+  private pulsarTableType: string = 'raw';
 
   getData(): PulsarDataDict[] {
     return this.pulsarDataDict;
+  }
+
+  getCombinedData(): PulsarDataDict[] {
+    return this.pulsarCombinedDataDict;
+  }
+
+  getRawData(): PulsarDataDict[] {
+    return this.pulsarRawDataDict;
+  }
+  
+  getTableType(): string {
+    return this.pulsarTableType;
   }
 
   getDataArray(): any[] {
@@ -262,6 +277,18 @@ export class PulsarData implements MyData {
     this.pulsarDataDict = data;
     this.frequencyData = data.map(d => d.source1 ?? 0);
     this.channel1Data = data.map(d => d.source2 ?? 0);
+  }
+
+  setCombinedData(data: PulsarDataDict[]): void {
+    this.pulsarCombinedDataDict = data;
+  }
+
+  setRawData(data: PulsarDataDict[]): void {
+    this.pulsarRawDataDict = data;
+  }
+
+  setTableType(type: string): void {
+    this.pulsarTableType = type;
   }
 
   addRow(index: number, amount: number): void {
@@ -708,7 +735,9 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
 
 export class PulsarStorage implements MyStorage {
   private dataKey: string = "pulsarData";
+  private rawDataKey: string = "pulsarRawData"
   private combinedDataKey: string = "pulsarCombinedData";
+  private tableTypeKey: string = "pulsarTableType";
   private interfaceKey: string = "pulsarInterface";
   private chartInfoKey: string = "pulsarChartInfo";
   private periodogramKey: string = "pulsarPeriodogram";
@@ -726,6 +755,22 @@ export class PulsarStorage implements MyStorage {
   getData(): PulsarDataDict[] {
       if (localStorage.getItem(this.dataKey)) {
         return JSON.parse(localStorage.getItem(this.dataKey) as string);
+      } else {
+        return PulsarData.getDefaultDataDict();
+      }
+  }
+
+  getRawData(): PulsarDataDict[] {
+      if (localStorage.getItem(this.rawDataKey)) {
+        return JSON.parse(localStorage.getItem(this.rawDataKey) as string);
+      } else {
+        return PulsarData.getDefaultDataDict();
+      }
+  }
+
+  getCombinedData(): PulsarDataDict[] {
+      if (localStorage.getItem(this.combinedDataKey)) {
+        return JSON.parse(localStorage.getItem(this.combinedDataKey) as string);
       } else {
         return PulsarData.getDefaultDataDict();
       }
@@ -786,6 +831,15 @@ export class PulsarStorage implements MyStorage {
   saveData(data: PulsarDataDict[]): void {
     localStorage.setItem(this.dataKey, JSON.stringify(data));
   }
+
+  saveRawData(data: PulsarDataDict[]): void {
+    localStorage.setItem(this.rawDataKey, JSON.stringify(data));
+  }
+
+  saveTableType(data: string): void {
+    localStorage.setItem(this.tableTypeKey, JSON.stringify(data));
+  }
+
 
   saveCombinedData(data: PulsarDataDict[]): void {
     localStorage.setItem(this.combinedDataKey, JSON.stringify(data));

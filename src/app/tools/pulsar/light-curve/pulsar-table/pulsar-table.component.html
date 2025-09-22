@@ -1,20 +1,20 @@
 <div class="container">
   <hot-table #table
-             [afterCreateRow]="onInsert"
              [allowInsertColumn]="false"
              [allowInsertRow]="true"
-             [beforePaste]="beforePaste"
-             [beforeRemoveRow]="onRemove"
+             (afterCreateRow)="onInsert($event)"
+             (afterRemoveRow)="onRemove($event)"
+             (afterChange)="onChange($event)"
+             (beforePaste)="beforePaste($event)"
              [colHeaders]="colNames"
              [contextMenu]="[
-    'undo',
-    'redo',
-    'copy',
-    '---------',
-    'row_above',
-    'row_below',
-    '---------',
-    'remove_row']"
+               'undo',
+               'redo',
+               'copy',
+               '---------',
+               'row_above',
+               'row_below'
+             ]"
              [data]="dataSet"
              [hiddenColumns]="true"
              [hotId]="id"

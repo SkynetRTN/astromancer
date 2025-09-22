@@ -90,7 +90,9 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
     Object.entries(periodogramData).forEach(([key, data], index) => {
       this.chartObject.addSeries({
         id: `channel-${index}`,
-        name: `Channel ${index + 1}`,
+        name: index === 0 ? "Polarization XX" :
+        index === 1 ? "Polarization YY" :
+        `Channel ${index + 1}`,
         type: "line",
         data,
         marker: {
@@ -136,7 +138,9 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
       } else {
         this.chartObject.addSeries({
           id: seriesId,
-          name: `Channel ${index + 1}`,
+          name: index === 0 ? "Polarization XX" :
+          index === 1 ? "Polarization YY" :
+          `Channel ${index + 1}`,
           type: "line",
           data,
           marker: {
@@ -210,35 +214,33 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
     });
   }
 
-  private addLocalMaxima(maxima1: [Number, Number][], maxima2: [Number, Number][]) {
+  private addLocalMaxima(maxima1: [number, number][], maxima2: [number, number][]) {
+    const combinedData: [number, number][] = [...maxima1, ...maxima2];
 
-    const levels = [
-      { id: "point-1", data: maxima1, color: "red" },
-      { id: "point-2", data: maxima2, color: "red" },
-    ];
+    const seriesId = "global-maxima";
+    const existing = this.chartObject.get(seriesId);
 
-    levels.forEach(({ id, data, color }) => {
-      const existing = this.chartObject.get(id);
-      if (existing) {
-        (existing as Highcharts.Series).setData(data, true);
-      } else {
-        this.chartObject.addSeries({
-          id,
-          type: "scatter",
-          data,
-          color,
-          showInLegend: false,
-          marker: { 
-            enabled: true,
-            radius: 6,
-            symbol: "circle"
-           },
-          enableMouseTracking: false,
-        });
-      }
-    });
+    if (existing) {
+      (existing as Highcharts.Series).setData(combinedData, true);
+    } else {
+      this.chartObject.addSeries({
+        id: seriesId,
+        type: "scatter",
+        data: combinedData,
+        color: "red",
+        showInLegend: true,    
+        name: "Global Maxima",
+        visible: false,         
+        marker: {
+          enabled: true,
+          radius: 4,
+          symbol: "circle"
+        },
+        enableMouseTracking: false,
+        zIndex: 10
+      });
+    }
   }
-
 
   ngOnDestroy(): void {
     this.destroy$.next(null);

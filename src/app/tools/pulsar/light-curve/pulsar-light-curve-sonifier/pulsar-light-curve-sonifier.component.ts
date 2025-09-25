@@ -40,7 +40,7 @@ export class PulsarLightCurveSonifierComponent {
 
     const duration = xValues[xValues.length - 1] - xValues[0];
     
-    this.service.sonification(xValues, yValues, yValues2, duration); 
+    this.service.sonification(xValues, yValues, yValues2, duration, this.service.getChartTitle()); 
   }
 
   get isPlaying(): boolean {

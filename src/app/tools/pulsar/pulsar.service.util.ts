@@ -154,7 +154,7 @@ export class PulsarChartInfo implements ChartInfo {
       frequencyLabel: "Frequency",
       channel1Label: "Polarization XX",
       title: "Title",
-      xAxisLabel: "Time (sec)",
+      xAxisLabel: "Time (s)",
       yAxisLabel: "Intensity",
       dataLabels: ["Polarization XX", "Polarization YY"],
       dataLabel: "Polarization YY",
@@ -252,6 +252,7 @@ export class PulsarData implements MyData {
   private pulsarCombinedDataDict: PulsarDataDict[] = [];
   private pulsarRawDataDict: PulsarDataDict[] = [];
   private pulsarTableType: string = 'raw';
+  private chartComputedPeriodogramDataArray: [Array<Number>, Array<Number>] = [[0],[0]];
 
   getData(): PulsarDataDict[] {
     return this.pulsarDataDict;
@@ -263,6 +264,10 @@ export class PulsarData implements MyData {
 
   getRawData(): PulsarDataDict[] {
     return this.pulsarRawDataDict;
+  }
+
+  getChartComputedPeriodogramDataArray(): [Array<Number>, Array<Number>] {
+    return this.chartComputedPeriodogramDataArray;
   }
   
   getTableType(): string {
@@ -285,6 +290,10 @@ export class PulsarData implements MyData {
 
   setRawData(data: PulsarDataDict[]): void {
     this.pulsarRawDataDict = data;
+  }
+
+  setChartComputedPeriodogramDataArray(data: [Array<Number>, Array<Number>]): void {
+    this.chartComputedPeriodogramDataArray = data;
   }
 
   setTableType(type: string): void {
@@ -325,6 +334,7 @@ export class PulsarData implements MyData {
     return data;
   }
 }
+
 export interface PulsarPeriodogramStorageObject {
   title: string;
   xAxisLabel: string;
@@ -408,15 +418,15 @@ export class PulsarPeriodogram implements PulsarPeriodogramInterface {
   public static getDefaultPeriodogram(): PulsarPeriodogramStorageObject {
     return {
       title: "Title",
-      xAxisLabel: "Period (sec)",
-      yAxisLabel: "Power Spectrum",
+      xAxisLabel: "Period (s)",
+      yAxisLabel: "Intensity",
       dataLabel: PulsarPeriodogram.defaultHash,
-      points: 1000,
+      points: 500,
       method: false,
-      startPeriodLabel: "Start Period (sec)",
-      endPeriodLabel: "End Period (sec)",
-      startPeriod: 1,
-      endPeriod: 10,
+      startPeriodLabel: "Start Period (s)",
+      endPeriodLabel: "End Period (s)",
+      startPeriod: 0.1,
+      endPeriod: 2,
     }
   }
 
@@ -611,14 +621,14 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
   public static getDefaultStorageObject(): PulsarPeriodFoldingStorageObject {
     return {
       displayPeriod: PulsarDisplayPeriod.ONE,
-      period: 0.01,
+      period: 0.2,
       phase: 0,
-      cal: 1,
+      cal: 1.0,
       speed: 1.0,
       bins: 100,
       title: "Title",
-      xAxisLabel: "x",
-      yAxisLabel: "y",
+      xAxisLabel: "Time (s)",
+      yAxisLabel: "Intensity",
       dataLabel: PulsarPeriodFolding.defaultHash,
     }
   }
@@ -737,6 +747,7 @@ export class PulsarStorage implements MyStorage {
   private dataKey: string = "pulsarData";
   private rawDataKey: string = "pulsarRawData"
   private combinedDataKey: string = "pulsarCombinedData";
+  private computedPeriodogramDataArrayKey: string = "computedPeriodogramDataArrayKey";
   private tableTypeKey: string = "pulsarTableType";
   private interfaceKey: string = "pulsarInterface";
   private chartInfoKey: string = "pulsarChartInfo";
@@ -773,6 +784,14 @@ export class PulsarStorage implements MyStorage {
         return JSON.parse(localStorage.getItem(this.combinedDataKey) as string);
       } else {
         return PulsarData.getDefaultDataDict();
+      }
+  }
+
+  getChartComputedPeriodogramDataArray(): [Array<Number>, Array<Number>] {
+      if (localStorage.getItem(this.computedPeriodogramDataArrayKey)) {
+        return JSON.parse(localStorage.getItem(this.computedPeriodogramDataArrayKey) as string);
+      } else {
+        return [[0], [0]];
       }
   }
 
@@ -834,6 +853,10 @@ export class PulsarStorage implements MyStorage {
 
   saveRawData(data: PulsarDataDict[]): void {
     localStorage.setItem(this.rawDataKey, JSON.stringify(data));
+  }
+
+  saveChartComputedPeriodogramDataArray(data: [Array<Number>, Array<Number>]): void {
+    localStorage.setItem(this.computedPeriodogramDataArrayKey, JSON.stringify(data));
   }
 
   saveTableType(data: string): void {

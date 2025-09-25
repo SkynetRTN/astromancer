@@ -79,6 +79,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         this.pulsarData.setData(this.pulsarStorage.getData());
         this.pulsarData.setRawData(this.pulsarStorage.getRawData());
         this.pulsarData.setCombinedData(this.pulsarStorage.getCombinedData());
+        this.pulsarData.setChartComputedPeriodogramDataArray(this.pulsarStorage.getChartComputedPeriodogramDataArray())
         this.pulsarInterface.setStorageObject(this.pulsarStorage.getInterface());
         this.pulsarChartInfo.setStorageObject(this.pulsarStorage.getChartInfo());
         this.pulsarPeriodogram.setPeriodogramStorageObject(this.pulsarStorage.getPeriodogram());
@@ -421,11 +422,11 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
             this.setPeriodogramStartPeriod(1 / currentEnd);
             this.setPeriodogramXAxisLabel('Frequency (Hz)');
         } else {
-            startPeriodLabel = 'Start Period (sec)';
-            endPeriodLabel = 'End Period (sec)';
+            startPeriodLabel = 'Start Period (s)';
+            endPeriodLabel = 'End Period (s)';
             this.setPeriodogramEndPeriod(1 / currentStart);
             this.setPeriodogramStartPeriod(1 / currentEnd);
-            this.setPeriodogramXAxisLabel('Period (sec)');
+            this.setPeriodogramXAxisLabel('Period (s)');
         }
     
         // Return both labels
@@ -584,6 +585,10 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         return this.pulsarData.getRawData();
     }
 
+    getChartComputedPeriodogramDataArray(): [Array<Number>, Array<Number>] {
+        return this.pulsarData.getChartComputedPeriodogramDataArray()
+    }
+
     getTableType(): string {
         return this.pulsarData.getTableType();
     }
@@ -605,14 +610,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         ]
       }
     
-
-    // public setData(dataDict: PulsarDataDict[]): void {
-    //     this.pulsarData.setData(dataDict);
-    //     this.dataSubject.next(this.getData());
-    //     return this.pulsarData.getChartSourcesDataArray();
-    // }
         
-
     getChartPeriodogramDataArray(start: number, end: number): { data1: number[][], data2?: number[][]} {
         const pulsarData = this.getChartPulsarDataArray();
     
@@ -638,6 +636,13 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         if (mag2.length > 0) {
             periodogram2 = lombScargle(jd, mag2, start, end, points, method);
         }
+
+        if (periodogram2 === undefined) {
+            this.setChartComputedPeriodogramDataArray([periodogram1, [0]]);
+        } else {
+            let periodogram3 = periodogram2 as any[];
+            this.setChartComputedPeriodogramDataArray([periodogram1, periodogram3]);
+        }
     
         // Return all periodograms
         return {
@@ -655,31 +660,134 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         this.periodFoldingDataSubject.next(this.pulsarData);
     }
 
-    median(arr: number[]) {
-        arr = arr.filter(num => !isNaN(num));
-        const mid = Math.floor(arr.length / 2);
-        const nums = arr.sort((a, b) => a - b);
-        return arr.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2;
+    backgroundSubtraction(
+        frequency: number[],
+        flux: number[],
+        dt: number
+    ): number[] {
+        if (dt <= 0) return flux.slice();
+
+        class Heap {
+            private data: number[] = [];
+            constructor(private compare: (a: number, b: number) => boolean) {}
+
+            size() { return this.data.length; }
+            peek() { return this.data[0]; }
+
+            push(val: number) {
+                this.data.push(val);
+                this.up(this.data.length - 1);
+            }
+
+            pop() {
+                const top = this.data[0];
+                const last = this.data.pop()!;
+                if (this.data.length) {
+                    this.data[0] = last;
+                    this.down(0);
+                }
+                return top;
+            }
+
+            private up(i: number) {
+                while (i > 0) {
+                    const p = (i - 1) >> 1;
+                    if (this.compare(this.data[i], this.data[p])) {
+                        [this.data[i], this.data[p]] = [this.data[p], this.data[i]];
+                        i = p;
+                    } else break;
+                }
+            }
+
+            private down(i: number) {
+                const n = this.data.length;
+                while (true) {
+                    let l = i * 2 + 1, r = i * 2 + 2, best = i;
+                    if (l < n && this.compare(this.data[l], this.data[best])) best = l;
+                    if (r < n && this.compare(this.data[r], this.data[best])) best = r;
+                    if (best !== i) {
+                        [this.data[i], this.data[best]] = [this.data[best], this.data[i]];
+                        i = best;
+                    } else break;
+                }
+            }
+        }
+
+        class SlidingMedian {
+            private low = new Heap((a,b)=>a>b); // max-heap
+            private high = new Heap((a,b)=>a<b); // min-heap
+            private toRemove = new Map<number, number>();
+
+            add(x: number) {
+                if (!this.low.size() || x <= this.low.peek()) this.low.push(x);
+                else this.high.push(x);
+                this.balance();
+            }
+
+            remove(x: number) {
+                this.toRemove.set(x, (this.toRemove.get(x) ?? 0) + 1);
+                if (x <= this.low.peek()) this.prune(this.low);
+                else this.prune(this.high);
+                this.balance();
+            }
+
+            median(): number {
+                const total = this.low.size() + this.high.size();
+                if (total % 2) return this.low.peek();
+                return (this.low.peek() + this.high.peek()) / 2;
+            }
+
+            size(): number {
+                return this.low.size() + this.high.size();
+            }
+
+            private balance() {
+                if (this.low.size() > this.high.size() + 1) {
+                    this.high.push(this.low.pop());
+                    this.prune(this.low);
+                } else if (this.high.size() > this.low.size()) {
+                    this.low.push(this.high.pop());
+                    this.prune(this.high);
+                }
+            }
+
+            private prune(h: Heap) {
+                while (h.size()) {
+                    const v = h.peek();
+                    const c = this.toRemove.get(v);
+                    if (!c) break;
+                    h.pop();
+                    if (c === 1) this.toRemove.delete(v);
+                    else this.toRemove.set(v, c - 1);
+                }
+            }
+        }
+
+    const n = Math.min(frequency.length, flux.length);
+    const result: number[] = [];
+    const halfDt = dt / 2;
+    let jmin = 0, jmax = 0;
+    const window = new SlidingMedian();
+
+    for (let i = 0; i < n; i++) {
+        const f = frequency[i];
+
+        while (jmax < n && frequency[jmax] <= f + halfDt) {
+            window.add(flux[jmax]);
+            jmax++;
+        }
+        while (jmin < n && frequency[jmin] < f - halfDt) {
+            window.remove(flux[jmin]);
+            jmin++;
+        }
+
+        const med = window.size() ? window.median() : flux[i];
+        result.push(flux[i] - med);
     }
 
-    backgroundSubtraction(frequency: number[], flux: number[], dt: number): number[] {
-        let n = Math.min(frequency.length, flux.length);
-        const subtracted = [];
-
-        let jmin = 0;
-        let jmax = 0;
-        for (let i = 0; i < n; i++) {
-            while (jmin < n && frequency[jmin] < frequency[i] - (dt / 2)) {
-                jmin++;
-            }
-            while (jmax < n && frequency[jmax] <= frequency[i] + (dt / 2)) {
-                jmax++;
-            }
-            let fluxmed = this.median(flux.slice(jmin, jmax));
-            subtracted.push(flux[i] - fluxmed); 
-        }
-        return subtracted;
-    }    
+    return result;
+    }
+  
 
     setData(data: any[]): void {
         this.pulsarData.setData(data);
@@ -698,6 +806,12 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
     setRawData(data: any[]): void {
         this.pulsarData.setRawData(data);
         this.pulsarStorage.saveRawData(this.pulsarData.getRawData());
+        this.dataSubject.next(this.pulsarData);
+    }
+
+    setChartComputedPeriodogramDataArray(data: [Number[], Number[]]): void {
+        this.pulsarData.setChartComputedPeriodogramDataArray(data);
+        this.pulsarStorage.saveChartComputedPeriodogramDataArray(this.pulsarData.getChartComputedPeriodogramDataArray());
         this.dataSubject.next(this.pulsarData);
     }
 
@@ -799,7 +913,8 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         xValues: number[],
         yValues: number[],
         yValues2: number[] | null,
-        period: number
+        period: number,
+        title: string,
     ) {
         if (yValues.length === 0) {
             console.error("No data to sonify.");
@@ -869,7 +984,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
                 // Modulate noise by data
                 audioData1[i] = noise1 * amp1;
                 if (numChannels === 2 && interp2) {
-                    audioData2![i] = noise2 * amp2 * cal;
+                    audioData2![i] = noise2 * amp2;
                 }
             }
         } else {
@@ -941,7 +1056,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = `${this.getChartTitle()}_sonification.wav`;
+        a.download = `${title}.wav`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);

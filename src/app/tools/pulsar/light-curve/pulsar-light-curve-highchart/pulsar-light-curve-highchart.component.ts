@@ -21,7 +21,7 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
   updateFlag: boolean = true;
 
   chartTitle: string = this.pulsarService.getChartTitle();
-  xAxisLabel: string = 'Time (sec)';
+  xAxisLabel: string = 'Time (s)';
   yAxisLabel: string = 'Intensity';
   dataLabel1: string = 'Polarization XX';
   dataLabel2: string = 'Polarization YY';

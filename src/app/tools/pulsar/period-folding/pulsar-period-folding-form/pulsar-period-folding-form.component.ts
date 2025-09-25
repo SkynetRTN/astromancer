@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnChanges} from '@angular/core';
+import {Component, ChangeDetectorRef, OnDestroy, OnChanges} from '@angular/core';
 import {BehaviorSubject, debounceTime, Subject, takeUntil} from "rxjs";
 import {PulsarService} from "../../pulsar.service";
 import {HonorCodePopupService} from "../../../shared/honor-code-popup/honor-code-popup.service";
@@ -54,7 +54,8 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
 
   constructor(private service: PulsarService,
               private honorCodeService: HonorCodePopupService,
-              private chartService: HonorCodeChartService) {
+              private chartService: HonorCodeChartService,
+              private cdr: ChangeDetectorRef) {
     this.formGroup = new FormGroup({
       chartTitle: new FormControl(this.service.getPeriodFoldingTitle()),
       dataLabel: new FormControl(this.service.getPeriodFoldingDataLabel()),
@@ -123,7 +124,7 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
         this.periodSubject.next(this.service.getPeriodFoldingPeriod());
         this.phaseSubject.next(this.service.getPeriodFoldingPhase());
         this.calSubject.next(this.service.getPeriodFoldingCal());
-      }
+      };
     });
     this.service.periodogramForm$.pipe(
       takeUntil(this.destroy$),
@@ -135,6 +136,7 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
         this.periodMax = 1 / this.service.getPeriodogramStartPeriod();
         this.periodMin = 1 / this.service.getPeriodogramEndPeriod();
       };
+      Promise.resolve().then(() => this.cdr.detectChanges());
     });
     this.service.data$.pipe(
       takeUntil(this.destroy$),

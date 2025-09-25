@@ -369,7 +369,6 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         this.pulsarStorage.savePeriodogram(this.pulsarPeriodogram.getPeriodogramStorageObject());
         this.periodogramFormSubject.next(this.pulsarPeriodogram);
         this.periodogramDataSubject.next(this.pulsarData);
-        this.periodFoldingFormSubject.next(UpdateSource.INIT);
     }
 
     setPeriodogramEndPeriod(endPeriod: number): void {

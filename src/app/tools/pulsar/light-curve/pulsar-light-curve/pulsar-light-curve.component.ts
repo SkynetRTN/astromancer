@@ -73,13 +73,25 @@ export class PulsarLightCurveComponent implements OnDestroy {
 
         let period: number | null = null;
         for (const line of lines) {
-          if (line.startsWith('# P_topo')) {
-            const match = line.match(/P_topo\s*\(ms\)\s*=\s*([\d.]+)/);
+          const trimmed = line.replace(/^#\s*/, ''); // remove leading '#' and spaces
+
+          // Extract P_topo
+          if (trimmed.startsWith('P_topo')) {
+            const match = trimmed.match(/P_topo\s*\(ms\)\s*=\s*([\d.]+)/);
             if (match) {
-              period = parseFloat(match[1]);
+              const period = parseFloat(match[1]);
               if (!isNaN(period)) {
                 this.service.setPeriodFoldingPeriod(Math.round((period / 1000) * 10000) / 10000);
               }
+            }
+          }
+
+          // Extract Candidate
+          else if (trimmed.startsWith('Candidate')) {
+            const match = trimmed.match(/Candidate\s*=\s*(.+)/);
+            if (match) {
+              this.service.setChartTitle(match[1].trim());
+              this.service.setPeriodFoldingTitle(match[1].trim());
             }
           }
         }
@@ -145,10 +157,13 @@ export class PulsarLightCurveComponent implements OnDestroy {
         let srcName: string | null = null;
         let utc: number | null = null;
         let utcString: string | null = null;
+        let dateObs: string | null = null;
 
         for (const line of commentLines) {
-          if (line.startsWith('# P_topo')) {
-            const match = line.match(/P_topo\s*\(ms\)\s*=\s*([\d.]+)/);
+          const trimmed = line.replace(/^#\s*/, ''); // remove '#' and any spaces after it
+
+          if (trimmed.startsWith('P_topo')) {
+            const match = trimmed.match(/P_topo\s*\(ms\)\s*=\s*([\d.]+)/);
             if (match) {
               period = parseFloat(match[1]);
               if (!isNaN(period)) {
@@ -158,16 +173,17 @@ export class PulsarLightCurveComponent implements OnDestroy {
               }
             }
 
-          } else if (line.startsWith('#     SRC_NAME=')) {
-            const match = line.match(/SRC_NAME=([^\s#]+)/);
+          } else if (trimmed.startsWith('SRC_NAME=')) {
+            const match = trimmed.match(/SRC_NAME=([^\s#]+)/);
             if (match) {
               srcName = match[1];
             }
 
-          } else if (line.startsWith('#          UTC=')) {
-            const match = line.match(/UTC=([\d.]+)/);
+          } else if (trimmed.startsWith('UTC=')) {
+            const match = trimmed.match(/UTC=([\d.]+)/);
             if (match) {
               utc = parseFloat(match[1]);
+
               if (!isNaN(utc)) {
                 const hours = Math.floor(utc / 3600);
                 const minutes = Math.floor((utc % 3600) / 60);
@@ -178,11 +194,19 @@ export class PulsarLightCurveComponent implements OnDestroy {
                   `${seconds.toString().padStart(2, '0')}`;
               }
             }
+
+          } else if (trimmed.startsWith('DATE_OBS=')) {
+            const match = trimmed.match(/DATE_OBS=([^\s#]+)/);
+            if (match) {
+              dateObs = match[1];
+            }
           }
         }
 
         if (utcString && srcName) {
-          this.service.setChartTitle(srcName + ' ' + utcString);
+          this.service.setChartTitle(srcName + '_' + dateObs + '_prefolded_light_curve');
+          this.service.setPeriodogramTitle(srcName + '_' + dateObs + '_periodogram');
+          this.service.setPeriodFoldingTitle(srcName + '_' + dateObs + '_folded_light_curve');
         };
 
         // Extract headers and data rows
@@ -267,7 +291,7 @@ export class PulsarLightCurveComponent implements OnDestroy {
 
     const duration = xValues[xValues.length - 1] - xValues[0];
     
-    this.service.sonification(xValues, yValues, yValues2, duration); 
+    this.service.sonification(xValues, yValues, yValues2, duration, this.service.getChartTitle()); 
   }
 
   get isPlaying(): boolean {

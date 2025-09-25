@@ -421,7 +421,7 @@ export class PulsarPeriodogram implements PulsarPeriodogramInterface {
       xAxisLabel: "Period (s)",
       yAxisLabel: "Intensity",
       dataLabel: PulsarPeriodogram.defaultHash,
-      points: 500,
+      points: 1000,
       method: false,
       startPeriodLabel: "Start Period (s)",
       endPeriodLabel: "End Period (s)",

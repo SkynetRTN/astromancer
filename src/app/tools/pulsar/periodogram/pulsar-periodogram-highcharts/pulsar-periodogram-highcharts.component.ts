@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import * as Highcharts from "highcharts";
-import { Subject, takeUntil } from "rxjs";
+import { Subject, skip, takeUntil } from "rxjs";
 import { PulsarService } from "../../pulsar.service";
 
 @Component({
@@ -57,6 +57,10 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
     this.setChartYAxis();
     this.setData();
     this.updateChart();
+  
+    this.chartObject.setTitle({ text: this.service.getPeriodogramTitle() });
+    this.chartObject.xAxis[0]?.setTitle({ text: this.service.getPeriodogramXAxisLabel() });
+    this.chartObject.yAxis[0]?.setTitle({ text: this.service.getPeriodogramYAxisLabel() });
 
     this.service.periodogramForm$.pipe(
       takeUntil(this.destroy$)
@@ -67,6 +71,7 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
       this.updateChart();
     });
     this.service.isComputing$.pipe(
+      skip(1),
       takeUntil(this.destroy$)
     ).subscribe(() => {
       this.updateData();
@@ -78,23 +83,29 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
     this.service.setHighChartPeriodogram(this.chartObject);
   }
 
-  /**
-   * Handles the initial creation of series from periodogram data.
-   */
   setData() {
-    const start = this.service.getPeriodogramStartPeriod();
-    const end = this.service.getPeriodogramEndPeriod();
-    const periodogramData = this.service.getChartPeriodogramDataArray(start, end);
+    const periodogramData = this.service.getChartComputedPeriodogramDataArray();
 
-    // Add periodogram channels
+    // Get first series data
+    const firstSeriesData = periodogramData[0] as unknown as { x: number; y: number }[];
+
+    // Extract x-values
+    const xValues = firstSeriesData.map(point => point.x);
+
+    // Compute min and max
+    const start = Math.min(...xValues);
+    const end = Math.max(...xValues);
+
     Object.entries(periodogramData).forEach(([key, data], index) => {
+      const numericData: number[] = (data as Number[]).map(n => n.valueOf());
+
       this.chartObject.addSeries({
         id: `channel-${index}`,
         name: index === 0 ? "Polarization XX" :
-        index === 1 ? "Polarization YY" :
-        `Channel ${index + 1}`,
+              index === 1 ? "Polarization YY" :
+              `Channel ${index + 1}`,
         type: "line",
-        data,
+        data: numericData,
         marker: {
           symbol: "circle",
           radius: 3,

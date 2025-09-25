@@ -33,14 +33,31 @@ export class PulsarLightCurveSonifierComponent {
       (d): d is { jd: number; source1: number; source2: number } => d.jd !== null
     );    
 
-    // Extract individual time series
-    const xValues = this.chartData.map(d => d.jd);
-    const yValues = this.chartData.map(d => d.source1);
-    const yValues2 = this.chartData.map(d => d.source2);
+    const filtered = this.chartData.filter(d =>
+      !isNaN(d.jd) && !isNaN(d.source1) && !isNaN(d.source2)
+    );
 
-    const duration = xValues[xValues.length - 1] - xValues[0];
+    let xValues = filtered.map(d => d.jd);
+    let yValues = filtered.map(d => d.source1);
+    let yValues2 = filtered.map(d => d.source2);
+
+    const start = xValues[0];
+    let duration = xValues[xValues.length - 1] - start;
+
+    if (duration > 60) {
+      // Find first index where x - start > 60
+      const cutIndex = xValues.findIndex(x => x - start > 60);
+
+      // Slice all arrays up to that index
+      const end = cutIndex !== -1 ? cutIndex : xValues.length;
+      xValues = xValues.slice(0, end);
+      yValues = yValues.slice(0, end);
+      yValues2 = yValues2.slice(0, end);
+
+      duration = xValues[xValues.length - 1] - start;
+    }
     
-    this.service.sonification(xValues, yValues, yValues2, duration); 
+    this.service.sonification(xValues, yValues, yValues2, duration, this.service.getChartTitle()); 
   }
 
   get isPlaying(): boolean {
@@ -52,11 +69,29 @@ export class PulsarLightCurveSonifierComponent {
       (d): d is { jd: number; source1: number; source2: number } => d.jd !== null
     );    
 
-    const xValues = this.chartData.map(d => d.jd);
-    const yValues = this.chartData.map(d => d.source1);
-    const yValues2 = this.chartData.map(d => d.source2);
+    const filtered = this.chartData.filter(d =>
+      !isNaN(d.jd) && !isNaN(d.source1) && !isNaN(d.source2)
+    );
 
-    const duration = xValues[xValues.length - 1] - xValues[0];
+    let xValues = filtered.map(d => d.jd);
+    let yValues = filtered.map(d => d.source1);
+    let yValues2 = filtered.map(d => d.source2);
+
+    const start = xValues[0];
+    let duration = xValues[xValues.length - 1] - start;
+
+    if (duration > 60) {
+      // Find first index where x - start > 60
+      const cutIndex = xValues.findIndex(x => x - start > 60);
+
+      // Slice all arrays up to that index
+      const end = cutIndex !== -1 ? cutIndex : xValues.length;
+      xValues = xValues.slice(0, end);
+      yValues = yValues.slice(0, end);
+      yValues2 = yValues2.slice(0, end);
+
+      duration = xValues[xValues.length - 1] - start;
+    }
 
     this.service.sonificationBrowser(xValues, yValues, yValues2, duration); 
   }

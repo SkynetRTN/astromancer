@@ -43,7 +43,8 @@ export class PulsarLightCurveFormComponent implements OnInit {
       const jd = chartData.map(item => item.jd ?? 0);
       const source1 = chartData.map(item => item.source1 ?? 0);
       const source2 = chartData.map(item => item.source2 ?? 0);
-    
+
+      if (typeof value !== 'number' || isNaN(value) || value <= 2.2 * ((Math.max(...jd) - Math.min(...jd)) / source1.length)) return;
       // Apply background subtraction based on the provided backScale
       const subtractedSource1 = this.pulsarService.backgroundSubtraction(jd, source1, value);
       const subtractedSource2 = this.pulsarService.backgroundSubtraction(jd, source2, value);

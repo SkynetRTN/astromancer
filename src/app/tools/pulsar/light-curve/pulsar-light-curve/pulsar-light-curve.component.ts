@@ -73,13 +73,25 @@ export class PulsarLightCurveComponent implements OnDestroy {
 
         let period: number | null = null;
         for (const line of lines) {
-          if (line.startsWith('# P_topo')) {
-            const match = line.match(/P_topo\s*\(ms\)\s*=\s*([\d.]+)/);
+          const trimmed = line.replace(/^#\s*/, ''); // remove leading '#' and spaces
+
+          // Extract P_topo
+          if (trimmed.startsWith('P_topo')) {
+            const match = trimmed.match(/P_topo\s*\(ms\)\s*=\s*([\d.]+)/);
             if (match) {
-              period = parseFloat(match[1]);
+              const period = parseFloat(match[1]);
               if (!isNaN(period)) {
                 this.service.setPeriodFoldingPeriod(Math.round((period / 1000) * 10000) / 10000);
               }
+            }
+          }
+
+          // Extract Candidate
+          else if (trimmed.startsWith('Candidate')) {
+            const match = trimmed.match(/Candidate\s*=\s*(.+)/);
+            if (match) {
+              this.service.setChartTitle(match[1].trim());
+              this.service.setPeriodFoldingTitle(match[1].trim());
             }
           }
         }
@@ -145,10 +157,13 @@ export class PulsarLightCurveComponent implements OnDestroy {
         let srcName: string | null = null;
         let utc: number | null = null;
         let utcString: string | null = null;
+        let dateObs: string | null = null;
 
         for (const line of commentLines) {
-          if (line.startsWith('# P_topo')) {
-            const match = line.match(/P_topo\s*\(ms\)\s*=\s*([\d.]+)/);
+          const trimmed = line.replace(/^#\s*/, ''); // remove '#' and any spaces after it
+
+          if (trimmed.startsWith('P_topo')) {
+            const match = trimmed.match(/P_topo\s*\(ms\)\s*=\s*([\d.]+)/);
             if (match) {
               period = parseFloat(match[1]);
               if (!isNaN(period)) {
@@ -158,16 +173,17 @@ export class PulsarLightCurveComponent implements OnDestroy {
               }
             }
 
-          } else if (line.startsWith('#     SRC_NAME=')) {
-            const match = line.match(/SRC_NAME=([^\s#]+)/);
+          } else if (trimmed.startsWith('SRC_NAME=')) {
+            const match = trimmed.match(/SRC_NAME=([^\s#]+)/);
             if (match) {
               srcName = match[1];
             }
 
-          } else if (line.startsWith('#          UTC=')) {
-            const match = line.match(/UTC=([\d.]+)/);
+          } else if (trimmed.startsWith('UTC=')) {
+            const match = trimmed.match(/UTC=([\d.]+)/);
             if (match) {
               utc = parseFloat(match[1]);
+
               if (!isNaN(utc)) {
                 const hours = Math.floor(utc / 3600);
                 const minutes = Math.floor((utc % 3600) / 60);
@@ -178,11 +194,19 @@ export class PulsarLightCurveComponent implements OnDestroy {
                   `${seconds.toString().padStart(2, '0')}`;
               }
             }
+
+          } else if (trimmed.startsWith('DATE_OBS=')) {
+            const match = trimmed.match(/DATE_OBS=([^\s#]+)/);
+            if (match) {
+              dateObs = match[1];
+            }
           }
         }
 
         if (utcString && srcName) {
-          this.service.setChartTitle(srcName + ' ' + utcString);
+          this.service.setChartTitle(srcName + '_' + dateObs + '_prefolded_light_curve');
+          this.service.setPeriodogramTitle(srcName + '_' + dateObs + '_periodogram');
+          this.service.setPeriodFoldingTitle(srcName + '_' + dateObs + '_folded_light_curve');
         };
 
         // Extract headers and data rows
@@ -205,12 +229,18 @@ export class PulsarLightCurveComponent implements OnDestroy {
         });
 
         // Prepare data for computation
-        this.ts = rows.map(row => (row['UTC_Time(s)'] as number) - (utc ?? 0));
-        this.ys = rows.map(row => row['YY1'] as number);
-        this.xs = rows.map(row => row['XX1'] as number);
+        const filteredRows = rows.filter(row =>
+          !isNaN(row['UTC_Time(s)'] as number) &&
+          !isNaN(row['YY1'] as number) &&
+          !isNaN(row['XX1'] as number)
+        );
 
-        const combinedData = rows.map(row => ({
-          jd: row['UTC_Time(s)'] as number - (utc ?? 0),
+        this.ts = filteredRows.map(row => (row['UTC_Time(s)'] as number) - (utc ?? 0));
+        this.ys = filteredRows.map(row => row['YY1'] as number);
+        this.xs = filteredRows.map(row => row['XX1'] as number);
+
+        const combinedData = filteredRows.map(row => ({
+          jd: (row['UTC_Time(s)'] as number) - (utc ?? 0),
           source1: row['YY1'] as number,
           source2: row['XX1'] as number
         }));
@@ -267,7 +297,7 @@ export class PulsarLightCurveComponent implements OnDestroy {
 
     const duration = xValues[xValues.length - 1] - xValues[0];
     
-    this.service.sonification(xValues, yValues, yValues2, duration); 
+    this.service.sonification(xValues, yValues, yValues2, duration, this.service.getChartTitle()); 
   }
 
   get isPlaying(): boolean {
@@ -283,8 +313,18 @@ export class PulsarLightCurveComponent implements OnDestroy {
     const yValues = this.chartData.map(d => d.source1);
     const yValues2 = this.chartData.map(d => d.source2);
 
-    const duration = xValues[xValues.length - 1] - xValues[0];
+    let duration = xValues[xValues.length - 1] - xValues[0];
+    if (duration > 60) {
+      const start = xValues[0];
 
+      const cutIndex = xValues.findIndex(x => x - start > 60);
+
+      const end = cutIndex !== -1 ? cutIndex : xValues.length;
+
+      xValues.splice(end);
+      yValues.splice(end);
+      yValues2.splice(end);
+    }
     this.service.sonificationBrowser(xValues, yValues, yValues2, duration); 
   }
 

@@ -79,6 +79,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         this.pulsarData.setData(this.pulsarStorage.getData());
         this.pulsarData.setRawData(this.pulsarStorage.getRawData());
         this.pulsarData.setCombinedData(this.pulsarStorage.getCombinedData());
+        this.pulsarData.setChartComputedPeriodogramDataArray(this.pulsarStorage.getChartComputedPeriodogramDataArray())
         this.pulsarInterface.setStorageObject(this.pulsarStorage.getInterface());
         this.pulsarChartInfo.setStorageObject(this.pulsarStorage.getChartInfo());
         this.pulsarPeriodogram.setPeriodogramStorageObject(this.pulsarStorage.getPeriodogram());
@@ -368,7 +369,6 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         this.pulsarStorage.savePeriodogram(this.pulsarPeriodogram.getPeriodogramStorageObject());
         this.periodogramFormSubject.next(this.pulsarPeriodogram);
         this.periodogramDataSubject.next(this.pulsarData);
-        this.periodFoldingFormSubject.next(UpdateSource.INIT);
     }
 
     setPeriodogramEndPeriod(endPeriod: number): void {
@@ -421,11 +421,11 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
             this.setPeriodogramStartPeriod(1 / currentEnd);
             this.setPeriodogramXAxisLabel('Frequency (Hz)');
         } else {
-            startPeriodLabel = 'Start Period (sec)';
-            endPeriodLabel = 'End Period (sec)';
+            startPeriodLabel = 'Start Period (s)';
+            endPeriodLabel = 'End Period (s)';
             this.setPeriodogramEndPeriod(1 / currentStart);
             this.setPeriodogramStartPeriod(1 / currentEnd);
-            this.setPeriodogramXAxisLabel('Period (sec)');
+            this.setPeriodogramXAxisLabel('Period (s)');
         }
     
         // Return both labels
@@ -584,6 +584,10 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         return this.pulsarData.getRawData();
     }
 
+    getChartComputedPeriodogramDataArray(): [Array<Number>, Array<Number>] {
+        return this.pulsarData.getChartComputedPeriodogramDataArray()
+    }
+
     getTableType(): string {
         return this.pulsarData.getTableType();
     }
@@ -605,14 +609,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         ]
       }
     
-
-    // public setData(dataDict: PulsarDataDict[]): void {
-    //     this.pulsarData.setData(dataDict);
-    //     this.dataSubject.next(this.getData());
-    //     return this.pulsarData.getChartSourcesDataArray();
-    // }
         
-
     getChartPeriodogramDataArray(start: number, end: number): { data1: number[][], data2?: number[][]} {
         const pulsarData = this.getChartPulsarDataArray();
     
@@ -633,13 +630,19 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
     
         // Generate periodograms for each series
         const periodogram1 = lombScargle(jd, mag1, start, end, points, method);
-    
+
         let periodogram2: number[][] | undefined = undefined;
         if (mag2.length > 0) {
             periodogram2 = lombScargle(jd, mag2, start, end, points, method);
         }
-    
-        // Return all periodograms
+
+        if (periodogram2 === undefined) {
+            this.setChartComputedPeriodogramDataArray([periodogram1, [0]]);
+        } else {
+            let periodogram3 = periodogram2 as any[];
+            this.setChartComputedPeriodogramDataArray([periodogram1, periodogram3]);
+        }
+
         return {
             data1: periodogram1,
             data2: periodogram2
@@ -680,6 +683,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         }
         return subtracted;
     }    
+  
 
     setData(data: any[]): void {
         this.pulsarData.setData(data);
@@ -698,6 +702,12 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
     setRawData(data: any[]): void {
         this.pulsarData.setRawData(data);
         this.pulsarStorage.saveRawData(this.pulsarData.getRawData());
+        this.dataSubject.next(this.pulsarData);
+    }
+
+    setChartComputedPeriodogramDataArray(data: [Number[], Number[]]): void {
+        this.pulsarData.setChartComputedPeriodogramDataArray(data);
+        this.pulsarStorage.saveChartComputedPeriodogramDataArray(this.pulsarData.getChartComputedPeriodogramDataArray());
         this.dataSubject.next(this.pulsarData);
     }
 
@@ -799,7 +809,8 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         xValues: number[],
         yValues: number[],
         yValues2: number[] | null,
-        period: number
+        period: number,
+        title: string,
     ) {
         if (yValues.length === 0) {
             console.error("No data to sonify.");
@@ -869,7 +880,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
                 // Modulate noise by data
                 audioData1[i] = noise1 * amp1;
                 if (numChannels === 2 && interp2) {
-                    audioData2![i] = noise2 * amp2 * cal;
+                    audioData2![i] = noise2 * amp2;
                 }
             }
         } else {
@@ -941,7 +952,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = `${this.getChartTitle()}_sonification.wav`;
+        a.download = `${title}.wav`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);

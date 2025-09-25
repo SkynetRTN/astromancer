@@ -17,12 +17,12 @@ import { beforePaste } from '../../../shared/tables/util';
   selector: 'app-pulsar-table',
   templateUrl: './pulsar-table.component.html',
   styleUrls: ['./pulsar-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush   // ✅ OnPush for performance
+  changeDetection: ChangeDetectionStrategy.OnPush   
 })
 export class PulsarTableComponent implements AfterViewInit, OnDestroy {
   id = 'pulsar-table';
   table: MyTable = new PulsarTable(this.id);
-  colNames = ['Time (sec)', 'XX', 'YY'];
+  colNames = ['Time (s)', 'XX', 'YY'];
   dataSet: PulsarTableDict[] = [];
   rawData = true;
 
@@ -36,7 +36,6 @@ export class PulsarTableComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    // 🔹 only update the Handsontable instance, do not recreate arrays
     this.service.data$
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
@@ -44,6 +43,7 @@ export class PulsarTableComponent implements AfterViewInit, OnDestroy {
           ? this.service.getRawData()
           : this.service.getData();
         this.updateTable(src);
+        this.registerDeleteHook();
       });
 
     this.service.tableType$
@@ -55,26 +55,10 @@ export class PulsarTableComponent implements AfterViewInit, OnDestroy {
           ? this.service.getRawData()
           : this.service.getData();
         this.updateTable(src);
+        this.registerDeleteHook();
       });
 
-    const hot = this.table.getTable();
-
-    hot.addHook('afterDocumentKeyDown', (event: KeyboardEvent) => {
-      if (event.key !== 'Backspace' && event.key !== 'Delete') return;
-
-      const selections = hot.getSelected();
-      if (!selections) return;
-
-      const rowsToDelete: number[] = [];
-      for (const [startRow,, endRow] of selections) {
-        for (let r = startRow; r <= endRow; r++) rowsToDelete.push(r);
-      }
-      const uniqueRows = [...new Set(rowsToDelete)].sort((a, b) => a - b);
-      if (!uniqueRows.length) return;
-
-      event.preventDefault();
-      this.removeFromAllServices(uniqueRows);
-    });
+    this.registerDeleteHook();
   }
 
   ngOnDestroy(): void {
@@ -110,6 +94,38 @@ export class PulsarTableComponent implements AfterViewInit, OnDestroy {
     return beforePaste(data, coords, this.table);
   };
 
+  private deleteKeyCallback = (event: KeyboardEvent) => {
+    const hot = this.table.getTable();
+    if (event.key !== 'Backspace' && event.key !== 'Delete') return;
+
+    const selections = hot.getSelectedRange();
+    if (!selections) return;
+
+    const rowsToDelete: number[] = [];
+
+    selections.forEach(range => {
+      const start = Math.min(range.from.row, range.to.row);
+      const end = Math.max(range.from.row, range.to.row);
+      for (let r = start; r <= end; r++) rowsToDelete.push(r);
+    });
+    const uniqueRows = Array.from(new Set(rowsToDelete)).sort((a, b) => a - b);
+    if (!uniqueRows.length) return;
+
+    event.preventDefault();
+    this.removeFromAllServices(uniqueRows);
+  };
+
+  private registerDeleteHook() {
+    const hot = this.table.getTable();
+
+    // Remove old hook if present
+    hot.removeHook('afterDocumentKeyDown', this.deleteKeyCallback);
+
+    // Add hook
+    hot.addHook('afterDocumentKeyDown', this.deleteKeyCallback);
+  }
+
+
   private removeFromAllServices(rows: number[]) {
     const filterRows = (arr: PulsarDataDict[]) =>
       arr.filter((_, i) => !rows.includes(i));
@@ -127,7 +143,7 @@ export class PulsarTableComponent implements AfterViewInit, OnDestroy {
   private updateTable(src: PulsarDataDict[]) {
     const hot = this.table.getTable();
     const limited = this.limitPrecision(src);
-    hot.loadData(limited);            
+    hot.updateSettings({data: limited});     
     this.dataSet = limited;
     this.cdr.markForCheck();
   }
@@ -154,6 +170,7 @@ class PulsarTable implements MyTable {
     return this.getTable().getSourceData();
   }
 }
+
 
 interface PulsarTableDict {
   jd: number | null;

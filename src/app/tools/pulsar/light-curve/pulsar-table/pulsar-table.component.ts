@@ -98,14 +98,17 @@ export class PulsarTableComponent implements AfterViewInit, OnDestroy {
     const hot = this.table.getTable();
     if (event.key !== 'Backspace' && event.key !== 'Delete') return;
 
-    const selections = hot.getSelected();
+    const selections = hot.getSelectedRange();
     if (!selections) return;
 
     const rowsToDelete: number[] = [];
-    for (const [startRow,, endRow] of selections) {
-      for (let r = startRow; r <= endRow; r++) rowsToDelete.push(r);
-    }
-    const uniqueRows = [...new Set(rowsToDelete)].sort((a, b) => a - b);
+
+    selections.forEach(range => {
+      const start = Math.min(range.from.row, range.to.row);
+      const end = Math.max(range.from.row, range.to.row);
+      for (let r = start; r <= end; r++) rowsToDelete.push(r);
+    });
+    const uniqueRows = Array.from(new Set(rowsToDelete)).sort((a, b) => a - b);
     if (!uniqueRows.length) return;
 
     event.preventDefault();

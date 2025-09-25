@@ -229,12 +229,18 @@ export class PulsarLightCurveComponent implements OnDestroy {
         });
 
         // Prepare data for computation
-        this.ts = rows.map(row => (row['UTC_Time(s)'] as number) - (utc ?? 0));
-        this.ys = rows.map(row => row['YY1'] as number);
-        this.xs = rows.map(row => row['XX1'] as number);
+        const filteredRows = rows.filter(row =>
+          !isNaN(row['UTC_Time(s)'] as number) &&
+          !isNaN(row['YY1'] as number) &&
+          !isNaN(row['XX1'] as number)
+        );
 
-        const combinedData = rows.map(row => ({
-          jd: row['UTC_Time(s)'] as number - (utc ?? 0),
+        this.ts = filteredRows.map(row => (row['UTC_Time(s)'] as number) - (utc ?? 0));
+        this.ys = filteredRows.map(row => row['YY1'] as number);
+        this.xs = filteredRows.map(row => row['XX1'] as number);
+
+        const combinedData = filteredRows.map(row => ({
+          jd: (row['UTC_Time(s)'] as number) - (utc ?? 0),
           source1: row['YY1'] as number,
           source2: row['XX1'] as number
         }));
@@ -307,8 +313,18 @@ export class PulsarLightCurveComponent implements OnDestroy {
     const yValues = this.chartData.map(d => d.source1);
     const yValues2 = this.chartData.map(d => d.source2);
 
-    const duration = xValues[xValues.length - 1] - xValues[0];
+    let duration = xValues[xValues.length - 1] - xValues[0];
+    if (duration > 60) {
+      const start = xValues[0];
 
+      const cutIndex = xValues.findIndex(x => x - start > 60);
+
+      const end = cutIndex !== -1 ? cutIndex : xValues.length;
+
+      xValues.splice(end);
+      yValues.splice(end);
+      yValues2.splice(end);
+    }
     this.service.sonificationBrowser(xValues, yValues, yValues2, duration); 
   }
 

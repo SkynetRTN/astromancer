@@ -104,6 +104,11 @@ export class PulsarPeriodogramFormComponent implements OnDestroy {
       this.formGroup.controls['endPeriod'].setValue(this.service.getPeriodogramEndPeriod(), {emitEvent: false});
       this.formGroup.controls['numPoints'].setValue(this.service.getPeriodogramPoints(), {emitEvent: false});
       this.formGroup.controls['methodLS'].setValue(this.service.getPeriodogramMethod(), {emitEvent: false});
+
+      this.formGroup.controls['chartTitle'].setValue(
+        this.service.getPeriodogramTitle(),
+        { emitEvent: false } 
+      );
     });
   }
 

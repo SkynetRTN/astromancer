@@ -33,11 +33,14 @@ export class PulsarLightCurveSonifierComponent {
       (d): d is { jd: number; source1: number; source2: number } => d.jd !== null
     );    
 
-    // Extract individual time series
-    const xValues = this.chartData.map(d => d.jd);
-    const yValues = this.chartData.map(d => d.source1);
-    const yValues2 = this.chartData.map(d => d.source2);
+    const filtered = this.chartData.filter(d =>
+      !isNaN(d.jd) && !isNaN(d.source1) && !isNaN(d.source2)
+    );
 
+    const xValues  = filtered.map(d => d.jd);
+    const yValues  = filtered.map(d => d.source1);
+    const yValues2 = filtered.map(d => d.source2)
+    
     const duration = xValues[xValues.length - 1] - xValues[0];
     
     this.service.sonification(xValues, yValues, yValues2, duration, this.service.getChartTitle()); 
@@ -52,9 +55,13 @@ export class PulsarLightCurveSonifierComponent {
       (d): d is { jd: number; source1: number; source2: number } => d.jd !== null
     );    
 
-    const xValues = this.chartData.map(d => d.jd);
-    const yValues = this.chartData.map(d => d.source1);
-    const yValues2 = this.chartData.map(d => d.source2);
+    const filtered = this.chartData.filter(d =>
+      !isNaN(d.jd) && !isNaN(d.source1) && !isNaN(d.source2)
+    );
+
+    const xValues  = filtered.map(d => d.jd);
+    const yValues  = filtered.map(d => d.source1);
+    const yValues2 = filtered.map(d => d.source2)
 
     const duration = xValues[xValues.length - 1] - xValues[0];
 

@@ -1,5 +1,6 @@
 <div class="container">
   <hot-table #table
+             [height]="'55vh'"
              [allowInsertColumn]="false"
              [allowInsertRow]="true"
              (afterCreateRow)="onInsert($event)"

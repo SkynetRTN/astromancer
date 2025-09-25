@@ -186,7 +186,7 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
         let binnedData2 = this.service.binData(data['data2'], this.service.getPeriodFoldingBins());
         const yValues2 = binnedData2.map(point => point[1]);
         
-        this.service.sonification(xValues, yValues, yValues2, this.service.getPeriodFoldingPeriod()); 
+        this.service.sonification(xValues, yValues, yValues2, this.service.getPeriodFoldingPeriod(), this.service.getPeriodFoldingTitle()); 
       } else {
         const rawData = this.service.getData()
         .filter(item => item.jd !== null && item.source1 !== null);
@@ -194,7 +194,7 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
         const xValues = rawData.map(item => Number(item.jd));
         const yValues = rawData.map(item => Number(item.source1));
         
-        this.service.sonification(xValues, yValues, null, this.service.getPeriodFoldingPeriod());
+        this.service.sonification(xValues, yValues, null, this.service.getPeriodFoldingPeriod(), this.service.getPeriodFoldingTitle());
       }
   }
 

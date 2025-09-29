@@ -1,0 +1,12 @@
+.col-4, .col-8, .col-12 {
+  display: flex;
+  flex-flow: column;
+}
+
+.col-md-3 {
+  flex: 0 0 auto;   
+}
+
+.col-md-3 app-pulsar-period-folding-form {
+  transform: translateY(-30px);
+}

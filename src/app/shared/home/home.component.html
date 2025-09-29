@@ -141,22 +141,6 @@
                     </mat-card-content>
                 </mat-card>
             </div>
-            <div [routerLink]="'/galaxy'" class="tile-container">
-                <mat-card class="tile">
-                    <mat-card-header>
-                        <mat-card-title>Galaxy</mat-card-title>
-                        <mat-card-subtitle>MWU!</mat-card-subtitle>
-                    </mat-card-header>
-                    <div class="chart-preview">
-                        <app-galaxy-highchart></app-galaxy-highchart>
-                    </div>
-                    <mat-card-content>
-                        <p>
-                            Description for the Galaxy plotting tool goes here.
-                        </p>
-                    </mat-card-content>
-                </mat-card>
-            </div>
             <div [routerLink]="'/radio-source-finder'" class="tile-container">
                 <mat-card class="tile">
                     <mat-card-header>
@@ -169,6 +153,22 @@
                              [src]="'assets/static/radio-source-finder-thumbnail.png'">
                         <p>
                             Description for the Radio Source Finder tool goes here.
+                        </p>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+            <div [routerLink]="'/pulsar'" class="tile-container">
+                <mat-card class="tile">
+                    <mat-card-header>
+                        <mat-card-title>Pulsar</mat-card-title>
+                        <mat-card-subtitle>MWU!</mat-card-subtitle>
+                    </mat-card-header>
+                    <div class="chart-preview">
+                        <app-pulsar-light-curve-highchart></app-pulsar-light-curve-highchart>
+                    </div>
+                    <mat-card-content>
+                        <p>
+                            Description for the Pulsar tool goes here.
                         </p>
                     </mat-card-content>
                 </mat-card>

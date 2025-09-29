@@ -113,6 +113,14 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
             return this.pulsarPeriodFolding.getPeriodFoldingPeriod();
     }
 
+    getPeriodFoldingPeriodMin(): number {
+        return this.pulsarPeriodFolding.getPeriodFoldingPeriodMin();
+    }
+
+    getPeriodFoldingPeriodMax(): number {
+        return this.pulsarPeriodFolding.getPeriodFoldingPeriodMax();
+    }
+
     getPeriodFoldingPhase(): number {
         return this.pulsarPeriodFolding.getPeriodFoldingPhase();
     }
@@ -161,6 +169,21 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         this.periodFoldingFormSubject.next(UpdateSource.INTERFACE);
         this.periodFoldingDataSubject.next(this.pulsarData);
     }
+
+    setPeriodFoldingPeriodMin(period: number): void {
+        this.pulsarPeriodFolding.setPeriodFoldingPeriodMin(period);
+        this.pulsarStorage.savePeriodFolding(this.pulsarPeriodFolding.getPeriodFoldingStorageObject());
+        this.periodFoldingFormSubject.next(UpdateSource.INTERFACE);
+        this.periodFoldingDataSubject.next(this.pulsarData);
+    }
+
+    setPeriodFoldingPeriodMax(period: number): void {
+        this.pulsarPeriodFolding.setPeriodFoldingPeriodMax(period);
+        this.pulsarStorage.savePeriodFolding(this.pulsarPeriodFolding.getPeriodFoldingStorageObject());
+        this.periodFoldingFormSubject.next(UpdateSource.INTERFACE);
+        this.periodFoldingDataSubject.next(this.pulsarData);
+    }
+
 
     setPeriodFoldingPhase(phase: number): void {
         this.pulsarPeriodFolding.setPeriodFoldingPhase(phase);

@@ -87,6 +87,22 @@ export class PulsarPeriodogramFormComponent implements OnDestroy {
     ).subscribe((value: boolean) => {
 
       const labels = this.service.getLabels(value);
+
+      const start = this.formGroup?.get('startPeriod')?.value
+      const end = this.formGroup?.get('endPeriod')?.value
+
+      this.service.setPeriodogramStartPeriod(start);
+      this.service.setPeriodogramEndPeriod(end);
+
+      if (value == true) {
+        this.formGroup.patchValue({
+          xAxisLabel: 'Frequency (Hz)',
+        });
+      } else if (value == false) {
+        this.formGroup.patchValue({
+          xAxisLabel: 'Period (s)',
+        });
+      };
       
       this.service.setPeriodogramStartPeriodLabel(labels.startPeriodLabel);
       this.service.setPeriodogramEndPeriodLabel(labels.endPeriodLabel);

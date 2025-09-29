@@ -1,6 +1,7 @@
 import {MyData} from "../shared/data/data.interface";
 import {MyStorage} from "../shared/storage/storage.interface";
 import {ChartInfo} from "../shared/charts/chart.interface";
+import { NumberValueAccessor } from "@angular/forms";
 
 export interface PulsarDataDict {
   jd: number | null;
@@ -550,6 +551,8 @@ export enum PulsarDisplayPeriod {
 export interface PulsarPeriodFoldingStorageObject {
   displayPeriod: PulsarDisplayPeriod;
   period: number;
+  periodMin: number;
+  periodMax: number;
   phase: number;
   cal: number;
   speed: number;
@@ -582,6 +585,10 @@ export interface PulsarPeriodFoldingInterface {
 
   setPeriodFoldingPeriod(period: number): void;
 
+  setPeriodFoldingPeriodMin(periodMin: number): void;
+
+  setPeriodFoldingPeriodMax(periodMax: number): void;
+
   setPeriodFoldingPhase(phase: number): void;
 
   setPeriodFoldingTitle(title: string): void;
@@ -598,6 +605,8 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
   public static readonly defaultHash: string = "XQGeSlw7M6";
   private displayPeriod: PulsarDisplayPeriod;
   private period: number;
+  private periodMin: number;
+  private periodMax: number;
   private phase: number;
   private cal: number;
   private speed: number;
@@ -610,6 +619,8 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
   constructor() {
     this.displayPeriod = PulsarPeriodFolding.getDefaultStorageObject().displayPeriod;
     this.period = PulsarPeriodFolding.getDefaultStorageObject().period;
+    this.periodMin = PulsarPeriodFolding.getDefaultStorageObject().periodMin;
+    this.periodMax = PulsarPeriodFolding.getDefaultStorageObject().periodMax;
     this.phase = PulsarPeriodFolding.getDefaultStorageObject().phase;
     this.cal = PulsarPeriodFolding.getDefaultStorageObject().cal;
     this.speed = PulsarPeriodFolding.getDefaultStorageObject().speed;
@@ -624,6 +635,8 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
     return {
       displayPeriod: PulsarDisplayPeriod.ONE,
       period: 0.2,
+      periodMin: 0.1,
+      periodMax: 2,
       phase: 0,
       cal: 1.0,
       speed: 1.0,
@@ -645,6 +658,14 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
 
   getPeriodFoldingPeriod(): number {
     return this.period;
+  }
+
+  getPeriodFoldingPeriodMin(): number {
+    return this.periodMin;
+  }
+
+  getPeriodFoldingPeriodMax(): number {
+    return this.periodMax;
   }
 
   getPeriodFoldingPhase(): number {
@@ -687,6 +708,14 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
     this.period = period;
   }
 
+  setPeriodFoldingPeriodMin(period: number): void {
+    this.periodMin = period;
+  }
+
+  setPeriodFoldingPeriodMax(period: number): void {
+    this.periodMax = period;
+  }
+
   setPeriodFoldingPhase(phase: number): void {
     this.phase = phase;
   }
@@ -719,6 +748,8 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
     return {
       displayPeriod: this.displayPeriod,
       period: this.period,
+      periodMin: this.periodMin,
+      periodMax: this.periodMax,
       phase: this.phase,
       cal: this.cal,
       speed: this.speed,
@@ -733,6 +764,8 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
   setPeriodFoldingStorageObject(storageObject: PulsarPeriodFoldingStorageObject): void {
     this.displayPeriod = storageObject.displayPeriod;
     this.period = storageObject.period;
+    this.periodMin = storageObject.periodMin;
+    this.periodMax = storageObject.periodMax;
     this.phase = storageObject.phase;
     this.cal = storageObject.cal;
     this.speed = storageObject.speed;

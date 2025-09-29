@@ -1,5 +1,5 @@
 import {Component, ChangeDetectorRef, OnDestroy, OnChanges} from '@angular/core';
-import {BehaviorSubject, debounceTime, Subject, takeUntil} from "rxjs";
+import {BehaviorSubject, debounceTime, Subject, takeUntil, skip} from "rxjs";
 import {PulsarService} from "../../pulsar.service";
 import {HonorCodePopupService} from "../../../shared/honor-code-popup/honor-code-popup.service";
 import {HonorCodeChartService} from "../../../shared/honor-code-popup/honor-code-chart.service";
@@ -29,8 +29,8 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
     = new BehaviorSubject<number>(this.service.getPeriodFoldingBins());
 
   calFile: boolean = true;
-  periodMin: number = this.service.getPeriodogramStartPeriod();
-  periodMax: number = this.service.getPeriodogramEndPeriod();
+  periodMin: number = this.service.getPeriodFoldingPeriodMin();
+  periodMax: number = this.service.getPeriodFoldingPeriodMax();
   periodStep: number = 0.1;
   showSlider = true;
   private destroy$: Subject<void> = new Subject<void>();
@@ -62,7 +62,7 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
       xAxisLabel: new FormControl(this.service.getPeriodFoldingXAxisLabel()),
       yAxisLabel: new FormControl(this.service.getPeriodFoldingYAxisLabel()),
       displayPeriod: new FormControl(this.service.getPeriodFoldingDisplayPeriod()),
-      period: new FormControl((this.service.getPeriodogramStartPeriod() + this.service.getPeriodogramEndPeriod()) / 2),
+      period: new FormControl((this.service.getPeriodFoldingPeriodMin() + this.service.getPeriodFoldingPeriodMax()) / 2),
       phase: new FormControl(0),
       cal: new FormControl(1),
       speed: new FormControl(1),
@@ -126,16 +126,20 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
         this.calSubject.next(this.service.getPeriodFoldingCal());
       };
     });
-    this.service.periodogramForm$.pipe(
+    this.service.isComputing$.pipe(
       takeUntil(this.destroy$),
-      debounceTime(500),
+      skip(1)
     ).subscribe(() => {
       if (this.service.getPeriodogramMethod() === false) {
         this.periodMin = this.service.getPeriodogramStartPeriod();
         this.periodMax = this.service.getPeriodogramEndPeriod();
+        this.service.setPeriodFoldingPeriodMin(this.periodMin);
+        this.service.setPeriodFoldingPeriodMax(this.periodMax);
       } else {
-        this.periodMax = Math.max(1 / this.service.getPeriodogramStartPeriod(), 100000);
+        this.periodMax = 1 / this.service.getPeriodogramStartPeriod();
         this.periodMin = 1 / this.service.getPeriodogramEndPeriod();
+        this.service.setPeriodFoldingPeriodMin(this.periodMin);
+        this.service.setPeriodFoldingPeriodMax(this.periodMax);
       };
       Promise.resolve().then(() => this.cdr.detectChanges());
     });

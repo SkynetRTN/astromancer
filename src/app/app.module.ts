@@ -25,6 +25,7 @@ import {VenusModule} from "./tools/venus/venus.module";
 import {VariableModule} from "./tools/variable/variable.module";
 import {ScatterModule} from "./tools/scatter/scatter.module";
 import {SpectrumModule} from "./tools/spectrum/spectrum.module";
+import {GalaxyModule} from "./tools/galaxy/galaxy.module";
 import {DualModule} from "./tools/dual/dual.module";
 import {RadioCalibrateModule} from "./tools/radioCalibrate/radioCalibrate.module";
 import {RadioSearchModule} from './tools/radiosearch/radiosearch.module';
@@ -34,6 +35,7 @@ import {NgOptimizedImage} from "@angular/common";
 import { GravityModule } from './tools/gravity/gravity.module';
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatNativeDateModule} from "@angular/material/core";
+import {MatTabsModule} from "@angular/material/tabs";
 
 
 registerAllModules();
@@ -60,11 +62,13 @@ registerAllModules();
         VariableModule,
         ScatterModule,
         SpectrumModule,
+        GalaxyModule,
         DualModule,
         GravityModule,
         RadioCalibrateModule,
         RcModule,
         NgOptimizedImage,
+        MatTabsModule,
     ],
     declarations: [
         AppComponent,

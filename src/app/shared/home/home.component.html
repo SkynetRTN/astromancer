@@ -141,6 +141,22 @@
                     </mat-card-content>
                 </mat-card>
             </div>
+            <div [routerLink]="'/galaxy'" class="tile-container">
+                <mat-card class="tile">
+                    <mat-card-header>
+                        <mat-card-title>Galaxy</mat-card-title>
+                        <mat-card-subtitle>MWU!</mat-card-subtitle>
+                    </mat-card-header>
+                    <div class="chart-preview">
+                        <app-galaxy-highchart></app-galaxy-highchart>
+                    </div>
+                    <mat-card-content>
+                        <p>
+                            Description for the Galaxy plotting tool goes here.
+                        </p>
+                    </mat-card-content>
+                </mat-card>
+            </div>
             <div [routerLink]="'/radio-source-finder'" class="tile-container">
                 <mat-card class="tile">
                     <mat-card-header>

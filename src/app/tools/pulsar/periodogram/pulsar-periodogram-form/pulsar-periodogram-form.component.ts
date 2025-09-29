@@ -55,17 +55,17 @@ export class PulsarPeriodogramFormComponent implements OnDestroy {
     //   this.service.setPeriodogramDataLabel(label);
     // });
 
-    // this.formGroup.controls['startPeriod'].valueChanges.pipe(
-    //   debounceTime(200),
-    // ).subscribe((start: number) => {
-    //   this.service.setPeriodogramStartPeriod(start);
-    // });
+    this.formGroup.controls['startPeriod'].valueChanges.pipe(
+      debounceTime(200),
+    ).subscribe((start: number) => {
+      this.service.setPeriodogramStartPeriod(start);
+    });
 
-    // this.formGroup.controls['endPeriod'].valueChanges.pipe(
-    //   debounceTime(200),
-    // ).subscribe((end: number) => {
-    //   this.service.setPeriodogramEndPeriod(end);
-    // });
+    this.formGroup.controls['endPeriod'].valueChanges.pipe(
+      debounceTime(200),
+    ).subscribe((end: number) => {
+      this.service.setPeriodogramEndPeriod(end);
+    });
 
     // this.formGroup.controls['numPoints'].valueChanges.pipe(
     //   debounceTime(200),
@@ -151,8 +151,11 @@ export class PulsarPeriodogramFormComponent implements OnDestroy {
     this.formGroup.patchValue({
       chartTitle: 'Title',
       xAxisLabel: 'Period (s)',
-      yAxisLabel: 'Intensity'
+      yAxisLabel: 'Intensity',
     });
     this.service.resetPeriodogram();
+
+    this.service.setPeriodogramStartPeriodLabel("Start Period (s)");
+    this.service.setPeriodogramEndPeriodLabel("End Period (s)");
   }
 }

@@ -522,6 +522,8 @@ export class PulsarPeriodogram implements PulsarPeriodogramInterface {
     this.dataLabel = storageObject.dataLabel;
     this.startPeriod = storageObject.startPeriod;
     this.endPeriod = storageObject.endPeriod;
+    this.startPeriodLabel = storageObject.startPeriodLabel;
+    this.endPeriodLabel = storageObject.endPeriodLabel;
   }
 
   setPeriodogramTitle(title: string): void {

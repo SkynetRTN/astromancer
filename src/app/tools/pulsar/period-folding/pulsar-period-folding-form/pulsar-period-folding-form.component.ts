@@ -62,7 +62,7 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
       xAxisLabel: new FormControl(this.service.getPeriodFoldingXAxisLabel()),
       yAxisLabel: new FormControl(this.service.getPeriodFoldingYAxisLabel()),
       displayPeriod: new FormControl(this.service.getPeriodFoldingDisplayPeriod()),
-      period: new FormControl((this.service.getPeriodFoldingPeriodMin() + this.service.getPeriodFoldingPeriodMax()) / 2),
+      period: new FormControl(this.service.getPeriodFoldingPeriodMin()),
       phase: new FormControl(0),
       cal: new FormControl(1),
       speed: new FormControl(1),

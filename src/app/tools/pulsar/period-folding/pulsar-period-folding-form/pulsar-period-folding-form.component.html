@@ -38,7 +38,7 @@
                         [inputPrecision]="5"
                         [isLog]="false" [label]="'Period (s)'"
                         [maxValue]="periodMax" [minValue]="periodMin" [name]="'period'"
-                        [stepValue]="(periodMax-periodMin) / 1000" [step]="(periodMax-periodMin) / 1000" [value$]="periodSubject">
+                        [stepValue]="+((periodMax - periodMin) / 1000).toFixed(5)" [step]="+((periodMax - periodMin) / 1000).toFixed(5)" [value$]="periodSubject">
         </my-input-slider>
       </ng-container>
       <ng-template #fixedSlider>

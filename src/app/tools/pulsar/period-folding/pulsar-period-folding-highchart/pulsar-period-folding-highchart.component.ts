@@ -200,10 +200,12 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
         : arr;
 
     // Check if data2 is all zeros
-    const data2 = data['data2'] as [number, number][];
-    const sum = data2.reduce((acc, [, y]) => acc + y, 0) === 0;
+    const data2 = data['data2'] as [number, number][] | undefined;
 
-    if (!sum) {
+    // sum will be true only if data2 exists and all y values are zero
+    const sum = data2 ? data2.reduce((acc, [, y]) => acc + y, 0) === 0 : true;
+    
+    if (sum === false) {
       // --- Case A: both data and data2 present ---
       const binsPerPeriod = this.service.getPeriodFoldingBins();
 

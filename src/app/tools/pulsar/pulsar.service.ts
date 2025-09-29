@@ -585,7 +585,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
     getChartPulsarDataArray(): (number | null)[][] {
         return this.getData().filter((row: PulsarDataDict) =>
-            row.jd !== null && row.source1 !== null && row.source2 !== null)
+            row.jd !== null && row.source1 !== null)
             .map((row: PulsarDataDict) => [row.jd, row.source1!, row.source2!] as [number,number,number])
     }
 

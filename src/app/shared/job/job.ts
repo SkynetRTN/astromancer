@@ -36,20 +36,11 @@ export class Job {
     return this.error;
   }
 
-  //TODO: talk to Reed about this
   public createJob(payload: any): void {
-    let contenttype = "multipart/form-data"
-
-    // if(!(payload instanceof FormData))
-    // {
-    //   console.log("json detected")
-    //   contenttype = 'application/json'
-    //   payload = JSON.stringify(payload)
-    // }
-
     this.http.post(
       `${environment.apiUrl}${this.url}`,
-      payload).subscribe(
+      JSON.stringify(payload),
+      {headers: {'content-type': 'application/json'}}).subscribe(
       (resp: any) => {
         resp = resp as JobResponse;
         this.id = resp.id;
@@ -71,7 +62,6 @@ export class Job {
   public cancelJob(): void {
     this.completeSubject.next(false);
   }
-
 
   public reincarnate(object: JobStorageObject): void {
     this.id = object.id;
@@ -148,6 +138,5 @@ export interface JobResponse {
 
 export enum JobType {
   FIELD_STAR_REMOVAL = "FIELD_STAR_REMOVAL",
-  FETCH_CATALOG = "FETCH_CATALOG",
-  PROCESS_GRAVITY_DATA = "PROCESS_GRAVITY_DATA",
+  FETCH_CATALOG = "FETCH_CATALOG"
 }

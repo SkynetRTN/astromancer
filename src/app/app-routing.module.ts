@@ -22,7 +22,6 @@ const TOOLS_ROUTES: Routes = [
     {path: "radio-source-finder", loadChildren: () => import('./tools/radiosearch/radiosearch.module').then(m => m.RadioSearchModule)},
     {path: "pulsar", loadChildren: () => import('./tools/pulsar/pulsar.module').then(m => m.PulsarModule)},
     {path: "cluster", loadChildren: () => import('./tools/cluster/cluster.module').then(m => m.ClusterModule)},
-    {path: "gravity", loadChildren: () => import('./tools/gravity/gravity.module').then(m => m.GravityModule)},
     {path: "rc", loadChildren: () => import('./tools/rc/rc.module').then(m => m.RcModule)},
     {path: "settings", loadChildren: () => import('./shared/settings/settings.module').then(m => m.SettingsModule)},
     {path: '', redirectTo: '/home', pathMatch: 'full'},

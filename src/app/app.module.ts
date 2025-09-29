@@ -32,7 +32,6 @@ import {RadioSearchModule} from './tools/radiosearch/radiosearch.module';
 import {PulsarModule} from './tools/pulsar/pulsar.module';
 import {RcModule} from "./tools/rc/rc.module";
 import {NgOptimizedImage} from "@angular/common";
-import { GravityModule } from './tools/gravity/gravity.module';
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatNativeDateModule} from "@angular/material/core";
 import {MatTabsModule} from "@angular/material/tabs";
@@ -65,7 +64,6 @@ registerAllModules();
         GalaxyModule,
         PulsarModule,
         DualModule,
-        GravityModule,
         RadioCalibrateModule,
         RcModule,
         NgOptimizedImage,

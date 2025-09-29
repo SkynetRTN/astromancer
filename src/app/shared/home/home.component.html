@@ -173,6 +173,22 @@
                     </mat-card-content>
                 </mat-card>
             </div>
+            <div [routerLink]="'/pulsar'" class="tile-container">
+                <mat-card class="tile">
+                    <mat-card-header>
+                        <mat-card-title>Pulsar</mat-card-title>
+                        <mat-card-subtitle>MWU!</mat-card-subtitle>
+                    </mat-card-header>
+                    <div class="chart-preview">
+                        <app-pulsar-light-curve-highchart></app-pulsar-light-curve-highchart>
+                    </div>
+                    <mat-card-content>
+                        <p>
+                            Description for the Pulsar tool goes here.
+                        </p>
+                    </mat-card-content>
+                </mat-card>
+            </div>
         </mat-tab>
     </mat-tab-group>
 </div>

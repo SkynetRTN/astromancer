@@ -63,6 +63,7 @@ registerAllModules();
         ScatterModule,
         SpectrumModule,
         GalaxyModule,
+        PulsarModule,
         DualModule,
         GravityModule,
         RadioCalibrateModule,

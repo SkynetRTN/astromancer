@@ -55,7 +55,7 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
     this.updateXAxisScale();
     this.updateChart();
 
-    this.chartObject.setTitle({ text: this.service.getPeriodogramTitle() });
+    this.chartObject.setTitle({ text: this.service.getPeriodFoldingTitle() });
     this.chartObject.xAxis[0]?.setTitle({ text: this.service.getPeriodFoldingXAxisLabel() });
     this.chartObject.yAxis[0]?.setTitle({ text: this.service.getPeriodFoldingYAxisLabel() });
 

@@ -128,12 +128,13 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
     });
     this.service.periodogramForm$.pipe(
       takeUntil(this.destroy$),
+      debounceTime(500),
     ).subscribe(() => {
       if (this.service.getPeriodogramMethod() === false) {
         this.periodMin = this.service.getPeriodogramStartPeriod();
         this.periodMax = this.service.getPeriodogramEndPeriod();
       } else {
-        this.periodMax = 1 / this.service.getPeriodogramStartPeriod();
+        this.periodMax = Math.max(1 / this.service.getPeriodogramStartPeriod(), 100000);
         this.periodMin = 1 / this.service.getPeriodogramEndPeriod();
       };
       Promise.resolve().then(() => this.cdr.detectChanges());

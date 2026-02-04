@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
-import {ECharts, EChartsOption} from 'echarts';
+import {ECharts, EChartsOption, MarkAreaComponentOption} from 'echarts';
 import {ThemeOption} from 'ngx-echarts';
 import {debounceTime, Subject, takeUntil} from 'rxjs';
 import {FormControl, FormGroup} from '@angular/forms';
@@ -257,22 +257,23 @@ export class HistogramSliderInputEchartComponent implements OnInit, AfterViewIni
     this.chartInstance?.setOption(this.chartOptions, true);
   }
 
-  private getMarkArea() {
+  private getMarkArea(): MarkAreaComponentOption {
+    const data: MarkAreaComponentOption['data'] = [
+      [
+        {xAxis: this.histogramRange.min},
+        {xAxis: this.dataRange.min},
+      ],
+      [
+        {xAxis: this.dataRange.max},
+        {xAxis: this.histogramRange.max},
+      ]
+    ];
     return {
       silent: true,
       itemStyle: {
         opacity: 0.3,
       },
-      data: [
-        [
-          {xAxis: this.histogramRange.min},
-          {xAxis: this.dataRange.min},
-        ],
-        [
-          {xAxis: this.dataRange.max},
-          {xAxis: this.histogramRange.max},
-        ]
-      ],
+      data,
     };
   }
 

@@ -11,6 +11,7 @@ import {
 } from "./moon.service.util";
 import {BehaviorSubject} from "rxjs";
 import * as Highcharts from 'highcharts';
+import {ECharts} from 'echarts';
 import {ChartInfo} from "../shared/charts/chart.interface";
 import {rad, UpdateSource} from "../shared/data/utils";
 
@@ -22,6 +23,7 @@ export class MoonService implements MyData, ChartInfo, MoonInterface, MoonModel 
     private moonData: MyData = new MoonData();
     private moonStorage: MoonStorage = new MoonStorage();
     private highChart!: Highcharts.Chart;
+    private chart!: ECharts;
     private interfaceSubject = new BehaviorSubject<UpdateSource>(UpdateSource.INIT);
     public interface$ = this.interfaceSubject.asObservable();
     private chartInfoSubject = new BehaviorSubject<ChartInfo>(this.moonChartInfo);
@@ -214,6 +216,14 @@ export class MoonService implements MyData, ChartInfo, MoonInterface, MoonModel 
 
     getHighChart(): Highcharts.Chart {
         return this.highChart;
+    }
+
+    public setEChart(chart: ECharts): void {
+        this.chart = chart;
+    }
+
+    public getEChart(): ECharts {
+        return this.chart;
     }
 
     private limitPrecision(dataArray: number[][], precision: number): number[][] {

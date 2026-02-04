@@ -40,7 +40,7 @@ export class MoonComponent {
 
   private saveGraph() {
     this.honorCodeService.honored().subscribe((name: string) => {
-      this.chartService.saveImageHighChartOffline(this.service.getHighChart(), "moon", name);
+      this.chartService.saveImageEChartOffline(this.service.getEChart(), "moon", name);
     })
   }
 }

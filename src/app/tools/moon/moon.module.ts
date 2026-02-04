@@ -18,6 +18,8 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
+import {MoonEchartComponent} from './moon-echart/moon-echart.component';
+import {NgxEchartsModule} from 'ngx-echarts';
 
 
 const routes: Routes = [
@@ -31,6 +33,7 @@ const routes: Routes = [
     MoonHighchartComponent,
     MoonChartFormComponent,
     MoonFormComponent,
+    MoonEchartComponent,
   ],
   imports: [
     CommonModule,
@@ -48,8 +51,11 @@ const routes: Routes = [
     NgIf,
     MatDialogModule,
     MatButtonModule,
+    NgxEchartsModule.forRoot({
+      echarts: () => import('echarts'),
+    }),
   ],
-  exports: [MoonComponent, RouterModule, MoonHighchartComponent],
+  exports: [MoonComponent, RouterModule, MoonHighchartComponent, MoonEchartComponent],
   providers: [MoonService],
 })
 export class MoonModule {

@@ -1,0 +1,8 @@
+<div class="chart-container" id="chart-container">
+  <div
+    echarts
+    [options]="chartOptions"
+    (chartInit)="onChartInit($event)"
+    style="width: 100%; height: 100%; display: block;"
+  ></div>
+</div>

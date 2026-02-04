@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {Chart} from "chart.js/dist/types";
 import {addEXIFToImage, dataURLtoBlob, formatTime, getDateString} from "../charts/utils";
 import {saveAs} from 'file-saver';
+import {ECharts} from "echarts";
 import * as Highcharts from 'highcharts';
 import HC_exporting from "highcharts/modules/exporting";
 import HC_offline_exporting from "highcharts/modules/offline-exporting";
@@ -55,6 +56,15 @@ export class HonorCodeChartService {
         return html2canvas(container, {}).then(
             (canvas) => {
                 this.saveCanvasAsJpg(canvas, signature, ChartType);
+            }
+        );
+    }
+
+    public saveImageEChartOffline(chart: ECharts, chartType: string, signature: string) {
+        const container = chart.getDom();
+        return html2canvas(container, {}).then(
+            (canvas) => {
+                this.saveCanvasAsJpg(canvas, signature, chartType);
             }
         );
     }

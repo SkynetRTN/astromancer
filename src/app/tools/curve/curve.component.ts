@@ -44,7 +44,7 @@ export class CurveComponent {
 
   private saveGraph() {
     this.honorCodeService.honored().subscribe((name: string) => {
-      this.chartService.saveImageHighChartOffline(this.service.getHighChart(), "curve", name);
+      this.chartService.saveImageEChartOffline(this.service.getEChart(), "curve", name);
     })
   }
 }

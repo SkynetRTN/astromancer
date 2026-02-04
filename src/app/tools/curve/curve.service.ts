@@ -12,6 +12,7 @@ import {
   CurveStorage,
 } from "./curve.service.util";
 import {MyData} from "../shared/data/data.interface";
+import {ECharts} from "echarts";
 import * as Highcharts from 'highcharts';
 import {UpdateSource} from "../shared/data/utils";
 
@@ -35,7 +36,8 @@ export class CurveService implements ChartInfo, MyData, CurveInterface {
 
   private curveImpl: CurveImpl = new CurveImpl();
 
-  private highChart!: Highcharts.Chart;
+  private chart!: ECharts;
+  private highChart?: Highcharts.Chart;
   /**
    *
    */
@@ -200,13 +202,20 @@ export class CurveService implements ChartInfo, MyData, CurveInterface {
     return (Chart.getChart("curve-chart") as Chart);
   }
 
+  public setEChart(chart: ECharts): void {
+    this.chart = chart;
+  }
+
+  public getEChart(): ECharts {
+    return this.chart;
+  }
+
   public setHighChart(highChart: Highcharts.Chart): void {
     this.highChart = highChart;
   }
 
-  public getHighChart(): Highcharts.Chart {
+  public getHighChart(): Highcharts.Chart | undefined {
     return this.highChart;
   }
 
 }
-

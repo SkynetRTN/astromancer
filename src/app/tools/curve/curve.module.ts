@@ -12,8 +12,8 @@ import {CurveChartComponent} from "./curve-chart/curve-chart.component";
 import {NgChartsModule} from "ng2-charts";
 import {CurveChartFormComponent} from './curve-chart-form/curve-chart-form.component';
 import {MatIconModule} from "@angular/material/icon";
-import {CurveHighChartComponent} from './curve-highchart/curve-high-chart.component';
-import {HighchartsChartModule} from "highcharts-angular";
+import {CurveEchartComponent} from './curve-echart/curve-echart.component';
+import {NgxEchartsModule} from "ngx-echarts";
 import {HonorCodePopupService} from "../shared/honor-code-popup/honor-code-popup.service";
 import {RouterModule, Routes} from "@angular/router";
 import {CommonModule} from "@angular/common";
@@ -49,7 +49,9 @@ const routes: Routes = [
     MatButtonModule,
     MatIconModule,
     MatSlideToggleModule,
-    HighchartsChartModule,
+    NgxEchartsModule.forRoot({
+      echarts: () => import('echarts'),
+    }),
     MatDialogModule,
   ],
   declarations: [
@@ -58,14 +60,12 @@ const routes: Routes = [
     CurveTableComponent,
     CurveChartComponent,
     CurveChartFormComponent,
-    CurveHighChartComponent,
+    CurveEchartComponent,
   ],
-  exports: [CurveComponent, RouterModule, CurveTableComponent, CurveHighChartComponent],
+  exports: [CurveComponent, RouterModule, CurveTableComponent, CurveEchartComponent],
   providers: [CurveService, HonorCodePopupService],
 })
 export class CurveModule {
 }
-
-
 
 

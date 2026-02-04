@@ -90,16 +90,20 @@ export class CurveEchartComponent implements AfterViewInit, OnDestroy {
       xAxis: {
         type: 'value',
         name: this.service.getXAxisLabel(),
+        nameGap: 32,
+        nameLocation: "middle",
       },
       yAxis: {
         type: 'value',
         name: this.service.getYAxisLabel(),
         inverse: this.service.getIsMagnitudeOn(),
+        nameLocation: "middle",
+        nameGap: 32,
       },
       series: labels.map((label, index) => ({
         name: label,
         type: 'line',
-        showSymbol: false,
+        showSymbol: true,
         data: this.processData(data[index] ?? []),
       })),
     };

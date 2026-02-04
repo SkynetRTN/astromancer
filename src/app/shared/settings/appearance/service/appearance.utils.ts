@@ -103,7 +103,7 @@ export class ChartColor {
   }
 
   public static getBackgroundColor(mode: ChartColorMode): string {
-    return mode === ChartColorMode.LIGHT ? '#C3CFD4' : '#325769';
+    return mode === ChartColorMode.LIGHT ? '#FAFAFA' : '#303030';
   }
 
   public static getLineColor(index: number): string {

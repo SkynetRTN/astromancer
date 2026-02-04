@@ -5,6 +5,7 @@ import {Subject} from "rxjs";
 import {FsrComponents, FsrHistogramPayload} from "../fsr.util";
 import {ClusterService} from "../../cluster.service";
 import {ClusterStorageService} from "../../storage/cluster-storage.service";
+import {ChartEngine, ChartEngineService} from "../../../../shared/settings/appearance/service/chart-engine.service";
 
 @Component({
     selector: 'app-field-star-removal',
@@ -33,10 +34,16 @@ export class FieldStarRemovalComponent implements AfterViewInit {
     $pmra: Subject<FsrHistogramPayload> = new Subject<FsrHistogramPayload>;
     $pmdec: Subject<FsrHistogramPayload> = new Subject<FsrHistogramPayload>;
     $distance: Subject<FsrHistogramPayload> = new Subject<FsrHistogramPayload>;
+    chartEngine: ChartEngine = 'highcharts';
 
     constructor(private service: ClusterService,
                 public dataService: ClusterDataService,
-                public storageService: ClusterStorageService) {
+                public storageService: ClusterStorageService,
+                private chartEngineService: ChartEngineService) {
+        this.chartEngine = this.chartEngineService.getChartEngine();
+        this.chartEngineService.chartEngine$.subscribe(engine => {
+            this.chartEngine = engine;
+        });
         this.dataService.clusterSources.subscribe(
             (data) => {
                 this.$pmra.next({
@@ -196,4 +203,3 @@ export class FieldStarRemovalComponent implements AfterViewInit {
         });
     }
 }
-

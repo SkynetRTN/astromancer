@@ -9,6 +9,7 @@ import {
 } from "./service/appearance.utils";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {AppearanceService} from "./service/appearance.service";
+import {ChartEngine, ChartEngineService} from "./service/chart-engine.service";
 
 @Component({
   selector: 'app-appearance',
@@ -21,14 +22,20 @@ export class AppearanceComponent implements OnInit {
   protected readonly FontStylesList: MyFontStyle[] = ColorThemeSettings.getFontStyleLists();
   protected readonly FontSizesList: MyFontSize[] = ColorThemeSettings.getFontSizeLists();
   protected readonly FontList: MyFontFamily[] = ColorThemeSettings.getFontFamilyLists();
+  protected readonly ChartEngineList: {key: ChartEngine; displayName: string}[] = [
+    {key: 'highcharts', displayName: 'Highcharts'},
+    {key: 'echarts', displayName: 'ECharts'},
+  ];
 
   protected formGroup!: FormGroup;
 
-  constructor(private appearanceService: AppearanceService) {
+  constructor(private appearanceService: AppearanceService,
+              private chartEngineService: ChartEngineService) {
     this.getFormGroup(appearanceService.getColorTheme(),
       appearanceService.getFontFamily(),
       appearanceService.getFontStyle(),
-      appearanceService.getFontSize());
+      appearanceService.getFontSize(),
+      chartEngineService.getChartEngine());
   }
 
   ngOnInit(): void {
@@ -39,22 +46,26 @@ export class AppearanceComponent implements OnInit {
     this.appearanceService.setFontStyle(DefaultAppearanceSettings.fontStyle);
     this.appearanceService.setFontSize(DefaultAppearanceSettings.fontSize);
     this.appearanceService.setFontFamily(DefaultAppearanceSettings.fontFamily);
+    this.chartEngineService.setChartEngine('highcharts');
     this.getFormGroup(DefaultAppearanceSettings.theme,
       DefaultAppearanceSettings.fontFamily,
       DefaultAppearanceSettings.fontStyle,
-      DefaultAppearanceSettings.fontSize);
+      DefaultAppearanceSettings.fontSize,
+      this.chartEngineService.getChartEngine());
   }
 
   private getFormGroup(colorTheme: string,
                        fontFamily: string,
                        fontStyle: string,
-                       fontSize: string): void {
+                       fontSize: string,
+                       chartEngine: ChartEngine): void {
     this.formGroup = new FormGroup({
       colorTheme: new FormControl(colorTheme, [Validators.required]),
       fontFamily: new FormControl(fontFamily, [Validators.required]),
       fontStyle: new FormControl(fontStyle, [Validators.required],
       ),
-      fontSize: new FormControl(fontSize, [Validators.required])
+      fontSize: new FormControl(fontSize, [Validators.required]),
+      chartEngine: new FormControl(chartEngine, [Validators.required]),
     });
     this.formGroup.get("colorTheme")?.valueChanges.subscribe(value => {
       this.appearanceService.setColorTheme(value);
@@ -67,6 +78,9 @@ export class AppearanceComponent implements OnInit {
     });
     this.formGroup.get("fontSize")?.valueChanges.subscribe(value => {
       this.appearanceService.setFontSize(value);
+    });
+    this.formGroup.get("chartEngine")?.valueChanges.subscribe(value => {
+      this.chartEngineService.setChartEngine(value);
     });
   }
 }

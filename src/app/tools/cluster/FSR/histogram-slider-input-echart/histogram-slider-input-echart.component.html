@@ -1,0 +1,85 @@
+<div class="combo-container">
+    <div [formGroup]="histogramFormGroup" class="histogram-control-container">
+        <div class="component" style="width: 180px">
+            <mat-label>{{title}} Range</mat-label>
+        </div>
+        <div class="component"
+             style="width: calc(100% - 180px); padding-left: 0px; padding-right: 25px">
+            <mat-slider #histogramSlider [discrete]="false"
+                        [max]="fullDataRange.max" [min]="fullDataRange.min" [step]="0.01"
+                        class="histogram-slider">
+                <input [formControlName]="'sliderMin'" matSliderStartThumb>
+                <input [formControlName]="'sliderMax'" matSliderEndThumb>
+            </mat-slider>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <mat-form-field>
+                    <mat-label>Histogram Min</mat-label>
+                    <input [formControlName]="'inputMin'" [step]="0.01" matInput type="number">
+                    <mat-error *ngIf="histogramFormGroup.controls['inputMin'].hasError('invalid')">
+                        {{fullDataRange.min}} < min < {{histogramRange.max}}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-4">
+                <mat-form-field>
+                    <mat-label>Histogram Max</mat-label>
+                    <input [formControlName]="'inputMax'" [step]="0.01" matInput type="number">
+                    <mat-error *ngIf="histogramFormGroup.controls['inputMax'].hasError('invalid')">
+                        {{histogramRange.min}} < max < {{fullDataRange.max}}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-4">
+                <mat-form-field>
+                    <mat-label>Number of Bins</mat-label>
+                    <input [formControlName]="'bin'" matInput type="number">
+                    <mat-error *ngIf="histogramFormGroup.controls['bin'].hasError('invalid')">
+                        bin > 0
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+    <div class="histogram-container">
+        <div
+          echarts
+          [options]="chartOptions"
+          [theme]="chartTheme"
+          (chartInit)="onChartInit($event)"
+          style="width: 100%; height: 100%; display: block;"
+        ></div>
+    </div>
+    <div [formGroup]="dataFormGroup" class="histogram-control-container">
+        <div class="component" style="width: 100%; padding-left: 43px; padding-right: 10px">
+            <mat-slider #rangeSlider [discrete]="false"
+                        [max]="histogramRange.max" [min]="histogramRange.min" [step]="0.01" class="data-slider">
+                <input [formControlName]="'sliderMin'" matSliderStartThumb>
+                <input [formControlName]="'sliderMax'" matSliderEndThumb>
+            </mat-slider>
+        </div>
+        <div class="component" style="width: 150px">
+            <h4>Cluster {{shortTitle}}</h4>
+            <i>({{unit}})</i>
+        </div>
+        <div class="component" style="width: calc((100% - 150px) / 2); padding: 5px">
+            <mat-form-field>
+                <mat-label>Min</mat-label>
+                <input [formControlName]="'inputMin'" [step]="0.05" matInput type="number">
+                <mat-error *ngIf="dataFormGroup.controls['inputMin'].hasError('invalid')">
+                    {{histogramRange.min}} < min < {{dataRange.max}}
+                </mat-error>
+            </mat-form-field>
+        </div>
+        <div class="component" style="width: calc((100% - 150px) / 2); padding: 5px">
+            <mat-form-field>
+                <mat-label>Max</mat-label>
+                <input [formControlName]="'inputMax'" [step]="0.05" matInput type="number">
+                <mat-error *ngIf="dataFormGroup.controls['inputMax'].hasError('invalid')">
+                    {{dataRange.min}} < max < {{histogramRange.max}}
+                </mat-error>
+            </mat-form-field>
+        </div>
+    </div>
+</div>

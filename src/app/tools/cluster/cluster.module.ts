@@ -33,6 +33,7 @@ import {FieldStarRemovalComponent} from './FSR/field-star-removal/field-star-rem
 import {HistogramSliderInputComponent} from './FSR/histogram-slider-input/histogram-slider-input.component';
 import {NgChartsModule} from "ng2-charts";
 import {HighchartsChartModule} from "highcharts-angular";
+import {NgxEchartsModule} from "ngx-echarts";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MatSliderModule} from "@angular/material/slider";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
@@ -72,13 +73,26 @@ import {MetallicityComponent} from './result/result-graphics/metallicity/metalli
 import {ReddeningComponent} from './result/result-graphics/reddening/reddening.component';
 import {AgeComponent} from './result/result-graphics/age/age.component';
 import { ErrorComponent } from './data-source/pop-ups/error/error.component';
+import {PieChartEchartComponent} from './FSR/pie-chart-echart/pie-chart-echart.component';
+import {PmChartEchartComponent} from './FSR/pm-chart-echart/pm-chart-echart.component';
+import {CmdFsrEchartComponent} from './FSR/cmd-fsr-echart/cmd-fsr-echart.component';
+import {HistogramSliderInputEchartComponent} from './FSR/histogram-slider-input-echart/histogram-slider-input-echart.component';
+import {
+    ArchiveFetchingGraphicsEchartComponent
+} from './archive-feetching/archive-fetching-graphics-echart/archive-fetching-graphics-echart.component';
+import {PlotEchartComponent} from './isochrone-matching/plots/plot-echart/plot-echart.component';
+import {DistanceEchartComponent} from './result/result-graphics/distance-echart/distance-echart.component';
+import {NumberOfStarsEchartComponent} from './result/result-graphics/number-of-stars-echart/number-of-stars-echart.component';
+import {MetallicityEchartComponent} from './result/result-graphics/metallicity-echart/metallicity-echart.component';
+import {ReddeningEchartComponent} from './result/result-graphics/reddening-echart/reddening-echart.component';
+import {AgeEchartComponent} from './result/result-graphics/age-echart/age-echart.component';
 
 const routes: Routes = [
     {path: '', component: ClusterComponent, title: 'Cluster'}
 ];
 
 @NgModule({
-    declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent, FieldStarRemovalComponent, HistogramSliderInputComponent, PieChartComponent, PmChartComponent, CmdFsrComponent, ArchiveFetchingComponent, FetchPopupComponent, ArchiveFetchingGraphicsComponent, IsochroneMatchingComponent, IsochronePlottingControlsComponent, FilterControlsComponent, FilterSelectorComponent, PlotListsComponent, ClusterPlotGridComponent, PlotComponent, ResultComponent, ResultSummaryComponent, ResultGraphicsComponent, HrdResultComponent, GalaxyFaceonComponent, GalaxyEdgeonComponent, DistanceComponent, NumberOfStarsComponent, MetallicityComponent, ReddeningComponent, AgeComponent, ErrorComponent],
+    declarations: [ClusterComponent, ClusterStepperComponent, DataSourceComponent, FileUploadComponent, DragNDropDirective, SummaryComponent, LookUpComponent, FetchComponent, InProgressComponent, ResetComponent, FieldStarRemovalComponent, HistogramSliderInputComponent, PieChartComponent, PmChartComponent, CmdFsrComponent, ArchiveFetchingComponent, FetchPopupComponent, ArchiveFetchingGraphicsComponent, IsochroneMatchingComponent, IsochronePlottingControlsComponent, FilterControlsComponent, FilterSelectorComponent, PlotListsComponent, ClusterPlotGridComponent, PlotComponent, ResultComponent, ResultSummaryComponent, ResultGraphicsComponent, HrdResultComponent, GalaxyFaceonComponent, GalaxyEdgeonComponent, DistanceComponent, NumberOfStarsComponent, MetallicityComponent, ReddeningComponent, AgeComponent, ErrorComponent, PieChartEchartComponent, PmChartEchartComponent, CmdFsrEchartComponent, HistogramSliderInputEchartComponent, ArchiveFetchingGraphicsEchartComponent, PlotEchartComponent, DistanceEchartComponent, NumberOfStarsEchartComponent, MetallicityEchartComponent, ReddeningEchartComponent, AgeEchartComponent],
     imports: [
         RouterModule.forChild(routes),
         CommonModule,
@@ -99,6 +113,9 @@ const routes: Routes = [
         MatTabsModule,
         NgChartsModule,
         HighchartsChartModule,
+        NgxEchartsModule.forRoot({
+            echarts: () => import('echarts')
+        }),
         MatSlideToggleModule,
         MatSliderModule,
         MatSnackBarModule,

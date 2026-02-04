@@ -1,0 +1,23 @@
+<div [ngClass]="'plot-container' + (isVertical ? ' plot-container-vertical' : '')
++ (plotConfig !== null ? ' plot-container-visible' : '')">
+  <div
+    *ngIf="plotConfig !== null"
+    echarts
+    [options]="chartOptions"
+    [theme]="chartTheme"
+    (chartInit)="onChartInit($event)"
+    [ngClass]="'plot' + (isVertical ? ' plot-vertical' : '')"
+  ></div>
+  <div [ngClass]="'control-containers' + (isVertical ? '-vertical' : '')">
+    <mat-button-toggle-group [value]="plotConfig?.plotFraming"
+                             [vertical]="!isVertical" aria-label="Data Framing Method">
+      <mat-button-toggle (click)="standardView()" [disabled]="plotConfig?.plotType === ClusterPlotType.CM"
+                         [value]="PlotFraming.STANDARD" class="toggle">
+        Standard View
+      </mat-button-toggle>
+      <mat-button-toggle (click)="frameOnData()" [value]="PlotFraming.DATA" class="toggle">
+        Frame on Data
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+</div>

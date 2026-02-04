@@ -13,27 +13,36 @@
   <div class="graphic-row">
     <div class="result-graphic full">
       <app-cluster-summary-distance
+        *ngIf="chartEngine === 'highcharts'"
         [allClusters]="allClusters" [update$]="update$">
       </app-cluster-summary-distance>
+      <app-cluster-summary-distance-echart
+        *ngIf="chartEngine === 'echarts'"
+        [allClusters]="allClusters" [update$]="update$">
+      </app-cluster-summary-distance-echart>
     </div>
   </div>
   <div class="graphic-row">
     <div class="result-graphic half">
-      <app-age [allClusters]="allClusters" [update$]="update$"></app-age>
+      <app-age *ngIf="chartEngine === 'highcharts'" [allClusters]="allClusters" [update$]="update$"></app-age>
+      <app-age-echart *ngIf="chartEngine === 'echarts'" [allClusters]="allClusters" [update$]="update$"></app-age-echart>
     </div>
     <div class="result-graphic half">
-      <app-number-of-stars [allClusters]="allClusters" [update$]="update$">
+      <app-number-of-stars *ngIf="chartEngine === 'highcharts'" [allClusters]="allClusters" [update$]="update$">
       </app-number-of-stars>
+      <app-number-of-stars-echart *ngIf="chartEngine === 'echarts'" [allClusters]="allClusters" [update$]="update$">
+      </app-number-of-stars-echart>
     </div>
   </div>
   <div class="graphic-row">
     <div class="result-graphic half">
-      <app-metallicity [allClusters]="allClusters" [update$]="update$"></app-metallicity>
+      <app-metallicity *ngIf="chartEngine === 'highcharts'" [allClusters]="allClusters" [update$]="update$"></app-metallicity>
+      <app-metallicity-echart *ngIf="chartEngine === 'echarts'" [allClusters]="allClusters" [update$]="update$"></app-metallicity-echart>
     </div>
     <div class="result-graphic half">
-      <app-reddening [allClusters]="allClusters" [update$]="update$"></app-reddening>
+      <app-reddening *ngIf="chartEngine === 'highcharts'" [allClusters]="allClusters" [update$]="update$"></app-reddening>
+      <app-reddening-echart *ngIf="chartEngine === 'echarts'" [allClusters]="allClusters" [update$]="update$"></app-reddening-echart>
     </div>
   </div>
 
 </div>
-

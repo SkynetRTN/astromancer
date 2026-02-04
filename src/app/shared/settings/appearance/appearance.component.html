@@ -37,6 +37,15 @@
       </mat-form-field>
     </div>
     <div class="row">
+      <mat-form-field>
+        <mat-label>Chart Engine</mat-label>
+        <mat-select [formControlName]="'chartEngine'">
+          <mat-option *ngFor="let engine of ChartEngineList"
+                      [value]="engine.key">{{engine.displayName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="row">
       <button (click)="resetDefault()" color="primary"
               mat-raised-button>Reset Default
       </button>

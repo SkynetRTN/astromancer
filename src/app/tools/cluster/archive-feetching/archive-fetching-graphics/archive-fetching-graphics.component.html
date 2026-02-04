@@ -31,6 +31,7 @@
   </div>
   <div class="col-8 star-column-chart">
     <highcharts-chart
+      *ngIf="chartEngine === 'highcharts'"
       (chartInstance)="chartInitialized($event)"
       [(update)]="updateFlag"
       [Highcharts]="Highcharts"
@@ -38,5 +39,6 @@
       [options]="chartOptions"
       style="width: 100%; height: 100%; display: block;"
     ></highcharts-chart>
+    <app-archive-fetching-graphics-echart *ngIf="chartEngine === 'echarts'"></app-archive-fetching-graphics-echart>
   </div>
 </div>

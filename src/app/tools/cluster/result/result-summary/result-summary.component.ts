@@ -18,6 +18,8 @@ import {HonorCodePopupService} from "../../../shared/honor-code-popup/honor-code
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../../../environments/environment";
 import {Catalogs} from "../../cluster.util";
+import {ChartEngineService} from "../../../../shared/settings/appearance/service/chart-engine.service";
+import {EChartsOption} from "echarts";
 
 @Component({
     selector: 'app-result-summary',
@@ -53,7 +55,8 @@ export class ResultSummaryComponent {
                 public dataService: ClusterDataService,
                 public isochroneService: ClusterIsochroneService,
                 private honorCodeService: HonorCodePopupService,
-                private chartService: HonorCodeChartService) {
+                private chartService: HonorCodeChartService,
+                private chartEngineService: ChartEngineService) {
         this.service.tabIndex$.pipe(
             filter(index => index === 4)
         ).subscribe((index) => {
@@ -143,15 +146,24 @@ export class ResultSummaryComponent {
         this.service.setTabIndex(3);
         this.honorCodeService.honored().pipe(
             tap(signature => {
-                if (!signature || this.isochroneService.getHighCharts().length === 0) {
+                const hasCharts = this.chartEngineService.getChartEngine() === 'echarts'
+                  ? this.isochroneService.getECharts().length > 0
+                  : this.isochroneService.getHighCharts().length > 0;
+                if (!signature || !hasCharts) {
                     this.service.setTabIndex(4);
                     this.service.setLoading(false);
                 }
             }),
             filter(signature => !!signature),
-            filter(() => this.isochroneService.getHighCharts().length > 0),
+            filter(() => {
+                return this.chartEngineService.getChartEngine() === 'echarts'
+                  ? this.isochroneService.getECharts().length > 0
+                  : this.isochroneService.getHighCharts().length > 0;
+            }),
             switchMap(signature => of(signature).pipe(
-                concatMap(() => this.chartService.saveImageHighChartsOffline(this.isochroneService.getHighCharts(), 2, signature, "cluster-isochrone")),
+                concatMap(() => this.chartEngineService.getChartEngine() === 'echarts'
+                  ? this.chartService.saveImageEChartsOffline(this.isochroneService.getECharts(), 2, signature, "cluster-isochrone")
+                  : this.chartService.saveImageHighChartsOffline(this.isochroneService.getHighCharts(), 2, signature, "cluster-isochrone")),
             ))
         ).subscribe(() => {
             this.service.setTabIndex(4);
@@ -172,7 +184,9 @@ export class ResultSummaryComponent {
             filter(signature => !!signature),
             switchMap(signature => of(signature).pipe(
                 // concatMap(() => this.chartService.saveImageHighChartsOffline(this.service.getFsrCharts().slice(1), 1, signature, "cluster-field-removal-histogram")),
-                concatMap(() => this.chartService.saveImageHighChartsOffline(this.service.getFsrCharts().slice(0,1), 1, signature, "cluster-field-removal-2dpm")),
+                concatMap(() => this.chartEngineService.getChartEngine() === 'echarts'
+                  ? this.chartService.saveImageEChartsOffline(this.service.getFsrECharts().slice(0, 1), 1, signature, "cluster-field-removal-2dpm")
+                  : this.chartService.saveImageHighChartsOffline(this.service.getFsrCharts().slice(0, 1), 1, signature, "cluster-field-removal-2dpm")),
             ))
         ).subscribe(() => {
             this.service.setTabIndex(4);
@@ -186,19 +200,39 @@ export class ResultSummaryComponent {
                 const name = this.service.getClusterName();
                 const plotConfig = this.isochroneService.getPlotConfigs();
                 const highCharts = this.isochroneService.getHighCharts();
+                const eCharts = this.isochroneService.getECharts();
                 const sources: (number | undefined)[][][] = [];
                 const isochrones: (number | undefined)[][][] = [];
-                for (let i = 0; i < plotConfig.length; i++) {
-                    const seriesSources: (number | undefined)[][] = [];
-                    for (let j = 0; j < highCharts[i].series[0].data.length; j++) {
-                        seriesSources.push([highCharts[i].series[0].data[j]['x'], highCharts[i].series[0].data[j]['y']]);
+                if (this.chartEngineService.getChartEngine() === 'echarts') {
+                    for (let i = 0; i < plotConfig.length; i++) {
+                        const chartOption = eCharts[i]?.getOption() as EChartsOption;
+                        const series = (chartOption?.series ?? []) as Array<{data?: any[]}>;
+                        const sourceSeries = series[0]?.data ?? [];
+                        const isochroneSeries = series[1]?.data ?? [];
+                        const seriesSources: (number | undefined)[][] = sourceSeries.map((point: any) => {
+                            const value = point?.value ?? point;
+                            return [value?.[0], value?.[1]];
+                        });
+                        const seriesIsochrones: (number | undefined)[][] = isochroneSeries.map((point: any) => {
+                            const value = point?.value ?? point;
+                            return [value?.[0], value?.[1]];
+                        });
+                        sources.push(seriesSources);
+                        isochrones.push(seriesIsochrones);
                     }
-                    sources.push(seriesSources);
-                    const seriesIsochrones: (number | undefined)[][] = [];
-                    for (let j = 0; j < highCharts[i].series[1].data.length; j++) {
-                        seriesIsochrones.push([highCharts[i].series[1].data[j]['x'], highCharts[i].series[1].data[j]['y']]);
+                } else {
+                    for (let i = 0; i < plotConfig.length; i++) {
+                        const seriesSources: (number | undefined)[][] = [];
+                        for (let j = 0; j < highCharts[i].series[0].data.length; j++) {
+                            seriesSources.push([highCharts[i].series[0].data[j]['x'], highCharts[i].series[0].data[j]['y']]);
+                        }
+                        sources.push(seriesSources);
+                        const seriesIsochrones: (number | undefined)[][] = [];
+                        for (let j = 0; j < highCharts[i].series[1].data.length; j++) {
+                            seriesIsochrones.push([highCharts[i].series[1].data[j]['x'], highCharts[i].series[1].data[j]['y']]);
+                        }
+                        isochrones.push(seriesIsochrones);
                     }
-                    isochrones.push(seriesIsochrones);
                 }
                 const maxLength = Math.max(...sources.map(s => s.length),
                     ...isochrones.map(s => s.length));

@@ -6,6 +6,7 @@ import {combineLatestWith, Subject} from "rxjs";
 import {ClusterService} from "../../../cluster.service";
 import {ClusterIsochroneService} from "../../../isochrone-matching/cluster-isochrone.service";
 import {ClusterDataService} from "../../../cluster-data.service";
+import {ChartEngine, ChartEngineService} from "../../../../../shared/settings/appearance/service/chart-engine.service";
 
 @Component({
     selector: 'app-result-graphics',
@@ -15,13 +16,19 @@ import {ClusterDataService} from "../../../cluster-data.service";
 export class ResultGraphicsComponent implements AfterViewInit {
     allClusters: ClusterMWSC[] = [];
     update$: Subject<void> = new Subject<void>();
+    chartEngine: ChartEngine = 'highcharts';
 
 
     constructor(
         private service: ClusterService,
         private isochroneService: ClusterIsochroneService,
         private dataService: ClusterDataService,
-        private http: HttpClient) {
+        private http: HttpClient,
+        private chartEngineService: ChartEngineService) {
+        this.chartEngine = this.chartEngineService.getChartEngine();
+        this.chartEngineService.chartEngine$.subscribe(engine => {
+            this.chartEngine = engine;
+        });
         this.service.tabIndex$.subscribe((index: number) => {
             if (index === 4) {
                 this.update$.next();

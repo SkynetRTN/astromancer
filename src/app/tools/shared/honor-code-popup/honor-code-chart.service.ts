@@ -69,6 +69,25 @@ export class HonorCodeChartService {
         );
     }
 
+    public saveImageEChartsOffline(charts: ECharts[], columns: number, signature: string, chartType: string): Promise<void> {
+        if (charts.length === 1) {
+            return this.saveImageEChartOffline(charts[0], chartType, signature);
+        }
+        const canvasTile: HTMLCanvasElement[] = [];
+        return lastValueFrom(
+            from(charts).pipe(
+                mergeMap((chart) => {
+                    const container = chart.getDom() as HTMLElement;
+                    return from(html2canvas(container, {})).pipe(
+                        tap(canvas => canvasTile.push(canvas))
+                    );
+                })
+            )
+        ).then(() => {
+            return this.saveCanvasTilesAsJpg(canvasTile, columns, signature, chartType);
+        });
+    }
+
     public saveImageHighChartsOffline(charts: Highcharts.Chart[], column: number, signature: string, chartType: string): Promise<void> {
         if (charts.length === 1) {
             return this.saveImageHighChartOffline(charts[0], chartType, signature);

@@ -1,14 +1,21 @@
 <div [ngClass]="'plot-container' + (isVertical ? ' plot-container-vertical' : '')
 + (plotConfig !== null ? ' plot-container-visible' : '')">
     <highcharts-chart (chartInstance)="chartInitialized($event)"
-                      *ngIf="plotConfig !== null"
+                      *ngIf="plotConfig !== null && chartEngine === 'highcharts'"
                       [(update)]="updateFlag"
                       [Highcharts]="Highcharts"
                       [constructorType]="chartConstructor"
                       [ngClass]="'plot' + (isVertical ? ' plot-vertical' : '')"
                       [options]="chartOptions">
     </highcharts-chart>
-    <div [ngClass]="'control-containers' + (isVertical ? '-vertical' : '')">
+    <app-plot-echart
+      *ngIf="plotConfig !== null && chartEngine === 'echarts'"
+      [isVertical]="isVertical"
+      [plotConfig]="plotConfig"
+      [plotConfigIndex]="plotConfigIndex">
+    </app-plot-echart>
+    <div *ngIf="chartEngine === 'highcharts'"
+         [ngClass]="'control-containers' + (isVertical ? '-vertical' : '')">
         <mat-button-toggle-group [value]="plotConfig?.plotFraming"
                                  [vertical]="!isVertical" aria-label="Data Framing Method">
             <mat-button-toggle (click)="standardView()" [disabled]="plotConfig?.plotType === ClusterPlotType.CM"

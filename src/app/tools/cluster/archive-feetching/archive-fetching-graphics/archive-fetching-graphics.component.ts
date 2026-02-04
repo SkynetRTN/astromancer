@@ -5,6 +5,7 @@ import * as Highcharts from "highcharts";
 import {ClusterService} from "../../cluster.service";
 import {ClusterDataService} from "../../cluster-data.service";
 import {combineLatestWith, take} from "rxjs";
+import {ChartEngine, ChartEngineService} from "../../../../shared/settings/appearance/service/chart-engine.service";
 
 @Component({
   selector: 'app-archive-fetching-graphics',
@@ -16,6 +17,7 @@ export class ArchiveFetchingGraphicsComponent {
   updateFlag: boolean = true;
   chartConstructor: any = "chart";
   chartObject!: Highcharts.Chart;
+  chartEngine: ChartEngine = 'highcharts';
 
   chartOptions: Highcharts.Options = {
     chart: {
@@ -65,7 +67,12 @@ export class ArchiveFetchingGraphicsComponent {
   constructor(
     private service: ClusterService,
     private dataService: ClusterDataService,
-    private matDialog: MatDialog) {
+    private matDialog: MatDialog,
+    private chartEngineService: ChartEngineService) {
+    this.chartEngine = this.chartEngineService.getChartEngine();
+    this.chartEngineService.chartEngine$.subscribe(engine => {
+      this.chartEngine = engine;
+    });
     this.dataService.sources$.pipe(take(1)).subscribe(data => {
       this.refreshChart();
     });

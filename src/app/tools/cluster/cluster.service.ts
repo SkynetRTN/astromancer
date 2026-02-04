@@ -4,6 +4,7 @@ import {BehaviorSubject, Subject, take} from "rxjs";
 import {FsrParameters} from "./FSR/fsr.util";
 import {ClusterDataService} from "./cluster-data.service";
 import * as Highcharts from "highcharts";
+import {ECharts} from "echarts";
 
 @Injectable()
 export class ClusterService {
@@ -22,6 +23,7 @@ export class ClusterService {
     loading$ = this.loadingSubject.asObservable();
 
     private fsrCharts: (Highcharts.Chart | null)[] = [null, null, null, null];
+    private fsrECharts: (ECharts | null)[] = [null, null, null, null];
 
     constructor(
         private dataService: ClusterDataService,
@@ -97,5 +99,13 @@ export class ClusterService {
 
     getFsrCharts(): (Highcharts.Chart)[] {
         return this.fsrCharts as Highcharts.Chart[];
+    }
+
+    setFsrECharts(chart: (ECharts | null), index: number) {
+        this.fsrECharts[index] = chart;
+    }
+
+    getFsrECharts(): ECharts[] {
+        return this.fsrECharts.filter((chart) => chart !== null) as ECharts[];
     }
 }

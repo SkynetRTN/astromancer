@@ -1,5 +1,7 @@
-import {Component, Input, OnChanges} from '@angular/core';
-import * as Highcharts from 'highcharts';
+import {Component, Input, OnChanges, OnDestroy} from '@angular/core';
+import {ECharts, EChartsOption} from 'echarts';
+import {ThemeOption} from 'ngx-echarts';
+import {filter, Subject, takeUntil} from 'rxjs';
 import {
   ClusterPlotType,
   FILTER,
@@ -7,20 +9,20 @@ import {
   getExtinction,
   PlotConfig,
   PlotFraming
-} from "../../../cluster.util";
-import {ClusterDataService} from "../../../cluster-data.service";
-import {ClusterIsochroneService} from "../../cluster-isochrone.service";
-import {HttpClient} from "@angular/common/http";
-import {environment} from "../../../../../../environments/environment";
-import {filter} from "rxjs";
-import {ChartEngine, ChartEngineService} from "../../../../../shared/settings/appearance/service/chart-engine.service";
+} from '../../../cluster.util';
+import {ClusterDataService} from '../../../cluster-data.service';
+import {ClusterIsochroneService} from '../../cluster-isochrone.service';
+import {HttpClient} from '@angular/common/http';
+import {environment} from '../../../../../../environments/environment';
+import {AppearanceService} from '../../../../../shared/settings/appearance/service/appearance.service';
+import {getHighchartsEchartsTheme} from '../../../../../shared/settings/appearance/service/echarts-theme';
 
 @Component({
-  selector: 'app-plot',
-  templateUrl: './plot.component.html',
-  styleUrls: ['./plot.component.scss']
+  selector: 'app-plot-echart',
+  templateUrl: './plot-echart.component.html',
+  styleUrls: ['./plot-echart.component.scss']
 })
-export class PlotComponent implements OnChanges {
+export class PlotEchartComponent implements OnChanges, OnDestroy {
   @Input() plotConfig: PlotConfig | null = null;
   @Input() plotConfigIndex: number | null = null;
   @Input() isVertical: boolean = false;
@@ -28,96 +30,59 @@ export class PlotComponent implements OnChanges {
   redFilter: FILTER | null = null;
   lumFilter: FILTER | null = null;
   rawPlotData: rawDataPoint[] = [];
-  Highcharts: typeof Highcharts = Highcharts;
-  updateFlag: boolean = true;
-  chartConstructor: any = "chart";
-  chartObject!: Highcharts.Chart;
-  chartEngine: ChartEngine = 'highcharts';
-  chartOptions: Highcharts.Options = {
-    chart: {
-      type: "scatter",
-      animation: false,
-    },
-    title: {
-      text: undefined,
-    },
-    xAxis: {
-      title: {
-        useHTML: true,
-        text: "",
-      },
-    },
-    yAxis: {
-      title: {
-        text: ""
-      },
-      reversed: true,
-    },
-    legend: {
-      enabled: true,
-    },
-    series: [{
-      name: "Photometry",
-      type: "scatter",
-      data: [],
-      tooltip: {
-        headerFormat: '<b>Source ID:<b><br>',
-        pointFormatter: function () {
-          return `<br>$x: ${this.x.toFixed(2)}, y: ${this.y!.toFixed(2)}`;
-        },
-      }
-    }, {
-      name: "Isochrone",
-      type: "line",
-      data: [],
-      marker: {
-        enabled: false,
-      },
-      tooltip: {
-        headerFormat: 'Isochrone<br>',
-        pointFormat: "{point.x:.2f}, {point.y:.2f}"
-      }
-    }],
-    credits: {
-      enabled: false,
-    }
-  }
+  chartOptions: EChartsOption = {};
+  chartTheme: ThemeOption | string;
+  private chartInstance?: ECharts;
   protected readonly PlotFraming = PlotFraming;
   protected readonly ClusterPlotType = ClusterPlotType;
   private dataRange: PlotRange | null = null;
   private standardViewRange: PlotRange | null = null;
+  private destroy$ = new Subject<void>();
 
   constructor(private http: HttpClient,
               private dataService: ClusterDataService,
               private isochroneService: ClusterIsochroneService,
-              private chartEngineService: ChartEngineService) {
-    this.chartEngine = this.chartEngineService.getChartEngine();
-    this.chartEngineService.chartEngine$.subscribe(engine => {
-      this.chartEngine = engine;
-    });
-    this.isochroneService.plotParams$.subscribe(() => {
-      this.updateChartAxis();
-      if (this.plotConfig?.plotType === ClusterPlotType.HR) {
+              private appearanceService: AppearanceService) {
+    this.chartTheme = getHighchartsEchartsTheme(this.appearanceService.getColorTheme());
+    this.isochroneService.plotParams$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.updateChartAxis();
+        if (this.plotConfig?.plotType === ClusterPlotType.HR) {
+          this.updateData();
+        } else if (this.plotConfig?.plotType === ClusterPlotType.CM) {
+          this.setIsochrone();
+        }
+      });
+    this.isochroneService.maxMagError$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.updateChartAxis();
         this.updateData();
-      } else if (this.plotConfig?.plotType === ClusterPlotType.CM) {
+      });
+    this.isochroneService.isochroneParams$
+      .pipe(filter(() => this.plotConfig !== null), takeUntil(this.destroy$))
+      .subscribe(() => {
         this.setIsochrone();
-      }
-
-    });
-    this.isochroneService.maxMagError$.subscribe(() => {
-      this.updateChartAxis();
-      this.updateData();
-    });
-    this.isochroneService.isochroneParams$.pipe(
-      filter(() => this.plotConfig !== null)
-    ).subscribe(() => {
-      this.setIsochrone();
-    });
+      });
+    this.appearanceService.colorTheme$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(theme => {
+        this.chartTheme = getHighchartsEchartsTheme(theme);
+      });
   }
 
-  chartInitialized($event: Highcharts.Chart) {
-    this.chartObject = $event;
-    this.isochroneService.setHighChart(this.chartObject, this.plotConfigIndex!);
+  onChartInit(chart: ECharts): void {
+    this.chartInstance = chart;
+    if (this.plotConfigIndex !== null) {
+      this.isochroneService.setEChart(chart, this.plotConfigIndex);
+    }
+    this.refreshChart();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   ngOnChanges() {
@@ -126,18 +91,87 @@ export class PlotComponent implements OnChanges {
     this.updateData();
     this.updateChartAxis();
     this.setIsochrone();
+    this.refreshChart();
   }
 
   frameOnData() {
     this.updatePlotConfig(PlotFraming.DATA);
-    this.chartObject.xAxis[0].setExtremes(this.dataRange?.x.min ?? 0, this.dataRange?.x.max ?? 0);
-    this.chartObject.yAxis[0].setExtremes(this.dataRange?.y.min ?? 0, this.dataRange?.y.max ?? 0);
+    this.updateAxisRange(this.dataRange);
   }
 
   standardView() {
     this.updatePlotConfig(PlotFraming.STANDARD);
-    this.chartObject.xAxis[0].setExtremes(this.standardViewRange?.x.min, this.standardViewRange?.x.max);
-    this.chartObject.yAxis[0].setExtremes(this.standardViewRange?.y.min, this.standardViewRange?.y.max);
+    this.updateAxisRange(this.standardViewRange);
+  }
+
+  private refreshChart(): void {
+    this.chartOptions = this.buildChartOptions();
+    this.chartInstance?.setOption(this.chartOptions, true);
+  }
+
+  private buildChartOptions(): EChartsOption {
+    const plotData = this.getPlotData();
+    this.updateDataRange(plotData[0]);
+    this.updateStandardViewRange();
+    const plotFraming = this.plotConfig?.plotFraming;
+    const frameRange = plotFraming === PlotFraming.DATA || this.plotConfig?.plotType === ClusterPlotType.CM
+      ? this.dataRange
+      : this.standardViewRange;
+    const axisTitles = this.getAxisTitles();
+    return {
+      animation: false,
+      tooltip: {
+        trigger: 'item',
+        formatter: (params: any) => {
+          const value = params.value ?? params.data?.value;
+          if (params.seriesName === 'Photometry') {
+            const id = params.data?.id ?? '';
+            return `${id}<br>x: ${value[0].toFixed(2)}<br>y: ${value[1].toFixed(2)}`;
+          }
+          if (!value) {
+            return params.seriesName;
+          }
+          return `${params.seriesName}<br>${value[0].toFixed(2)}, ${value[1].toFixed(2)}`;
+        }
+      },
+      xAxis: {
+        type: 'value',
+        name: axisTitles.xAxisTitle,
+        min: frameRange?.x.min,
+        max: frameRange?.x.max,
+      },
+      yAxis: {
+        type: 'value',
+        name: axisTitles.yAxisTitle,
+        inverse: true,
+        min: frameRange?.y.min,
+        max: frameRange?.y.max,
+      },
+      series: [
+        {
+          name: 'Photometry',
+          type: 'scatter',
+          data: plotData[0].map((point, index) => ({value: point, id: plotData[1][index]})),
+          symbolSize: 4,
+        },
+        {
+          name: 'Isochrone',
+          type: 'line',
+          data: [],
+          showSymbol: false,
+        }
+      ],
+    };
+  }
+
+  private updateAxisRange(range: PlotRange | null): void {
+    if (!range) {
+      return;
+    }
+    this.chartInstance?.setOption({
+      xAxis: {min: range.x.min, max: range.x.max},
+      yAxis: {min: range.y.min, max: range.y.max},
+    });
   }
 
   private setIsochrone() {
@@ -165,24 +199,22 @@ export class PlotComponent implements OnChanges {
         }
         if (data.iSkip > 0 && data.data.length > data.iSkip) {
           isochroneData = [
-              ...isochroneData.slice(0, data.iSkip - 1),
-              [null, null],
-              ...isochroneData.slice(data.iSkip)
+            ...isochroneData.slice(0, data.iSkip - 1),
+            [null, null],
+            ...isochroneData.slice(data.iSkip)
           ];
         }
-        try {
-          this.chartObject.series[1].setData([]);
-          this.chartObject.series[1].setData(isochroneData);
-        } catch (e) {
-          this.chartOptions.series![1] = {
-            name: "Isochrone",
-            type: "line",
-            data: isochroneData,
-            marker: {
-              enabled: true,
+        this.chartInstance?.setOption({
+          series: [
+            {},
+            {
+              name: 'Isochrone',
+              type: 'line',
+              data: isochroneData,
+              showSymbol: false,
             }
-          };
-        }
+          ]
+        });
       });
     }
   }
@@ -195,7 +227,7 @@ export class PlotComponent implements OnChanges {
       let ids: string[] = [];
       if (this.plotConfig.plotType === ClusterPlotType.CM) {
         result = data.map((point) => [point.x, point.y]);
-        ids = data.map(point => point.id)
+        ids = data.map(point => point.id);
       }
       if (this.plotConfig.plotType === ClusterPlotType.HR) {
         const delta = this.computePlotDelta();
@@ -208,7 +240,7 @@ export class PlotComponent implements OnChanges {
       }
       return [result, ids];
     }
-    return [[], []]
+    return [[], []];
   }
 
   private computePlotDelta(): { x: number, y: number } {
@@ -219,7 +251,7 @@ export class PlotComponent implements OnChanges {
     return {
       x: redExtinction - blueExtinction,
       y: -lumExtinction - 5 * Math.log10(plotParams.distance * 1000) + 5,
-    }
+    };
   }
 
   private updatePlotConfig(plotFraming: PlotFraming) {
@@ -241,17 +273,22 @@ export class PlotComponent implements OnChanges {
     }
   }
 
+  private getAxisTitles(): {xAxisTitle: string; yAxisTitle: string} {
+    if (this.plotConfig === null) {
+      return {xAxisTitle: '', yAxisTitle: ''};
+    }
+    let xAxisTitle = `${this.blueFilter?.replace('prime', "'")} - ${this.redFilter?.replace('prime', "'")}`;
+    let yAxisTitle = '';
+    if (this.plotConfig.plotType === ClusterPlotType.HR) {
+      xAxisTitle = `(${xAxisTitle})_0`;
+      yAxisTitle = 'M_0';
+    }
+    yAxisTitle += `${this.lumFilter?.replace('prime', "'")}`;
+    return {xAxisTitle, yAxisTitle};
+  }
+
   private updateChartAxis() {
     if (this.plotConfig !== null) {
-      let xAxisTitle =
-        `${this.blueFilter?.replace("prime", "\'")} - ${this.redFilter?.replace("prime", "\'")}`;
-      let yAxisTitle = ''
-      if (this.plotConfig.plotType === ClusterPlotType.HR) {
-        xAxisTitle = '(' + xAxisTitle + ')' + `<sub>0</sub>`;
-        yAxisTitle = 'M_'
-      }
-
-      yAxisTitle += `${this.lumFilter?.replace("prime", "\'")}`;
       this.updateStandardViewRange();
       const plotFraming = this.plotConfig.plotFraming;
       let frameRange: PlotRange;
@@ -260,60 +297,44 @@ export class PlotComponent implements OnChanges {
       } else {
         frameRange = this.standardViewRange!;
       }
-      try {
-
-        this.chartObject.xAxis[0].update({title: {useHTML: true, text: xAxisTitle}});
-        // console.log(this.chartObject.xAxis[0]);
-        this.chartObject.yAxis[0].setTitle({text: yAxisTitle});
-        if (plotFraming === PlotFraming.DATA || this.plotConfig.plotType === ClusterPlotType.CM) {
-          this.frameOnData();
-          this.isochroneService.updatePlotFraming(PlotFraming.DATA, this.plotConfigIndex!);
-        } else if (plotFraming === PlotFraming.STANDARD) {
-          this.standardView();
-        }
-      } catch (e) {
-        this.chartOptions.xAxis = {
-          title: {useHTML: true, text: xAxisTitle},
+      const axisTitles = this.getAxisTitles();
+      this.chartInstance?.setOption({
+        xAxis: {
+          name: axisTitles.xAxisTitle,
           min: frameRange.x.min,
           max: frameRange.x.max,
-        };
-        this.chartOptions.yAxis = {
-          title: {text: yAxisTitle},
-          reversed: true,
+        },
+        yAxis: {
+          name: axisTitles.yAxisTitle,
+          inverse: true,
           min: frameRange.y.min,
           max: frameRange.y.max,
-        };
+        }
+      });
+      if (plotFraming === PlotFraming.DATA || this.plotConfig.plotType === ClusterPlotType.CM) {
+        this.frameOnData();
+        this.isochroneService.updatePlotFraming(PlotFraming.DATA, this.plotConfigIndex!);
+      } else if (plotFraming === PlotFraming.STANDARD) {
+        this.standardView();
       }
-    } else {
-      this.chartOptions.xAxis = {title: {text: undefined}};
-      this.chartOptions.yAxis = {title: {text: undefined}};
     }
   }
 
   private updateData() {
     if (this.plotConfig !== null) {
-      try {
-        const data = this.getPlotData();
-        this.updateDataRange(data[0]);
-        this.chartObject.series[0].setData(data[0], true);
-      } catch (e) {
-        const data = this.getPlotData();
-        this.updateDataRange(data[0]);
-        this.chartOptions.series![0] = {
-          name: "Photometry",
-          type: "scatter",
-          data: this.getPlotData()[0],
-          marker: {
-            radius: 2,
+      const data = this.getPlotData();
+      this.updateDataRange(data[0]);
+      this.chartInstance?.setOption({
+        series: [
+          {
+            name: 'Photometry',
+            type: 'scatter',
+            data: data[0].map((point, index) => ({value: point, id: data[1][index]})),
+            symbolSize: 4,
           },
-          tooltip: {
-            headerFormat: '<b>Source ID:<b><br>',
-            pointFormatter: function () {
-              return `<br>${data[1][this.index]}<br> x: ${this.x.toFixed(2)}, y: ${this.y!.toFixed(2)}`;
-            },
-          }
-        };
-      }
+          {},
+        ]
+      });
     }
   }
 
@@ -324,12 +345,12 @@ export class PlotComponent implements OnChanges {
       'red': this.redFilter!,
       'blue': this.blueFilter!,
       'lum': this.lumFilter!
-    }
-    let color_red: number = filterFramingValue[filters['blue']]['red'] - filterFramingValue[filters['red']]['red'];
-    let color_blue: number = filterFramingValue[filters['blue']]['blue'] - filterFramingValue[filters['red']]['blue'];
+    };
+    let colorRed: number = filterFramingValue[filters['blue']]['red'] - filterFramingValue[filters['red']]['red'];
+    let colorBlue: number = filterFramingValue[filters['blue']]['blue'] - filterFramingValue[filters['red']]['blue'];
 
-    let minX = color_blue - (color_red - color_blue) / 8;
-    let maxX = color_red + (color_red - color_blue) / 8;
+    let minX = colorBlue - (colorRed - colorBlue) / 8;
+    let maxX = colorRed + (colorRed - colorBlue) / 8;
     this.standardViewRange = {
       x: {
         min: minX <= maxX ? minX : maxX,
@@ -341,7 +362,7 @@ export class PlotComponent implements OnChanges {
         max: filterFramingValue[filters['lum']]['faint']
           - (filterFramingValue[filters['lum']]['bright'] - filterFramingValue[filters['lum']]['faint']) / 8,
       }
-    }
+    };
   }
 
   private updateDataRange(data: number[][]) {
@@ -355,7 +376,7 @@ export class PlotComponent implements OnChanges {
           min: 0,
           max: 0,
         }
-      }
+      };
       return;
     }
     this.dataRange = {
@@ -367,7 +388,7 @@ export class PlotComponent implements OnChanges {
         min: data[0][1],
         max: data[0][1],
       }
-    }
+    };
     for (const point of data) {
       if (point[0] < this.dataRange.x.min) {
         this.dataRange.x.min = point[0];
@@ -395,7 +416,7 @@ export class PlotComponent implements OnChanges {
   private generateRawData() {
     this.rawPlotData = [];
     if (this.plotConfig !== null) {
-      const sources = this.dataService.getSources(true)
+      const sources = this.dataService.getSources(true);
       for (const source of sources) {
         let blueMag: number | null = null;
         let redMag: number | null = null;
@@ -423,7 +444,6 @@ export class PlotComponent implements OnChanges {
             if (photometry.mag_error > maxMagError) {
               maxMagError = photometry.mag_error;
             } else if (maxMagError === null) {
-
             }
           }
         }

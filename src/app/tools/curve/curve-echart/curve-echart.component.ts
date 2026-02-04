@@ -1,5 +1,8 @@
 import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import {ECharts, EChartsOption} from "echarts";
+import {ThemeOption} from "ngx-echarts";
+import {AppearanceService} from "../../../shared/settings/appearance/service/appearance.service";
+import {getEchartsTheme} from "../../../shared/settings/appearance/service/echarts-theme";
 import {CurveService} from "../curve.service";
 import {Subject, takeUntil} from 'rxjs';
 
@@ -10,11 +13,13 @@ import {Subject, takeUntil} from 'rxjs';
 })
 export class CurveEchartComponent implements AfterViewInit, OnDestroy {
   chartOptions: EChartsOption = {};
+  chartTheme: ThemeOption | string;
   private chartInstance?: ECharts;
   private destroy$: Subject<any> = new Subject<any>();
 
-  constructor(private service: CurveService) {
+  constructor(private service: CurveService, private appearanceService: AppearanceService) {
     this.chartOptions = this.buildChartOptions();
+    this.chartTheme = getEchartsTheme(this.appearanceService.getColorTheme());
   }
 
   onChartInit(chart: ECharts) {
@@ -36,6 +41,11 @@ export class CurveEchartComponent implements AfterViewInit, OnDestroy {
     this.service.dataKeys$
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.refreshChart());
+    this.appearanceService.colorTheme$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((theme) => {
+        this.chartTheme = getEchartsTheme(theme);
+      });
   }
 
   ngOnDestroy(): void {

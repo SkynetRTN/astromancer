@@ -1,4 +1,5 @@
 import {Injectable, Renderer2, RendererFactory2} from '@angular/core';
+import {BehaviorSubject} from "rxjs";
 import {
   ChartColor,
   ChartColorMode,
@@ -15,6 +16,8 @@ import {AppearanceStorageService} from "./appearance-storage.service";
 })
 export class AppearanceService {
   private renderer: Renderer2;
+  private colorThemeSubject = new BehaviorSubject<ColorThemes>(this.getColorTheme());
+  public colorTheme$ = this.colorThemeSubject.asObservable();
 
   constructor(private storageService: AppearanceStorageService, private rendererFactory: RendererFactory2) {
     this.renderer = rendererFactory.createRenderer(document.body, null);
@@ -42,6 +45,7 @@ export class AppearanceService {
     this.renderer.removeClass(document.body, this.getColorTheme());
     this.renderer.addClass(document.body, colorTheme);
     this.storageService.setColorTheme(colorTheme);
+    this.colorThemeSubject.next(colorTheme);
   }
 
   public getColorTheme(): ColorThemes {

@@ -1,6 +1,7 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
   ChartColorMode,
+  ChartType,
   ColorThemes,
   DefaultAppearanceSettings,
   FontFamily,
@@ -17,11 +18,13 @@ export class AppearanceStorageService {
   private fontSize!: FontSizes;
   private font!: FontFamily;
   private chartColorMode!: ChartColorMode;
+  private chartType!: ChartType;
   private readonly colorThemeKey = "colorTheme";
   private readonly fontStyleKey = "fontStyle";
   private readonly fontSizeKey = "fontSize";
   private readonly fontKey = "font";
   private readonly chartColorModeKey = "chartColorMode";
+  private readonly chartTypeKey = "chartType";
 
   constructor() {
   }
@@ -76,6 +79,19 @@ export class AppearanceStorageService {
       this.font = DefaultAppearanceSettings.fontFamily;
     }
     return this.font;
+  }
+
+  public setChartType(chartType: ChartType): void {
+    localStorage.setItem(this.chartTypeKey, JSON.stringify(chartType));
+  }
+
+  public getChartType(): ChartType {
+    if (localStorage.getItem(this.chartTypeKey) !== null) {
+      this.chartType = JSON.parse(localStorage.getItem(this.chartTypeKey) as string);
+    } else {
+      this.chartType = DefaultAppearanceSettings.chartType;
+    }
+    return this.chartType;
   }
 
 }

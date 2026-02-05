@@ -46,34 +46,41 @@ export interface MyFontFamily {
 export class ColorThemeSettings {
   public static getThemeLists(): MyColorTheme[] {
     return [
-      {key: ColorThemes.LIGHT, displayName: 'Light'},
-      {key: ColorThemes.DARK, displayName: 'Dark'},
+      { key: ColorThemes.LIGHT, displayName: 'Light' },
+      { key: ColorThemes.DARK, displayName: 'Dark' },
       // {key: ColorThemes.HIGH_CONTRAST, displayName: 'High Contrast'},
-      {key: ColorThemes.HIGH_CONTRAST_DARK, displayName: 'High Contrast Dark'}
+      { key: ColorThemes.HIGH_CONTRAST_DARK, displayName: 'High Contrast Dark' }
     ];
   }
 
   public static getFontStyleLists(): MyFontStyle[] {
     return [
-      {key: FontStyles.DEFAULT, displayName: 'Default'},
-      {key: FontStyles.BOLD, displayName: 'Bold'},
-      {key: FontStyles.EXTRA_BOLD, displayName: 'Extra Bold'}
+      { key: FontStyles.DEFAULT, displayName: 'Default' },
+      { key: FontStyles.BOLD, displayName: 'Bold' },
+      { key: FontStyles.EXTRA_BOLD, displayName: 'Extra Bold' }
     ]
   }
 
   public static getFontSizeLists(): MyFontSize[] {
     return [
-      {key: FontSizes.SMALL, displayName: 'Small'},
-      {key: FontSizes.DEFAULT, displayName: 'Default'},
-      {key: FontSizes.LARGE, displayName: 'Large'},
-      {key: FontSizes.LARGER, displayName: 'Larger'}
+      { key: FontSizes.SMALL, displayName: 'Small' },
+      { key: FontSizes.DEFAULT, displayName: 'Default' },
+      { key: FontSizes.LARGE, displayName: 'Large' },
+      { key: FontSizes.LARGER, displayName: 'Larger' }
     ]
   }
 
   public static getFontFamilyLists(): MyFontFamily[] {
     return [
-      {key: FontFamily.ROBOTO, displayName: 'Roboto'},
-      {key: FontFamily.COMIC_NEUE, displayName: 'Comic Neue'}
+      { key: FontFamily.ROBOTO, displayName: 'Roboto' },
+      { key: FontFamily.COMIC_NEUE, displayName: 'Comic Neue' }
+    ]
+  }
+
+  public static getChartTypeLists(): MyChartType[] {
+    return [
+      { key: ChartType.HIGHCHARTS, displayName: 'Highcharts' },
+      { key: ChartType.ECHARTS, displayName: 'ECharts' }
     ]
   }
 }
@@ -84,18 +91,29 @@ export enum ChartColorMode {
 }
 
 
+export enum ChartType {
+  HIGHCHARTS = 'HIGHCHARTS',
+  ECHARTS = 'ECHARTS'
+}
+
+export interface MyChartType {
+  key: string;
+  displayName: string;
+}
+
 export class DefaultAppearanceSettings {
   public static theme: ColorThemes = ColorThemes.LIGHT;
   public static fontStyle: FontStyles = FontStyles.DEFAULT;
   public static fontSize: FontSizes = FontSizes.DEFAULT;
   public static fontFamily: FontFamily = FontFamily.ROBOTO;
   public static chartColorMode: ChartColorMode = ChartColorMode.LIGHT;
+  public static chartType: ChartType = ChartType.HIGHCHARTS;
 }
 
 
 export class ChartColor {
-  private static readonly lineColorLightArray: string[] = ["red", "orange", "green", "blue"];
-  private static readonly lineColorDarkArray: string[] = ["red", "orange", "green", "blue"];
+  private static readonly lineColorLightArray: string[] = ["#2caffe", "#544fc5", "#00e272", "#fe6a35"];
+  private static readonly lineColorDarkArray: string[] = ["#2b908f", "#90ee7e", "#f45b5b", "#7798bf"];
   private static readonly areaColor: string[] = ['#464646']
 
   public static getFontColor(mode: ChartColorMode): string {
@@ -106,12 +124,12 @@ export class ChartColor {
     return mode === ChartColorMode.LIGHT ? '#FAFAFA' : '#303030';
   }
 
-  public static getLineColor(index: number): string {
-    if (index < 0 || index >= this.lineColorLightArray.length)
+  public static getLineColor(index: number, mode: ChartColorMode = ChartColorMode.LIGHT): string {
+    const colors = mode === ChartColorMode.LIGHT ? this.lineColorLightArray : this.lineColorDarkArray;
+    if (index < 0 || index >= colors.length)
       return 'black';
     else
-      // return mode === ChartColorMode.LIGHT ? this.lineColorLightArray[index] : this.lineColorDarkArray[index];
-      return this.lineColorLightArray[index];
+      return colors[index];
   }
 
   public static getAreaColor(mode: ChartColorMode): string {

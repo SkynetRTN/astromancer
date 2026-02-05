@@ -1,10 +1,12 @@
-import {Component,} from '@angular/core';
-import {MyAction} from "../shared/types/actions";
-import {CurveService} from "./curve.service";
-import {HonorCodePopupService} from "../shared/honor-code-popup/honor-code-popup.service";
-import {HonorCodeChartService} from "../shared/honor-code-popup/honor-code-chart.service";
-import {MatDialog} from "@angular/material/dialog";
-import {CurveChartFormComponent} from "./curve-chart-form/curve-chart-form.component";
+import { Component, } from '@angular/core';
+import { MyAction } from "../shared/types/actions";
+import { CurveService } from "./curve.service";
+import { HonorCodePopupService } from "../shared/honor-code-popup/honor-code-popup.service";
+import { HonorCodeChartService } from "../shared/honor-code-popup/honor-code-chart.service";
+import { MatDialog } from "@angular/material/dialog";
+import { CurveChartFormComponent } from "./curve-chart-form/curve-chart-form.component";
+import { AppearanceService } from "../../shared/settings/appearance/service/appearance.service";
+import { ChartType } from "../../shared/settings/appearance/service/appearance.utils";
 
 /**
  * Curve Component
@@ -16,10 +18,17 @@ import {CurveChartFormComponent} from "./curve-chart-form/curve-chart-form.compo
   providers: [],
 })
 export class CurveComponent {
+  protected activeChartType: ChartType = ChartType.HIGHCHARTS;
+  protected readonly ChartType = ChartType;
+
   constructor(private service: CurveService,
-              private honorCodeService: HonorCodePopupService,
-              private chartService: HonorCodeChartService,
-              public dialog: MatDialog) {
+    private honorCodeService: HonorCodePopupService,
+    private chartService: HonorCodeChartService,
+    public dialog: MatDialog,
+    private appearanceService: AppearanceService) {
+    this.appearanceService.chartType$.subscribe((type: ChartType) => {
+      this.activeChartType = type;
+    });
   }
 
   actionHandler(actions: MyAction[]) {
@@ -33,7 +42,7 @@ export class CurveComponent {
       } else if (action.action === "resetChartInfo") {
         this.service.resetChartInfo();
       } else if (action.action === "editChartInfo") {
-        const dialogRef = this.dialog.open(CurveChartFormComponent, {width: 'fit-content'});
+        const dialogRef = this.dialog.open(CurveChartFormComponent, { width: 'fit-content' });
         dialogRef.afterClosed().pipe().subscribe(result => {
           if (result === "saveGraph")
             this.saveGraph();

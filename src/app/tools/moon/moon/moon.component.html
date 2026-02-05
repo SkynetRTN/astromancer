@@ -7,14 +7,15 @@
       <app-moon-table></app-moon-table>
     </div>
     <div class="row button-row">
-      <app-simple-data-button (tableUserActionObs$)="actionHandler($event)"
-                              [isDataRandom]="true" [modelResetVisible]="true">
+      <app-simple-data-button (tableUserActionObs$)="actionHandler($event)" [isDataRandom]="true"
+        [modelResetVisible]="true">
       </app-simple-data-button>
     </div>
   </div>
   <div class="col-8">
     <div class="row dynamic">
-      <app-moon-echart></app-moon-echart>
+      <app-moon-echart *ngIf="activeChartType === ChartType.ECHARTS"></app-moon-echart>
+      <app-moon-highchart *ngIf="activeChartType === ChartType.HIGHCHARTS"></app-moon-highchart>
     </div>
     <div class="row button-row">
       <app-simple-graph-button (chartUserActionObs$)="actionHandler($event)" [isEditChartInfo]="true">

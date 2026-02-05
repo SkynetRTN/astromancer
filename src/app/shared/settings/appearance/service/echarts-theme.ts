@@ -1,7 +1,7 @@
-import {ThemeOption} from "ngx-echarts";
-import {ChartColor, ChartColorMode, ColorThemes} from "./appearance.utils";
+import { ThemeOption } from "ngx-echarts";
+import { ChartColor, ChartColorMode, ColorThemes } from "./appearance.utils";
 
-const seriesColors = [0, 1, 2, 3].map((index) => ChartColor.getLineColor(index));
+// const seriesColors = [0, 1, 2, 3].map((index) => ChartColor.getLineColor(index));
 
 function getThemeTokens(theme: ColorThemes) {
   if (theme === ColorThemes.HIGH_CONTRAST_DARK) {
@@ -17,11 +17,13 @@ function getThemeTokens(theme: ColorThemes) {
     backgroundColor: ChartColor.getBackgroundColor(chartMode),
     textColor: ChartColor.getFontColor(chartMode),
     gridLineColor: theme === ColorThemes.DARK ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.15)',
+    chartMode,
   };
 }
 
 export function getEchartsTheme(theme: ColorThemes): ThemeOption {
-  const {backgroundColor, textColor, gridLineColor} = getThemeTokens(theme);
+  const { backgroundColor, textColor, gridLineColor, chartMode } = getThemeTokens(theme);
+  const seriesColors = [0, 1, 2, 3].map((index) => ChartColor.getLineColor(index, chartMode ?? ChartColorMode.LIGHT));
 
   return {
     color: seriesColors,

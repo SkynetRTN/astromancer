@@ -37,6 +37,15 @@
       </mat-form-field>
     </div>
     <div class="row">
+      <mat-form-field>
+        <mat-label>Chart Type</mat-label>
+        <mat-select [formControlName]="'chartType'">
+          <mat-option *ngFor="let type of ChartTypeList"
+                      [value]="type.key">{{type.displayName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="row">
       <button (click)="resetDefault()" color="primary"
               mat-raised-button>Reset Default
       </button>

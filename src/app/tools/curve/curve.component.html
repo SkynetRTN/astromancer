@@ -12,11 +12,12 @@
   </div>
   <div class="col-8">
     <div class="row dynamic">
-      <app-curve-echart></app-curve-echart>
+      <app-curve-echart *ngIf="activeChartType === ChartType.ECHARTS"></app-curve-echart>
+      <app-curve-highchart *ngIf="activeChartType === ChartType.HIGHCHARTS"></app-curve-highchart>
     </div>
     <div class="row button-row">
       <app-simple-graph-button (chartUserActionObs$)="actionHandler($event)"
-                               [isEditChartInfo]="true"></app-simple-graph-button>
+        [isEditChartInfo]="true"></app-simple-graph-button>
     </div>
   </div>
 </div>

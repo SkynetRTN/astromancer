@@ -1,21 +1,24 @@
-import {Injectable, Renderer2, RendererFactory2} from '@angular/core';
-import {BehaviorSubject} from "rxjs";
+import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
+import { BehaviorSubject } from "rxjs";
 import {
   ChartColor,
   ChartColorMode,
+  ChartType,
   ColorThemes,
   DefaultAppearanceSettings,
   FontFamily,
   FontSizes,
   FontStyles
 } from "./appearance.utils";
-import {AppearanceStorageService} from "./appearance-storage.service";
+import { AppearanceStorageService } from "./appearance-storage.service";
 
 @Injectable({
   providedIn: 'root',
 })
 export class AppearanceService {
   private renderer: Renderer2;
+  private chartTypeSubject = new BehaviorSubject<ChartType>(this.getChartType());
+  public chartType$ = this.chartTypeSubject.asObservable();
   private colorThemeSubject = new BehaviorSubject<ColorThemes>(this.getColorTheme());
   public colorTheme$ = this.colorThemeSubject.asObservable();
 
@@ -28,6 +31,17 @@ export class AppearanceService {
     this.setFontFamily(this.getFontFamily());
     this.setFontSize(this.getFontSize());
     this.setFontStyle(this.getFontStyle());
+    this.setChartType(this.getChartType());
+  }
+
+  public setChartType(chartType: ChartType): void {
+    this.storageService.setChartType(chartType);
+    this.chartTypeSubject.next(chartType);
+  }
+
+  public getChartType(): ChartType {
+    const type = this.storageService.getChartType();
+    return type ? type : DefaultAppearanceSettings.chartType;
   }
 
 

@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  astromancer:
+    build: .
+    container_name: astromancer-sandbox
+
+    # SYSTEM LINKING (Instantaneous Editing)
+    # This maps your current folder (.) to the container's folder (/app)
+    # Changes made by Antigravity on your host are instantly reflected here.
+    volumes:
+      - .:/skynet/astromancer
+      # creates a data volume for node_modules to prevent host OS conflicts
+      - /skynet/astromancer/node_modules
+
+    # PORT FORWARDING (Real-time serving)
+    # Maps localhost:4200 on your machine to port 4200 in the container
+    ports:
+      - "4201:4201"
+
+    # Environment variables if needed
+    environment:
+      - CHOKIDAR_USEPOLLING=true # Backup trigger for file watching

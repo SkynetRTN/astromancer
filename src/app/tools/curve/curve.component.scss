@@ -1,0 +1,26 @@
+.tool-container {
+    height: 80%;
+    padding: 20px 100px 20px 100px;
+    width: 100%;
+}
+
+.col-4,
+.col-8 {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+// Fixed height rows (Forms, buttons)
+.button-row,
+.col-4>.row:first-child {
+    height: fit-content;
+    flex: 0 0 auto;
+}
+
+// Growing rows (Chart, Table)
+.dynamic {
+    flex: 1 1 auto;
+    min-height: 0; // Important for nested flex scroll/resize
+    position: relative; // For chart absolute positioning if needed
+}

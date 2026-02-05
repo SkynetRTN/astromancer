@@ -25,7 +25,7 @@ export class AppComponent {
     const excludedRoute = '/radio-source-finder';
 
     if (this.router.url !== excludedRoute) {
-      location.reload();
+      // location.reload();
     }
   }
 }

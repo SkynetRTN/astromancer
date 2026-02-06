@@ -7,15 +7,17 @@
       <app-variable-table></app-variable-table>
     </div>
     <div class="row button-row">
-      <app-simple-data-button (fileUpload$)="uploadHandler($event)"
-                              (tableUserActionObs$)="actionHandler($event)"
-                              [isDataRandom]="true" [isUploadData]="true">
+      <app-simple-data-button (fileUpload$)="uploadHandler($event)" (tableUserActionObs$)="actionHandler($event)"
+        [isDataRandom]="true" [isUploadData]="true">
       </app-simple-data-button>
     </div>
   </div>
   <div class="col-8">
     <div class="row dynamic">
-      <app-variable-light-curve-highchart></app-variable-light-curve-highchart>
+      <app-variable-light-curve-highchart
+        *ngIf="(chartType$ | async) === ChartType.HIGHCHARTS"></app-variable-light-curve-highchart>
+      <app-variable-light-curve-echart
+        *ngIf="(chartType$ | async) === ChartType.ECHARTS"></app-variable-light-curve-echart>
     </div>
     <div class="row button-row">
       <app-simple-graph-button (chartUserActionObs$)="actionHandler($event)" [isEditChartInfo]="true">

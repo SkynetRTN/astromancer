@@ -1,16 +1,19 @@
-import {Component, OnDestroy} from '@angular/core';
-import {TableAction} from "../../../shared/types/actions";
-import {VariableService} from "../../variable.service";
-import {HonorCodePopupService} from "../../../shared/honor-code-popup/honor-code-popup.service";
-import {HonorCodeChartService} from "../../../shared/honor-code-popup/honor-code-chart.service";
-import {MyFileParser} from "../../../shared/data/FileParser/FileParser";
-import {FileType} from "../../../shared/data/FileParser/FileParser.util";
-import {Subject, takeUntil} from "rxjs";
-import {errorMSE, VariableDataDict} from "../../variable.service.util";
-import {MatDialog} from "@angular/material/dialog";
+import { Component, OnDestroy } from '@angular/core';
+import { TableAction } from "../../../shared/types/actions";
+import { VariableService } from "../../variable.service";
+import { HonorCodePopupService } from "../../../shared/honor-code-popup/honor-code-popup.service";
+import { HonorCodeChartService } from "../../../shared/honor-code-popup/honor-code-chart.service";
+import { MyFileParser } from "../../../shared/data/FileParser/FileParser";
+import { FileType } from "../../../shared/data/FileParser/FileParser.util";
+import { Subject, takeUntil } from "rxjs";
+import { errorMSE, VariableDataDict } from "../../variable.service.util";
+import { MatDialog } from "@angular/material/dialog";
 import {
   VariableLightCurveChartFormComponent
 } from "../variable-light-curve-chart-form/variable-light-curve-chart-form.component";
+
+import { AppearanceService } from "../../../../shared/settings/appearance/service/appearance.service";
+import { ChartType } from "../../../../shared/settings/appearance/service/appearance.utils";
 
 @Component({
   selector: 'app-variable-light-curve',
@@ -18,14 +21,17 @@ import {
   styleUrls: ['./variable-light-curve.component.scss', '../../../shared/interface/tools.scss']
 })
 export class VariableLightCurveComponent implements OnDestroy {
+  public chartType$ = this.appearanceService.chartType$;
+  public ChartType = ChartType;
   private destroy$ = new Subject<void>();
   private fileParser: MyFileParser = new MyFileParser(FileType.CSV,
     ["id", "mjd", "mag", "mag_error"],);
 
   constructor(private service: VariableService,
-              private honorCodeService: HonorCodePopupService,
-              private chartService: HonorCodeChartService,
-              public dialog: MatDialog) {
+    private honorCodeService: HonorCodePopupService,
+    private chartService: HonorCodeChartService,
+    public dialog: MatDialog,
+    private appearanceService: AppearanceService) {
     this.fileParser.error$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(
@@ -124,7 +130,7 @@ export class VariableLightCurveComponent implements OnDestroy {
         this.service.resetData();
       } else if (action.action === "editChartInfo") {
         const dialogRef =
-          this.dialog.open(VariableLightCurveChartFormComponent, {width: 'fit-content'});
+          this.dialog.open(VariableLightCurveChartFormComponent, { width: 'fit-content' });
         dialogRef.afterClosed().pipe().subscribe(result => {
           if (result === "saveGraph")
             this.saveGraph();

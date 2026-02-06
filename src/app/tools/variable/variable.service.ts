@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
     VariableChartInfo,
     VariableChartInfoStorageObject,
@@ -15,11 +15,12 @@ import {
     VariableStarOptions,
     VariableStorage
 } from "./variable.service.util";
-import {BehaviorSubject} from "rxjs";
-import {MyData} from "../shared/data/data.interface";
-import {ChartInfo} from "../shared/charts/chart.interface";
+import { BehaviorSubject } from "rxjs";
+import { MyData } from "../shared/data/data.interface";
+import { ChartInfo } from "../shared/charts/chart.interface";
 import * as Highcharts from "highcharts";
-import {floatMod, lombScargleWithError, UpdateSource} from "../shared/data/utils";
+import { ECharts } from "echarts";
+import { floatMod, lombScargleWithError, UpdateSource } from "../shared/data/utils";
 
 @Injectable()
 export class VariableService implements MyData, VariableInterface, ChartInfo, VariablePeriodogramInterface, VariablePeriodFoldingInterface {
@@ -56,6 +57,9 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
     private highChartLightCurve!: Highcharts.Chart;
     private highChartPeriodogram!: Highcharts.Chart;
     private highChartPeriodFolding!: Highcharts.Chart;
+    private chartLightCurve!: ECharts;
+    private chartPeriodFolding!: ECharts;
+    private chartPeriodogram!: ECharts;
     private tabIndex: number;
 
     constructor() {
@@ -161,7 +165,7 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
 
     getPeriodFoldingChartDataWithError(): { [key: string]: number[][] } {
         if (this.getVariableStar() === VariableStarOptions.NONE)
-            return {data: [], error: []};
+            return { data: [], error: [] };
         const data = this.getChartVariableDataArray()
             .filter((entry) => entry[0] !== null)
             .sort((a, b) => a[0]! - b[0]!);
@@ -190,7 +194,7 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
         }
         pfData.sort((a, b) => b[0] - a[0]);
         pfError.sort((a, b) => b[0] - a[0]);
-        return {data: pfData, error: pfError};
+        return { data: pfData, error: pfError };
     }
 
     /** Periodogram Interface */
@@ -449,16 +453,16 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
         } else {
             return this.getData().filter(
                 (row: VariableDataDict) => row.jd !== null && row.source1 !== null && row.source2 !== null && row.errorMSE !== null).map(
-                (row: VariableDataDict) => {
-                    let src: number;
-                    if (this.getVariableStar() === VariableStarOptions.SOURCE1) {
-                        src = row.source1! - row.source2! + this.getReferenceStarMagnitude();
-                    } else {
-                        src = row.source2! - row.source1! + this.getReferenceStarMagnitude();
+                    (row: VariableDataDict) => {
+                        let src: number;
+                        if (this.getVariableStar() === VariableStarOptions.SOURCE1) {
+                            src = row.source1! - row.source2! + this.getReferenceStarMagnitude();
+                        } else {
+                            src = row.source2! - row.source1! + this.getReferenceStarMagnitude();
+                        }
+                        return [row.jd, src - row.errorMSE!, src + row.errorMSE!]
                     }
-                    return [row.jd, src - row.errorMSE!, src + row.errorMSE!]
-                }
-            )
+                )
         }
     }
 
@@ -518,6 +522,30 @@ export class VariableService implements MyData, VariableInterface, ChartInfo, Va
 
     getHighChartPeriodFolding(): Highcharts.Chart {
         return this.highChartPeriodFolding;
+    }
+
+    setEChartLightCurve(chart: ECharts): void {
+        this.chartLightCurve = chart;
+    }
+
+    getEChartLightCurve(): ECharts {
+        return this.chartLightCurve;
+    }
+
+    setEChartPeriodFolding(chart: ECharts): void {
+        this.chartPeriodFolding = chart;
+    }
+
+    getEChartPeriodFolding(): ECharts {
+        return this.chartPeriodFolding;
+    }
+
+    setEChartPeriodogram(chart: ECharts): void {
+        this.chartPeriodogram = chart;
+    }
+
+    getEChartPeriodogram(): ECharts {
+        return this.chartPeriodogram;
     }
 
     setTabIndex(index: number): void {

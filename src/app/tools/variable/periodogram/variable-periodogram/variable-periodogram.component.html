@@ -6,7 +6,10 @@
   </div>
   <div class="col-9">
     <div class="row dynamic">
-      <app-variable-periodogram-highcharts></app-variable-periodogram-highcharts>
+      <app-variable-periodogram-highcharts
+        *ngIf="(chartType$ | async) === ChartType.HIGHCHARTS"></app-variable-periodogram-highcharts>
+      <app-variable-periodogram-echart
+        *ngIf="(chartType$ | async) === ChartType.ECHARTS"></app-variable-periodogram-echart>
     </div>
   </div>
 </div>

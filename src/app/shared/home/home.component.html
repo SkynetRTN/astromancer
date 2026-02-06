@@ -15,7 +15,8 @@
                         <mat-card-subtitle>OPIS!</mat-card-subtitle>
                     </mat-card-header>
                     <div class="chart-preview">
-                        <app-curve-echart></app-curve-echart>
+                        <app-curve-echart *ngIf="shouldShowEcharts('curve')"></app-curve-echart>
+                        <app-curve-highchart *ngIf="!shouldShowEcharts('curve')"></app-curve-highchart>
                     </div>
                     <mat-card-content>
                         <p>
@@ -31,7 +32,8 @@
                         <mat-card-subtitle>OPIS!</mat-card-subtitle>
                     </mat-card-header>
                     <div class="chart-preview">
-                        <app-moon-highchart></app-moon-highchart>
+                        <app-moon-echart *ngIf="shouldShowEcharts('moon')"></app-moon-echart>
+                        <app-moon-highchart *ngIf="!shouldShowEcharts('moon')"></app-moon-highchart>
                     </div>
                     <mat-card-content>
                         <p>
@@ -48,7 +50,8 @@
                         <mat-card-subtitle>OPIS!</mat-card-subtitle>
                     </mat-card-header>
                     <div class="chart-preview">
-                        <app-venus-highchart></app-venus-highchart>
+                        <app-venus-echart *ngIf="shouldShowEcharts('venus')"></app-venus-echart>
+                        <app-venus-highchart *ngIf="!shouldShowEcharts('venus')"></app-venus-highchart>
                     </div>
                     <mat-card-content>
                         <p>
@@ -81,7 +84,8 @@
                         <mat-card-subtitle>OPIS!</mat-card-subtitle>
                     </mat-card-header>
                     <div class="chart-preview">
-                        <app-scatter-highchart></app-scatter-highchart>
+                        <app-scatter-echart *ngIf="shouldShowEcharts('scatter')"></app-scatter-echart>
+                        <app-scatter-highchart *ngIf="!shouldShowEcharts('scatter')"></app-scatter-highchart>
                     </div>
                     <mat-card-content>
                         <p>
@@ -97,7 +101,8 @@
                         <mat-card-subtitle>OPIS!</mat-card-subtitle>
                     </mat-card-header>
                     <div class="chart-preview">
-                        <app-spectrum-highchart></app-spectrum-highchart>
+                        <app-spectrum-echart *ngIf="shouldShowEcharts('spectrum')"></app-spectrum-echart>
+                        <app-spectrum-highchart *ngIf="!shouldShowEcharts('spectrum')"></app-spectrum-highchart>
                     </div>
                     <mat-card-content>
                         <p>
@@ -114,7 +119,8 @@
                         <mat-card-subtitle>OPIS!</mat-card-subtitle>
                     </mat-card-header>
                     <div class="chart-preview">
-                        <app-dual-highchart></app-dual-highchart>
+                        <app-dual-echart *ngIf="shouldShowEcharts('dual')"></app-dual-echart>
+                        <app-dual-highchart *ngIf="!shouldShowEcharts('dual')"></app-dual-highchart>
                     </div>
                     <mat-card-content>
                         <p>
@@ -132,9 +138,8 @@
                         <mat-card-subtitle>MWU!</mat-card-subtitle>
                     </mat-card-header>
                     <mat-card-content>
-                        <img class="thumbnail"
-                             [alt]="'HR Diagram based on a star cluster photometry data points'"
-                             [src]="'assets/static/cluster-thumbnail.png'">
+                        <img class="thumbnail" [alt]="'HR Diagram based on a star cluster photometry data points'"
+                            [src]="'assets/static/cluster-thumbnail.png'">
                         <p>
                             Description for the Cluster analysis tool goes here.
                         </p>
@@ -149,8 +154,8 @@
                     </mat-card-header>
                     <mat-card-content>
                         <img class="thumbnail"
-                             [alt]="'False color image of a part of milky way survey with radio sources circled'"
-                             [src]="'assets/static/radio-source-finder-thumbnail.png'">
+                            [alt]="'False color image of a part of milky way survey with radio sources circled'"
+                            [src]="'assets/static/radio-source-finder-thumbnail.png'">
                         <p>
                             Description for the Radio Source Finder tool goes here.
                         </p>
@@ -158,20 +163,21 @@
                 </mat-card>
             </div>
             <div [routerLink]="'/galaxy'" class="tile-container">
-              <mat-card class="tile">
-                <mat-card-header>
-                  <mat-card-title>Galaxy</mat-card-title>
-                  <mat-card-subtitle>MWU!</mat-card-subtitle>
-                </mat-card-header>
-                <div class="chart-preview">
-                  <app-galaxy-highchart/>
-                </div>
-                <mat-card-content>
-                  <p>
-                    Description for the Galaxy tool goes here.
-                  </p>
-                </mat-card-content>
-              </mat-card>
+                <mat-card class="tile">
+                    <mat-card-header>
+                        <mat-card-title>Galaxy</mat-card-title>
+                        <mat-card-subtitle>MWU!</mat-card-subtitle>
+                    </mat-card-header>
+                    <div class="chart-preview">
+                        <app-galaxy-echart *ngIf="shouldShowEcharts('galaxy')"></app-galaxy-echart>
+                        <app-galaxy-highchart *ngIf="!shouldShowEcharts('galaxy')"></app-galaxy-highchart>
+                    </div>
+                    <mat-card-content>
+                        <p>
+                            Description for the Galaxy tool goes here.
+                        </p>
+                    </mat-card-content>
+                </mat-card>
             </div>
             <div [routerLink]="'/pulsar'" class="tile-container">
                 <mat-card class="tile">

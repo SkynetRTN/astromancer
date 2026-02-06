@@ -7,15 +7,15 @@
       <app-spectrum-table></app-spectrum-table>
     </div>
     <div class="row button-row">
-      <app-simple-data-button (fileUpload$)="uploadHandler($event)"
-                              (tableUserActionObs$)="actionHandler($event)"
-                              [isDataRandom]="true" [isUploadData]="true">
+      <app-simple-data-button (fileUpload$)="uploadHandler($event)" (tableUserActionObs$)="actionHandler($event)"
+        [isDataRandom]="true" [isUploadData]="true">
       </app-simple-data-button>
     </div>
   </div>
   <div class="col-8">
     <div class="row dynamic">
-      <app-spectrum-echart></app-spectrum-echart>
+      <app-spectrum-echart *ngIf="activeChartType === ChartType.ECHARTS"></app-spectrum-echart>
+      <app-spectrum-highchart *ngIf="activeChartType === ChartType.HIGHCHARTS"></app-spectrum-highchart>
     </div>
     <div class="row button-row">
       <!--      <div class="col-6">-->

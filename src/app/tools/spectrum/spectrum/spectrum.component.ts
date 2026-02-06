@@ -1,14 +1,16 @@
-import {Component, OnDestroy} from '@angular/core';
-import {ChartAction} from "../../shared/types/actions";
-import {HonorCodePopupService} from "../../shared/honor-code-popup/honor-code-popup.service";
-import {SpectrumService} from "../spectrum.service";
-import {HonorCodeChartService} from "../../shared/honor-code-popup/honor-code-chart.service";
-import {MyFileParser} from "../../shared/data/FileParser/FileParser";
-import {Subject, takeUntil} from "rxjs";
-import {SpectrumDataDict} from "../spectrum.service.util";
-import {FileType} from "../../shared/data/FileParser/FileParser.util";
-import {MatDialog} from "@angular/material/dialog";
-import {SpectrumChartFormComponent} from "../spectrum-chart-form/spectrum-chart-form.component";
+import { Component, OnDestroy } from '@angular/core';
+import { ChartAction } from "../../shared/types/actions";
+import { HonorCodePopupService } from "../../shared/honor-code-popup/honor-code-popup.service";
+import { SpectrumService } from "../spectrum.service";
+import { HonorCodeChartService } from "../../shared/honor-code-popup/honor-code-chart.service";
+import { MyFileParser } from "../../shared/data/FileParser/FileParser";
+import { Subject, takeUntil } from "rxjs";
+import { SpectrumDataDict } from "../spectrum.service.util";
+import { FileType } from "../../shared/data/FileParser/FileParser.util";
+import { MatDialog } from "@angular/material/dialog";
+import { SpectrumChartFormComponent } from "../spectrum-chart-form/spectrum-chart-form.component";
+import { AppearanceService } from "../../../shared/settings/appearance/service/appearance.service";
+import { ChartType } from "../../../shared/settings/appearance/service/appearance.utils";
 
 @Component({
   selector: 'app-spectrum',
@@ -20,18 +22,24 @@ export class SpectrumComponent implements OnDestroy {
   private static readonly OpticalTxtFields: string[] = ["Freq1", "XX1", "YY1"];
   private radioFileParser: MyFileParser
     = new MyFileParser(FileType.TXT,
-    SpectrumComponent.RadioTxtFields,
-    [{key: "Actual_FREQ1"}],);
+      SpectrumComponent.RadioTxtFields,
+      [{ key: "Actual_FREQ1" }],);
   private opticalFileParser: MyFileParser
     = new MyFileParser(FileType.TXT,
-    SpectrumComponent.OpticalTxtFields);
+      SpectrumComponent.OpticalTxtFields);
   private destroy$: Subject<void> = new Subject<void>();
+  protected activeChartType: ChartType = ChartType.HIGHCHARTS;
+  protected readonly ChartType = ChartType;
 
   constructor(
     private service: SpectrumService,
     private honorCodeService: HonorCodePopupService,
     private chartService: HonorCodeChartService,
-    private dialog: MatDialog) {
+    private dialog: MatDialog,
+    private appearanceService: AppearanceService) {
+    this.appearanceService.chartType$.subscribe((type: ChartType) => {
+      this.activeChartType = type;
+    });
     this.radioFileParser.error$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(
@@ -75,7 +83,7 @@ export class SpectrumComponent implements OnDestroy {
         this.service.resetData();
       } else if (action.action === "editChartInfo") {
         const dialogRef =
-          this.dialog.open(SpectrumChartFormComponent, {width: 'fit-content'});
+          this.dialog.open(SpectrumChartFormComponent, { width: 'fit-content' });
         dialogRef.afterClosed().pipe().subscribe(result => {
           if (result === "saveGraph")
             this.saveGraph();
@@ -124,5 +132,5 @@ function rawDataToDataDict(data: any[], fields: string[], wlRange: number[]): Sp
       }
     }
   });
-  return dataDictArray.length > 0 ? dataDictArray : [{wavelength: null, channel1: null, channel2: null}];
+  return dataDictArray.length > 0 ? dataDictArray : [{ wavelength: null, channel1: null, channel2: null }];
 }

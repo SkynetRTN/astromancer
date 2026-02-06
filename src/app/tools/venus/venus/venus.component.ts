@@ -1,10 +1,12 @@
-import {Component} from '@angular/core';
-import {ChartAction} from "../../shared/types/actions";
-import {VenusService} from "../venus.service";
-import {HonorCodePopupService} from "../../shared/honor-code-popup/honor-code-popup.service";
-import {HonorCodeChartService} from "../../shared/honor-code-popup/honor-code-chart.service";
-import {MatDialog} from "@angular/material/dialog";
-import {VenusChartFormComponent} from "../venus-chart-form/venus-chart-form.component";
+import { Component } from '@angular/core';
+import { ChartAction } from "../../shared/types/actions";
+import { VenusService } from "../venus.service";
+import { HonorCodePopupService } from "../../shared/honor-code-popup/honor-code-popup.service";
+import { HonorCodeChartService } from "../../shared/honor-code-popup/honor-code-chart.service";
+import { MatDialog } from "@angular/material/dialog";
+import { VenusChartFormComponent } from "../venus-chart-form/venus-chart-form.component";
+import { AppearanceService } from "../../../shared/settings/appearance/service/appearance.service";
+import { ChartType } from "../../../shared/settings/appearance/service/appearance.utils";
 
 @Component({
   selector: 'app-venus',
@@ -12,11 +14,17 @@ import {VenusChartFormComponent} from "../venus-chart-form/venus-chart-form.comp
   styleUrls: ['./venus.component.scss', '../../shared/interface/tools.scss'],
 })
 export class VenusComponent {
+  protected activeChartType: ChartType = ChartType.HIGHCHARTS;
+  protected readonly ChartType = ChartType;
 
   constructor(private service: VenusService,
-              private honorCodeService: HonorCodePopupService,
-              private chartService: HonorCodeChartService,
-              public dialog: MatDialog) {
+    private honorCodeService: HonorCodePopupService,
+    private chartService: HonorCodeChartService,
+    public dialog: MatDialog,
+    private appearanceService: AppearanceService) {
+    this.appearanceService.chartType$.subscribe((type: ChartType) => {
+      this.activeChartType = type;
+    });
   }
 
   actionHandler(actions: ChartAction[]) {
@@ -29,7 +37,7 @@ export class VenusComponent {
         this.service.resetData();
       } else if (action.action === "editChartInfo") {
         const dialogRef
-          = this.dialog.open(VenusChartFormComponent, {width: 'fit-content'});
+          = this.dialog.open(VenusChartFormComponent, { width: 'fit-content' });
         dialogRef.afterClosed().pipe().subscribe(result => {
           if (result === "saveGraph")
             this.saveGraph();

@@ -10,7 +10,8 @@
   </div>
   <div class="col-8">
     <div class="row dynamic">
-      <app-venus-echart></app-venus-echart>
+      <app-venus-echart *ngIf="activeChartType === ChartType.ECHARTS"></app-venus-echart>
+      <app-venus-highchart *ngIf="activeChartType === ChartType.HIGHCHARTS"></app-venus-highchart>
     </div>
     <div class="row button-row">
       <app-simple-graph-button (chartUserActionObs$)="actionHandler($event)" [isEditChartInfo]="true">

@@ -59,7 +59,7 @@ const routes: Routes = [
     MatDialogModule,
     MatButtonModule,
   ],
-  exports: [SpectrumComponent, RouterModule, SpectrumEchartComponent],
+  exports: [SpectrumComponent, RouterModule, SpectrumEchartComponent, SpectrumHighchartComponent],
   providers: [SpectrumService]
 })
 export class SpectrumModule {

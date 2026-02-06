@@ -50,7 +50,7 @@ const routes: Routes = [
     MatDialogModule,
     MatButtonModule,
   ],
-  exports: [ScatterComponent, RouterModule, ScatterEchartComponent],
+  exports: [ScatterComponent, RouterModule, ScatterEchartComponent, ScatterHighchartComponent],
   providers: [ScatterService],
 })
 export class ScatterModule {

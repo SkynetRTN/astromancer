@@ -59,7 +59,7 @@ const routes: Routes = [
     MatDialogModule,
     MatButtonModule,
   ],
-  exports: [GalaxyComponent, RouterModule, GalaxyEchartComponent],
+  exports: [GalaxyComponent, RouterModule, GalaxyEchartComponent, GalaxyHighchartComponent],
   providers: [GalaxyService]
 })
 export class GalaxyModule {

@@ -1,10 +1,10 @@
-import {AfterViewInit, Component, OnDestroy} from '@angular/core';
-import {ECharts, EChartsOption} from 'echarts';
-import {ThemeOption} from 'ngx-echarts';
-import {Subject, takeUntil} from 'rxjs';
-import {AppearanceService} from '../../../shared/settings/appearance/service/appearance.service';
-import {getEchartsTheme} from '../../../shared/settings/appearance/service/echarts-theme';
-import {ScatterService} from '../scatter.service';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { ECharts, EChartsOption } from 'echarts';
+import { ThemeOption } from 'ngx-echarts';
+import { Subject, takeUntil } from 'rxjs';
+import { AppearanceService } from '../../../shared/settings/appearance/service/appearance.service';
+import { getEchartsTheme } from '../../../shared/settings/appearance/service/echarts-theme';
+import { ScatterService } from '../scatter.service';
 
 interface AxisExtents {
   minX: number;
@@ -12,6 +12,11 @@ interface AxisExtents {
   minY: number;
   maxY: number;
 }
+
+const GRID_LEFT = 48;
+const GRID_RIGHT = 24;
+const GRID_TOP = 64;
+const GRID_BOTTOM = 48;
 
 @Component({
   selector: 'app-scatter-echart',
@@ -23,10 +28,22 @@ export class ScatterEchartComponent implements AfterViewInit, OnDestroy {
   chartTheme: ThemeOption | string;
   private chartInstance?: ECharts;
   private destroy$: Subject<void> = new Subject<void>();
+  private resizeObserver: ResizeObserver;
 
-  constructor(private service: ScatterService, private appearanceService: AppearanceService) {
+  constructor(
+    private service: ScatterService,
+    private appearanceService: AppearanceService,
+    private elementRef: ElementRef
+  ) {
     this.chartOptions = this.buildChartOptions();
     this.chartTheme = getEchartsTheme(this.appearanceService.getColorTheme());
+
+    this.resizeObserver = new ResizeObserver(() => {
+      if (this.chartInstance) {
+        this.chartInstance.resize();
+        this.refreshChart();
+      }
+    });
   }
 
   onChartInit(chart: ECharts) {
@@ -50,9 +67,12 @@ export class ScatterEchartComponent implements AfterViewInit, OnDestroy {
       .subscribe((theme) => {
         this.chartTheme = getEchartsTheme(theme);
       });
+
+    this.resizeObserver.observe(this.elementRef.nativeElement);
   }
 
   ngOnDestroy(): void {
+    this.resizeObserver.disconnect();
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -83,10 +103,10 @@ export class ScatterEchartComponent implements AfterViewInit, OnDestroy {
         top: 24,
       },
       grid: {
-        left: 48,
-        right: 24,
-        top: 64,
-        bottom: 48,
+        left: GRID_LEFT,
+        right: GRID_RIGHT,
+        top: GRID_TOP,
+        bottom: GRID_BOTTOM,
       },
       xAxis: {
         type: 'value',
@@ -112,6 +132,7 @@ export class ScatterEchartComponent implements AfterViewInit, OnDestroy {
           type: 'scatter',
           data: [[0, 0]],
           symbolSize: 20,
+          color: '#FFD700',
         },
         {
           name: dataLabel,
@@ -121,9 +142,9 @@ export class ScatterEchartComponent implements AfterViewInit, OnDestroy {
         },
         {
           name: 'Model',
-          type: 'scatter',
+          type: 'line',
           data: model,
-          symbolSize: 2,
+          showSymbol: false,
         },
         {
           name: 'Cross',
@@ -161,8 +182,14 @@ export class ScatterEchartComponent implements AfterViewInit, OnDestroy {
 
     const width = this.chartInstance?.getWidth() ?? 0;
     const height = this.chartInstance?.getHeight() ?? 0;
-    if (width > 0 && height > 0) {
-      const plotRatio = width / height;
+
+    // Calculate the actual grid size (available drawing area)
+    const gridWidth = width - GRID_LEFT - GRID_RIGHT;
+    const gridHeight = height - GRID_TOP - GRID_BOTTOM;
+
+    // Ensure legitimate dimensions to avoid aspect ratio explosion
+    if (gridWidth > 20 && gridHeight > 20) {
+      const plotRatio = gridWidth / gridHeight;
       const xDiff = maxX - minX;
       const yDiff = maxY - minY;
       const dataRatio = xDiff / yDiff;
@@ -177,7 +204,11 @@ export class ScatterEchartComponent implements AfterViewInit, OnDestroy {
         maxY += addition;
       }
     }
-
+    // round all numbers to nearest .1 before returning
+    minX = Math.round(minX * 10) / 10;
+    maxX = Math.round(maxX * 10) / 10;
+    minY = Math.round(minY * 10) / 10;
+    maxY = Math.round(maxY * 10) / 10;
     return {
       minX,
       maxX,

@@ -1,10 +1,10 @@
-import {AfterViewInit, Component, OnDestroy} from '@angular/core';
-import {ECharts, EChartsOption} from 'echarts';
-import {ThemeOption} from 'ngx-echarts';
-import {Subject, takeUntil} from 'rxjs';
-import {AppearanceService} from '../../../shared/settings/appearance/service/appearance.service';
-import {getEchartsTheme} from '../../../shared/settings/appearance/service/echarts-theme';
-import {VenusService} from '../venus.service';
+import { AfterViewInit, Component, OnDestroy } from '@angular/core';
+import { ECharts, EChartsOption } from 'echarts';
+import { ThemeOption } from 'ngx-echarts';
+import { Subject, takeUntil } from 'rxjs';
+import { AppearanceService } from '../../../shared/settings/appearance/service/appearance.service';
+import { getEchartsTheme } from '../../../shared/settings/appearance/service/echarts-theme';
+import { VenusService } from '../venus.service';
 
 @Component({
   selector: 'app-venus-echart',
@@ -83,6 +83,7 @@ export class VenusEchartComponent implements AfterViewInit, OnDestroy {
         name: this.service.getXAxisLabel(),
         nameGap: 32,
         nameLocation: 'middle',
+        min: 'dataMin',
       },
       yAxis: {
         type: 'value',
@@ -91,12 +92,6 @@ export class VenusEchartComponent implements AfterViewInit, OnDestroy {
         nameLocation: 'middle',
       },
       series: [
-        {
-          name: dataLabel,
-          type: 'scatter',
-          data,
-          symbolSize: 6,
-        },
         {
           name: 'Geocentric',
           type: 'line',
@@ -118,7 +113,9 @@ export class VenusEchartComponent implements AfterViewInit, OnDestroy {
             width: 1,
           },
           areaStyle: {
-            opacity: 0.2,
+            opacity: 1,
+            // the color must match the background to create the cutout effect
+            color: this.appearanceService.getChartBackgroundColor(),
           },
         },
         {
@@ -126,6 +123,12 @@ export class VenusEchartComponent implements AfterViewInit, OnDestroy {
           type: 'line',
           data: heliocentric,
           showSymbol: false,
+        },
+        {
+          name: dataLabel,
+          type: 'scatter',
+          data,
+          symbolSize: 12,
         },
       ],
     };

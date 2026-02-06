@@ -1,14 +1,16 @@
-import {Component, OnDestroy} from '@angular/core';
-import {ChartAction} from "../../shared/types/actions";
-import {HonorCodePopupService} from "../../shared/honor-code-popup/honor-code-popup.service";
-import {GalaxyService} from "../galaxy.service";
-import {HonorCodeChartService} from "../../shared/honor-code-popup/honor-code-chart.service";
-import {MyFileParser} from "../../shared/data/FileParser/FileParser";
-import {Subject, takeUntil} from "rxjs";
-import {GalaxyDataDict} from "../galaxy.service.util";
-import {FileType} from "../../shared/data/FileParser/FileParser.util";
-import {MatDialog} from "@angular/material/dialog";
-import {GalaxyChartFormComponent} from "../galaxy-chart-form/galaxy-chart-form.component";
+import { Component, OnDestroy } from '@angular/core';
+import { ChartAction } from "../../shared/types/actions";
+import { HonorCodePopupService } from "../../shared/honor-code-popup/honor-code-popup.service";
+import { GalaxyService } from "../galaxy.service";
+import { HonorCodeChartService } from "../../shared/honor-code-popup/honor-code-chart.service";
+import { MyFileParser } from "../../shared/data/FileParser/FileParser";
+import { Subject, takeUntil } from "rxjs";
+import { GalaxyDataDict } from "../galaxy.service.util";
+import { FileType } from "../../shared/data/FileParser/FileParser.util";
+import { MatDialog } from "@angular/material/dialog";
+import { GalaxyChartFormComponent } from "../galaxy-chart-form/galaxy-chart-form.component";
+import { AppearanceService } from "../../../shared/settings/appearance/service/appearance.service";
+import { ChartType } from "../../../shared/settings/appearance/service/appearance.utils";
 
 @Component({
   selector: 'app-galaxy',
@@ -20,18 +22,25 @@ export class GalaxyComponent implements OnDestroy {
   private static readonly OpticalTxtFields: string[] = ["Freq1", "XX1", "YY1"];
   private radioFileParser: MyFileParser
     = new MyFileParser(FileType.TXT,
-    GalaxyComponent.RadioTxtFields,
-    [{key: "Actual_FREQ1"}],);
+      GalaxyComponent.RadioTxtFields,
+      [{ key: "Actual_FREQ1" }],);
   private opticalFileParser: MyFileParser
     = new MyFileParser(FileType.TXT,
-    GalaxyComponent.OpticalTxtFields);
+      GalaxyComponent.OpticalTxtFields);
   private destroy$: Subject<void> = new Subject<void>();
+
+  protected activeChartType: ChartType = ChartType.HIGHCHARTS;
+  protected readonly ChartType = ChartType;
 
   constructor(
     private service: GalaxyService,
     private honorCodeService: HonorCodePopupService,
     private chartService: HonorCodeChartService,
-    private dialog: MatDialog) {
+    private dialog: MatDialog,
+    private appearanceService: AppearanceService) {
+    this.appearanceService.chartType$.subscribe((type: ChartType) => {
+      this.activeChartType = type;
+    });
     this.radioFileParser.error$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(
@@ -75,7 +84,7 @@ export class GalaxyComponent implements OnDestroy {
         this.service.resetData();
       } else if (action.action === "editChartInfo") {
         const dialogRef =
-          this.dialog.open(GalaxyChartFormComponent, {width: 'fit-content'});
+          this.dialog.open(GalaxyChartFormComponent, { width: 'fit-content' });
         dialogRef.afterClosed().pipe().subscribe(result => {
           if (result === "saveGraph")
             this.saveGraph();
@@ -125,5 +134,5 @@ function rawDataToDataDict(data: any[], fields: string[]): GalaxyDataDict[] {
   });
   const freqRange = freqArray.length ? [Math.min(...freqArray), Math.max(...freqArray)] : [0, 0];
   // freqRange currently unused but retained for future adjustments
-  return dataDictArray.length > 0 ? dataDictArray : [{frequency: null, channel1: null, channel2: null}];
+  return dataDictArray.length > 0 ? dataDictArray : [{ frequency: null, channel1: null, channel2: null }];
 }

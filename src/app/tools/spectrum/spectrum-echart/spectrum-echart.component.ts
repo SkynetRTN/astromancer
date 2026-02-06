@@ -98,6 +98,8 @@ export class SpectrumEchartComponent implements AfterViewInit, OnDestroy {
         name: this.service.getXAxisLabel(),
         nameGap: 32,
         nameLocation: 'middle',
+        min: 'dataMin',
+        max: 'dataMax',
       },
       yAxis: {
         type: 'value',

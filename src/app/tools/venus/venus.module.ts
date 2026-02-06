@@ -48,7 +48,7 @@ const routes: Routes = [
     MatDialogModule,
     MatButtonModule,
   ],
-  exports: [VenusComponent, RouterModule, VenusEchartComponent],
+  exports: [VenusComponent, RouterModule, VenusEchartComponent, VenusHighchartComponent],
   providers: [VenusService],
 })
 export class VenusModule {

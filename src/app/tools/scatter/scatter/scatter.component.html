@@ -7,14 +7,15 @@
       <app-scatter-table></app-scatter-table>
     </div>
     <div class="row button-row">
-      <app-simple-data-button (tableUserActionObs$)="actionHandler($event)"
-                              [isDataRandom]="true" [modelResetVisible]="true">
+      <app-simple-data-button (tableUserActionObs$)="actionHandler($event)" [isDataRandom]="true"
+        [modelResetVisible]="true">
       </app-simple-data-button>
     </div>
   </div>
   <div class="col-8">
     <div class="row dynamic">
-      <app-scatter-echart></app-scatter-echart>
+      <app-scatter-echart *ngIf="activeChartType === ChartType.ECHARTS"></app-scatter-echart>
+      <app-scatter-highchart *ngIf="activeChartType === ChartType.HIGHCHARTS"></app-scatter-highchart>
     </div>
     <div class="row button-row">
       <app-simple-graph-button (chartUserActionObs$)="actionHandler($event)" [isEditChartInfo]="true">

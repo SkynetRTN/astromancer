@@ -10,6 +10,8 @@ import {DualChartFormComponent} from './dual-chart-form/dual-chart-form.componen
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {DualHighchartComponent} from './dual-highchart/dual-highchart.component';
 import {HighchartsChartModule} from "highcharts-angular";
+import {DualEchartComponent} from './dual-echart/dual-echart.component';
+import {NgxEchartsModule} from 'ngx-echarts';
 import {RouterModule, Routes} from "@angular/router";
 import {MatDialogModule} from "@angular/material/dialog";
 import {MatFormFieldModule} from "@angular/material/form-field";
@@ -26,7 +28,8 @@ const routes: Routes = [
     DualComponent,
     DualTableComponent,
     DualChartFormComponent,
-    DualHighchartComponent
+    DualHighchartComponent,
+    DualEchartComponent
   ],
   imports: [
     RouterModule.forChild(routes),
@@ -39,10 +42,13 @@ const routes: Routes = [
     MatInputModule,
     ReactiveFormsModule,
     HighchartsChartModule,
+    NgxEchartsModule.forRoot({
+      echarts: () => import('echarts'),
+    }),
     MatDialogModule,
     MatButtonModule,
   ],
-  exports: [DualComponent, RouterModule, DualHighchartComponent],
+  exports: [DualComponent, RouterModule, DualEchartComponent],
   providers: [DualService]
 })
 export class DualModule {

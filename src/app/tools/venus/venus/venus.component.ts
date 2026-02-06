@@ -40,7 +40,7 @@ export class VenusComponent {
 
   private saveGraph() {
     this.honorCodeService.honored().subscribe((name: string) => {
-      this.chartService.saveImageHighChartOffline(this.service.getHighChart(), "venus", name);
+      this.chartService.saveImageEChartOffline(this.service.getEChart(), "venus", name);
     })
   }
 }

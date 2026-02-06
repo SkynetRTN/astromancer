@@ -4,6 +4,7 @@ import {BehaviorSubject, Observable} from "rxjs";
 import {MyData} from "../shared/data/data.interface";
 import {ChartInfo} from "../shared/charts/chart.interface";
 import * as Highcharts from "highcharts";
+import {ECharts} from 'echarts';
 
 @Injectable()
 export class DualService implements MyData, ChartInfo {
@@ -19,6 +20,7 @@ export class DualService implements MyData, ChartInfo {
   public chartInfo$: Observable<DualChartInfo> = this.chartInfoSubject.asObservable();
 
   private highChart!: Highcharts.Chart;
+  private chart!: ECharts;
 
   constructor() {
     this.dualData.setData(this.dualStorage.getData());
@@ -130,6 +132,14 @@ export class DualService implements MyData, ChartInfo {
 
   getHighChart(): Highcharts.Chart {
     return this.highChart;
+  }
+
+  public setEChart(chart: ECharts): void {
+    this.chart = chart;
+  }
+
+  public getEChart(): ECharts {
+    return this.chart;
   }
 
 }

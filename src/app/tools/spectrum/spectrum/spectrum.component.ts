@@ -102,7 +102,7 @@ export class SpectrumComponent implements OnDestroy {
 
   private saveGraph() {
     this.honorCodeService.honored().subscribe((name: string) => {
-      this.chartService.saveImageHighChartOffline(this.service.getHighChart(), "spectrum", name);
+      this.chartService.saveImageEChartOffline(this.service.getEChart(), "spectrum", name);
     });
   }
 }
@@ -126,4 +126,3 @@ function rawDataToDataDict(data: any[], fields: string[], wlRange: number[]): Sp
   });
   return dataDictArray.length > 0 ? dataDictArray : [{wavelength: null, channel1: null, channel2: null}];
 }
-

@@ -14,6 +14,8 @@ import {GalaxyChartFormComponent} from './galaxy-chart-form/galaxy-chart-form.co
 
 import {GalaxyHighchartComponent} from './galaxy-highchart/galaxy-highchart.component';
 import {HighchartsChartModule} from "highcharts-angular";
+import {GalaxyEchartComponent} from './galaxy-echart/galaxy-echart.component';
+import {NgxEchartsModule} from 'ngx-echarts';
 import {RouterModule, Routes} from "@angular/router";
 import {MatDialogModule} from "@angular/material/dialog";
 import {MatFormFieldModule} from "@angular/material/form-field";
@@ -34,7 +36,8 @@ const routes: Routes = [
     GalaxyTableComponent,
     GalaxyFormComponent,
     GalaxyChartFormComponent,
-    GalaxyHighchartComponent
+    GalaxyHighchartComponent,
+    GalaxyEchartComponent
   ],
   imports: [
     RouterModule.forChild(routes),
@@ -50,10 +53,13 @@ const routes: Routes = [
     ReactiveFormsModule,
     MatInputModule,
     HighchartsChartModule,
+    NgxEchartsModule.forRoot({
+      echarts: () => import('echarts'),
+    }),
     MatDialogModule,
     MatButtonModule,
   ],
-  exports: [GalaxyComponent, RouterModule, GalaxyHighchartComponent],
+  exports: [GalaxyComponent, RouterModule, GalaxyEchartComponent],
   providers: [GalaxyService]
 })
 export class GalaxyModule {

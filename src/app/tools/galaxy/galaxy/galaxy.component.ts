@@ -102,7 +102,7 @@ export class GalaxyComponent implements OnDestroy {
 
   private saveGraph() {
     this.honorCodeService.honored().subscribe((name: string) => {
-      this.chartService.saveImageHighChartOffline(this.service.getHighChart(), "galaxy", name);
+      this.chartService.saveImageEChartOffline(this.service.getEChart(), "galaxy", name);
     });
   }
 }
@@ -127,4 +127,3 @@ function rawDataToDataDict(data: any[], fields: string[]): GalaxyDataDict[] {
   // freqRange currently unused but retained for future adjustments
   return dataDictArray.length > 0 ? dataDictArray : [{frequency: null, channel1: null, channel2: null}];
 }
-

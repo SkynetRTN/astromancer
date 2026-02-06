@@ -14,6 +14,8 @@ import {SpectrumChartFormComponent} from './spectrum-chart-form/spectrum-chart-f
 
 import {SpectrumHighchartComponent} from './spectrum-highchart/spectrum-highchart.component';
 import {HighchartsChartModule} from "highcharts-angular";
+import {SpectrumEchartComponent} from './spectrum-echart/spectrum-echart.component';
+import {NgxEchartsModule} from 'ngx-echarts';
 import {RouterModule, Routes} from "@angular/router";
 import {MatDialogModule} from "@angular/material/dialog";
 import {MatFormFieldModule} from "@angular/material/form-field";
@@ -34,7 +36,8 @@ const routes: Routes = [
     SpectrumTableComponent,
     SpectrumFormComponent,
     SpectrumChartFormComponent,
-    SpectrumHighchartComponent
+    SpectrumHighchartComponent,
+    SpectrumEchartComponent
   ],
   imports: [
     RouterModule.forChild(routes),
@@ -50,10 +53,13 @@ const routes: Routes = [
     ReactiveFormsModule,
     MatInputModule,
     HighchartsChartModule,
+    NgxEchartsModule.forRoot({
+      echarts: () => import('echarts'),
+    }),
     MatDialogModule,
     MatButtonModule,
   ],
-  exports: [SpectrumComponent, RouterModule, SpectrumHighchartComponent],
+  exports: [SpectrumComponent, RouterModule, SpectrumEchartComponent],
   providers: [SpectrumService]
 })
 export class SpectrumModule {

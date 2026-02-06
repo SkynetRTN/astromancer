@@ -12,6 +12,7 @@ import {
 import {MyData} from "../shared/data/data.interface";
 import {BehaviorSubject} from "rxjs";
 import * as Highcharts from "highcharts";
+import {ECharts} from 'echarts';
 import {ChartInfo} from "../shared/charts/chart.interface";
 
 import {UpdateSource} from "../shared/data/utils";
@@ -26,6 +27,7 @@ export class ScatterService implements MyData, ChartInfo, ScatterModel {
   private scatterStorage: ScatterStorage = new ScatterStorage();
 
   private highChart!: Highcharts.Chart;
+  private chart!: ECharts;
 
   private dataSubject: BehaviorSubject<MyData> = new BehaviorSubject<MyData>(this.scatterData);
   public data$ = this.dataSubject.asObservable();
@@ -183,6 +185,14 @@ export class ScatterService implements MyData, ChartInfo, ScatterModel {
 
   getHighChart(): Highcharts.Chart {
     return this.highChart;
+  }
+
+  public setEChart(chart: ECharts): void {
+    this.chart = chart;
+  }
+
+  public getEChart(): ECharts {
+    return this.chart;
   }
 
 }

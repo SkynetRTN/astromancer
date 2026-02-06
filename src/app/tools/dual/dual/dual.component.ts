@@ -39,7 +39,7 @@ export class DualComponent {
 
   private saveGraph() {
     this.honorCodeService.honored().subscribe((name: string) => {
-      this.chartService.saveImageHighChartOffline(this.service.getHighChart(), "dual", name);
+      this.chartService.saveImageEChartOffline(this.service.getEChart(), "dual", name);
     })
   }
 }

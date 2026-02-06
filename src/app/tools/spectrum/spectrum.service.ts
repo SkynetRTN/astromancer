@@ -13,6 +13,7 @@ import {BehaviorSubject} from "rxjs";
 import {MyData} from "../shared/data/data.interface";
 import {ChartInfo} from "../shared/charts/chart.interface";
 import * as Highcharts from "highcharts";
+import {ECharts} from 'echarts';
 
 @Injectable()
 export class SpectrumService implements MyData, SpectrumInterface, ChartInfo {
@@ -30,6 +31,7 @@ export class SpectrumService implements MyData, SpectrumInterface, ChartInfo {
   public chartInfo$ = this.chartInfoSubject.asObservable();
 
   private highChart!: Highcharts.Chart;
+  private chart!: ECharts;
 
   constructor() {
     this.spectrumData.setData(this.spectrumStorage.getData());
@@ -154,6 +156,14 @@ export class SpectrumService implements MyData, SpectrumInterface, ChartInfo {
 
   getHighChart(): Highcharts.Chart {
     return this.highChart;
+  }
+
+  public setEChart(chart: ECharts): void {
+    this.chart = chart;
+  }
+
+  public getEChart(): ECharts {
+    return this.chart;
   }
 
 }

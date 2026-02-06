@@ -15,6 +15,8 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
+import {VenusEchartComponent} from './venus-echart/venus-echart.component';
+import {NgxEchartsModule} from 'ngx-echarts';
 
 
 const routes: Routes = [
@@ -26,6 +28,7 @@ const routes: Routes = [
     VenusComponent,
     VenusTableComponent,
     VenusHighchartComponent,
+    VenusEchartComponent,
     VenusChartFormComponent
   ],
   imports: [
@@ -36,13 +39,16 @@ const routes: Routes = [
     HotTableModule,
     FormsModule,
     HighchartsChartModule,
+    NgxEchartsModule.forRoot({
+      echarts: () => import('echarts'),
+    }),
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
     MatDialogModule,
     MatButtonModule,
   ],
-  exports: [VenusComponent, RouterModule, VenusHighchartComponent],
+  exports: [VenusComponent, RouterModule, VenusEchartComponent],
   providers: [VenusService],
 })
 export class VenusModule {

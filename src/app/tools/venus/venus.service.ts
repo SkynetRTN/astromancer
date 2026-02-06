@@ -12,6 +12,7 @@ import {BehaviorSubject, Observable} from "rxjs";
 import {MyStorage} from "../shared/storage/storage.interface";
 import {ChartInfo} from "../shared/charts/chart.interface";
 import * as Highcharts from "highcharts";
+import {ECharts} from 'echarts';
 
 @Injectable()
 export class VenusService implements MyData, ChartInfo {
@@ -29,6 +30,7 @@ export class VenusService implements MyData, ChartInfo {
   public chartInfo$: Observable<ChartInfo> = this.chartInfoSubject.asObservable();
 
   private highChart!: Highcharts.Chart;
+  private chart!: ECharts;
 
   constructor() {
     this.venusData.setData(this.venusStorage.getData());
@@ -148,6 +150,14 @@ export class VenusService implements MyData, ChartInfo {
 
   getHighChart(): Highcharts.Chart {
     return this.highChart;
+  }
+
+  public setEChart(chart: ECharts): void {
+    this.chart = chart;
+  }
+
+  public getEChart(): ECharts {
+    return this.chart;
   }
 
 

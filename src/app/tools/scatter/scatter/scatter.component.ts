@@ -41,7 +41,7 @@ export class ScatterComponent {
 
   private saveGraph() {
     this.honorCodeService.honored().subscribe((name: string) => {
-      this.chartService.saveImageHighChartOffline(this.service.getHighChart(), "scatter", name);
+      this.chartService.saveImageEChartOffline(this.service.getEChart(), "scatter", name);
     })
   }
 }

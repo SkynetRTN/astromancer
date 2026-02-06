@@ -17,6 +17,8 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
+import {ScatterEchartComponent} from './scatter-echart/scatter-echart.component';
+import {NgxEchartsModule} from 'ngx-echarts';
 
 const routes: Routes = [
   {path: '', component: ScatterComponent, title: 'Scatter'}
@@ -27,6 +29,7 @@ const routes: Routes = [
     ScatterComponent,
     ScatterTableComponent,
     ScatterHighchartComponent,
+    ScatterEchartComponent,
     ScatterChartFormComponent,
     ScatterFormComponent
   ],
@@ -37,6 +40,9 @@ const routes: Routes = [
     SimpleGraphButtonModule,
     HotTableModule,
     HighchartsChartModule,
+    NgxEchartsModule.forRoot({
+      echarts: () => import('echarts'),
+    }),
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
@@ -44,7 +50,7 @@ const routes: Routes = [
     MatDialogModule,
     MatButtonModule,
   ],
-  exports: [ScatterComponent, RouterModule, ScatterHighchartComponent],
+  exports: [ScatterComponent, RouterModule, ScatterEchartComponent],
   providers: [ScatterService],
 })
 export class ScatterModule {

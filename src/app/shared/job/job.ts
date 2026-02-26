@@ -5,6 +5,7 @@ import {interval, Subject, takeUntil} from "rxjs";
 export class Job {
   private readonly url: string;
   private readonly updateInterval: number;
+  private statusUrl: string | null = null;
 
   private id: number | null = null;
   private type: JobType;
@@ -43,7 +44,8 @@ export class Job {
       {headers: {'content-type': 'application/json'}}).subscribe(
       (resp: any) => {
         resp = resp as JobResponse;
-        this.id = resp.id;
+        this.id = resp.id ?? resp.job_id;
+        this.statusUrl = this.resolveStatusUrl(resp);
         interval(this.updateInterval).pipe(
           takeUntil(this.complete$)
         ).subscribe(
@@ -67,6 +69,7 @@ export class Job {
     this.id = object.id;
     this.type = object.type;
     this.status = object.status;
+    this.statusUrl = object.statusUrl ?? null;
     interval(this.updateInterval).pipe(
       takeUntil(this.complete$)
     ).subscribe(
@@ -83,18 +86,20 @@ export class Job {
       type: this.type,
       updateInterval: this.updateInterval,
       status: this.status,
+      statusUrl: this.statusUrl,
     }
   }
 
   private updateJob(): void {
     if (this.id === null)
       return;
-    this.http.get(`${environment.apiUrl}/job/state`,
-      {params: {'id': this.id.toString()}}).subscribe(
+    const statusUrl = this.statusUrl ?? `/jobs/${this.id}`;
+    this.http.get(this.toApiUrl(statusUrl)).subscribe(
       (resp: any) => {
         resp = resp as JobResponse;
-        if (resp.status !== this.status) {
-          this.status = resp.status;
+        const nextStatus = resp.status;
+        if (nextStatus !== this.status) {
+          this.status = nextStatus;
           this.statusUpdateSubject.next(this.status);
         }
         if (resp.progress !== this.progress) {
@@ -110,6 +115,23 @@ export class Job {
       }
     );
   }
+
+  private toApiUrl(url: string): string {
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    return `${environment.apiUrl}${url}`;
+  }
+
+  private resolveStatusUrl(resp: JobResponse): string {
+    if (resp.status_url) {
+      return resp.status_url;
+    }
+    if (resp.job_id !== undefined) {
+      return `/jobs/${resp.job_id}`;
+    }
+    return `/job/state?id=${resp.id}`;
+  }
 }
 
 export interface JobStorageObject {
@@ -118,6 +140,7 @@ export interface JobStorageObject {
   url: string;
   updateInterval: number;
   status: JobStatus;
+  statusUrl?: string | null;
   payload?: any;
 }
 
@@ -130,10 +153,12 @@ export enum JobStatus {
 }
 
 export interface JobResponse {
-  id: number
+  id?: number
+  job_id?: number
   type: string;
   status: JobStatus;
   progress: number;
+  status_url?: string;
 }
 
 export enum JobType {

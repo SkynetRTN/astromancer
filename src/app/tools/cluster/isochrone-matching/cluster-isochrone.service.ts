@@ -73,6 +73,7 @@ export class ClusterIsochroneService {
         if (plotParams) {
             this.plotParams.distance = parseFloat(plotParams.distance as any);
             this.plotParams.reddening = parseFloat(plotParams.reddening as any);
+            this.plotParams.reddeningRV = parseFloat(plotParams.reddeningRV as any);
         } else {
             this.plotParams = plotParams;
         }

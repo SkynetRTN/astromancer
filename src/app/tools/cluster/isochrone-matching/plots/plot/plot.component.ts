@@ -206,9 +206,9 @@ export class PlotComponent implements OnChanges {
 
   private computePlotDelta(): { x: number, y: number } {
     const plotParams = this.isochroneService.getPlotParams();
-    const blueExtinction = getExtinction(this.blueFilter!, plotParams.reddening);
-    const redExtinction = getExtinction(this.redFilter!, plotParams.reddening);
-    const lumExtinction = getExtinction(this.lumFilter!, plotParams.reddening);
+    const blueExtinction = getExtinction(this.blueFilter!, plotParams.reddening, plotParams.reddeningRV);
+    const redExtinction = getExtinction(this.redFilter!, plotParams.reddening, plotParams.reddeningRV);
+    const lumExtinction = getExtinction(this.lumFilter!, plotParams.reddening, plotParams.reddeningRV);
     return {
       x: redExtinction - blueExtinction,
       y: -lumExtinction - 5 * Math.log10(plotParams.distance * 1000) + 5,

@@ -164,6 +164,7 @@ export class ClusterStorageService {
         plotParams: {
           distance: 0.1,
           reddening: 0,
+          reddeningRV: 3.1,
         },
         isochroneParams: {
           age: 6.60,

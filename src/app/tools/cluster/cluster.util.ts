@@ -184,6 +184,7 @@ export enum PlotFraming {
 export interface PlotParams {
   distance: number;
   reddening: number;
+  reddeningRV: number;
 }
 
 export interface IsochroneParams {

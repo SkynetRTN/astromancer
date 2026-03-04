@@ -22,6 +22,7 @@ export class IsochronePlottingControlsComponent {
   age!: number;
   metallicity!: number;
   reddening!: number;
+  reddeningRV!: number;
   maxMagError!: number;
 
   constructor(private service: ClusterService,
@@ -52,6 +53,7 @@ export class IsochronePlottingControlsComponent {
     this.metallicity = isochroneParams.metallicity ?? -2.2;
     const plotParams = this.isochroneService.getPlotParams();
     this.reddening = plotParams.reddening ?? 0;
+    this.reddeningRV = plotParams.reddening ?? 3.1;
     this.defaultDistance = plotParams.distance ?? 0.1;
     this.maxMagError = this.isochroneService.getMaxMagError() ?? 0;
     this.updatePlotParams();
@@ -78,6 +80,11 @@ export class IsochronePlottingControlsComponent {
     this.updatePlotParams();
   }
 
+  onReddeningRVChange($event: InputSliderValue) {
+    this.reddeningRV = $event.value;
+    this.updatePlotParams();
+  }
+
   onMaxMagErrorChange($event: InputSliderValue) {
     this.maxMagError = $event.value;
     this.isochroneService.setMaxMagError(this.maxMagError);
@@ -87,6 +94,7 @@ export class IsochronePlottingControlsComponent {
     this.isochroneService.setPlotParams({
       distance: this.distance,
       reddening: this.reddening,
+      reddeningRV: this.reddeningRV,
     });
   }
 

@@ -824,22 +824,22 @@ export class RadioSearchComponent implements AfterViewInit {
         return;
     }
 
-    // Calculate the image's aspect ratio
-    const imageAspectRatio = width / height;
-    const canvasAspectRatio = canvas.width / canvas.height;
-
-    // Set the canvas size to be square
-    const canvasSize = Math.min(canvas.clientWidth, canvas.clientHeight);
-    canvas.width = canvasSize;
-    canvas.height = canvasSize;
-
     const context = canvas.getContext('2d');
     if (!context) {
         console.error('Failed to get canvas context.');
         return;
     }
 
-    // Calculate scaled width and height to maintain aspect ratio
+    // Keep the canvas square, as in your original behavior.
+    const canvasSize = Math.min(canvas.clientWidth, canvas.clientHeight);
+    canvas.width = canvasSize;
+    canvas.height = canvasSize;
+
+    // Compute display scaling for the full raster.
+    // This preserves your current geometric behavior.
+    const imageAspectRatio = width / height;
+    const canvasAspectRatio = canvas.width / canvas.height;
+
     let initialScale: number;
     if (imageAspectRatio > canvasAspectRatio) {
         initialScale = canvas.width / width;
@@ -847,182 +847,228 @@ export class RadioSearchComponent implements AfterViewInit {
         initialScale = canvas.height / height;
     }
 
-    // Apply zoom relative to initial scale
     this.scale = initialScale * this.zoomScale;
-
-    // Calculate scaled dimensions
     this.scaledWidth = width * this.scale;
     this.scaledHeight = height * this.scale;
 
-    // Calculate offsets to center the image
     this.canvasXOffset = (canvas.width - this.scaledWidth) / 2;
     this.canvasYOffset = (canvas.height - this.scaledHeight) / 2;
 
-    // Use the dynamic maxValue from the slider
-    const max = 1e5;
-    const min = 0;
+    // Only finite values should influence normalization statistics.
+    const validData = imageData.filter((value) => Number.isFinite(value));
 
-    // Apply the inverse hyperbolic sine scaling and normalize to [0, 255]
-    const transformedData = imageData.map((value) => {
-        if (isNaN(value) || value > max) return 1;
-        return Math.asinh(value); // Apply asinh transformation
-    });
+    if (validData.length === 0) {
+        console.error('No valid finite image data found.');
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        return;
+    }
 
-    // Normalize the transformed data to [0, 255]
-    const normalizedData = transformedData.map((value) => {
-        return Math.floor(value * 255);
-    });
+    // Sort once for percentile-based clipping.
+    const sortedData = [...validData].sort((a, b) => a - b);
+
+    function percentile(sorted: number[], p: number): number {
+        if (sorted.length === 0) return 0;
+
+        const index = (sorted.length - 1) * p;
+        const lower = Math.floor(index);
+        const upper = Math.ceil(index);
+
+        if (lower === upper) {
+            return sorted[lower];
+        }
+
+        const fraction = index - lower;
+        return sorted[lower] * (1 - fraction) + sorted[upper] * fraction;
+    }
+
+    // Robust cuts. These help avoid one bright outlier saturating the whole image.
+    let minCut = percentile(sortedData, 0.01);
+    let maxCut = percentile(sortedData, 0.995);
+
+    // Safety fallback.
+    if (!Number.isFinite(minCut) || !Number.isFinite(maxCut) || maxCut <= minCut) {
+        minCut = sortedData[0];
+        maxCut = sortedData[sortedData.length - 1];
+    }
+
+    // Flat image safety.
+    if (!Number.isFinite(minCut) || !Number.isFinite(maxCut) || maxCut <= minCut) {
+        maxCut = minCut + 1;
+    }
 
     const imageDataArray = new Uint8ClampedArray(width * height * 4);
 
-    // Turbo colormap
-    function turboColormap(value: number): [number, number, number] {
-        const turboRGB: [number, number, number][] = [
-            [48, 18, 59], [50, 57, 144], [31, 138, 176], [53, 191, 111],
-            [200, 228, 47], [255, 180, 1], [249, 111, 1], [181, 45, 5]
-        ];
+    function clamp01(value: number): number {
+        return Math.max(0, Math.min(1, value));
+    }
 
-        value = Math.max(0, Math.min(1, value)); 
+    function turboColormap(value: number): [number, number, number] {
+        value = clamp01(value);
 
         const r = Math.max(0, Math.min(1, 1.0 - 4.0 * Math.pow(value - 0.75, 2))) * 255;
         const g = Math.exp(-Math.pow(value - 0.5, 2) / 0.1) * 255;
         const b = Math.max(0, Math.min(1, 1.0 - 4.0 * Math.pow(value - 0.25, 2))) * 255;
 
-        const color: [number, number, number] = [r, g, b];
-        const index = Math.floor(value * (turboRGB.length - 1));
-
-        return color;
+        return [Math.round(r), Math.round(g), Math.round(b)];
     }
 
     function slsColormap(value: number): [number, number, number] {
-      // Clamp input to [0, 1]
-      value = Math.max(0, Math.min(1, value));
-  
-      // DS9-style black → rainbow → white gradient
-      const slsRGB: [number, number, number][] = [
-          [0, 0, 0],       // black
-          [75, 0, 130],    // violet
-          [0, 0, 255],     // blue
-          [0, 255, 255],   // cyan
-          [0, 255, 0],     // green
-          [255, 255, 0],   // yellow
-          [255, 128, 0],   // orange
-          [255, 0, 0],     // red
-          [255, 255, 255]  // white
-      ];
-  
-      const n = slsRGB.length - 1;
-      const scaledValue = value * n;
-      const i = Math.floor(scaledValue);
-      const t = scaledValue - i;
-  
-      const [r1, g1, b1] = slsRGB[i];
-      const [r2, g2, b2] = slsRGB[Math.min(i + 1, n)];
-  
-      const r = r1 + t * (r2 - r1);
-      const g = g1 + t * (g2 - g1);
-      const b = b1 + t * (b2 - b1);
-  
-      const color: [number, number, number] = [r, g, b];
-      return color;
+        value = clamp01(value);
+
+        const slsRGB: [number, number, number][] = [
+            [0, 0, 0],
+            [75, 0, 130],
+            [0, 0, 255],
+            [0, 255, 255],
+            [0, 255, 0],
+            [255, 255, 0],
+            [255, 128, 0],
+            [255, 0, 0],
+            [255, 255, 255]
+        ];
+
+        const n = slsRGB.length - 1;
+        const scaledValue = value * n;
+        const i = Math.floor(scaledValue);
+        const t = scaledValue - i;
+
+        const [r1, g1, b1] = slsRGB[i];
+        const [r2, g2, b2] = slsRGB[Math.min(i + 1, n)];
+
+        const r = r1 + t * (r2 - r1);
+        const g = g1 + t * (g2 - g1);
+        const b = b1 + t * (b2 - b1);
+
+        return [Math.round(r), Math.round(g), Math.round(b)];
     }
 
     function hsvToRgb(h: number, s: number, v: number): [number, number, number] {
-      let c = v * s;
-      let x = c * (1 - Math.abs((h / 60) % 2 - 1));
-      let m = v - c;
-      let [r, g, b]: [number, number, number] = [0, 0, 0];
-    
-      if (0 <= h && h < 60)       [r, g, b] = [c, x, 0];
-      else if (60 <= h && h < 120)[r, g, b] = [x, c, 0];
-      else if (120 <= h && h < 180)[r, g, b] = [0, c, x];
-      else if (180 <= h && h < 240)[r, g, b] = [0, x, c];
-      else if (240 <= h && h < 300)[r, g, b] = [x, 0, c];
-      else if (300 <= h && h < 360)[r, g, b] = [c, 0, x];
-    
-      return [
-        Math.round((r + m) * 255),
-        Math.round((g + m) * 255),
-        Math.round((b + m) * 255),
-      ];
-    }
-    
-    function rainbowColormap(intensity: number): [number, number, number] {
-      // Clamp between 0 and 1
-      intensity = Math.max(0, Math.min(1, intensity - 0.03));
-      
-      // Hue goes from 300 (pink) to 0 (red), decreasing
-      const hue = 300 - 300 * intensity;
-      const saturation = 1;
-      const value = 1;
-    
-      return hsvToRgb(hue, saturation, value);
-    }
-    
-    // Apply the turbo colormap and create the image data array
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        // FITS data is stored bottom-to-top; flip it for canvas
-        const flippedY = height - y - 1; // Reverse the row order
+        const c = v * s;
+        const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+        const m = v - c;
 
-        // Calculate the index in the FITS data
-        const srcIndex = flippedY * width + x; // FITS source index
+        let r = 0;
+        let g = 0;
+        let b = 0;
 
-        let r, g, b;
-
-        // Handle zero values as white
-        if (imageData[srcIndex] === 0) {
-            r = 255;
-            g = 255;
-            b = 255;
+        if (0 <= h && h < 60) {
+            r = c; g = x; b = 0;
+        } else if (60 <= h && h < 120) {
+            r = x; g = c; b = 0;
+        } else if (120 <= h && h < 180) {
+            r = 0; g = c; b = x;
+        } else if (180 <= h && h < 240) {
+            r = 0; g = x; b = c;
+        } else if (240 <= h && h < 300) {
+            r = x; g = 0; b = c;
         } else {
-            // Scale intensity using the inverse hyperbolic sine function
-            const intensity = normalizedData[srcIndex];
-            const scaledIntensity = (Math.asinh(intensity * this.maxValue) / Math.asinh(255));
-
-            // Get the RGB values from the Turbo colormap
-            if (this.selectedColorMap == 'turbo') {
-              [r, g, b] = turboColormap(scaledIntensity);
-            } else if (this.selectedColorMap == 'sls') {
-              [r, g, b] = slsColormap(scaledIntensity);
-            } else if (this.selectedColorMap == 'rainbow') {
-              [r, g, b] = rainbowColormap(scaledIntensity);
-            }else {
-              [r, g, b] = turboColormap(scaledIntensity);
-            }
+            r = c; g = 0; b = x;
         }
 
-        // Assign the RGB values to the image data array
-        const dstIndex = (y * width + x) * 4; // Destination index for the canvas
-        imageDataArray[dstIndex] = r;         // R
-        imageDataArray[dstIndex + 1] = g;     // G
-        imageDataArray[dstIndex + 2] = b;     // B
-        imageDataArray[dstIndex + 3] = 255;   // A (opacity)
-      }
+        return [
+            Math.round((r + m) * 255),
+            Math.round((g + m) * 255),
+            Math.round((b + m) * 255)
+        ];
     }
 
-    // Create ImageData object and scale it to preserve aspect ratio
-    const imageDataObject = new ImageData(imageDataArray, width, height);
+    function rainbowColormap(intensity: number): [number, number, number] {
+        intensity = clamp01(intensity - 0.03);
+        const hue = 300 - 300 * intensity;
+        return hsvToRgb(hue, 1, 1);
+    }
 
-    // Create a temporary canvas to scale the image properly
+    function getColorFromMap(intensity: number, colorMap: string): [number, number, number] {
+        if (colorMap === 'turbo') {
+            return turboColormap(intensity);
+        }
+        if (colorMap === 'sls') {
+            return slsColormap(intensity);
+        }
+        if (colorMap === 'rainbow') {
+            return rainbowColormap(intensity);
+        }
+        return turboColormap(intensity);
+    }
+
+    // Convert each source pixel into RGBA.
+    //
+    // Important:
+    // - We read rawValue directly from the original imageData.
+    // - NaN / invalid values are turned white immediately.
+    // - They never go through normalization or colormap logic.
+    for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+            // FITS displayed bottom-to-top on the canvas.
+            const flippedY = height - y - 1;
+            const srcIndex = flippedY * width + x;
+            const dstIndex = (y * width + x) * 4;
+
+            const rawValue = imageData[srcIndex];
+
+            let r: number;
+            let g: number;
+            let b: number;
+
+            if (!Number.isFinite(rawValue) || rawValue === 0) {
+                r = 255;
+                g = 255;
+                b = 255;
+            } else {
+                const clampedValue = Math.min(maxCut, Math.max(minCut, rawValue));
+                const normalized = (clampedValue - minCut) / (maxCut - minCut);
+
+                const scaledIntensity = clamp01(
+                    Math.asinh(normalized * this.maxValue * 255) / Math.asinh(255)
+                );
+
+                [r, g, b] = getColorFromMap(scaledIntensity, this.selectedColorMap);
+            }
+
+
+            imageDataArray[dstIndex] = r;
+            imageDataArray[dstIndex + 1] = g;
+            imageDataArray[dstIndex + 2] = b;
+            imageDataArray[dstIndex + 3] = 255;
+        }
+    }
+
+    const outputImageData = new ImageData(imageDataArray, width, height);
+
     const tempCanvas = document.createElement('canvas');
-    const tempContext = tempCanvas.getContext('2d')!;
     tempCanvas.width = width;
     tempCanvas.height = height;
 
-    tempContext.putImageData(imageDataObject, 0, 0);
+    const tempContext = tempCanvas.getContext('2d');
+    if (!tempContext) {
+        console.error('Failed to get temporary canvas context.');
+        return;
+    }
 
-    // Draw scaled and centered image onto the main canvas
-    context.clearRect(0, 0, canvasSize, canvasSize); // Clear the canvas
+    tempContext.putImageData(outputImageData, 0, 0);
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
     context.drawImage(
         tempCanvas,
-        0, 0, width, height,        // Source image
-        this.canvasXOffset, this.canvasYOffset,           // Destination position
-        this.scaledWidth, this.scaledHeight   // Destination size
+        0,
+        0,
+        width,
+        height,
+        this.canvasXOffset,
+        this.canvasYOffset,
+        this.scaledWidth,
+        this.scaledHeight
     );
 
-    this.drawCircles(this.results, this.scale, this.sliderXOffset + this.canvasXOffset, this.sliderYOffset + this.canvasYOffset);
+    // Keep circle drawing call unchanged.
+    this.drawCircles(
+        this.results,
+        this.scale,
+        this.sliderXOffset + this.canvasXOffset,
+        this.sliderYOffset + this.canvasYOffset
+    );
   }
+
 
 
   performFitting(hiddenResults: any[], sourceIndex: number): FittingResult | null {

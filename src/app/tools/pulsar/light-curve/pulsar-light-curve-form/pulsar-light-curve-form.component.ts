@@ -64,4 +64,4 @@ export class PulsarLightCurveFormComponent implements OnInit {
   onDataOptionsChange(value: string): void{
     this.pulsarService.setTableType(value);
   }
-  }
+}

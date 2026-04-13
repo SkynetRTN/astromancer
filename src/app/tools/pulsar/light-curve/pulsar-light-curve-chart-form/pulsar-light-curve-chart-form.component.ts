@@ -28,7 +28,7 @@ export class PulsarLightCurveChartFormComponent implements OnDestroy {
     this.formGroup.controls['dataLabel'].valueChanges.pipe(
       debounceTime(200),
     ).subscribe(data => {
-      this.service.setDataLabel(data);
+      this.service.setDataLabelArray(data);
     });
     this.formGroup.controls['xAxisLabel'].valueChanges.pipe(
       debounceTime(200),

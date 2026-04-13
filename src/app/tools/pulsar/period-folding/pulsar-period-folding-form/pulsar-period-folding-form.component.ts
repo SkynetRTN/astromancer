@@ -167,7 +167,7 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
   resetSliderWithValue(newValue: number) {
     this.showSlider = false; // destroy the component
     setTimeout(() => {
-      this.periodSubject = new BehaviorSubject<number>(newValue); // or .next(...) if subject stays the same
+      this.periodSubject = new BehaviorSubject<number>(newValue);
       this.showSlider = true; // recreate the component
     });
   }  
@@ -233,10 +233,12 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
 
   onChange($event: InputSliderValue) {
     if ($event.key === 'period') {
-      if (this.calFile) {
-        this.service.setPeriodFoldingPeriod($event.value);
-      };
-      this.periodStep = this.getPeriodStep();
+      if ($event.value > 0) {
+        if (this.calFile) {
+          this.service.setPeriodFoldingPeriod($event.value);
+        };
+        this.periodStep = this.getPeriodStep();
+      }
     } else if ($event.key === 'phase') {
       this.service.setPeriodFoldingPhase($event.value);
     } else if ($event.key === 'calibration') {

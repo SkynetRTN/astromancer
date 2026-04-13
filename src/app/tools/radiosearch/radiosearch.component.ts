@@ -365,10 +365,10 @@ export class RadioSearchComponent implements AfterViewInit {
   querySIMBAD() {
     if (this.selectedCoordinates && this.wcsInfo) {
       if (this.rccords === "equatorial") {
-        const url = `https://simbad.cds.unistra.fr/simbad/sim-coo?Coord=${this.selectedCoordinates.ra}d${this.selectedCoordinates.dec}d&CooFrame=Ecl&CooEpoch=2000&CooEqui=2000&CooDefinedFrames=ICRS-J2000&Radius=${Math.ceil(0.30 * this.beamWidth * 60)}&Radius.unit=arcmin&submit=submit+query&CoordList=`;
+        const url = `https://simbad.cds.unistra.fr/simbad/sim-coo?Coord=${this.selectedCoordinates.ra}d${this.selectedCoordinates.dec}d&CooFrame=Ecl&CooEpoch=2000&CooEqui=2000&CooDefinedFrames=ICRS-J2000&Radius=${Math.ceil(0.50 * this.beamWidth * 60)}&Radius.unit=arcmin&submit=submit+query&CoordList=`;
         window.open(url, "_blank");
       } else if (this.rccords === "galactic") {
-        const url = `https://simbad.cds.unistra.fr/simbad/sim-coo?Coord=${this.selectedCoordinates.ra}d${this.selectedCoordinates.dec}d&CooFrame=Gal&CooEpoch=2000&CooEqui=2000&CooDefinedFrames=none&Radius=${Math.ceil(0.30 * this.beamWidth * 60)}&Radius.unit=arcmin&submit=submit+query&CoordList=`;
+        const url = `https://simbad.cds.unistra.fr/simbad/sim-coo?Coord=${this.selectedCoordinates.ra}d${this.selectedCoordinates.dec}d&CooFrame=Gal&CooEpoch=2000&CooEqui=2000&CooDefinedFrames=none&Radius=${Math.ceil(0.50 * this.beamWidth * 60)}&Radius.unit=arcmin&submit=submit+query&CoordList=`;
         window.open(url, "_blank");
       }
     }
@@ -690,7 +690,9 @@ export class RadioSearchComponent implements AfterViewInit {
           .replace(/CENTERRA= *[\d.-]+/, `CENTERRA= ${String(this.ra + (this.sliderXOffset / Math.cos((Math.PI * this.dec) / 180))).padStart(20)}`)
           .replace(/CENTERDE= *[\d.-]+/, `CENTERDE= ${String(this.dec - this.sliderYOffset).padStart(20)}`)
           .replace(/CRVAL1  = *[\d.-]+/, `CRVAL1  = ${String(this.wcsInfo.crval1 + (this.sliderXOffset / Math.cos((Math.PI * this.dec) / 180))).padStart(20)}`)
-          .replace(/CRVAL2  = *[\d.-]+/, `CRVAL2  = ${String(this.wcsInfo.crval2 - this.sliderYOffset).padStart(20)}`);
+          .replace(/CRVAL2  = *[\d.-]+/, `CRVAL2  = ${String(this.wcsInfo.crval2 - this.sliderYOffset).padStart(20)}`)
+          .replace(/CTYPE1  = *[\d.-]+/, `CTYPE1  = ${String("RA").padStart(20)}`)
+          .replace(/CTYPE2  = *[\d.-]+/, `CTYPE2  = ${String("DEC").padStart(20)}`);
         console.log(updatedHeader);
         const headerLength = updatedHeader.length;
         const paddingSize = (headerLength % 2880);
@@ -734,7 +736,9 @@ export class RadioSearchComponent implements AfterViewInit {
           .replace(/CENTERRA= *[\d.-]+/, `CENTERRA= ${String(this.ra + (this.sliderXOffset / Math.cos((Math.PI * this.dec) / 180))).padStart(20)}`)
           .replace(/CENTERDE= *[\d.-]+/, `CENTERDE= ${String(this.dec - this.sliderYOffset).padStart(20)}`)
           .replace(/CRVAL1  = *[\d.-]+/, `CRVAL1  = ${String(this.wcsInfo.crval1 + (this.sliderXOffset / Math.cos((Math.PI * this.dec) / 180))).padStart(20)}`)
-          .replace(/CRVAL2  = *[\d.-]+/, `CRVAL2  = ${String(this.wcsInfo.crval2 - this.sliderYOffset).padStart(20)}`);
+          .replace(/CRVAL2  = *[\d.-]+/, `CRVAL2  = ${String(this.wcsInfo.crval2 - this.sliderYOffset).padStart(20)}`)
+          .replace(/CTYPE1  = *[\d.-]+/, `CTYPE1  = ${String("RA").padStart(20)}`)
+          .replace(/CTYPE2  = *[\d.-]+/, `CTYPE2  = ${String("DEC").padStart(20)}`);
 
         const headerLength = updatedHeader.length;
 

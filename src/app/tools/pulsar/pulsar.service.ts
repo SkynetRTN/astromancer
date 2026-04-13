@@ -706,7 +706,6 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         }
         return subtracted;
     }    
-  
 
     setData(data: any[]): void {
         this.pulsarData.setData(data);

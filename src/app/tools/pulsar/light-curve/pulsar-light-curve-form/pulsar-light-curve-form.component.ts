@@ -21,7 +21,7 @@ export class PulsarLightCurveFormComponent implements OnInit {
 
     this.formGroup = this.fb.group({
       backScale: [3, Validators.required],
-      dataOptions: ['raw', Validators.required]
+      dataOptions: ['subtracted', Validators.required]
     });
   }
 

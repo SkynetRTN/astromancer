@@ -56,13 +56,13 @@ export class PulsarPeriodogramFormComponent implements OnDestroy {
     // });
 
     this.formGroup.controls['startPeriod'].valueChanges.pipe(
-      debounceTime(200),
+      debounceTime(700),
     ).subscribe((start: number) => {
       this.service.setPeriodogramStartPeriod(start);
     });
 
     this.formGroup.controls['endPeriod'].valueChanges.pipe(
-      debounceTime(200),
+      debounceTime(700),
     ).subscribe((end: number) => {
       this.service.setPeriodogramEndPeriod(end);
     });

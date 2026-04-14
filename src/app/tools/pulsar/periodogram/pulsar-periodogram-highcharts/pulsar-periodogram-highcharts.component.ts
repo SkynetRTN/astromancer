@@ -13,6 +13,11 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
   updateFlag: boolean = true;
   chartConstructor: any = "chart";
   chartObject!: Highcharts.Chart;
+
+  private previousTitle = '';
+  private previousXAxis = '';
+  private previousYAxis = '';
+
   chartOptions: Highcharts.Options = {
     title: {
       text: "Title",
@@ -62,19 +67,41 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
     this.chartObject.xAxis[0]?.setTitle({ text: this.service.getPeriodogramXAxisLabel() });
     this.chartObject.yAxis[0]?.setTitle({ text: this.service.getPeriodogramYAxisLabel() });
 
+    this.previousTitle = this.service.getPeriodogramTitle();
+    this.previousXAxis = this.service.getPeriodogramXAxisLabel();
+    this.previousYAxis = this.service.getPeriodogramYAxisLabel();
+
     this.service.periodogramForm$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
+      const currentTitle = this.service.getPeriodogramTitle();
+      const currentXAxis = this.service.getPeriodogramXAxisLabel();
+      const currentYAxis = this.service.getPeriodogramYAxisLabel();
+
+      const titleChanged = currentTitle !== this.previousTitle;
+      const xAxisChanged = currentXAxis !== this.previousXAxis;
+      const yAxisChanged = currentYAxis !== this.previousYAxis;
+
       this.setChartTitle();
       this.setChartXAxis();
       this.setChartYAxis();
       this.updateChart();
+
+      if (!(titleChanged || xAxisChanged || yAxisChanged)) {
+        this.chartObject.zoomOut();
+      }
+
+      this.previousTitle = currentTitle;
+      this.previousXAxis = currentXAxis;
+      this.previousYAxis = currentYAxis;
     });
+
     this.service.isComputing$.pipe(
       skip(1),
       takeUntil(this.destroy$)
     ).subscribe(() => {
       this.updateData();
+      this.chartObject.zoomOut();
     });
   }
 

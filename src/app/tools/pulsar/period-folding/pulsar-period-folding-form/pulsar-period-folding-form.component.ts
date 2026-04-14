@@ -89,17 +89,17 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
       this.service.setPeriodFoldingYAxisLabel(label);
     });
     this.formGroup.controls['cal'].valueChanges.pipe(
-      debounceTime(200),
+      debounceTime(700),
     ).subscribe((label: number) => {  
       this.service.setPeriodFoldingCal(label);
     });
     this.formGroup.controls['speed'].valueChanges.pipe(
-      debounceTime(200),
+      debounceTime(700),
     ).subscribe((label: number) => {
       this.service.setPeriodFoldingSpeed(label);
     });
     this.formGroup.controls['bins'].valueChanges.pipe(
-      debounceTime(200),
+      debounceTime(700),
     ).subscribe((label: number) => {
       this.service.setPeriodFoldingBins(label);
     });

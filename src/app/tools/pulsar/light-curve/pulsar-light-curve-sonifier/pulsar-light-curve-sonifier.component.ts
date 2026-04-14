@@ -15,6 +15,7 @@ import { jsDocComment } from '@angular/compiler';
 import {BehaviorSubject} from 'rxjs';
 import { chart } from 'highcharts';
 
+
 @Component({
   selector: 'app-pulsar-light-curve-sonifier',
   templateUrl: './pulsar-light-curve-sonifier.component.html',

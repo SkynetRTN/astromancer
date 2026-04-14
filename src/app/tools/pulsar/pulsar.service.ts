@@ -25,7 +25,7 @@ import {floatMod, lombScargle, UpdateSource} from "../shared/data/utils";
 @Injectable()
 export class PulsarService implements MyData, PulsarInterface, ChartInfo, PulsarPeriodogramInterface, PulsarPeriodFoldingInterface {
     private pulsarData: PulsarData = new PulsarData();
-    private pulsarTableType: string = 'raw';
+    private pulsarTableType: string = 'subtracted';
     private pulsarInterface: PulsarInterfaceImpl = new PulsarInterfaceImpl();
     private highChart!: Highcharts.Chart;
     private pulsarStorage: PulsarStorage = new PulsarStorage();
@@ -877,7 +877,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         
         // --- Generate audio ---
         const frequency = 1 / period;
-        if (frequency < 400) {
+        if (frequency < 4000) { // Set to 4000 to deprecate burst mode
             // --- Burst mode (TV static style) ---
             const interp1 = interpolateArray(normY1);
             const interp2 = normY2 ? interpolateArray(normY2) : null;
@@ -1043,7 +1043,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         const audioData2 = numChannels === 2 ? new Float32Array(totalSamples) : null;
 
         // --- Generate audio data ---
-        if (frequency < 400) {
+        if (frequency < 4000) { // Set to 4000 to deprecate burst mode
             // --- Burst mode using noise (TV static style) ---
             const numPoints1 = interp1.length;
             const numPoints2 = interp2 ? interp2.length : 0;

@@ -160,14 +160,26 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
       }
     ];
 
-    // Update or add series
-    seriesOptions.forEach((s, i) => {
-      if (this.chartObject.series[i]) {
-        this.chartObject.series[i].update(s, true);
-      } else {
-        this.chartObject.addSeries(s, true);
+
+  seriesOptions.forEach((s, i) => {
+    const seriesWithEvents: Highcharts.SeriesOptionsType = {
+      ...s,
+      events: {
+        // hide: function () {
+        //   console.log('Series hidden:', this.name);
+        // },
+        // show: function () {
+        //   console.log('Series shown:', this.name);
+        // }
       }
-    });
+    };
+
+    if (this.chartObject.series[i]) {
+      this.chartObject.series[i].update(seriesWithEvents, true);
+    } else {
+      this.chartObject.addSeries(seriesWithEvents, true);
+    }
+  });
   }
 
   updateSources() {

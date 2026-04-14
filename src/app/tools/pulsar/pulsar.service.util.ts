@@ -252,7 +252,7 @@ export class PulsarData implements MyData {
   private pulsarDataDict: PulsarDataDict[] = [];
   private pulsarCombinedDataDict: PulsarDataDict[] = [];
   private pulsarRawDataDict: PulsarDataDict[] = [];
-  private pulsarTableType: string = 'raw';
+  private pulsarTableType: string = 'subtracted';
   private chartComputedPeriodogramDataArray: [Array<Number>, Array<Number>] = [[0],[0]];
 
   getData(): PulsarDataDict[] {

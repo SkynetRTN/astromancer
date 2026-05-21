@@ -18,10 +18,10 @@ export class PulsarLightCurveFormComponent implements OnInit {
       { label: 'Raw', value: 'raw' },
       { label: 'Subtracted', value: 'subtracted' }
     ];
-
+    console.log(this.pulsarService.getTableType());
     this.formGroup = this.fb.group({
-      backScale: [3, Validators.required],
-      dataOptions: ['subtracted', Validators.required]
+      backScale: [this.pulsarService.getbackScale(), Validators.required],
+      dataOptions: [this.pulsarService.getTableType(), Validators.required]
     });
   }
 
@@ -58,6 +58,7 @@ export class PulsarLightCurveFormComponent implements OnInit {
       
       // Set updated data back to the service
       this.pulsarService.setData(chartData);
+      this.pulsarService.setbackScale(value);
       }
     }
 

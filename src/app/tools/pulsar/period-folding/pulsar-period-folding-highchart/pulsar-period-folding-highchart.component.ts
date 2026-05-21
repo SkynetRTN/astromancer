@@ -165,17 +165,6 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
     const period = Number(this.service.getPeriodFoldingPeriod());
     const phase = Number(this.service.getPeriodFoldingPhase());
 
-    // Helper: fold, wrap, bin
-    // const foldAndBin = (points: [number, number][], binsPerPeriod: number): [number, number][] => {
-    //   const shiftedWrapped = points.map(([x, y]) => {
-    //     const shifted = x + (phase * period);
-    //     const wrappedX = ((shifted % period) + period) % period; // always in [0, period)
-    //     return [wrappedX, y] as [number, number];
-    //   });
-    //   shiftedWrapped.sort((a, b) => a[0] - b[0]);
-    //   return this.service.binData(shiftedWrapped, binsPerPeriod) as [number, number][];
-    // };
-
     const foldAndBin = (points: [number, number][], binsPerPeriod: number): [number, number][] => {
       // Step 1: bin first
       const binned = this.service.binData(points, binsPerPeriod) as [number, number][];

@@ -533,12 +533,9 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
     setbackScale(backScale: number): void {
         this.pulsarInterface.setbackScale(backScale);
-       // this.pulsarStorage.saveInterface(this.pulsarInterface.getStorageObject());
-        //this.interfaceSubject.next(this.pulsarInterface);
-        //this.chartInfoSubject.next(this.pulsarChartInfo);
-        //this.periodogramDataSubject.next(this.pulsarData);
-        //this.periodFoldingDataSubject.next(this.pulsarData);
+        this.pulsarStorage.saveInterface(this.pulsarInterface.getStorageObject());
         this.backScaleSubject.next(backScale);
+        this.interfaceSubject.next(this.pulsarInterface); 
     }
 
     getIsLightCurveOptionValid(): boolean {
@@ -564,8 +561,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
     /** PulsarInterface implementation */
 
     getbackScale(): number {
-        return this.backScaleSubject.getValue();
-
+        return this.pulsarInterface.getbackScale();
     }
 
     getPulsarStar(): PulsarStarOptions {
@@ -737,7 +733,8 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         this.pulsarData.setTableType(type);
         this.pulsarStorage.saveTableType(this.pulsarData.getTableType());
         this.tableTypeSubject.next(this.pulsarTableType);
-    }
+        this.dataSubject.next(this.pulsarData);
+    }  
 
     resetData(): void {
         this.pulsarData.setData(PulsarData.getDefaultDataDict());
@@ -771,6 +768,17 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
     setHighChartPeriodogram(highChart: Highcharts.Chart): void {
         this.highChartPeriodogram = highChart;
+    }
+
+    clearPeriodogramChart(): void {
+        if (this.highChartPeriodogram) {
+            this.highChartPeriodogram.update({
+            series: [], // Wipes all data lines, confidence lines, and maxima markers
+            title: { text: '' },
+            xAxis: [{ title: { text: '' } }],
+            yAxis: [{ title: { text: '' } }]
+            }, true, true); 
+        }
     }
 
     getHighChartPeriodogram(): Highcharts.Chart {

@@ -86,6 +86,7 @@ export class PulsarInterfaceImpl implements PulsarInterface {
   }
 
   getStorageObject(): PulsarInterfaceStorageObject {
+    console.log(this.backScale)
     return {
       pulsarStar: this.pulsarStar,
       backScale: this.backScale,
@@ -897,7 +898,6 @@ export class PulsarStorage implements MyStorage {
   saveTableType(data: string): void {
     localStorage.setItem(this.tableTypeKey, JSON.stringify(data));
   }
-
 
   saveCombinedData(data: PulsarDataDict[]): void {
     localStorage.setItem(this.combinedDataKey, JSON.stringify(data));

@@ -60,6 +60,8 @@ export class PulsarLightCurveComponent implements OnDestroy {
   uploadHandler($event: File) {
     const reader = new FileReader();
     reader.onload = () => {
+      this.service.clearPeriodogramChart()
+
       const file = reader.result as string;
       
       const lines = file.split('\n');
@@ -252,12 +254,16 @@ export class PulsarLightCurveComponent implements OnDestroy {
         }
 
         let avgDiff = Math.round(totalDiff / (this.ts.length - 1) * 2 * 100000) / 100000;
-
+        totalDiff = Math.round(totalDiff * 100000) / 100000;
+        
         if (this.service.getPeriodogramMethod()) {
           avgDiff = 1 / avgDiff
+          totalDiff = 1 / totalDiff
+          this.service.setPeriodogramStartPeriod(totalDiff);
           this.service.setPeriodogramEndPeriod(avgDiff);
         } else {
           this.service.setPeriodogramStartPeriod(avgDiff);
+          this.service.setPeriodogramEndPeriod(totalDiff);
         };
 
         this.rawData = combinedData;
@@ -345,6 +351,8 @@ export class PulsarLightCurveComponent implements OnDestroy {
     // Apply background subtraction based on the provided backScale
     const subtractedSource1 = this.service.backgroundSubtraction(jd, source1, backScale);
     const subtractedSource2 = this.service.backgroundSubtraction(jd, source2, backScale);
+
+    this.service.setbackScale(backScale)
 
     // Update chart data with background-subtracted values
     chartData = chartData.map((item, index) => ({

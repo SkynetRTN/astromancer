@@ -10,7 +10,6 @@ import { RadioSearchDataDict } from './radiosearch.service.util';
 import { BehaviorSubject } from 'rxjs';
 import { getDateString } from "../shared/charts/utils";
 import * as fitsjs from 'fitsjs';
-import { image } from 'html2canvas/dist/types/css/types/image';
 
 @Component({
   selector: 'app-radiosearch',
@@ -72,9 +71,10 @@ export class RadioSearchComponent implements AfterViewInit {
   @ViewChild('fileDropZone', { static: false }) fileDropZoneRef!: ElementRef<HTMLDivElement>;
   @ViewChild('chartContainer', { static: false }) chartContainer!: ElementRef;
 
-  ngOnDestroy() {
-    window.removeEventListener('beforeunload', this.confirmExit);
-  }
+  // beforeunload is wired by the HostListener decorator below — Angular
+  // attaches and detaches it on the component lifecycle, so an explicit
+  // removeEventListener (which would target a different function reference
+  // anyway) is unnecessary.
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
@@ -110,8 +110,12 @@ export class RadioSearchComponent implements AfterViewInit {
 
   @HostListener('window:beforeunload', ['$event'])
   confirmExit(event: BeforeUnloadEvent): void {
-    if (this.fitsLoaded) { 
+    if (this.fitsLoaded) {
+      // Modern browsers ignore preventDefault on beforeunload unless
+      // returnValue is also set (assignment is what triggers the prompt;
+      // the value itself is discarded by the browser).
       event.preventDefault();
+      event.returnValue = '';
     }
   }
 
@@ -157,7 +161,11 @@ export class RadioSearchComponent implements AfterViewInit {
 
 
   onFileSelected(event: Event): void {
-    this.fitsLoaded = true;
+    // Don't flip fitsLoaded until processFitsFile actually succeeds.
+    // Setting it true upfront would hide the drop zone (*ngIf="!fitsLoaded")
+    // even when the parse later fails, leaving the user with no obvious way
+    // to retry. processFitsFile sets fitsLoaded = true on success and
+    // deleteFITS() on error, mirroring the onFileDrop path.
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
@@ -769,7 +777,13 @@ export class RadioSearchComponent implements AfterViewInit {
   
   
   searchCatalog(): void {
-    if (this.rccords && this.ra && this.dec && this.width && this.height) {
+    // Use explicit undefined checks: a source on the celestial equator has
+    // Dec === 0 (and RA can be 0 too after the `%= 360` normalization).
+    // Plain truthy checks would reject those valid values and call deleteFITS,
+    // wiping the freshly-loaded image with a misleading console error.
+    if (this.rccords &&
+        this.ra !== undefined && this.dec !== undefined &&
+        this.width !== undefined && this.height !== undefined) {
       this.service.fetchRadioCatalog(this.rccords, this.ra, this.dec, this.width, this.height).subscribe(
         (response: any) => {
           const results = response.objects.map((source: any) => ({
@@ -803,9 +817,9 @@ export class RadioSearchComponent implements AfterViewInit {
           this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2); // Render image
         },
         (error: any) => {
-          
+          console.error('Radio catalog query failed:', error);
           this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2); // Render image
-        } 
+        }
       );
     } else {
       console.error('RA, Dec, Width, and Height are required!');

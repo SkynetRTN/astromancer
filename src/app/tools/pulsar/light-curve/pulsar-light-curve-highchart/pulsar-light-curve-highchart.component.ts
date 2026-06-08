@@ -162,22 +162,10 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
 
 
   seriesOptions.forEach((s, i) => {
-    const seriesWithEvents: Highcharts.SeriesOptionsType = {
-      ...s,
-      events: {
-        // hide: function () {
-        //   console.log('Series hidden:', this.name);
-        // },
-        // show: function () {
-        //   console.log('Series shown:', this.name);
-        // }
-      }
-    };
-
     if (this.chartObject.series[i]) {
-      this.chartObject.series[i].update(seriesWithEvents, true);
+      this.chartObject.series[i].update(s, true);
     } else {
-      this.chartObject.addSeries(seriesWithEvents, true);
+      this.chartObject.addSeries(s, true);
     }
   });
   }

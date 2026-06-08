@@ -1,5 +1,17 @@
+:host {
+  // The Angular component element has to participate in the height: 100%
+  // chain — without this, .chart-container resolves height: 100% against
+  // an auto-sized host, Highcharts renders at its default ~400px, and the
+  // chart overflows the .dynamic slot into the bottom button row on
+  // short viewports.
+  display: block;
+  height: 100%;
+  min-height: 0;
+}
+
 .chart-container {
   width: 100%;
   height: 100%;
   padding: 10px;
+  box-sizing: border-box; // keep the 10px padding from adding to total height
 }

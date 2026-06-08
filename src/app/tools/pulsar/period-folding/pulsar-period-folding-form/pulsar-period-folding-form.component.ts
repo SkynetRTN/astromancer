@@ -1,4 +1,4 @@
-import {Component, ChangeDetectorRef, OnDestroy, OnChanges} from '@angular/core';
+import {Component, ChangeDetectorRef, OnDestroy} from '@angular/core';
 import {BehaviorSubject, debounceTime, Subject, takeUntil, skip} from "rxjs";
 import {PulsarService} from "../../pulsar.service";
 import {HonorCodePopupService} from "../../../shared/honor-code-popup/honor-code-popup.service";
@@ -27,6 +27,11 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
     = new BehaviorSubject<number>(this.service.getPeriodFoldingSpeed());
   binsSubject: BehaviorSubject<number>
     = new BehaviorSubject<number>(this.service.getPeriodFoldingBins());
+  // The input-slider only re-reads its [minValue]/[maxValue] @Inputs at
+  // construction. range$ is its supported escape hatch for live bound
+  // updates — emitted whenever the periodogram Compute or a fresh file
+  // upload changes the period-folding range.
+  periodRangeSubject: Subject<{ min: number, max: number }> = new Subject();
 
   calFile: boolean = true;
   periodMin: number = this.service.getPeriodFoldingPeriodMin();
@@ -36,21 +41,22 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
 
   ngOnInit(): void {
-    this.service.lightCurveOptionValid$.subscribe(value => {
-      this.calFile = value;
-    
-      setTimeout(() => {
-        this.periodSubject.next(this.service.getPeriodFoldingPeriod());
-      });
-    });    
+    this.service.lightCurveOptionValid$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(value => {
+        this.calFile = value;
 
-    const data = this.service.getPeriodFoldingChartData();
-    const sum = data['data2'].reduce((sum, item) => sum + item[1], 0) === 0;
-    if (sum == true) {
-      this.periodMax = this.service.getPeriodFoldingPeriod();
-      this.calFile = false;
-    }
-  }   
+        setTimeout(() => {
+          this.periodSubject.next(this.service.getPeriodFoldingPeriod());
+        });
+      });
+
+    // Period-folding bounds are now set by the upload handler directly
+    // (Nyquist … 10s), so the form no longer needs its own computation.
+    // We still want the local periodMin/periodMax to reflect whatever the
+    // service holds — that sync is wired into the periodFoldingForm$
+    // subscriber below.
+  }
 
   constructor(private service: PulsarService,
               private honorCodeService: HonorCodePopupService,
@@ -120,6 +126,18 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
       this.formGroup.controls['speed'].setValue(this.service.getPeriodFoldingSpeed(), {emitEvent: false});
       this.formGroup.controls['bins'].setValue(this.service.getPeriodFoldingBins(), {emitEvent: false});
       this.formGroup.controls['displayPeriod'].setValue(this.service.getPeriodFoldingDisplayPeriod(), {emitEvent: false});
+
+      // Mirror the slider bounds the service holds — the upload handler
+      // sets these to (Nyquist, 10s) and Reset Tool restores defaults.
+      // Without this, the visible slider would lag behind the persisted
+      // range until the user touched a periodogram Compute.
+      this.periodMin = this.service.getPeriodFoldingPeriodMin();
+      this.periodMax = this.service.getPeriodFoldingPeriodMax();
+      this.periodStep = this.getPeriodStep();
+      // Push the new bounds into the live slider — the static [minValue]/
+      // [maxValue] Inputs are only read once at construction.
+      this.periodRangeSubject.next({ min: this.periodMin, max: this.periodMax });
+
       if (source !== UpdateSource.INTERFACE) {
         this.periodSubject.next(this.service.getPeriodFoldingPeriod());
         this.phaseSubject.next(this.service.getPeriodFoldingPhase());
@@ -130,25 +148,32 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
       takeUntil(this.destroy$),
       skip(1)
     ).subscribe(() => {
+      // Compute the new bounds into LOCAL variables — not this.periodMin /
+      // this.periodMax — because the periodFoldingForm$ subscriber above
+      // fires synchronously inside each service.setPeriodFoldingPeriodMin/
+      // Max call below and would re-read the (still stale) Max from the
+      // service back into this.periodMax before the second set runs. That
+      // would feed the OLD value back into setPeriodFoldingPeriodMax and
+      // the new End Period would never land.
+      let newMin: number, newMax: number;
       if (this.service.getPeriodogramMethod() === false) {
-        this.periodMin = this.service.getPeriodogramStartPeriod();
-        this.periodMax = this.service.getPeriodogramEndPeriod();
-        this.service.setPeriodFoldingPeriodMin(this.periodMin);
-        this.service.setPeriodFoldingPeriodMax(this.periodMax);
+        newMin = this.service.getPeriodogramStartPeriod();
+        newMax = this.service.getPeriodogramEndPeriod();
       } else {
-        this.periodMax = 1 / this.service.getPeriodogramStartPeriod();
-        this.periodMin = 1 / this.service.getPeriodogramEndPeriod();
-        this.service.setPeriodFoldingPeriodMin(this.periodMin);
-        this.service.setPeriodFoldingPeriodMax(this.periodMax);
-      };
+        newMax = 1 / this.service.getPeriodogramStartPeriod();
+        newMin = 1 / this.service.getPeriodogramEndPeriod();
+      }
+      this.service.setPeriodFoldingPeriodMin(newMin);
+      this.service.setPeriodFoldingPeriodMax(newMax);
+      // After both service calls have committed, the periodFoldingForm$
+      // subscriber has synced this.periodMin / this.periodMax for us.
+      // Push the final range to the live slider.
+      this.periodRangeSubject.next({ min: newMin, max: newMax });
       Promise.resolve().then(() => this.cdr.detectChanges());
     });
     this.service.data$.pipe(
       takeUntil(this.destroy$),
     ).subscribe(() => {
-      if (this.calFile == false) {
-        this.periodMax = this.service.getPeriodFoldingPeriod();
-      }
       this.periodStep = this.getPeriodStep();
     });
   }
@@ -179,7 +204,20 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
   resetPulsar() {
     this.service.resetPeriodFoldingForm();
     this.service.resetChartInfo();
-    this.service.resetData();   
+    this.service.resetPeriodogram();
+    // Clear the persisted periodogram trace so the chart comes back empty
+    // instead of redrawing the last Lomb-Scargle result on the next load.
+    // The periodogram chart's setData guard skips rendering for this
+    // placeholder shape, so the chart shows nothing until the user computes.
+    this.service.setChartComputedPeriodogramDataArray([[0], [0]]);
+    // Restore the background-scale slider to its default. Previous file
+    // tuning shouldn't carry over to the next upload.
+    this.service.setbackScale(3);
+    // Send the user back to the light curve tab so they can upload the next
+    // file. Pre-persistence the tab implicitly defaulted to 0 on reload;
+    // now that tab index survives refresh, we have to set it explicitly.
+    this.service.setTabIndex(0);
+    this.service.resetData();
     window.location.reload();
   }
 

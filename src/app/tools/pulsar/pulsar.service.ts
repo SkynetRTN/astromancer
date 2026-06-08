@@ -84,7 +84,25 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         this.pulsarChartInfo.setStorageObject(this.pulsarStorage.getChartInfo());
         this.pulsarPeriodogram.setPeriodogramStorageObject(this.pulsarStorage.getPeriodogram());
         this.pulsarPeriodFolding.setPeriodFoldingStorageObject(this.pulsarStorage.getPeriodFolding());
+
+        const loadedTableType = this.pulsarStorage.getTableType();
+        this.pulsarTableType = loadedTableType;
+        this.pulsarData.setTableType(loadedTableType);
+
         this.tabIndex = this.pulsarStorage.getTabIndex();
+
+        // Seed BehaviorSubjects from loaded state so subscribers see persisted
+        // values on first emission instead of hardcoded defaults.
+        this.backScaleSubject.next(this.pulsarInterface.getbackScale());
+        this.tabIndexSubject.next(this.tabIndex);
+        this.combinedDataSubject.next(this.pulsarData.getCombinedData());
+        this.tableTypeSubject.next(loadedTableType);
+        // Older stored interface entries predate LightCurveOptionValid persistence;
+        // fall back to `true` so existing user sessions don't get locked into the
+        // period-folding tab on first refresh after upgrade.
+        const loadedValid = this.pulsarStorage.getInterface().LightCurveOptionValid ?? true;
+        this.LightCurveOptionValid = loadedValid;
+        this.LightCurveOptionValidSubject.next(loadedValid);
     }
 
     /** PeriodFolding Interface */
@@ -107,10 +125,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
     }
 
     getPeriodFoldingPeriod(): number {
-        if (this.pulsarPeriodFolding.getPeriodFoldingPeriod() < 0)
-            return this.getJdRange();
-        else
-            return this.pulsarPeriodFolding.getPeriodFoldingPeriod();
+        return this.pulsarPeriodFolding.getPeriodFoldingPeriod();
     }
 
     getPeriodFoldingPeriodMin(): number {
@@ -239,7 +254,17 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
     }
 
     resetPeriodFoldingForm(): void {
+        // Preserve the analytical state — folding period (from P_topo or
+        // periodogram peak) and slider bounds (Nyquist…10s from the data).
+        // Reset Form is a cosmetic reset (titles, labels, phase, cal,
+        // speed, bins, displayPeriod). Reset Tool still wipes everything.
+        const preservedPeriod = this.pulsarPeriodFolding.getPeriodFoldingPeriod();
+        const preservedMin = this.pulsarPeriodFolding.getPeriodFoldingPeriodMin();
+        const preservedMax = this.pulsarPeriodFolding.getPeriodFoldingPeriodMax();
         this.pulsarPeriodFolding.setPeriodFoldingStorageObject(PulsarPeriodFolding.getDefaultStorageObject());
+        this.pulsarPeriodFolding.setPeriodFoldingPeriod(preservedPeriod);
+        this.pulsarPeriodFolding.setPeriodFoldingPeriodMin(preservedMin);
+        this.pulsarPeriodFolding.setPeriodFoldingPeriodMax(preservedMax);
         this.pulsarStorage.savePeriodFolding(this.pulsarPeriodFolding.getPeriodFoldingStorageObject());
         this.periodFoldingFormSubject.next(UpdateSource.RESET);
         this.periodFoldingDataSubject.next(this.pulsarData);
@@ -247,12 +272,18 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
     getPeriodFoldingChartData(): { [key: string]: number[][] } {
         const data = this.getChartPulsarDataArray()
-            .filter((entry) => entry[0] !== null) 
+            .filter((entry) => entry[0] !== null)
             .sort((a, b) => a[0]! - b[0]!);
-    
+
+        // Empty table (user deleted all rows, or a file upload produced no
+        // valid rows). Bail out with an empty series instead of dereferencing
+        // data[0] and throwing.
+        if (data.length === 0) {
+            return { data: [] };
+        }
+
         const minJD = data[0][0]!;
         const period = Number(this.getPeriodFoldingPeriod());
-        const phase = this.getPeriodFoldingPhase();
 
         // Initialize arrays for two series
         let pfData1: number[][] = []; // For source1
@@ -408,12 +439,9 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         this.periodogramDataSubject.next(this.pulsarData);
     }
 
-    compute(compute: boolean) {
-        if (this.isComputingSubject.getValue() == false) {
-            this.isComputingSubject.next(true)
-        } else if (this.isComputingSubject.getValue() == true) {
-            this.isComputingSubject.next(false)
-        }
+    compute() {
+        // Toggle the computing flag; downstream subscribers react to the flip.
+        this.isComputingSubject.next(!this.isComputingSubject.getValue());
     }
 
     resetPeriodogram(): void {
@@ -427,7 +455,16 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
     getJdRange(): number {
         const jdArray = this.getData().map((row: PulsarDataDict) => row.jd)
             .filter((jd: number | null) => jd !== null) as number[];
-        return parseFloat((Math.max(...jdArray) - Math.min(...jdArray)).toFixed(4));
+        if (jdArray.length === 0) return 0;
+        // Reduce instead of Math.max/min(...arr): the spread form overflows
+        // the call stack on large data files (~125k+ samples on V8).
+        let max = jdArray[0], min = jdArray[0];
+        for (let i = 1; i < jdArray.length; i++) {
+            const v = jdArray[i];
+            if (v > max) max = v;
+            if (v < min) min = v;
+        }
+        return parseFloat((max - min).toFixed(4));
     }
 
     getLabels(isHz: boolean): { startPeriodLabel: string, endPeriodLabel: string } {
@@ -544,6 +581,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
     setLightCurveOptionValid(valid: boolean): void {
         this.pulsarInterface.setLightCurveOptionValid(valid);
+        this.pulsarStorage.saveInterface(this.pulsarInterface.getStorageObject());
         this.LightCurveOptionValidSubject.next(valid);
         this.LightCurveOptionValid = valid;
     }
@@ -568,17 +606,6 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         return this.pulsarInterface.getPulsarStar();
     }
 
-    setReferenceStarMagnitude(magnitude: number): void {
-        this.pulsarStorage.saveInterface(this.pulsarInterface.getStorageObject());
-        this.interfaceSubject.next(this.pulsarInterface);
-        this.chartInfoSubject.next(this.pulsarChartInfo);
-        this.dataSubject.next(this.pulsarData);
-        this.periodogramFormSubject.next(this.pulsarPeriodogram);
-        this.periodogramDataSubject.next(this.pulsarData);
-        this.periodFoldingFormSubject.next(UpdateSource.INIT);
-        this.periodFoldingDataSubject.next(this.pulsarData);
-    }
-
     getChartPulsarDataArray(): (number | null)[][] {
         return this.getData().filter((row: PulsarDataDict) =>
             row.jd !== null && row.source1 !== null)
@@ -587,7 +614,11 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
     addRow(index: number, amount: number): void {
         this.pulsarData.addRow(index, amount);
+        // pulsarData.addRow now keeps raw/combined/subtracted arrays in sync
+        // in memory; persist all three so they don't diverge after refresh.
         this.pulsarStorage.saveData(this.pulsarData.getData());
+        this.pulsarStorage.saveRawData(this.pulsarData.getRawData());
+        this.pulsarStorage.saveCombinedData(this.pulsarData.getCombinedData());
         this.dataSubject.next(this.pulsarData);
     }
 
@@ -671,7 +702,11 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
     removeRow(index: number, amount: number): void {
         this.pulsarData.removeRow(index, amount);
+        // Same reason as addRow — keep storage in sync with the in-memory
+        // raw/combined arrays that pulsarData.removeRow now also splices.
         this.pulsarStorage.saveData(this.pulsarData.getData());
+        this.pulsarStorage.saveRawData(this.pulsarData.getRawData());
+        this.pulsarStorage.saveCombinedData(this.pulsarData.getCombinedData());
         this.dataSubject.next(this.pulsarData);
         this.periodogramDataSubject.next(this.pulsarData);
         this.periodFoldingDataSubject.next(this.pulsarData);
@@ -731,10 +766,14 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
     setTableType(type: string): void {
         this.pulsarData.setTableType(type);
+        this.pulsarTableType = type;
         this.pulsarStorage.saveTableType(this.pulsarData.getTableType());
-        this.tableTypeSubject.next(this.pulsarTableType);
+        // Previously emitted `this.pulsarTableType` which was a stale class
+        // field set only at construction time — subscribers got the OLD
+        // value, which was harmless until the form started trusting it.
+        this.tableTypeSubject.next(type);
         this.dataSubject.next(this.pulsarData);
-    }  
+    }
 
     resetData(): void {
         this.pulsarData.setData(PulsarData.getDefaultDataDict());
@@ -743,6 +782,12 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         this.pulsarStorage.saveData(this.pulsarData.getData());
         this.pulsarStorage.saveRawData(this.pulsarData.getData());
         this.pulsarStorage.saveCombinedData(this.pulsarData.getData());
+
+        // Re-enable the light-curve and periodogram tabs. Without this, a
+        // student who uploaded a standard file (which sets the flag to false
+        // and now persists across refresh) would stay locked into the
+        // period-folding tab forever, even after Reset.
+        this.setLightCurveOptionValid(true);
 
         this.dataSubject.next(this.pulsarData);
         this.periodogramDataSubject.next(this.pulsarData);
@@ -799,21 +844,22 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
     binData(data: number[][], bins: number): number[][] {
         if (data.length === 0) return [];
-      
-        // Retrieve the phase value
-        const phase = this.getPeriodFoldingPhase();
-        const period = this.getPeriodFoldingPeriod();
-    
-        // Calculate bin size
-        const xMin = Math.min(...data.map(point => point[0]));
-        const xMax = Math.max(...data.map(point => point[0]));
+
+        // Calculate bin size — loop instead of Math.min/max(...) to avoid the
+        // spread-arg stack overflow on large datasets.
+        let xMin = data[0][0], xMax = data[0][0];
+        for (let i = 1; i < data.length; i++) {
+            const x = data[i][0];
+            if (x < xMin) xMin = x;
+            if (x > xMax) xMax = x;
+        }
         const binSize = (xMax - xMin) / bins;
-      
-        // Initialize bins
+
+        // Initialize bins. Phase shifting is applied by the callers
+        // (foldAndBin in the period-folding chart), not here.
         const binnedData: { x: number; ySum: number; count: number }[] = Array(bins)
           .fill(0)
           .map((_, index) => ({
-            // Shift bin center by phase
             x: xMin + index * binSize + binSize / 2,
             ySum: 0,
             count: 0,
@@ -836,7 +882,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
 
     sonification(
-        xValues: number[],
+        _xValues: number[],
         yValues: number[],
         yValues2: number[] | null,
         period: number,
@@ -848,7 +894,6 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         }
 
         const cal = this.getPeriodFoldingCal();
-        const originalPeriod = period;
         const sampleRate = 44100;
         const durationSeconds = 60;
         const numChannels = yValues2 ? 2 : 1;
@@ -856,15 +901,25 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         // --- Period folding ---
         period *= 1 / this.getPeriodFoldingSpeed();
 
-        // --- Apply calibration to yValues2 ---
+        // --- Apply calibration to yValues2 (on a copy so the caller's array
+        //     is not mutated; repeated saves would otherwise compound the
+        //     calibration each time). ---
+        let yValues2Cal: number[] | null = null;
         if (yValues2) {
-            for (let i = 0; i < yValues2.length; i++) yValues2[i] *= cal;
+            yValues2Cal = new Array(yValues2.length);
+            for (let i = 0; i < yValues2.length; i++) yValues2Cal[i] = yValues2[i] * cal;
         }
 
         // --- Compute global min and max across both channels ---
-        const allValues = yValues2 ? yValues.concat(yValues2) : yValues;
-        const globalMin = Math.min(...allValues);
-        const globalMax = Math.max(...allValues);
+        // Use a loop instead of Math.min/max(...) — the spread form blows the
+        // call stack on large arrays.
+        const allValues = yValues2Cal ? yValues.concat(yValues2Cal) : yValues;
+        let globalMin = allValues[0], globalMax = allValues[0];
+        for (let i = 1; i < allValues.length; i++) {
+            const v = allValues[i];
+            if (v < globalMin) globalMin = v;
+            if (v > globalMax) globalMax = v;
+        }
 
         // --- Normalize function using global min/max ---
         const normalizeGlobal = (arr: number[]) => {
@@ -873,7 +928,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
         // --- Apply global normalization ---
         const normY1 = normalizeGlobal(yValues);
-        const normY2 = yValues2 ? normalizeGlobal(yValues2) : null;
+        const normY2 = yValues2Cal ? normalizeGlobal(yValues2Cal) : null;
 
         // --- Adaptive interpolation ---
         const minSamplesPerCycle = Math.max(64, Math.floor(sampleRate / (1 / period)));
@@ -882,7 +937,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
         const audioData1 = new Float32Array(durationSeconds * sampleRate);
         const audioData2 = numChannels === 2 ? new Float32Array(durationSeconds * sampleRate) : null;
-        
+
         // --- Generate audio ---
         const frequency = 1 / period;
         if (frequency < 4000) { // Set to 4000 to deprecate burst mode
@@ -903,9 +958,9 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
                 const amp1 = interp1[Math.min(pointIndex, numPoints - 1)];
                 const amp2 = interp2 ? interp2[Math.min(pointIndex, numPoints - 1)] : 0;
 
-                // White noise carrier [-1..1]
+                // Independent white noise carriers per channel for stereo spread.
                 const noise1 = Math.random() * 2 - 1;
-                const noise2 = Math.random() * 2 - 1; // independent stereo noise (optional)
+                const noise2 = Math.random() * 2 - 1;
 
                 // Modulate noise by data
                 audioData1[i] = noise1 * amp1;
@@ -922,7 +977,10 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
             for (let i = 0; i < audioData1.length; i++) {
                 const t = i / sampleRate;
                 const phase = (t % period) / period;
-                const index = Math.floor(phase * numPoints);
+                // Clamp against numPoints — floating-point rounding can let
+                // phase * numPoints land exactly on numPoints at the period
+                // boundary, which would index past the end of interp1.
+                const index = Math.min(Math.floor(phase * numPoints), numPoints - 1);
                 audioData1[i] = interp1[index] * 2 - 1;
                 if (numChannels === 2 && interp2) {
                     audioData2![i] = interp2[index] * 2 - 1;
@@ -991,14 +1049,17 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
 
     sonificationBrowser(
-        xValues: number[],
+        _xValues: number[],
         yValues: number[],
         yValues2: number[] | null,
         period: number
     ) {
         if (this.isPlaying) {
-            this.audioSource?.stop();
-            this.audioCtx?.close();
+            // stop() throws InvalidStateError if the source hasn't started yet,
+            // and close() rejects if the context is already closed — both are
+            // harmless here, so we swallow them.
+            try { this.audioSource?.stop(); } catch { /* ignore */ }
+            this.audioCtx?.close().catch(() => { /* ignore */ });
             this.audioCtx = null;
             this.audioSource = null;
             this.isPlaying = false;
@@ -1018,15 +1079,23 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         // --- Apply period folding ---
         period *= 1 / this.getPeriodFoldingSpeed();
 
-        // --- Apply calibration to yValues2 ---
+        // --- Apply calibration to yValues2 on a copy (so the caller's array
+        //     isn't mutated; clicking Play repeatedly used to compound cal). ---
+        let yValues2Cal: number[] | null = null;
         if (yValues2) {
-            for (let i = 0; i < yValues2.length; i++) yValues2[i] *= cal;
+            yValues2Cal = new Array(yValues2.length);
+            for (let i = 0; i < yValues2.length; i++) yValues2Cal[i] = yValues2[i] * cal;
         }
 
         // --- Compute global min and max across both channels ---
-        const allValues = yValues2 ? yValues.concat(yValues2) : yValues;
-        const globalMin = Math.min(...allValues);
-        const globalMax = Math.max(...allValues);
+        // Loop instead of spread to avoid stack overflow on large arrays.
+        const allValues = yValues2Cal ? yValues.concat(yValues2Cal) : yValues;
+        let globalMin = allValues[0], globalMax = allValues[0];
+        for (let i = 1; i < allValues.length; i++) {
+            const v = allValues[i];
+            if (v < globalMin) globalMin = v;
+            if (v > globalMax) globalMax = v;
+        }
 
         // --- Normalize function using global min/max ---
         const normalizeGlobal = (arr: number[]) => {
@@ -1035,7 +1104,7 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
         // --- Apply global normalization ---
         const normY1 = normalizeGlobal(yValues);
-        const normY2 = yValues2 ? normalizeGlobal(yValues2) : null;
+        const normY2 = yValues2Cal ? normalizeGlobal(yValues2Cal) : null;
 
         // --- Adaptive interpolation ---
         const frequency = 1 / period;
@@ -1063,19 +1132,26 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
             const samplesPerPoint2 = interp2 ? Math.max(1, Math.floor(sampleRate * durationPerPoint2)) : 1;
 
             for (let i = 0; i < totalSamples; i++) {
-                // White noise carrier in [-1,1]
-                const noise = (Math.random() * 2 - 1);
+                // Independent white noise per channel for stereo spread —
+                // matches the saved-WAV path in sonification().
+                const noise1 = Math.random() * 2 - 1;
+                const noise2 = Math.random() * 2 - 1;
 
                 // Channel 1 (modulated noise)
-                const idx1 = Math.floor((i % (numPoints1 * samplesPerPoint1)) / samplesPerPoint1);
+                const idx1 = Math.min(
+                    Math.floor((i % (numPoints1 * samplesPerPoint1)) / samplesPerPoint1),
+                    numPoints1 - 1,
+                );
                 const volume1 = interp1[idx1]; // [0..1]
-                audioData1[i] = noise * volume1;
+                audioData1[i] = noise1 * volume1;
 
                 if (numChannels === 2 && interp2) {
-                    // Channel 2 (separately modulated noise)
-                    const idx2 = Math.floor((i % (numPoints2 * samplesPerPoint2)) / samplesPerPoint2);
+                    const idx2 = Math.min(
+                        Math.floor((i % (numPoints2 * samplesPerPoint2)) / samplesPerPoint2),
+                        numPoints2 - 1,
+                    );
                     const volume2 = interp2[idx2];
-                    audioData2![i] = noise * volume2; // can also use independent noise if you want stereo "spread"
+                    audioData2![i] = noise2 * volume2;
                 }
             }
         } else {
@@ -1083,7 +1159,6 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
             for (let i = 0; i < totalSamples; i++) {
                 const t = i / sampleRate;
 
-                // Instead of forcing modulo, just advance through data naturally
                 const idx1 = Math.floor((t / period) * interp1.length) % interp1.length;
                 audioData1[i] = (interp1[idx1] * 2 - 1);
 
@@ -1133,7 +1208,9 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
 
         this.audioSource.onended = () => {
             this.isPlaying = false;
-            this.audioCtx?.close();
+            // close() rejects if the context is already closed (e.g. the user
+            // hit the stop toggle before the 60s timer expired); swallow it.
+            try { this.audioCtx?.close().catch(() => {}); } catch { /* ignore */ }
             this.audioCtx = null;
             this.audioSource = null;
         };

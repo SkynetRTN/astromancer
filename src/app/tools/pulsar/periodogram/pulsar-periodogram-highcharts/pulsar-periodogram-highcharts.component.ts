@@ -14,10 +14,6 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
   chartConstructor: any = "chart";
   chartObject!: Highcharts.Chart;
 
-  private previousTitle = '';
-  private previousXAxis = '';
-  private previousYAxis = '';
-
   chartOptions: Highcharts.Options = {
     title: {
       text: "Title",
@@ -67,33 +63,19 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
     this.chartObject.xAxis[0]?.setTitle({ text: this.service.getPeriodogramXAxisLabel() });
     this.chartObject.yAxis[0]?.setTitle({ text: this.service.getPeriodogramYAxisLabel() });
 
-    this.previousTitle = this.service.getPeriodogramTitle();
-    this.previousXAxis = this.service.getPeriodogramXAxisLabel();
-    this.previousYAxis = this.service.getPeriodogramYAxisLabel();
-
+    // Mirror title / axis updates when the form changes. We deliberately do
+    // NOT zoom out here — the previous version did when no label changed,
+    // which meant typing into the start/end period inputs (which emit this
+    // subject after a 700 ms debounce) would silently undo the user's zoom.
+    // Compute is the only legitimate trigger for a zoom-out, and it has its
+    // own isComputing$ subscriber below.
     this.service.periodogramForm$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
-      const currentTitle = this.service.getPeriodogramTitle();
-      const currentXAxis = this.service.getPeriodogramXAxisLabel();
-      const currentYAxis = this.service.getPeriodogramYAxisLabel();
-
-      const titleChanged = currentTitle !== this.previousTitle;
-      const xAxisChanged = currentXAxis !== this.previousXAxis;
-      const yAxisChanged = currentYAxis !== this.previousYAxis;
-
       this.setChartTitle();
       this.setChartXAxis();
       this.setChartYAxis();
       this.updateChart();
-
-      if (!(titleChanged || xAxisChanged || yAxisChanged)) {
-        this.chartObject.zoomOut();
-      }
-
-      this.previousTitle = currentTitle;
-      this.previousXAxis = currentXAxis;
-      this.previousYAxis = currentYAxis;
     });
 
     this.service.isComputing$.pipe(
@@ -113,15 +95,17 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
   setData() {
     const periodogramData = this.service.getChartComputedPeriodogramDataArray();
 
-    // Get first series data
-    const firstSeriesData = periodogramData[0] as unknown as { x: number; y: number }[];
+    // The storage default is [[0], [0]] — a pair of length-1 number arrays,
+    // not the {x, y}[] shape produced by lombScargle. Skip initialization
+    // until the user has actually clicked Compute and real data exists.
+    const firstSeries = periodogramData[0] as unknown as { x?: number; y?: number }[];
+    if (!firstSeries || firstSeries.length < 2 || typeof firstSeries[0]?.x !== 'number') {
+      return;
+    }
 
-    // Extract x-values
-    const xValues = firstSeriesData.map(point => point.x);
-
-    // Compute min and max
-    const start = Math.min(...xValues);
-    const end = Math.max(...xValues);
+    const xValues = firstSeries.map(point => point.x as number);
+    const start = xValues.reduce((a, b) => a < b ? a : b, Infinity);
+    const end = xValues.reduce((a, b) => a > b ? a : b, -Infinity);
 
     Object.entries(periodogramData).forEach(([key, data], index) => {
       const numericData: number[] = (data as Number[]).map(n => n.valueOf());

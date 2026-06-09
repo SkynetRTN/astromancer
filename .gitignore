@@ -44,3 +44,10 @@ Thumbs.db
 
 # Compodoc
 documentation
+
+# Local test data (Skynet cal/fits samples, large files for repro)
+/test-data
+
+# Local production build for testing (npx ng build --output-path=./dist-prod)
+/dist-prod
+

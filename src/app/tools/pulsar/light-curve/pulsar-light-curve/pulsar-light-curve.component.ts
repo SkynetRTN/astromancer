@@ -287,7 +287,7 @@ export class PulsarLightCurveComponent {
             this.service.setPeriodogramStartPeriod(0.1);
             this.service.setPeriodogramEndPeriod(Math.round((1 / avgDiff) * 100000) / 100000);
           } else {
-            // Period mode: start = Nyquist period, end = default max (10s).
+            // Period mode: start = Nyquist period, end = default max (3s).
             // The end no longer tracks the observation length.
             this.service.setPeriodogramStartPeriod(avgDiff);
             this.service.setPeriodogramEndPeriod(3);
@@ -298,6 +298,11 @@ export class PulsarLightCurveComponent {
           this.service.setPeriodFoldingPeriodMin(avgDiff);
           this.service.setPeriodFoldingPeriodMax(3);
         }
+
+        // Always start a new file in the 'subtracted' view. Without this,
+        // a 'raw' selection from the previous file's session persists into
+        // the next file's display.
+        this.service.setTableType('subtracted');
 
         this.rawData = combinedData;
         this.service.setData(combinedData);

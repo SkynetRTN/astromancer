@@ -107,16 +107,29 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
     const start = xValues.reduce((a, b) => a < b ? a : b, Infinity);
     const end = xValues.reduce((a, b) => a > b ? a : b, -Infinity);
 
-    Object.entries(periodogramData).forEach(([key, data], index) => {
-      const numericData: number[] = (data as Number[]).map(n => n.valueOf());
+    // Convert {x, y} object format from storage to [x, y] tuple arrays.
+    // Same reason as updateData(): Highcharts 11.1.0 line series on a
+    // logarithmic axis can fail to render the SVG path entirely when
+    // given object-format data with certain shapes. Tuples route through
+    // the working code path. Without this, the bug would re-trigger any
+    // time the user reloads the page after a successful Compute.
+    const data1: [number, number][] = firstSeries.map(p => [p.x as number, p.y as number]);
+    const secondSeries = periodogramData[1] as unknown as { x?: number; y?: number }[];
+    const hasData2 = secondSeries && secondSeries.length > 1 && typeof secondSeries[0]?.x === 'number';
+    const data2: [number, number][] | undefined = hasData2
+      ? (secondSeries as { x: number; y: number }[]).map(p => [p.x, p.y])
+      : undefined;
 
+    const channels: [number, number][][] = data2 ? [data1, data2] : [data1];
+
+    channels.forEach((channelData, index) => {
       this.chartObject.addSeries({
         id: `channel-${index}`,
         name: index === 0 ? "Polarization XX" :
               index === 1 ? "Polarization YY" :
               `Channel ${index + 1}`,
         type: "line",
-        data: numericData,
+        data: channelData,
         marker: {
           symbol: "circle",
           radius: 3,
@@ -126,6 +139,14 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
 
     // Add static confidence lines
     this.addConfidenceLines(start, end);
+
+    // Restore the Global Maxima legend entry. It's a derived series
+    // computed from the channel data, not stored separately, so on reload
+    // it would otherwise be missing — even after the channel lines and
+    // confidence lines render. Recompute from the persisted output.
+    const maxima1 = this.findLocalMax(data1);
+    const maxima2 = data2 ? this.findLocalMax(data2) : [];
+    this.addLocalMaxima(maxima1, maxima2);
   }
 
   private findLocalMax(points: [number, number][]): [number, number][] {

@@ -149,42 +149,15 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
     const end = this.service.getPeriodogramEndPeriod();
     const periodogramData = this.service.getChartPeriodogramDataArray(start, end);
 
-    // Update or add channel series
-    let index = 0;
-    Object.entries(periodogramData).forEach(([key, data]) => {
-      const seriesId = `channel-${index}`;
-      const existing = this.chartObject.get(seriesId);
-
-      if (existing) {
-        (existing as Highcharts.Series).setData(data, true);
-      } else {
-        this.chartObject.addSeries({
-          id: seriesId,
-          name: index === 0 ? "Polarization XX" :
-          index === 1 ? "Polarization YY" :
-          `Channel ${index + 1}`,
-          type: "line",
-          data,
-          marker: {
-            symbol: "circle",
-            radius: 3,
-          },
-        });
-      }
-      index++;
-    });
-
-    // Remove excess series if fewer channels now
-    this.chartObject.series
-      .filter((s: any) => s.userOptions.id?.startsWith("channel-"))
-      .slice(index)
-      .forEach((s: any) => s.remove());
-
-    // Update confidence lines
-    this.addConfidenceLines(start, end);
-
+    // Convert lombScargle's {x, y} object output to [x, y] tuple arrays.
+    // On Highcharts 11.1.0 (which is what production runs), line series
+    // given {x, y} object data on a logarithmic x-axis can fail to render
+    // their SVG path entirely for certain data shapes — the series group
+    // exists in the DOM but no path element is created. The tuple format
+    // routes through a different code path internally and renders
+    // reliably. Verified locally against prod's Highcharts version.
     const data1: [number, number][] = periodogramData.data1.map(p => {
-      const obj = p as unknown as { x: number; y: number }; 
+      const obj = p as unknown as { x: number; y: number };
       return [obj.x, obj.y];
     });
     const data2: [number, number][] | undefined = periodogramData.data2
@@ -193,6 +166,40 @@ export class PulsarPeriodogramHighchartsComponent implements AfterViewInit, OnDe
           return [obj.x, obj.y];
         })
       : undefined;
+
+    const channels: [number, number][][] = data2 ? [data1, data2] : [data1];
+
+    // Update or add channel series using the [x, y] tuple format
+    channels.forEach((channelData, index) => {
+      const seriesId = `channel-${index}`;
+      const existing = this.chartObject.get(seriesId);
+
+      if (existing) {
+        (existing as Highcharts.Series).setData(channelData, true);
+      } else {
+        this.chartObject.addSeries({
+          id: seriesId,
+          name: index === 0 ? "Polarization XX" :
+          index === 1 ? "Polarization YY" :
+          `Channel ${index + 1}`,
+          type: "line",
+          data: channelData,
+          marker: {
+            symbol: "circle",
+            radius: 3,
+          },
+        });
+      }
+    });
+
+    // Remove excess series if fewer channels now
+    this.chartObject.series
+      .filter((s: any) => s.userOptions.id?.startsWith("channel-"))
+      .slice(channels.length)
+      .forEach((s: any) => s.remove());
+
+    // Update confidence lines
+    this.addConfidenceLines(start, end);
 
     const maxima1 = this.findLocalMax(data1);
     const maxima2 = data2 ? this.findLocalMax(data2) : [];

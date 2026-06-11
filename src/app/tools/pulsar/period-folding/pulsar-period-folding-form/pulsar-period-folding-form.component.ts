@@ -138,6 +138,16 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
       // [maxValue] Inputs are only read once at construction.
       this.periodRangeSubject.next({ min: this.periodMin, max: this.periodMax });
 
+      // Force a clean CD cycle after the synchronous slider/state mutations
+      // above. Without this, when this subscriber fires from inside an
+      // existing CD-driven chain (upload, compute), Angular's dev-mode
+      // verification pass sees [minValue] / [maxValue] bindings change
+      // mid-cycle and throws NG0100. The Promise.resolve() defers the
+      // detectChanges() to a microtask so it runs after the current CD
+      // pass completes, flushing the new state in a fresh cycle. The
+      // isComputing$ subscriber below uses the same pattern.
+      Promise.resolve().then(() => this.cdr.detectChanges());
+
       if (source !== UpdateSource.INTERFACE) {
         this.periodSubject.next(this.service.getPeriodFoldingPeriod());
         this.phaseSubject.next(this.service.getPeriodFoldingPhase());

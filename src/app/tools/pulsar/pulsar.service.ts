@@ -789,6 +789,11 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         // period-folding tab forever, even after Reset.
         this.setLightCurveOptionValid(true);
 
+        // Reset the table type to 'subtracted'. Without this, if the user
+        // had switched the table to 'raw' on a prior file, that setting
+        // would persist across Reset Tool and into the next uploaded file.
+        this.setTableType('subtracted');
+
         this.dataSubject.next(this.pulsarData);
         this.periodogramDataSubject.next(this.pulsarData);
         this.periodFoldingDataSubject.next(this.pulsarData);

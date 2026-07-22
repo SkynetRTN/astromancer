@@ -75,7 +75,7 @@ export class RadioCalibrateData {
 
     // Compute the output and modify the fields of the output object
     private compute(): RadioCalibrateOutput {
-        if (this.input.startFreq >= this.input.endFreq || this.input.date.getUTCFullYear() < 2000 || this.input.startFreq < 0 || this.input.endFreq < 0) {
+       if (this.input.startFreq >= this.input.endFreq || this.input.date.getUTCFullYear() < 2000 || this.input.startFreq < 0 || this.input.endFreq < 0) {
             return {
                 flux: null,
                 fluxError: null,
@@ -105,21 +105,42 @@ export class RadioCalibrateData {
         let t = this.input.date.getUTCFullYear() + this.input.date.getUTCMonth() / 12 + this.input.date.getUTCDate()/30;
 
         if (this.input.source == RadioCalibrateSources.CAS_A) {
-            t_ref = 2006.9
+            if (1970 > this.input.date.getUTCFullYear()) {
+                logF_0 = 3.3731
+                varianceLogF_0 = 0.0037 ** 2
+                mnu_0 = -0.003884
+                variencemnu_0 = 0.000092 ** 2
+                t_ref = 1963.9
+                }
+            else if (1992 > this.input.date.getUTCFullYear() && this.input.date.getUTCFullYear() > 1970) {
+                logF_0 = 3.3173
+                varianceLogF_0 = 0.0047 ** 2
+                mnu_0 = -0.00227
+                variencemnu_0 = 0.00024 ** 2
+                t_ref = 1983.8
+            }
+            else{
+                logF_0 = 3.2530
+                varianceLogF_0 = 0.0051 ** 2
+                mnu_0 = -0.0035
+                variencemnu_0 = 0.00023 ** 2
+                t_ref = 2006.9
+            }
+            
             t_0 = 2005.64
-            logF_0 = 3.2530
+            
             a_1 = -0.732
             nu_ref = 1477
             a_2 = -0.0094
             a_3 = 0.0053
-            mnu_0 = -0.00350
+            
             mdeltlog = 0.00124
             nu_0 = 1315
-            varianceLogF_0 = 0.0051 ** 2
+            
             variancea_1 = 0.011 ** 2
             variencea_2 = 0.0058 ** 2
             variencea_3 = 0.0058 ** 2
-            variencemnu_0 = 0.00022 ** 2
+            
             variencemdeltlog = 0.00018 ** 2
         } else if (this.input.source == RadioCalibrateSources.CYG_A) {
             t_ref = 0
@@ -131,7 +152,7 @@ export class RadioCalibrateData {
             a_3 = 0.0170
             mnu_0 = 0
             mdeltlog = 0
-            nu_0 = 1 //should be null, just need to avoid dividing by zero -- Math.log(nu / nu_0) will never be zero because nu is never negative or zero
+            nu_0 = 1 //should be null, just need to avoid dividing by zero -- Math.log10(nu / nu_0) will never be zero because nu is never negative or zero
             varianceLogF_0 = 0.0046 ** 2
             variancea_1 = 0.011 ** 2
             variencea_2 = 0.0075 ** 2
@@ -148,7 +169,7 @@ export class RadioCalibrateData {
             a_3 = -0.0275
             mnu_0 = -0.00044
             mdeltlog = 0
-            nu_0 = 1 //should be null, just need to avoid dividing by zero -- Math.log(nu / nu_0) will never be zero because nu is never negative or zero
+            nu_0 = 1 //should be null, just need to avoid dividing by zero -- Math.log10(nu / nu_0) will never be zero because nu is never negative or zero
             varianceLogF_0 = 0.0044 ** 2
             variancea_1 = 0.014 ** 2
             variencea_2 = 0.0081 ** 2
@@ -165,7 +186,7 @@ export class RadioCalibrateData {
             a_3 = -0.073
             mnu_0 = 0
             mdeltlog = 0
-            nu_0 = 1 //should be null, just need to avoid dividing by zero -- Math.log(nu / nu_0) will never be zero because nu is never negative or zero
+            nu_0 = 1 //should be null, just need to avoid dividing by zero -- Math.log10(nu / nu_0) will never be zero because nu is never negative or zero
             varianceLogF_0 = 0.0045 ** 2
             variancea_1 = 0.017 ** 2
             variencea_2 = 0.0031 ** 2
@@ -176,26 +197,27 @@ export class RadioCalibrateData {
 
         // use the trapezoidal rule to aproximate eq 14 -- stepsize 0.001
         let deltax = (this.input.endFreq - this.input.startFreq) / 100000
+
         for (let nu = this.input.startFreq; nu < this.input.endFreq + deltax; nu = nu + deltax) {
             if (nu == this.input.startFreq || nu == this.input.endFreq) {
-                let equation14 = logF_0 + a_1 * Math.log(nu / nu_ref) + a_2 * (Math.log(nu / nu_ref)) ** 2 + a_3 * (Math.log(nu / nu_ref)) ** 3
-                    + (mnu_0 * (t - t_ref) + mdeltlog * (t - t_0) * Math.log(nu / nu_0))
+                let equation14 = logF_0 + a_1 * Math.log10(nu / nu_ref) + a_2 * (Math.log10(nu / nu_ref)) ** 2 + a_3 * (Math.log10(nu / nu_ref)) ** 3
+                    + (mnu_0 * (t - t_ref) + mdeltlog * (t - t_0) * Math.log10(nu / nu_0))
                 // Keeping the temporal component in the equation, since they will drop anyway for all unecessary sources
-                let equation15 = Math.sqrt(varianceLogF_0 + variancea_1 * (Math.log(nu / nu_ref)) ** 2 + variencea_2 * (Math.log(nu / nu_ref)) ** 4
-                    + variencea_3 * (Math.log(nu / nu_ref)) ** 6 + variencemnu_0 * (t - t_ref) ** 2 + variencemdeltlog * (Math.log(nu / nu_0)) ** 2 * (t - t_0) ** 2)
-                let effectiveFreq = nu * 10 ** (logF_0 + a_1 * Math.log(nu / nu_ref) + a_2 * (Math.log(nu / nu_ref)) ** 2 + a_3 * (Math.log(nu / nu_ref)) ** 3
-                    + (mnu_0 * (t - t_ref) + mdeltlog * (t - t_0) * Math.log(nu / nu_0)))
+                let equation15 = Math.sqrt(varianceLogF_0 + variancea_1 * (Math.log10(nu / nu_ref)) ** 2 + variencea_2 * (Math.log10(nu / nu_ref)) ** 4
+                    + variencea_3 * (Math.log10(nu / nu_ref)) ** 6 + variencemnu_0 * (t - t_ref) ** 2 + variencemdeltlog * (Math.log10(nu / nu_0)) ** 2 * (t - t_0) ** 2)
+                let effectiveFreq = nu * 10 ** (logF_0 + a_1 * Math.log10(nu / nu_ref) + a_2 * (Math.log10(nu / nu_ref)) ** 2 + a_3 * (Math.log10(nu / nu_ref)) ** 3
+                    + (mnu_0 * (t - t_ref) + mdeltlog * (t - t_0) * Math.log10(nu / nu_0)))
                 fluxSum += 10 ** (equation14)
                 sigmaFluxSum += 10 ** (equation14 + equation15)
                 effectiveFreqSum += effectiveFreq
             }
             if (this.input.startFreq < nu && nu < this.input.endFreq) {
-                let equation14 = logF_0 + a_1 * Math.log(nu / nu_ref) + a_2 * (Math.log(nu / nu_ref)) ** 2 + a_3 * (Math.log(nu / nu_ref)) ** 3
-                    + (mnu_0 * (t - t_ref) + mdeltlog * (t - t_0) * Math.log(nu / nu_0))
-                let equation15 = Math.sqrt(varianceLogF_0 + variancea_1 * (Math.log(nu / nu_ref)) ** 2 + variencea_2 * (Math.log(nu / nu_ref)) ** 4
-                    + variencea_3 * (Math.log(nu / nu_ref)) ** 6 + variencemnu_0 * (t - t_ref) ** 2 + variencemdeltlog * (Math.log(nu / nu_0)) ** 2 * (t - t_0) ** 2)
-                let effectiveFreq = nu * 10 ** (logF_0 + a_1 * Math.log(nu / nu_ref) + a_2 * (Math.log(nu / nu_ref)) ** 2 + a_3 * (Math.log(nu / nu_ref)) ** 3
-                    + (mnu_0 * (t - t_ref) + mdeltlog * (t - t_0) * Math.log(nu / nu_0)))
+                let equation14 = logF_0 + (a_1 * Math.log10(nu / nu_ref)) + a_2 * (Math.log10(nu / nu_ref)) ** 2 + a_3 * (Math.log10(nu / nu_ref)) ** 3
+                    + (mnu_0 * (t - t_ref) + mdeltlog * (t - t_0) * Math.log10(nu / nu_0))
+                let equation15 = Math.sqrt(varianceLogF_0 + variancea_1 * (Math.log10(nu / nu_ref)) ** 2 + variencea_2 * (Math.log10(nu / nu_ref)) ** 4
+                    + variencea_3 * (Math.log10(nu / nu_ref)) ** 6 + variencemnu_0 * (t - t_ref) ** 2 + variencemdeltlog * (Math.log10(nu / nu_0)) ** 2 * (t - t_0) ** 2)
+                let effectiveFreq = nu * 10 ** (logF_0 + a_1 * Math.log10(nu / nu_ref) + a_2 * (Math.log10(nu / nu_ref)) ** 2 + a_3 * (Math.log10(nu / nu_ref)) ** 3
+                    + (mnu_0 * (t - t_ref) + mdeltlog * (t - t_0) * Math.log10(nu / nu_0)))
                 fluxSum += 10 ** (equation14) * 2
                 // adding equation 14 to 15 gives us the value of the flux one sigma above the average -- our method of getting uncertainty
                 sigmaFluxSum += 10 ** (equation14 + equation15) * 2

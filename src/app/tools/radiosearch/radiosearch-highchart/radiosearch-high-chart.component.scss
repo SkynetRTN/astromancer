@@ -1,11 +1,42 @@
+@import "src/styles.scss";
+
 .chart-container {
   width: 100%;
-  height: 100%; 
-  padding-bottom: 5%;
+  height: 100%;
 }
 
-::ng-deep .highcharts-series-2 path.highcharts-graph {
-  stroke-dasharray: 5, 5; /* Dash pattern: 5 units line, 5 units gap */
-  stroke: #5dbc5d;       /* Ensure the line color matches */
-  stroke-width: 1;       /* Ensure this matches your chart options */
+// The "Target Frequency" marker is series index 2 (see SERIES_TARGET). The
+// chart runs in styledMode, so dash pattern and colour have to come from CSS -
+// series options for these are ignored.
+//
+// Note the :host prefix: without it, ::ng-deep leaks this rule to every
+// Highcharts chart in the application for the rest of the session.
+:host ::ng-deep .highcharts-series-2 path.highcharts-graph {
+  stroke-dasharray: 5, 5;
+  stroke-width: 1;
+}
+
+:host ::ng-deep .simbad-link {
+  text-decoration: underline;
+}
+
+.LIGHT_THEME {
+  :host ::ng-deep .highcharts-series-2 path.highcharts-graph {
+    stroke: map_get($light-primary, 600);
+  }
+
+  :host ::ng-deep .simbad-link {
+    color: map_get($light-primary, 700);
+  }
+}
+
+.DARK_THEME,
+.HC_DARK_THEME {
+  :host ::ng-deep .highcharts-series-2 path.highcharts-graph {
+    stroke: map_get($dark-primary, 300);
+  }
+
+  :host ::ng-deep .simbad-link {
+    color: map_get($dark-primary, 200);
+  }
 }

@@ -3,6 +3,11 @@ import * as Highcharts from 'highcharts';
 import { RadioSearchHighChartService } from '../radiosearch.service';
 import { Subject, takeUntil } from 'rxjs';
 
+/** Series slots, created once and thereafter updated in place. */
+const SERIES_ACTUAL = 0;
+const SERIES_FIT = 1;
+const SERIES_TARGET = 2;
+
 @Component({
   selector: 'app-radiosearch-highchart',
   templateUrl: './radiosearch-high-chart.component.html',
@@ -11,7 +16,7 @@ import { Subject, takeUntil } from 'rxjs';
 export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
   Highcharts: typeof Highcharts = Highcharts;
   updateFlag: boolean = true;
-  paramData: any = null;
+  paramData: [number, string, string][] | null = null;
 
   chartConstructor: string = "chart";
   chartObject!: Highcharts.Chart;
@@ -22,14 +27,21 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
       styledMode: true,
     },
     title: {
-      useHTML: true  // Allow HTML in the chart title
+      useHTML: true  // the title carries a SIMBAD link
     },
     legend: {
       align: 'center',
     },
+    credits: {
+      enabled: false,
+    },
     tooltip: {
       enabled: true,
-      shared: true,
+      // Not shared: the target-frequency series is a two-point vertical marker,
+      // and a shared tooltip pulls its endpoints in alongside the real data.
+      shared: false,
+      headerFormat: '<span class="highcharts-header">{series.name}</span><br/>',
+      pointFormat: '{point.x:.1f} MHz, {point.y:.3f} Jy',
     },
     exporting: {
       buttons: {
@@ -39,20 +51,12 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
       }
     },
     xAxis: {
-      type: 'logarithmic', // Log scale for x-axis
-      title: {
-        text: 'Frequency (Hz)'
-      },
-      min: 0.1
+      type: 'logarithmic',
     },
     yAxis: {
-      type: 'logarithmic', // Log scale for y-axis
-      title: {
-        text: 'Flux Density (Jy)'
-      }
+      type: 'logarithmic',
     }
   };
-
 
   private destroy$: Subject<any> = new Subject<any>();
 
@@ -68,23 +72,21 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.setChartSeries();
+    this.initSeries();
 
-    // React to chart information changes
     this.service.chartInfo$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
-      // this.setChartYAxis();
       this.setChartXAxis();
+      this.setChartYAxis();
       this.setChartTitle();
       this.updateChart();
     });
 
-    // React to data changes
     this.service.data$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
-      this.animateSeriesUpdate();
+      this.updateSeries();
     });
   }
 
@@ -98,171 +100,136 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
   }
 
   private setChartTitle(): void {
-    // const titleText = this.service.getChartTitle(); // Get the full title text
-    const titleText = 'Results for Radio Source'
+    const titleText = this.service.getChartTitle();
 
-    let linkText = '';
-    let hyperlink = '';
+    let clickablePart = '';
 
-    if (this.paramData) {
-        linkText = this.paramData[0][1] + ' ' + this.paramData[0][2]; 
-        hyperlink = `https://simbad.cds.unistra.fr/simbad/sim-id?Ident=${this.paramData[0][1] + this.paramData[0][2]}&NbIdent=1&Radius=2&Radius.unit=arcmin&submit=submit+id`; 
+    if (this.paramData?.[0]) {
+      const [, catalog, identifier] = this.paramData[0];
+      const linkText = `${catalog} ${identifier}`.trim();
+
+      if (linkText) {
+        const ident = encodeURIComponent(`${catalog} ${identifier}`.trim());
+        const hyperlink = `https://simbad.cds.unistra.fr/simbad/sim-id?Ident=${ident}`
+          + `&NbIdent=1&Radius=2&Radius.unit=arcmin&submit=submit+id`;
+        clickablePart = ` <a class="simbad-link" href="${hyperlink}" target="_blank"`
+          + ` rel="noopener">${linkText}</a>`;
+      }
     }
 
-    const clickablePart = linkText
-        ? ` <a href="${hyperlink}" target="_blank" style="text-decoration: underline; color: teal;">${linkText}</a>`
-        : '';
-
     this.chartOptions.title = {
-        text: `${titleText}${clickablePart}`,
-        useHTML: true
+      text: `${titleText}${clickablePart}`,
+      useHTML: true
     };
   }
 
+  /**
+   * Create the three series once.
+   *
+   * These used to be destroyed and re-added on every data emission, which is
+   * what made the redraw look jumpy and forced the explicit animation blocks.
+   */
+  private initSeries(): void {
+    if (!this.chartObject) {
+      return;
+    }
 
-  private setChartSeries(): void {
-    const frequencyFluxData = this.processData(this.service.getDataArray());
-
-    // Clear any existing series before adding a new one
-    if (this.chartObject && this.chartObject.series.length > 0) {
+    while (this.chartObject.series.length) {
       this.chartObject.series[0].remove(false);
     }
 
-    // Add a new series with animation enabled
-    this.chartObject?.addSeries({
-      name: "Frequency vs Flux",
+    this.chartObject.addSeries({
+      name: 'Actual',
+      type: 'scatter',
+      data: [],
+      marker: { enabled: true, symbol: 'circle', radius: 4 },
+    }, false);
+
+    this.chartObject.addSeries({
+      name: 'Fit',
       type: 'line',
-      data: frequencyFluxData,
-      marker: {
-        enabled: true,
-        symbol: 'circle',
-        radius: 4
-      },
-      animation: {
-        duration: 2000,  // 2 seconds duration for drawing the line
-        easing: 'easeOut'
-      }
-    }, true);
+      data: [],
+      marker: { enabled: false },
+    }, false);
+
+    this.chartObject.addSeries({
+      name: 'Target Frequency',
+      type: 'line',
+      data: [],
+      marker: { enabled: false },
+    }, false);
+
+    this.chartObject.redraw();
   }
 
-
-  private animateSeriesUpdate(): void {
-    // Clear all existing series before adding the new data
-    while (this.chartObject?.series.length) {
-        this.chartObject.series[0].remove(false); // Remove each series without redrawing yet
+  private updateSeries(): void {
+    if (!this.chartObject || this.chartObject.series.length < 3) {
+      this.initSeries();
+      if (!this.chartObject) {
+        return;
+      }
     }
 
     const frequencyFluxData = this.processData(this.service.getDataArray());
     this.paramData = this.processParamData(this.service.getParamDataArray());
 
-    // Separate data points for y (actual) and fit (line of best fit)
-    const actualData = frequencyFluxData.map((point) => ({
-        x: point[0],
-        y: point[1]
-    }));
-
+    const actualData = frequencyFluxData.map((point) => ({ x: point[0], y: point[1] }));
     const fitData = frequencyFluxData.map((point) => ({
-        x: point[0],
-        y: point[2]
+      x: point[0],
+      y: parseFloat(point[2].toFixed(1)),
     }));
 
     // On initial load (and any time the user hasn't selected a source yet),
-    // actualData and paramData are both empty after the > 0 filters. Bail
-    // out cleanly instead of crashing on paramData[0][0] / dividing by an
-    // empty Math.min/max.
+    // actualData and paramData are both empty after the > 0 filters. Clear the
+    // series instead of crashing on paramData[0][0] or an empty Math.min/max.
     if (actualData.length === 0 || !this.paramData[0]) {
-        this.chartObject?.redraw();
-        return;
+      this.chartObject.series[SERIES_ACTUAL].setData([], false);
+      this.chartObject.series[SERIES_FIT].setData([], false);
+      this.chartObject.series[SERIES_TARGET].setData([], false);
+      this.setChartTitle();
+      this.chartObject.redraw();
+      return;
     }
 
-    // Calculate the minimum and maximum y coordinates from actualData
-    const minY = Math.min(...actualData.map((point) => point.y));
-    const maxY = Math.max(...actualData.map((point) => point.y));
+    const yValues = actualData.map((point) => point.y);
+    const minY = Math.min(...yValues);
+    const maxY = Math.max(...yValues);
 
-    // Get the x coordinate from the first value in paramData
-    const xCoordinate = this.paramData[0][0];
-
-    // Create the fitLine array with two points
-    const fitLine = [
-        { x: Number(xCoordinate.toFixed(3)), y: Number((minY * 1000).toFixed(3)) },
-        { x: Number(xCoordinate.toFixed(3)), y: Number((maxY / 1000).toFixed(3)) }
+    const targetFrequency = this.paramData[0][0];
+    const targetLine = [
+      { x: Number(targetFrequency.toFixed(3)), y: Number((minY * 1000).toFixed(3)) },
+      { x: Number(targetFrequency.toFixed(3)), y: Number((maxY / 1000).toFixed(3)) },
     ];
 
-    const filteredActualData = actualData.filter(point => point.x !== this.paramData[0][0]);
+    // The interpolated point sits on the target frequency; it is drawn by the
+    // marker series rather than duplicated in the measured data.
+    const measuredData = actualData.filter((point) => point.x !== targetFrequency);
 
-    // Determine whether to enable animation based on data length
-    const enableAnimation = actualData.length > 1;
+    this.chartObject.series[SERIES_ACTUAL].setData(measuredData, false);
+    this.chartObject.series[SERIES_FIT].setData(fitData, false);
+    this.chartObject.series[SERIES_TARGET].setData(targetLine, false);
 
-    // Add the actual data series (scatter)
-    this.chartObject?.addSeries({
-        name: "Actual",
-        type: 'scatter',
-        data: filteredActualData,
-        marker: {
-            enabled: true,
-            symbol: 'circle',
-            radius: 4,
-            fillColor: '#007bff'
-        },
-        lineWidth: 1,
-        animation: enableAnimation ? { duration: 2000, easing: 'easeOut' } : false 
-    }, false);
+    // Set extremes on the axis rather than replacing chartOptions.yAxis - the
+    // old code assigned a fresh literal that dropped `type: 'logarithmic'`,
+    // silently turning the axis linear once data arrived.
+    this.chartObject.yAxis[0].setExtremes(minY * 0.8, maxY * 1.05, false);
 
-    // Round the y values in fitData to 1 decimal place
-    const roundedFitData = fitData.map(point => ({
-      x: point.x,
-      y: parseFloat(point.y.toFixed(1)) 
-    }));
-
-    // Add the fit data series (scatter for the fit)
-    this.chartObject?.addSeries({
-      name: "Fit",
-      type: 'line',
-      data: roundedFitData,
-      marker: {
-          enabled: false
-      },
-      lineWidth: 1,
-      animation: enableAnimation ? { duration: 2000, easing: 'easeOut' } : false // Disable animation if only 1 point
-    }, false);
-
-    // Add the fit line series (dashed line)
-    this.chartObject?.addSeries({
-        name: "Target Frequency",
-        type: 'line',
-        data: fitLine,
-        marker: {
-            enabled: false
-        },
-        lineWidth: 0.5,
-        dashStyle: 'Dash',
-        animation: enableAnimation ? { duration: 2000, easing: 'easeOut' } : false // Disable animation if only 1 point
-    }, false); 
-
-    // Update y-axis range
-    this.chartOptions.yAxis = {
-        title: { text: this.service.getYAxisLabel() },
-        min: Math.min(...actualData.map(point => point.y)) * 0.8,
-        max: Math.max(...actualData.map(point => point.y)) * 1.05
-    };
-
-    // Apply chart updates and force a single redraw
-    this.chartObject?.update(this.chartOptions, false); // Update chart options without redrawing
-    this.chartObject?.redraw(); // Perform a single redraw
-}
-
+    this.setChartTitle();
+    this.chartObject.update({ title: this.chartOptions.title }, false);
+    this.chartObject.redraw();
+  }
 
   private setChartXAxis(): void {
     this.chartOptions.xAxis = {
       title: { text: this.service.getXAxisLabel() },
-      type: 'logarithmic', // Set x-axis to logarithmic scale
+      type: 'logarithmic',
     };
   }
-  
+
   private setChartYAxis(): void {
     this.chartOptions.yAxis = {
       title: { text: this.service.getYAxisLabel() },
-      type: 'logarithmic', // Set y-axis to logarithmic scale
+      type: 'logarithmic',
     };
   }
 
@@ -272,12 +239,11 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
     }).sort((a: number[], b: number[]) => {
       return a[0] - b[0];
     });
-  }  
+  }
 
   private processParamData(data: [number, string, string][]): [number, string, string][] {
-    return data.filter(([targetFreq, catalog, identifier]) => {
-      return targetFreq > 0; // Only filter based on number
+    return data.filter(([targetFreq]) => {
+      return targetFreq > 0;
     }).sort(([a], [b]) => a - b);
   }
-  
 }

@@ -45,16 +45,31 @@ export class PulsarComponent implements OnInit, OnDestroy {
     // getPeriodFoldingChartData() only includes `data2` when source2 is present.
     const source2Series = data['data2'];
     if (!source2Series || source2Series.length === 0) {
-      this.lightCurveFormValid = false;
-      this.pulsarTabindex = 2;
+      this.lockToPeriodFolding();
       return;
     }
 
     const sum = source2Series.reduce((total, pair) => total + pair[1], 0);
     if (sum === 0) {
-      this.lightCurveFormValid = false;
-      this.pulsarTabindex = 2;
+      this.lockToPeriodFolding();
     }
+  }
+
+  /**
+   * A single-polarisation file can only be period-folded, so disable the other
+   * tabs and move the user there.
+   *
+   * Writes through the service rather than assigning the two fields directly.
+   * Assigning locally left the component and the persisted state disagreeing:
+   * the visible tab was 2 while storage still held the old index, and the
+   * light-curve flag read false here while `pulsarInterface` still said true -
+   * so a refresh dropped you somewhere else with the tabs re-enabled. The
+   * lightCurveOptionValid$ / tabIndex$ subscriptions in the constructor feed
+   * both values back into this component.
+   */
+  private lockToPeriodFolding(): void {
+    this.service.setLightCurveOptionValid(false);
+    this.service.setTabIndex(2);
   }
 
   ngOnDestroy(): void {

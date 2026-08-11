@@ -148,10 +148,19 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
       // isComputing$ subscriber below uses the same pattern.
       Promise.resolve().then(() => this.cdr.detectChanges());
 
+      // Push every slider-backed value, not just some of them. The narrow
+      // (max-width: 901px) layout renders Speed and Bins as my-input-slider
+      // bound to these subjects, and standard (non-cal) files use a slider for
+      // Speed in both layouts - so omitting them left those sliders showing
+      // stale numbers after a reset while the service already held the
+      // defaults. The matInput variants are patched by the setValue calls
+      // above, which is why this only showed up in some layouts.
       if (source !== UpdateSource.INTERFACE) {
         this.periodSubject.next(this.service.getPeriodFoldingPeriod());
         this.phaseSubject.next(this.service.getPeriodFoldingPhase());
         this.calSubject.next(this.service.getPeriodFoldingCal());
+        this.speedSubject.next(this.service.getPeriodFoldingSpeed());
+        this.binsSubject.next(this.service.getPeriodFoldingBins());
       };
     });
     this.service.isComputing$.pipe(
@@ -212,7 +221,10 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
   }
 
   resetPulsar() {
-    this.service.resetPeriodFoldingForm();
+    // Full period-folding reset, not the cosmetic one: the data is going back
+    // to defaults, so the folding period and slider bounds derived from the
+    // previous file must go with it.
+    this.service.resetPeriodFolding();
     this.service.resetChartInfo();
     this.service.resetPeriodogram();
     // Clear the persisted periodogram trace so the chart comes back empty

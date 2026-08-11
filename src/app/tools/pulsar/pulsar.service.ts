@@ -253,18 +253,43 @@ export class PulsarService implements MyData, PulsarInterface, ChartInfo, Pulsar
         this.periodFoldingDataSubject.next(this.pulsarData);
     }
 
+    /**
+     * Cosmetic reset: titles, labels, phase, cal, speed, bins, displayPeriod.
+     *
+     * Deliberately preserves the analytical state — the folding period (from
+     * P_topo or the periodogram peak) and the slider bounds (Nyquist…10s,
+     * derived from the data). Those describe the loaded observation, not the
+     * form's presentation, so Reset Form should leave them alone.
+     *
+     * Use {@link resetPeriodFolding} for a full wipe.
+     */
     resetPeriodFoldingForm(): void {
-        // Preserve the analytical state — folding period (from P_topo or
-        // periodogram peak) and slider bounds (Nyquist…10s from the data).
-        // Reset Form is a cosmetic reset (titles, labels, phase, cal,
-        // speed, bins, displayPeriod). Reset Tool still wipes everything.
         const preservedPeriod = this.pulsarPeriodFolding.getPeriodFoldingPeriod();
         const preservedMin = this.pulsarPeriodFolding.getPeriodFoldingPeriodMin();
         const preservedMax = this.pulsarPeriodFolding.getPeriodFoldingPeriodMax();
-        this.pulsarPeriodFolding.setPeriodFoldingStorageObject(PulsarPeriodFolding.getDefaultStorageObject());
+        this.applyPeriodFoldingDefaults();
         this.pulsarPeriodFolding.setPeriodFoldingPeriod(preservedPeriod);
         this.pulsarPeriodFolding.setPeriodFoldingPeriodMin(preservedMin);
         this.pulsarPeriodFolding.setPeriodFoldingPeriodMax(preservedMax);
+        this.commitPeriodFoldingReset();
+    }
+
+    /**
+     * Full reset, including the folding period and slider bounds.
+     *
+     * This is what Reset Tool needs: the data is going back to defaults, so a
+     * period derived from the previous file must not survive alongside it.
+     */
+    resetPeriodFolding(): void {
+        this.applyPeriodFoldingDefaults();
+        this.commitPeriodFoldingReset();
+    }
+
+    private applyPeriodFoldingDefaults(): void {
+        this.pulsarPeriodFolding.setPeriodFoldingStorageObject(PulsarPeriodFolding.getDefaultStorageObject());
+    }
+
+    private commitPeriodFoldingReset(): void {
         this.pulsarStorage.savePeriodFolding(this.pulsarPeriodFolding.getPeriodFoldingStorageObject());
         this.periodFoldingFormSubject.next(UpdateSource.RESET);
         this.periodFoldingDataSubject.next(this.pulsarData);

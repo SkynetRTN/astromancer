@@ -49,9 +49,22 @@ export class PulsarPeriodogramFormComponent implements OnDestroy {
       this.service.setPeriodogramYAxisLabel(label);
     });
 
-    // dataLabel, numPoints, and methodLS are applied only when the user
-    // clicks Compute (see compute() below); they intentionally do not have
-    // valueChanges subscriptions like the labels above.
+    // dataLabel and numPoints are only *applied to the computation* when the
+    // user clicks Compute (see compute() below) - the drawn periodogram does
+    // not change until then. They are still persisted on edit, though, so a
+    // value typed and then left unread survives a refresh instead of silently
+    // reverting. This mirrors startPeriod/endPeriod/methodLS below.
+    this.formGroup.controls['numPoints'].valueChanges.pipe(
+      debounceTime(700),
+    ).subscribe((points: number) => {
+      this.service.setPeriodogramPoints(points);
+    });
+
+    this.formGroup.controls['dataLabel'].valueChanges.pipe(
+      debounceTime(700),
+    ).subscribe((label: string) => {
+      this.service.setPeriodogramDataLabel(label);
+    });
 
     this.formGroup.controls['startPeriod'].valueChanges.pipe(
       debounceTime(700),
@@ -104,9 +117,16 @@ export class PulsarPeriodogramFormComponent implements OnDestroy {
       this.formGroup.controls['numPoints'].setValue(this.service.getPeriodogramPoints(), {emitEvent: false});
       this.formGroup.controls['methodLS'].setValue(this.service.getPeriodogramMethod(), {emitEvent: false});
 
+      // The axis labels belong here too. Without them, a reset that originates
+      // outside this form - resetPeriodogram() called from Reset Tool - updated
+      // the service but left these two inputs showing the old text. It only
+      // looked harmless because that path reloads the page immediately after.
+      this.formGroup.controls['xAxisLabel'].setValue(this.service.getPeriodogramXAxisLabel(), {emitEvent: false});
+      this.formGroup.controls['yAxisLabel'].setValue(this.service.getPeriodogramYAxisLabel(), {emitEvent: false});
+
       this.formGroup.controls['chartTitle'].setValue(
         this.service.getPeriodogramTitle(),
-        { emitEvent: false } 
+        { emitEvent: false }
       );
     });
   }
@@ -147,11 +167,12 @@ export class PulsarPeriodogramFormComponent implements OnDestroy {
   }
 
   resetForm() {
-    this.formGroup.patchValue({
-      chartTitle: 'Title',
-      xAxisLabel: 'Period (s)',
-      yAxisLabel: 'Intensity',
-    });
+    // Reset the service; the periodogramForm$ subscriber above patches every
+    // control back from it. The form used to patchValue chartTitle/xAxisLabel/
+    // yAxisLabel with hardcoded literals first, which duplicated the defaults
+    // in a second place and - because that patch emitted - had the debounced
+    // valueChanges subscribers write those literals back to the service after
+    // the reset had already run.
     this.service.resetPeriodogram();
 
     this.service.setPeriodogramStartPeriodLabel("Start Period (s)");

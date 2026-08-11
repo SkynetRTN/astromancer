@@ -21,6 +21,65 @@ export interface Source {
   dec: number;   // Declination (in degrees)
 }
 
+/**
+ * One object as returned by POST /radiosearch/radio-catalog/query.
+ *
+ * This mirrors the backend wire format exactly - the single-letter keys
+ * L/S/C/X are the 1400/2695/5000/8400 MHz survey bands. Do not rename them.
+ * Every flux field is optional; the component maps absent ones to 'Unknown'.
+ */
+export interface RadioCatalogObject {
+  SIMBAD?: string;
+  id: number;
+  ra: number;
+  dec: number;
+  galLat: number;
+  galLong: number;
+  catalog: string;
+  identifier: string;
+  MHz38?: number;
+  MHz159?: number;
+  MHz178?: number;
+  MHz750?: number;
+  L?: number;
+  S?: number;
+  C?: number;
+  X?: number;
+}
+
+export interface RadioCatalogResponse {
+  objects: RadioCatalogObject[];
+}
+
+/** A catalogue source's sky position, as used for the canvas overlay. */
+export interface CatalogSource {
+  name: string;
+  id: number;
+  ra: number;
+  dec: number;
+  galLat: number;
+  galLong: number;
+  catalog: string;
+  identifier: string;
+}
+
+/**
+ * The eight survey fluxes for one source. `'Unknown'` is the sentinel the
+ * component substitutes for a missing band, preserved from the original.
+ */
+export interface SourceFluxes {
+  name: string;
+  id: number | 'Unknown';
+  MHz38: number | 'Unknown';
+  MHz159: number | 'Unknown';
+  MHz178: number | 'Unknown';
+  MHz750: number | 'Unknown';
+  L1400: number | 'Unknown';
+  S2695: number | 'Unknown';
+  C5000: number | 'Unknown';
+  X8400: number | 'Unknown';
+}
+
 export interface RadioSearchParamDataDict {
   targetFreq: number | null;
   catalog: string | null;
@@ -102,8 +161,6 @@ export class RadioSearchChartInfo implements ChartInfo {
 
 // Class for managing data
 export class RadioSearchData implements MyData {
-  private frequencyData: number[] = [];
-  private fluxData: number[] = [];
   private radioSearchDataDict: RadioSearchDataDict[] = [];
   private radioSearchParamDataDict: RadioSearchParamDataDict[] = [];
 
@@ -116,11 +173,6 @@ export class RadioSearchData implements MyData {
   public static getDefaultDataAsArray(): RadioSearchDataDict[] {
     return [
       { frequency: null, flux: null, flux_fit: null },
-      // { frequency: 159, flux: 1500, flux_fit: 1601 },
-      // { frequency: 178, flux: 1534, flux_fit: 1556 },
-      // { frequency: 1491.5, flux: 1300, flux_fit: 908 },
-      // { frequency: 1400, flux: 930, flux_fit: 922 },
-      // { frequency: 5000, flux: 680, flux_fit: 668 }
     ];
   }
 
@@ -128,13 +180,6 @@ export class RadioSearchData implements MyData {
     return [
       { targetFreq: null, catalog: null, identifier: null}
     ];
-  }
-
-  public static getDefaultData(): { frequency: number[], flux: number[] } {
-    return {
-      frequency: [100, 200, 300, 400, 500],
-      flux: [1.5, 2.0, 2.5, 3.0, 3.5]
-    };
   }
 
   // Retrieve data as a RadioSearchDataDict[]
@@ -146,7 +191,7 @@ export class RadioSearchData implements MyData {
     return this.radioSearchParamDataDict;
   }
 
-  // Retrieve data as an array of [frequency, flux] pairs
+  // Retrieve data as an array of [frequency, flux, flux_fit] triples
   public getDataArray(): number[][] {
     return this.radioSearchDataDict.map(({ frequency, flux, flux_fit }) => [frequency, flux, flux_fit] as [number, number, number]);
   }
@@ -161,8 +206,6 @@ export class RadioSearchData implements MyData {
   // every time the service was instantiated (i.e. every navigation to the tool).
   public setData(data: RadioSearchDataDict[]): void {
     this.radioSearchDataDict = data;
-    this.frequencyData = data.map(item => item.frequency!);
-    this.fluxData = data.map(item => item.flux!);
   }
 
   public setParamData(data: RadioSearchParamDataDict[]): void {

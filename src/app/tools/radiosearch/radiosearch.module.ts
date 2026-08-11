@@ -1,27 +1,21 @@
 import {NgModule} from "@angular/core";
-import {RadioSearchComponent} from "./radiosearch.component";
-import {RadioSearchService} from "./radiosearch.service";
-import {SimpleDataButtonModule} from "../shared/simple-data-button/simple-data-button.component";
-import {SimpleGraphButtonModule} from "../shared/simple-graph-button/simple-graph-button.component"
-import {HotTableModule} from "@handsontable/angular";
-import {HighchartsChartModule} from "highcharts-angular";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {MatSliderModule} from "@angular/material/slider";
-import {CommonModule, NgIf} from "@angular/common";
-import {InterfaceUtilModule} from "../shared/interface/util";
+import {CommonModule} from "@angular/common";
 import {RouterModule, Routes} from "@angular/router";
+import {FormsModule} from "@angular/forms";
+import {HighchartsChartModule} from "highcharts-angular";
+import {MatButtonModule} from "@angular/material/button";
 import {MatDialogModule} from "@angular/material/dialog";
 import {MatFormFieldModule} from "@angular/material/form-field";
-import {MatInputModule} from "@angular/material/input";
-import {MatButtonModule} from "@angular/material/button";
-import {MatTableModule} from '@angular/material/table'; 
-import {MatIconModule} from '@angular/material/icon';
-import {MatSortModule} from '@angular/material/sort';
-import {MatSelectModule} from '@angular/material/select';
-import {MatOptionModule} from '@angular/material/core';
-import {RadioSearchHighChartComponent} from "./radiosearch-highchart/radiosearch-high-chart.component";
-import {RadioSearchHighChartService} from "./radiosearch.service";
+import {MatIconModule} from "@angular/material/icon";
+import {MatOptionModule} from "@angular/material/core";
+import {MatSelectModule} from "@angular/material/select";
+import {MatSliderModule} from "@angular/material/slider";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
+import {RadioSearchComponent} from "./radiosearch.component";
+import {RadioSearchHighChartComponent} from "./radiosearch-highchart/radiosearch-high-chart.component";
+import {DialogContent} from "./dialogContent.component";
+import {RadioSearchHighChartService, RadioSearchService} from "./radiosearch.service";
 
 const routes: Routes = [
   {path: '', component: RadioSearchComponent, title: 'Radio Sources'}
@@ -31,28 +25,21 @@ const routes: Routes = [
   declarations: [
     RadioSearchComponent,
     RadioSearchHighChartComponent,
+    DialogContent,
   ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    SimpleDataButtonModule,
-    SimpleGraphButtonModule,
-    InterfaceUtilModule,
-    HotTableModule,
+    FormsModule,
     HighchartsChartModule,
+    MatButtonModule,
+    MatDialogModule,
     MatFormFieldModule,
-    MatInputModule,
-    MatTableModule,
-    MatIconModule, 
-    MatSortModule,
+    MatIconModule,
     MatOptionModule,
     MatSelectModule,
-    ReactiveFormsModule,
     MatSliderModule,
-    FormsModule,
-    NgIf,
-    MatDialogModule,
-    MatButtonModule,
+    MatTooltipModule,
   ],
   exports: [RadioSearchComponent, RouterModule, RadioSearchHighChartComponent],
   providers: [RadioSearchService, RadioSearchHighChartService],

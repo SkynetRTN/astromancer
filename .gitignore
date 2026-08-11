@@ -44,3 +44,9 @@ Thumbs.db
 
 # Compodoc
 documentation
+
+# Local-only (not for commit)
+CLAUDE.local.md
+/test-data
+/dist-prod
+radio-cartographer-fits-header-spec.md

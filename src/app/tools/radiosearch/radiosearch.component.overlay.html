@@ -6,9 +6,9 @@
   (dragleave)="onDragLeave()"
   (drop)="onFileDrop($event)">
     <!-- Upload Container -->
-    <div class="left-container upload-panel" *ngIf="!fitsLoaded">
+    <div class="left-container" *ngIf="!fitsLoaded">
       <div class="prompt-container">
-        <div class="row drop-zone">
+        <div class="row drop-zone" clusterDragNDrop>
           <div (click)="fileInput.click()" class="click-zone">
             <h3 class="big-title">Drop to Upload</h3>
             <mat-icon class="big-icon">upload</mat-icon>
@@ -22,20 +22,14 @@
 
     <!-- Canvas Container with Coordinates and Download Button -->
     <div class="left-container">
-      <canvas #fitsCanvas [ngStyle]="{'opacity': ra ? 1 : 0}" id="fitsCanvas"
-              [class.grabbable]="fitsLoaded"></canvas>
+      <canvas #fitsCanvas [ngStyle]="{'opacity': ra ? 1 : 0}" id="fitsCanvas"></canvas>
 
       <div class="color-map" [ngStyle]="{'opacity': ra ? 1 : 0}">
-        <select id="menu" [(ngModel)]="selectedColorMap" (ngModelChange)="onAppearanceChange()">
-          <option *ngFor="let option of colorMapOptions" [value]="option.value">{{ option.label }}</option>
+        <select id="menu" [(ngModel)]="selectedColorMap" (ngModelChange)="updateFitsImage()" style="width: 6.5vw;">
+          <option value="turbo">Turbo</option>
+          <option value="sls">SLS</option>
+          <option value="rainbow">Rainbow</option>
         </select>
-        <select id="stretch" [(ngModel)]="selectedStretch" (ngModelChange)="onAppearanceChange()">
-          <option *ngFor="let option of stretchOptions" [value]="option.value">{{ option.label }}</option>
-        </select>
-      </div>
-
-      <div class="reset-view-container" [ngStyle]="{'opacity': ra ? 1 : 0}">
-        <button type="button" (click)="resetView()" title="Reset pan and zoom">Reset view</button>
       </div>
 
       <div class="ra-slider-container" [ngStyle]="{'opacity': ra ? 1 : 0}">
@@ -58,9 +52,16 @@
       
       <div class="max-slider-container" [ngStyle]="{'opacity': ra ? 1 : 0}">
         <label for="maxValue">Scale: {{ 200 * maxValue | number:'1.0-0' }}%</label>
-        <input id="maxValue" type="range"
-               min="0" max="1" step="0.01" [(ngModel)]="maxValue"
-               (input)="onAppearanceChange()">
+        <input id="maxValue" type="range" 
+               min="0" max="1" step="0.01" [(ngModel)]="maxValue" 
+               (input)="updateFitsImage()">
+      </div>
+
+      <div class="zoom-slider-container" [ngStyle]="{'opacity': ra ? 1 : 0}">
+        <label for="zoom">Zoom: {{ zoomLevel | number:'1.0-0' }}%</label>
+        <input id="zoom" type="range" 
+               min="10" max="150" step="1" [(ngModel)]="zoomLevel" 
+               (input)="updateFitsImage()">
       </div>
 
       <!-- Coordinates Display -->
@@ -71,7 +72,7 @@
       
       <!-- Download Button Display -->
       <div class="download-button-container" [ngStyle]="{'opacity': fitsLoaded ? 1 : 0}">
-        <button (click)="fitsLoaded ? saveCanvas() : noUpload()">Download</button>
+        <button (click)="saveCanvas()">Download</button>
       </div>
 
       <div class="delete-button-container" [ngStyle]="{'opacity': fitsLoaded ? 1 : 0}">
@@ -85,7 +86,7 @@
         </span>
         <button 
           (click)="fitsLoaded ? querySIMBAD() : noUpload()" 
-          color="primary" 
+          color="'primary'" 
           style="border-radius: 3px; margin-left: 10px;" 
           mat-raised-button>
           Query
@@ -105,7 +106,7 @@
       <div class="new-fits-button-container">
         <button 
           (click)="fitsLoaded ? saveFITS() : noUpload()" 
-          color="primary" 
+          color="'primary'" 
           style="border-radius: 3px;" 
           mat-raised-button>
           Save
@@ -134,7 +135,7 @@
     <div class="button-container">
       <button 
         (click)="fitsLoaded ? saveGraph() : noUpload()" 
-        color="primary" 
+        color="'primary'" 
         style="border-radius: 3px" 
         mat-raised-button>Save Graph</button>
     </div>

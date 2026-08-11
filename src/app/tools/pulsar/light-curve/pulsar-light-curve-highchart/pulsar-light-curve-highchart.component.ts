@@ -20,11 +20,16 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
   chartObject!: Highcharts.Chart;
   updateFlag: boolean = true;
 
+  // Seeded from the service, not from literals. These were hardcoded, and
+  // because updateChartOptions() / updateChartData() stamp them onto the chart
+  // on every data emission, custom labels were overwritten by any ordinary
+  // data update - and so never survived a refresh either. refreshLabels()
+  // keeps them current.
   chartTitle: string = this.pulsarService.getChartTitle();
-  xAxisLabel: string = 'Time (s)';
-  yAxisLabel: string = 'Intensity';
-  dataLabel1: string = 'Polarization XX';
-  dataLabel2: string = 'Polarization YY';
+  xAxisLabel: string = this.pulsarService.getXAxisLabel();
+  yAxisLabel: string = this.pulsarService.getYAxisLabel();
+  dataLabel1: string = this.pulsarService.getDataLabelArray()[0];
+  dataLabel2: string = this.pulsarService.getDataLabelArray()[1];
 
   chartOptions: Highcharts.Options = {
     chart: {
@@ -128,8 +133,25 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
     this.updateChartOptions();
   }
 
+  /**
+   * Pull the current labels off the service.
+   *
+   * Called before anything stamps them onto the chart, so a label edited in
+   * the chart-info dialog is reflected instead of being reverted to the value
+   * captured when this component was constructed.
+   */
+  private refreshLabels(): void {
+    this.chartTitle = this.pulsarService.getChartTitle();
+    this.xAxisLabel = this.pulsarService.getXAxisLabel();
+    this.yAxisLabel = this.pulsarService.getYAxisLabel();
+    const labels = this.pulsarService.getDataLabelArray();
+    this.dataLabel1 = labels[0];
+    this.dataLabel2 = labels[1];
+  }
+
   private updateChartOptions(): void {
     if (!this.chartObject) return;
+    this.refreshLabels();
     this.chartObject.setTitle({ text: this.chartTitle });
     this.chartObject.xAxis[0]?.setTitle({ text: this.xAxisLabel });
     this.chartObject.yAxis[0]?.setTitle({ text: this.yAxisLabel });
@@ -137,6 +159,11 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
 
   private updateChartData(data: { frequency: number, channel1: number, channel2: number }[]): void {
     if (!this.chartObject) return;
+
+    // The data path does not go through updateChartOptions, so refresh here
+    // too - otherwise a data update re-stamps whatever labels this component
+    // last held over the user's edited ones.
+    this.refreshLabels();
 
     const chartData = data.map(d => [d.frequency, d.channel1]);
     const calData = data.map(d => [d.frequency, d.channel2]);

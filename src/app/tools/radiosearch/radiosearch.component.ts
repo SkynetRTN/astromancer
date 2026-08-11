@@ -1,113 +1,218 @@
-import { AfterViewInit, HostListener, Component, ViewChild, ElementRef, Inject } from '@angular/core';
-import { RadioSearchHighChartService, RadioSearchService } from './radiosearch.service'; // Import the service
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+
+import { RadioSearchHighChartService, RadioSearchService } from './radiosearch.service';
+import { DialogContent } from './dialogContent.component';
 import { HonorCodePopupService } from '../shared/honor-code-popup/honor-code-popup.service';
 import { HonorCodeChartService } from '../shared/honor-code-popup/honor-code-chart.service';
-import { FittingResult } from './radiosearch.service.util';
-import { RadioSearchDataDict } from './radiosearch.service.util';
-import { BehaviorSubject } from 'rxjs';
-import { getDateString } from "../shared/charts/utils";
+import {
+  CatalogSource,
+  RadioCatalogResponse,
+  RadioSearchParamDataDict,
+  SourceFluxes,
+} from './radiosearch.service.util';
+import {
+  decodeHeaderText,
+  decodePrimaryHeader,
+  encodeHeaderText,
+  findDataOffset,
+  normalizeRadioHeader,
+  rewriteHeaderCard,
+  WcsInfo,
+} from './fitsHeader';
+import { readScaledPixels } from './fitsPixels';
+import {
+  COLOR_MAP_OPTIONS,
+  getColorFromMap,
+  getStretch,
+  percentile,
+  STRETCH_OPTIONS,
+} from './colorMaps';
+import { applyFitToSeries, buildScatterSeries, extractFluxes, fitSpectralIndex } from './radioFlux';
 import * as fitsjs from 'fitsjs';
+
+/** Radius of a source ring, in image pixels before display scaling. */
+const SOURCE_RING_RADIUS = 22;
+
+/** Percentile cuts used to normalize the raster, guarding against bright outliers. */
+const LOW_CUT = 0.01;
+const HIGH_CUT = 0.995;
+
+/** Half-length of the crosshair arms, in screen pixels (constant regardless of zoom). */
+const MARKER_ARM = 8;
+
+/** Pointer travel below which a drag still counts as a click, in screen pixels. */
+const CLICK_SLOP = 3;
+
+const MIN_ZOOM = 0.1;
+const MAX_ZOOM = 20;
+
+interface SkyCoordinates {
+  ra: number;
+  dec: number;
+}
+
+/** A point on the image raster, in unscaled pixel coordinates. */
+interface ImagePoint {
+  x: number;
+  y: number;
+}
 
 @Component({
   selector: 'app-radiosearch',
   templateUrl: './radiosearch.component.html',
   styleUrls: ['./radiosearch.component.scss', '../shared/interface/tools.scss'],
 })
-export class RadioSearchComponent implements AfterViewInit {
+export class RadioSearchComponent implements AfterViewInit, OnDestroy {
+  // --- Loaded file -----------------------------------------------------------
   fitsFileName: string | undefined;
+  fitsLoaded = false;
+  arrayBuffer: ArrayBuffer | null = null;
+  header: fitsjs.astro.FITS.Header | null = null;
+
+  // --- Map geometry ----------------------------------------------------------
+  /** Map centre longitude: RA, or galactic longitude when rccords is 'galactic'. */
   ra: number | undefined;
+  /** Map centre latitude: Dec, or galactic latitude. */
   dec: number | undefined;
+  /** Angular extent of the map in degrees. */
   width: number | undefined;
   height: number | undefined;
-
-  sliderXOffset: number = 0;
-  sliderYOffset: number = 0;
-  canvasXOffset: number = 0;
-  canvasYOffset: number = 0;
-  scaledWidth: number = 0;
-  scaledHeight: number = 0;
-  scale: number = 1;
-
   naxis1: number = 100;
   naxis2: number = 100;
+  /** BITPIX of the loaded image; the single-layer save needs the byte width. */
+  bitpix: number = -64;
   rccords: string | undefined;
-  pixelOffset: number = 0;
+  /** WCS projection code from CTYPE1 ('TAN', 'SFL', ... or '' on the oldest files). */
+  projection: string = '';
+  wcsInfo: WcsInfo | null = null;
 
-  fitsLoaded = false;
+  // --- Canvas display state --------------------------------------------------
   canvas: HTMLCanvasElement | null = null;
-  displayData: ImageData | null = null;
-  scaledData: any;
+  /** BSCALE/BZERO-corrected pixel values, row-major, FITS bottom-up order. */
+  scaledData: Float64Array | undefined;
+  /** Scale at which the whole image just fits the canvas, before zoom. */
+  private baseScale: number = 1;
+  scale: number = 1;
+  scaledWidth: number = 0;
+  scaledHeight: number = 0;
+  canvasXOffset: number = 0;
+  canvasYOffset: number = 0;
+  /** Pan offset in canvas pixels, applied on top of the centring offsets. */
+  panX: number = 0;
+  panY: number = 0;
+
+  /**
+   * Offscreen copy of the coloured image at native resolution.
+   *
+   * Rebuilt only when pixel appearance changes; pan and zoom just re-blit it.
+   * Exactly one is retained - see the memory note on scaledData.
+   */
+  private rasterCanvas: HTMLCanvasElement | null = null;
+  private rasterDirty = true;
+  /** Percentile cuts, which depend only on the pixel data. */
+  private cuts: { minCut: number; maxCut: number } | null = null;
+
+  /** Clicked point, held in image-raster coordinates so it survives pan/zoom. */
+  private marker: ImagePoint | null = null;
+  /** Index into `results` of the highlighted source, or -1. */
+  private selectedSourceIndex = -1;
+
+  // --- Bound to the template controls ---------------------------------------
+  sliderXOffset: number = 0;
+  sliderYOffset: number = 0;
   maxValue: number = 0.5;
+  zoomLevel: number = 100;
+  zoomScale: number = 1;
+  selectedColorMap: string = 'turbo';
+  selectedStretch: string = 'asinh';
+  selectedLayer: string = 'full';
+
+  readonly colorMapOptions = COLOR_MAP_OPTIONS;
+  readonly stretchOptions = STRETCH_OPTIONS;
+
+  // --- Observation metadata --------------------------------------------------
   targetFreq: number = 1.5;
   lowerFreq: number = 1.4;
   upperFreq: number = 1.6;
-  private averageFluxSubject = new BehaviorSubject<any>(null);
-  averageFlux$ = this.averageFluxSubject.asObservable();
-  zoomLevel: number = 100;
-  zoomScale: number = 1;
   beamWidth: number = 1;
-  arrayBuffer: ArrayBuffer | null = null;
-  header: fitsjs.astro.FITS.Header | null = null;
-  selectedColorMap: string = 'turbo';
-  selectedLayer: string = 'full';
 
-  dataSource = new MatTableDataSource<any>([]);  // Initialize the data source
-  hdus: any = [];
-  results: any = [];
-  hiddenResults: any = [];
-  private selectedSourceSubject = new BehaviorSubject<any>(null); // Replace `any` with the actual type.
-  selectedSource$ = this.selectedSourceSubject.asObservable();
-  wcsInfo: { crpix1: number, crpix2: number, crval1: number, crval2: number, cdelt1: number, cdelt2: number } | null = null;
-  currentCoordinates: { ra: number, dec: number } | null = null;
-  selectedCoordinates: { ra: number, dec: number} | null = null;
-  params: { targetFreq: number | null, catalog: string | null, identifier: string | null}[] = [];
-  pixelArray: Float64Array = new Float64Array(5);
+  // --- Catalogue results -----------------------------------------------------
+  /** Sky positions, used for the canvas overlay. Index-aligned with sourceFluxes. */
+  results: CatalogSource[] = [];
+  /** Survey fluxes, index-aligned with results. */
+  hiddenResults: SourceFluxes[] = [];
+  currentCoordinates: SkyCoordinates | null = null;
+  selectedCoordinates: SkyCoordinates | null = null;
+  params: RadioSearchParamDataDict[] = [];
 
-  @ViewChild(MatSort) sort!: MatSort;
+  private readonly averageFluxSubject = new BehaviorSubject<string | null>(null);
+  readonly averageFlux$ = this.averageFluxSubject.asObservable();
+  private readonly selectedSourceSubject = new BehaviorSubject<string | null>(null);
+  readonly selectedSource$ = this.selectedSourceSubject.asObservable();
+
+  private readonly destroy$ = new Subject<void>();
+
   @ViewChild('fitsCanvas', { static: false }) canvasRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('fileDropZone', { static: false }) fileDropZoneRef!: ElementRef<HTMLDivElement>;
-  @ViewChild('chartContainer', { static: false }) chartContainer!: ElementRef;
+
+  // Pointer-drag bookkeeping. A press that travels less than CLICK_SLOP is
+  // treated as a click (select a source); anything further is a pan.
+  private pointerDownAt: { x: number; y: number } | null = null;
+  private panStart: { x: number; y: number } | null = null;
+  private isPanning = false;
+
+  // Canvas listeners are attached imperatively because the template binds no
+  // events on <canvas>; keep the references so they can be detached again.
+  private readonly onCanvasPointerDown = (event: PointerEvent) => this.handlePointerDown(event);
+  private readonly onCanvasPointerMove = (event: PointerEvent) => this.handlePointerMove(event);
+  private readonly onCanvasPointerUp = (event: PointerEvent) => this.handlePointerUp(event);
+  private readonly onCanvasWheel = (event: WheelEvent) => this.handleWheel(event);
+
+  constructor(
+    private service: RadioSearchService,
+    private hcservice: RadioSearchHighChartService,
+    private honorCodeService: HonorCodePopupService,
+    private chartService: HonorCodeChartService,
+    private dialog: MatDialog,
+  ) {}
+
+  ngAfterViewInit(): void {
+    this.canvas = this.canvasRef.nativeElement;
+
+    if (!this.canvas) {
+      console.error('Canvas element is not found.');
+      return;
+    }
+
+    this.canvas.addEventListener('pointerdown', this.onCanvasPointerDown);
+    this.canvas.addEventListener('pointermove', this.onCanvasPointerMove);
+    this.canvas.addEventListener('pointerup', this.onCanvasPointerUp);
+    this.canvas.addEventListener('pointercancel', this.onCanvasPointerUp);
+    this.canvas.addEventListener('wheel', this.onCanvasWheel, { passive: false });
+
+    // The drop zone's dragenter/dragleave/drop handlers are bound in the
+    // template. They were *also* attached here with addEventListener, so every
+    // drop ran onFileDrop twice - parsing the file and querying the catalogue
+    // twice per drop. The template bindings are the ones Angular cleans up, so
+    // the duplicates are gone rather than the bindings.
+  }
+
+  ngOnDestroy(): void {
+    this.canvas?.removeEventListener('pointerdown', this.onCanvasPointerDown);
+    this.canvas?.removeEventListener('pointermove', this.onCanvasPointerMove);
+    this.canvas?.removeEventListener('pointerup', this.onCanvasPointerUp);
+    this.canvas?.removeEventListener('pointercancel', this.onCanvasPointerUp);
+    this.canvas?.removeEventListener('wheel', this.onCanvasWheel);
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   // beforeunload is wired by the HostListener decorator below — Angular
   // attaches and detaches it on the component lifecycle, so an explicit
   // removeEventListener (which would target a different function reference
   // anyway) is unnecessary.
-
-  ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
-    this.canvas = this.canvasRef.nativeElement;
-
-    if (!this.canvas) {
-      console.error('Canvas element is not found.');
-    }
-
-    if (this.canvas) {
-      this.canvas.addEventListener('click', (event: MouseEvent) => {
-        this.grabCoordinatesOnClick(event);
-      });
-    }
-
-    this.canvas.addEventListener('mousemove', (event) => {
-      this.displayCoordinates(event);
-    });
-
-    this.fileDropZoneRef.nativeElement.addEventListener('dragenter', () => this.onDragEnter());
-    this.fileDropZoneRef.nativeElement.addEventListener('dragleave', () => this.onDragLeave());
-    this.fileDropZoneRef.nativeElement.addEventListener('drop', (event: DragEvent) => this.onFileDrop(event));
-  }
-
-  constructor(
-    private service: RadioSearchService, 
-    private hcservice: RadioSearchHighChartService,
-    private honorCodeService: HonorCodePopupService,
-    private chartService: HonorCodeChartService,
-    private dialog: MatDialog
-  ) {}
-
-
   @HostListener('window:beforeunload', ['$event'])
   confirmExit(event: BeforeUnloadEvent): void {
     if (this.fitsLoaded) {
@@ -119,39 +224,24 @@ export class RadioSearchComponent implements AfterViewInit {
     }
   }
 
-  @HostListener('window:resize', ['$event'])
-  onResize(event: UIEvent): void {
+  @HostListener('window:resize')
+  onResize(): void {
     if (this.scaledData) {
-      this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2);
+      this.composeFrame();
     }
   }
 
+  // ---------------------------------------------------------------------------
+  // File input
+  // ---------------------------------------------------------------------------
 
-  // Handle drag enter event (adds shake class)
   onDragEnter(): void {
     this.fileDropZoneRef.nativeElement.classList.add('shake');
   }
 
-  
-  // Handle drag leave event (removes shake class)
   onDragLeave(): void {
     this.fileDropZoneRef.nativeElement.classList.remove('shake');
   }
-
-
-  onFileDrop(event: DragEvent): void {
-    this.deleteFITS();
-    event.preventDefault();
-    this.fileDropZoneRef.nativeElement.classList.remove('shake');
-
-    const files = event.dataTransfer?.files;
-    if (files && files.length > 0) {
-      const file = files[0];
-      this.fitsFileName = file.name;
-      this.processFitsFile(file);
-    }
-  }
-
 
   onDragOver(event: DragEvent): void {
     event.preventDefault(); // Required to allow dropping
@@ -159,6 +249,17 @@ export class RadioSearchComponent implements AfterViewInit {
     this.fileDropZoneRef.nativeElement.classList.add('shake'); // Keep shake active
   }
 
+  onFileDrop(event: DragEvent): void {
+    this.deleteFITS();
+    event.preventDefault();
+    this.fileDropZoneRef.nativeElement.classList.remove('shake');
+
+    const file = event.dataTransfer?.files?.[0];
+    if (file) {
+      this.fitsFileName = file.name;
+      this.processFitsFile(file);
+    }
+  }
 
   onFileSelected(event: Event): void {
     // Don't flip fitsLoaded until processFitsFile actually succeeds.
@@ -167,520 +268,154 @@ export class RadioSearchComponent implements AfterViewInit {
     // to retry. processFitsFile sets fitsLoaded = true on success and
     // deleteFITS() on error, mirroring the onFileDrop path.
     const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      const file = input.files[0];
+    const file = input.files?.[0];
+    if (file) {
       this.fitsFileName = file.name;
       this.processFitsFile(file);
     }
   }
 
-
-  onFileUnselected(event: Event): void {
-    this.fitsLoaded = false;
-  }
-
-
-  // Function to grab the x and y coordinates when the mouse is clicked
-  grabCoordinatesOnClick(event: MouseEvent): void {
-    if (!this.canvas || !this.wcsInfo) return;
-
-    // Get the bounding box of the canvas (CSS size)
-    const rect = this.canvas.getBoundingClientRect();
-
-    // Normalize mouse coordinates from CSS size to actual size
-    const scaleX = this.canvas.width / rect.width;  
-    const scaleY = this.canvas.height / rect.height; 
-    const mouseX = (event.clientX - rect.left) * scaleX;
-    const mouseY = (event.clientY - rect.top) * scaleY;
-
-    // Adjust for image centering inside the canvas
-    const adjustedX = mouseX - this.canvasXOffset;
-    const adjustedY = mouseY - this.canvasYOffset;
-
-    // Use WCS info for RA/Dec conversion
-    const { crpix1, crpix2, crval1, crval2, cdelt1, cdelt2 } = this.wcsInfo;
-
-    // Map mouse position to world coordinates
-    const unscaledX = adjustedX / this.scale;
-    const unscaledY = adjustedY / this.scale;
-
-    const flippedY = this.naxis2 - unscaledY - 1; // Flip Y-axis for FITS image storage
-
-    // Loop through sources to check if the click is inside any circle
-    let selectedSource: any = null;
-
-    let raList: number[] = [];
-    let decList: number[] = [];
-
-    // Handle equatorial or galactic coordinates
-    if (this.rccords === 'equatorial') {
-        raList = this.results.map((source: any) => source.ra);
-        decList = this.results.map((source: any) => source.dec);
-    } else if (this.rccords === 'galactic') {
-        raList = this.results.map((source: any) => source.galLong);
-        decList = this.results.map((source: any) => source.galLat);
-    }
-
-    // Circle radius in pixels
-    const radius = this.scale * 22;
-
-    let foundMatch = false;
-    this.redrawCircles();
-    this.results.forEach((source: any, i: number) => {
-        let sourceRA = raList[i];
-        let sourceDec = decList[i];
-
-        let pixelX = 1;
-        let pixelY = 1;
-        if (crval1 > 360 && sourceRA < 180) {
-          pixelX = ((sourceRA + 360 - (crval1)) / cdelt1) + crpix1;
-          pixelY = ((crval2 - sourceDec) / cdelt2) + crpix2;
-        } else {
-          pixelX = ((sourceRA - (crval1)) / cdelt1) + crpix1;
-          pixelY = ((crval2 - sourceDec) / cdelt2) + crpix2;
-        }
-
-        // Convert slider offsets from degrees to pixels using WCS scale
-        let pixelXOffset = ((this.sliderXOffset / Math.abs(cdelt1)) * this.zoomScale * scaleX); // Degrees to pixels (X-axis)
-        let pixelYOffset = this.sliderYOffset / Math.abs(cdelt2) * scaleY; // Degrees to pixels (Y-axis)
-
-        // Apply scaling and offsets for image centering
-        let scaledX = (pixelX) * this.scale + this.canvasXOffset;
-        let scaledY = (pixelY - pixelYOffset) * this.scale + this.canvasYOffset;
-
-        scaledX = (this.canvas!.width / 2) + (scaledX - (this.canvas!.width / 2)) * Math.cos((source.galLat * Math.PI) / 180) + (pixelXOffset);// * (this.naxis1/this.canvas!.width));
-
-        // Calculate distance from mouse to circle center
-        const distance = Math.sqrt(
-            Math.pow(mouseX - scaledX, 2) + Math.pow(mouseY - scaledY, 2)
-        );
-
-        if (distance <= radius && this.canvas !== null) {
-            foundMatch = true;
-            selectedSource = this.results[i];
-            this.selectedSourceSubject.next(selectedSource.identifier);
-
-            const context = this.canvas.getContext('2d');
-            if (context) {
-                // Redraw all circles first
-                this.redrawCircles();
-
-                // Highlight the selected circle
-                context.beginPath();
-                context.arc(
-                    scaledX,
-                    scaledY,
-                    radius,
-                    0,
-                    2 * Math.PI
-                );
-                context.strokeStyle = '#ff0000';
-                context.lineWidth = 1 + (3 - 1) * ((this.zoomScale - 0.1) / (1 - 0.1));
-                context.stroke();
-                context.closePath();
-            }
-
-            // Perform source processing
-            const scatterData = this.getScatterData(selectedSource.id);
-            const fit = this.performFitting(this.hiddenResults, i);
-            const slope = fit?.slope;
-            const intercept = fit?.intercept;
-
-            if (slope !== undefined && intercept !== undefined) {
-                scatterData.forEach((dataPoint: any) => {
-                    const frequency = dataPoint.frequency;
-                    if (frequency !== null) {
-                        const logFrequency = Math.log10(frequency);
-                        const logFluxFit = slope * logFrequency + intercept;
-                        dataPoint.flux_fit = Math.pow(10, logFluxFit);
-                    }
-                });
-            }
-
-            this.params = [{ targetFreq: this.targetFreq, catalog: selectedSource.catalog, identifier: selectedSource.identifier}];
-            this.hcservice.setParams(this.params);
-            this.hcservice.setData(scatterData);
-            this.hcservice.setChartTitle('Results for Radio Source' + selectedSource.catalog + selectedSource.identifier);
-        }
-    });
-
-    if (foundMatch == false) {
-      this.averageFluxSubject.next(null);
-      this.selectedSourceSubject.next(null);
-      this.params = [{ targetFreq: null, catalog: '', identifier: ''}];
-      this.hcservice.setParams(this.params);
-      this.hcservice.setChartTitle('Results for Radio Source');
-      this.hcservice.resetData();
-      this.hcservice.resetChartInfo();
-    };
-
-    const context = this.canvas.getContext('2d');
-    this.selectedCoordinates = this.currentCoordinates;
-    if (context) {
-        const crossSize = 10 * this.zoomScale;
-
-        context.beginPath();
-        context.strokeStyle = '#ff0000';
-        context.lineWidth = 2;
-
-        context.moveTo(mouseX - crossSize, mouseY);
-        context.lineTo(mouseX + crossSize, mouseY);
-
-        context.moveTo(mouseX, mouseY - crossSize);
-        context.lineTo(mouseX, mouseY + crossSize);
-
-        context.stroke();
-        context.closePath();
-    }
-  }
-
-
-  queryCoordinatesOnClick(event: MouseEvent): void {
-    if (!this.canvas || !this.wcsInfo) return;
-
-    // Get the bounding box of the canvas (CSS size)
-    const rect = this.canvas.getBoundingClientRect();
-
-    // Normalize mouse coordinates from CSS size to actual size
-    const scaleX = this.canvas.width / rect.width; 
-    const scaleY = this.canvas.height / rect.height;
-    const mouseX = (event.clientX - rect.left) * scaleX;
-    const mouseY = (event.clientY - rect.top) * scaleY;
-
-    const crossSize = 10 * this.zoomScale;
-
-    this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2);
-    this.selectedCoordinates = this.currentCoordinates;
-
-    const context = this.canvas.getContext('2d');
-    if (context) {
-      context.beginPath();
-      context.strokeStyle = '#ff0000';
-      context.lineWidth = 2;
-
-      context.moveTo(mouseX - crossSize, mouseY);
-      context.lineTo(mouseX + crossSize, mouseY);
-
-      context.moveTo(mouseX, mouseY - crossSize);
-      context.lineTo(mouseX, mouseY + crossSize);
-
-      context.stroke();
-      context.closePath();
-    }
-  }
-
-
-  querySIMBAD() {
-    if (this.selectedCoordinates && this.wcsInfo) {
-      if (this.rccords === "equatorial") {
-        const url = `https://simbad.cds.unistra.fr/simbad/sim-coo?Coord=${this.selectedCoordinates.ra}d${this.selectedCoordinates.dec}d&CooFrame=Ecl&CooEpoch=2000&CooEqui=2000&CooDefinedFrames=ICRS-J2000&Radius=${Math.ceil(0.50 * this.beamWidth * 60)}&Radius.unit=arcmin&submit=submit+query&CoordList=`;
-        window.open(url, "_blank");
-      } else if (this.rccords === "galactic") {
-        const url = `https://simbad.cds.unistra.fr/simbad/sim-coo?Coord=${this.selectedCoordinates.ra}d${this.selectedCoordinates.dec}d&CooFrame=Gal&CooEpoch=2000&CooEqui=2000&CooDefinedFrames=none&Radius=${Math.ceil(0.50 * this.beamWidth * 60)}&Radius.unit=arcmin&submit=submit+query&CoordList=`;
-        window.open(url, "_blank");
-      }
-    }
-  }
-  
-
-  convertCoordinates(ra: number, dec: number, isGalactic: string, useBreak: boolean = true): string {
-    const separator = useBreak ? '<br>' : ', ';
-    
-    if (isGalactic == 'galactic') {
-      // Convert Galactic Latitude and Longitude to degrees (no further conversion needed since they're already in degrees)
-      return `Glon: ${ra.toFixed(2)}°${separator}Glat: ${dec.toFixed(2)}°`;
-    } else {
-
-      const raHMS = this.service.convertToHMS(ra);
-      const decDMS = this.service.convertToDMS(dec); 
-
-      return `RA: ${raHMS}${separator}Dec: ${decDMS}`;
-    }
-  }
-
-
-  drawCircles(results: any[], scale: number, offsetX: number, offsetY: number): void {
-    const canvas = this.canvasRef.nativeElement;
-    const context = canvas.getContext('2d');
-    if (!context || !canvas || !this.wcsInfo) {
-        console.error('Canvas context or WCS info is not initialized.');
-        return;
-    }
-
-    const rect = canvas.getBoundingClientRect(); // Get bounding rectangle
-
-    const scaleX = canvas.width / rect.width;  // Scale factor in X
-    const scaleY = canvas.height / rect.height; // Scale factor in Y
-
-    // Use WCS information from wcsInfo
-    const { crpix1, crpix2, crval1, crval2, cdelt1, cdelt2 } = this.wcsInfo;
-
-    let pixelXOffset = ((this.sliderXOffset / Math.abs(cdelt1)) * this.zoomScale * scaleX); // Degrees to pixels (X-axis)
-    let pixelYOffset = this.sliderYOffset / Math.abs(cdelt2) * scaleY; // Degrees to pixels (Y-axis)
-
-    results.forEach(source => {
-        let ra: number, dec: number;
-
-        if (this.rccords === 'equatorial') {
-            ra = source.ra%360;       // Equatorial coordinates
-            dec = source.dec;
-        } else if (this.rccords === 'galactic') {
-            ra = source.galLong%360;
-            dec = source.galLat;
-        } else {
-            console.error('Unknown coordinate system:', this.rccords);
-            return;
-        }
-        
-        let pixelX = 1;
-        let pixelY = 1;
-        if (crval1 > 360 && ra < 180) {
-          pixelX = ((ra + 360 - (crval1)) / cdelt1) + crpix1;
-          pixelY = ((crval2 - dec) / cdelt2) + crpix2;
-        } else {
-          pixelX = ((ra - (crval1)) / cdelt1) + crpix1;
-          pixelY = ((crval2 - dec) / cdelt2) + crpix2;
-        }
-
-        let scaledX = (pixelX) * scale + this.canvasXOffset; // Degrees applied
-        let scaledY = (pixelY - pixelYOffset) * scale + this.canvasYOffset; // Degrees applied
-
-        scaledX = (canvas.width / 2) + (scaledX - (canvas.width / 2)) * Math.cos((source.galLat * Math.PI) / 180) + (pixelXOffset);
-
-        // Draw the circle
-        context.beginPath();
-        context.arc(
-            scaledX,
-            scaledY,
-            scale * 22, // Radius of the circle
-            0,
-            2 * Math.PI
-        );
-        context.strokeStyle = '#ffffff'; // Ring color
-        context.lineWidth = 1 + (3 - 1) * ((this.zoomScale - 0.1) / (1 - 0.1));
-        context.stroke();
-        context.closePath();
-    });
-  }  
-
-
-  // Redraw the image and then the circles without clearing the image
-  redrawCircles(): void {
-    if (!this.canvas) {
-        console.error('Canvas element is not available.');
-        return;
-    }
-
-    const context = this.canvas.getContext('2d');
-    if (!context) {
-        console.error('Canvas context is not available.');
-        return;
-    }
-
-    // Step 1: Clear the entire canvas
-    context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-    // Step 2: Redraw the FITS image
-    this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2);
-  }
-
-
-  displayCoordinates(event: MouseEvent): void {
-    if (!this.canvas || !this.wcsInfo) return;
-
-    const rect = this.canvas.getBoundingClientRect(); // Get bounding rectangle
-
-    const scaleX = this.canvas.width / rect.width;  // Scale factor in X
-    const scaleY = this.canvas.height / rect.height; // Scale factor in Y
-    
-    // Normalize mouse coordinates from CSS size to actual size
-    const x = (event.clientX - rect.left) * scaleX;
-    
-    // **Invert Y-axis** relative to the canvas height
-    const y = (this.canvas.height - (event.clientY - rect.top) * scaleY);
-    
-    // Adjust for image centering inside the canvas
-    const adjustedX = x - this.canvasXOffset; // Remove horizontal centering offset
-    const adjustedY = y - this.canvasYOffset; // Remove vertical centering offset
-
-    const worldCoordinates = this.getWorldCoordinates(adjustedX, adjustedY, this.scale);
-
-    if (worldCoordinates) {
-        worldCoordinates.dec -= this.sliderYOffset;
-        worldCoordinates.ra += this.sliderXOffset;
-        if (worldCoordinates.ra > 360) {
-          worldCoordinates.ra %= 360;
-        }
-
-        worldCoordinates.ra = ((worldCoordinates.ra - this.ra!) / (Math.cos((Math.PI * worldCoordinates.dec) / 180))) + (this.ra!);
-
-        this.currentCoordinates = worldCoordinates;
-
-    } else {
-        console.warn('Coordinates out of bounds');
-    }
-  }
-
-
-  getWorldCoordinates(x: number, y: number, scale: number): { ra: number, dec: number } | null {
-    // Ensure WCS information is available
-    if (!this.wcsInfo) {
-        console.error('WCS information not available');
-        return null;
-    }
-
-    // Extract WCS information
-    const { crpix1, crpix2, crval1, crval2, cdelt1, cdelt2 } = this.wcsInfo;
-
-    const unscaledX = (x / scale); 
-    const unscaledY = (y / scale);
-
-    // Step 2: Flip Y-axis to match FITS image orientation (bottom-to-top storage)
-    const flippedY = this.naxis2 - unscaledY - 1;
-
-    // Step 3: Convert unscaled pixel coordinates to RA and Dec
-    let ra = cdelt1 * (unscaledX - crpix1) + crval1;
-    let dec = crval2 - cdelt2 * (flippedY - crpix2);
-
-    // Return the calculated RA and Dec
-    return { ra, dec }; 
-  }
-
+  // ---------------------------------------------------------------------------
+  // FITS loading
+  // ---------------------------------------------------------------------------
 
   processFitsFile(file: File): Promise<void> {
     return new Promise((resolve) => {
       const reader = new FileReader();
+
+      reader.onerror = () => {
+        console.error('Failed to read file:', reader.error);
+        this.failLoad(`Could not read "${file.name}".`);
+        resolve();
+      };
+
       reader.onload = (e) => {
         this.arrayBuffer = e.target?.result as ArrayBuffer;
         if (!this.arrayBuffer) {
-          console.error('Failed to read file as ArrayBuffer.');
+          this.failLoad(`Could not read "${file.name}".`);
           resolve();
           return;
         }
-      
+
         try {
-          // Parse FITS header
-          const dataUnit = new fitsjs.astro.FITS.DataUnit(null, this.arrayBuffer);
-          const headerBlock = new TextDecoder().decode(dataUnit.buffer!.slice(0, 5760));
-          this.header = new fitsjs.astro.FITS.Header(headerBlock);
-
-          // Extract header values
-          this.naxis1 = this.header.get('NAXIS1');
-          this.naxis2 = this.header.get('NAXIS2');
-          this.rccords = this.header.get('RCCORDS');
-          this.ra = this.header.get('CENTERRA');
-          this.ra! %= 360;
-
-          this.dec = this.header.get('CENTERDE');
-          const bitpix = this.header.get('BITPIX');
-          const bscale = this.header.get('BSCALE') || 1;
-          const bzero = this.header.get('BZERO') || 0;
-          this.lowerFreq = this.header.get('RCMINFQ');
-          this.upperFreq = this.header.get('RCMAXFQ');
-          this.targetFreq = ((this.lowerFreq + this.upperFreq) / 2);
-          this.beamWidth = this.header.get('BEAM');
-
-          if (!this.naxis1 || !this.naxis2 || !bitpix) {
-            throw new Error('Invalid or missing header values (NAXIS1, NAXIS2, BITPIX).');
-          }
-  
-          // Calculate data offset and pixel array size
-          const headerLength = this.service.getHeaderLength(this.arrayBuffer) + 2880;
-          const dataOffset = headerLength;
-          const bytesPerPixel = Math.abs(bitpix) / 8;
-          const rowLength = this.naxis1 * bytesPerPixel;
-  
-          const dataView = new DataView(this.arrayBuffer, dataOffset);
-          this.pixelArray = new Float64Array(this.naxis1 * this.naxis2);
-  
-          // Read pixel data based on BITPIX
-          const swapEndian = fitsjs.astro.FITS.DataUnit.swapEndian;
-          let readMethod: (byteOffset: number, littleEndian?: boolean) => number;
-
-          switch (bitpix) {
-            case 8:
-              for (let y = 0; y < this.naxis2; y++) {
-                const rowOffset = y * rowLength;
-                for (let x = 0; x < this.naxis1; x++) {
-                  this.pixelArray[y * this.naxis1 + x] = dataView.getUint8(rowOffset + x);
-                }
-              }
-              break;
-  
-            case 16:
-              readMethod = dataView.getInt16.bind(dataView);
-              for (let y = 0; y < this.naxis2; y++) {
-                const rowOffset = y * rowLength;
-                for (let x = 0; x < this.naxis1; x++) {
-                  this.pixelArray[y * this.naxis1 + x] = swapEndian.I(readMethod(rowOffset + x * 2, false));
-                }
-              }
-              break;
-  
-            case 32:
-              readMethod = dataView.getInt32.bind(dataView);
-              for (let y = 0; y < this.naxis2; y++) {
-                const rowOffset = y * rowLength;
-                for (let x = 0; x < this.naxis1; x++) {
-                  this.pixelArray[y * this.naxis1 + x] = swapEndian.J(readMethod(rowOffset + x * 4, false));
-                }
-              }
-              break;
-  
-            case -32:
-              readMethod = dataView.getFloat32.bind(dataView);
-              for (let y = 0; y < this.naxis2; y++) {
-                const rowOffset = y * rowLength;
-                for (let x = 0; x < this.naxis1; x++) {
-                  this.pixelArray[y * this.naxis1 + x] = readMethod(rowOffset + x * 4, false);
-                }
-              }
-              break;
-  
-            case -64:
-              readMethod = dataView.getFloat64.bind(dataView);
-              for (let y = 0; y < this.naxis2; y++) {
-                const rowOffset = y * rowLength;
-                for (let x = 0; x < this.naxis1; x++) {
-                  this.pixelArray[y * this.naxis1 + x] = readMethod(rowOffset + x * 8, false);
-                }
-              }
-              break;
-  
-            default:
-              throw new Error(`Unsupported BITPIX value: ${bitpix}`);
-          }
-
-          // Scale pixel values using BSCALE and BZERO
-          this.scaledData = this.pixelArray.map((value) => (isNaN(value) ? 0 : bscale * value + bzero));
-          this.fitsLoaded = true;
-      
-          this.wcsInfo = {
-            crpix1: parseFloat(this.header!.get('CRPIX1')) || 0,
-            crpix2: parseFloat(this.header!.get('CRPIX2')) || 0,
-            crval1: parseFloat(this.header!.get('CRVAL1')) || 0,
-            crval2: parseFloat(this.header!.get('CRVAL2')) || 0,
-            cdelt1: parseFloat(this.header!.get('CDELT1')) || 1,
-            cdelt2: parseFloat(this.header!.get('CDELT2')) || 1,
-          };
-      
-          this.width = Math.abs(this.wcsInfo.cdelt1) * this.naxis1;
-          this.height = Math.abs(this.wcsInfo.cdelt2) * this.naxis2;
-  
-          this.searchCatalog(); 
+          this.readFits(this.arrayBuffer);
+          this.searchCatalog();
         } catch (error) {
           console.error('Error processing FITS file:', error);
-          this.deleteFITS();
+          const detail = error instanceof Error ? error.message : String(error);
+          this.failLoad(`Could not read "${file.name}" as a Radio Cartographer FITS file.\n\n${detail}`);
         }
-      
+
         resolve();
       };
-      
-  
+
       reader.readAsArrayBuffer(file);
     });
-  }  
+  }
 
+  /**
+   * Parse the header and pixel data of a Radio Cartographer map.
+   *
+   * Header dialects are normalized in fits-header.ts; the whole header is
+   * decoded however many 2880-byte blocks it occupies.
+   */
+  private readFits(buffer: ArrayBuffer): void {
+    this.header = decodePrimaryHeader(buffer);
+    const meta = normalizeRadioHeader(this.header);
+
+    this.naxis1 = meta.naxis1;
+    this.naxis2 = meta.naxis2;
+    this.bitpix = meta.bitpix;
+    this.rccords = meta.coordSystem;
+    this.projection = meta.projection;
+    this.ra = meta.centerLon;
+    this.dec = meta.centerLat;
+    this.lowerFreq = meta.lowerFreq;
+    this.upperFreq = meta.upperFreq;
+    this.targetFreq = meta.targetFreq;
+    this.beamWidth = meta.beamWidth;
+    this.wcsInfo = meta.wcs;
+
+    this.scaledData = readScaledPixels(buffer, meta, findDataOffset(buffer));
+    this.cuts = null;
+    this.rasterDirty = true;
+    this.fitsLoaded = true;
+
+    this.width = Math.abs(meta.wcs.cdelt1) * meta.naxis1;
+    this.height = Math.abs(meta.wcs.cdelt2) * meta.naxis2;
+  }
+
+  /**
+   * Abandon a load and tell the user why.
+   *
+   * The image only ever lives in memory, so having it silently vanish - which
+   * is what a bare console.error plus deleteFITS() did - is expensive for the
+   * user. Failures now surface through the same dialog as "please upload a file".
+   */
+  private failLoad(message: string): void {
+    this.deleteFITS();
+    this.dialog.open(DialogContent, {
+      data: { message },
+      width: '400px',
+    });
+  }
+
+  deleteFITS(): void {
+    this.fitsFileName = undefined;
+    this.fitsLoaded = false;
+    this.arrayBuffer = null;
+
+    this.ra = undefined;
+    this.dec = undefined;
+    this.width = undefined;
+    this.height = undefined;
+    this.naxis1 = 100;
+    this.naxis2 = 100;
+    this.bitpix = -64;
+    this.rccords = undefined;
+    this.projection = '';
+    this.wcsInfo = null;
+
+    this.scaledData = undefined;
+    this.scale = 1;
+    this.scaledWidth = 0;
+    this.scaledHeight = 0;
+    this.canvasXOffset = 0;
+    this.canvasYOffset = 0;
+    this.panX = 0;
+    this.panY = 0;
+
+    this.rasterCanvas = null;
+    this.rasterDirty = true;
+    this.cuts = null;
+    this.marker = null;
+    this.selectedSourceIndex = -1;
+
+    this.sliderXOffset = 0;
+    this.sliderYOffset = 0;
+    this.maxValue = 0.5;
+    this.zoomLevel = 100;
+    this.zoomScale = 1;
+    this.selectedStretch = 'asinh';
+
+    this.targetFreq = 1.5;
+    this.lowerFreq = 1.4;
+    this.upperFreq = 1.6;
+
+    this.results = [];
+    this.hiddenResults = [];
+    this.currentCoordinates = null;
+    this.selectedCoordinates = null;
+    this.selectedSourceSubject.next(null);
+
+    this.hcservice.resetData();
+    this.hcservice.resetChartInfo();
+    this.hcservice.setChartTitle('Results for Radio Source');
+  }
+
+  // ---------------------------------------------------------------------------
+  // FITS saving
+  // ---------------------------------------------------------------------------
 
   saveFITS(): void {
     if (this.selectedLayer == 'full') {
@@ -690,103 +425,117 @@ export class RadioSearchComponent implements AfterViewInit {
     }
   }
 
+  /** Save the whole file, header corrections applied. */
+  saveFullFITS(): void {
+    this.downloadCorrectedFits(false);
+  }
 
+  /** Save only the primary image plane, header corrections applied. */
   saveSingleLayerFITS(): void {
-    try {
-      if (this.arrayBuffer && this.header && this.ra && this.dec && this.wcsInfo) {
-        let updatedHeader = this.header.block
-          .replace(/CENTERRA= *[\d.-]+/, `CENTERRA= ${String(this.ra + (this.sliderXOffset / Math.cos((Math.PI * this.dec) / 180))).padStart(20)}`)
-          .replace(/CENTERDE= *[\d.-]+/, `CENTERDE= ${String(this.dec - this.sliderYOffset).padStart(20)}`)
-          .replace(/CRVAL1  = *[\d.-]+/, `CRVAL1  = ${String(this.wcsInfo.crval1 + (this.sliderXOffset / Math.cos((Math.PI * this.dec) / 180))).padStart(20)}`)
-          .replace(/CRVAL2  = *[\d.-]+/, `CRVAL2  = ${String(this.wcsInfo.crval2 - this.sliderYOffset).padStart(20)}`)
-          .replace(/CTYPE1  = *[\d.-]+/, `CTYPE1  = ${String("RA").padStart(20)}`)
-          .replace(/CTYPE2  = *[\d.-]+/, `CTYPE2  = ${String("DEC").padStart(20)}`);
-        console.log(updatedHeader);
-        const headerLength = updatedHeader.length;
-        const paddingSize = (headerLength % 2880);
-        
-        updatedHeader = updatedHeader.padEnd(headerLength + paddingSize, ' ');
-        const headerBytes = new TextEncoder().encode(updatedHeader);
-        const copyLength = this.naxis1 * this.naxis2 * 8;
-        
-        let totalLength = headerBytes.length + copyLength;
-        totalLength = totalLength + (2880 - (totalLength % 2880));
-        
-        const newBuffer = new ArrayBuffer(totalLength);
-        const newView = new Uint8Array(newBuffer);
-        
-        // Write header
-        newView.set(headerBytes, 0);
-        
-        // Write trimmed image data
-        const originalView = new Uint8Array(this.arrayBuffer);
-        newView.set(
-          originalView.slice(headerBytes.length, headerBytes.length + copyLength),
-          headerBytes.length
-        );        
+    this.downloadCorrectedFits(true);
+  }
 
-        const fitsBlob = new Blob([newBuffer], { type: 'application/octet-stream' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(fitsBlob);
-        link.download = 'corrected_sl_' + this.fitsFileName;
-        link.click();
+  /**
+   * Rewrite the header with the current slider offsets and download the result.
+   *
+   * @param singleLayer keep only the primary image plane instead of the whole file.
+   */
+  private downloadCorrectedFits(singleLayer: boolean): void {
+    try {
+      if (!this.arrayBuffer || this.ra === undefined || this.dec === undefined || !this.wcsInfo) {
+        return;
       }
+
+      const dataOffset = findDataOffset(this.arrayBuffer);
+      const raShift = this.sliderXOffset / Math.cos((Math.PI * this.dec) / 180);
+      const wrapLongitude = (deg: number) => ((deg % 360) + 360) % 360;
+
+      // Each card is rewritten whole, so the header length is preserved by
+      // construction. CENTERRA/CENTERDE are simply absent from newer files and
+      // are left alone there.
+      //
+      // CTYPE1/CTYPE2 are deliberately NOT touched. The old code tried to
+      // overwrite them with bare 'RA'/'DEC', which would strip the projection
+      // code from a modern header (CTYPE1 = 'RA---SFL'); it only ever appeared
+      // harmless because the numeric-value regex never matched a quoted string.
+      let header = decodeHeaderText(this.arrayBuffer);
+      header = rewriteHeaderCard(header, 'CENTERRA', wrapLongitude(this.ra + raShift));
+      header = rewriteHeaderCard(header, 'CENTERDE', this.dec - this.sliderYOffset);
+      header = rewriteHeaderCard(header, 'CRVAL1', wrapLongitude(this.wcsInfo.crval1 + raShift));
+      header = rewriteHeaderCard(header, 'CRVAL2', this.wcsInfo.crval2 - this.sliderYOffset);
+
+      const headerBytes = encodeHeaderText(header);
+      if (headerBytes.length !== dataOffset) {
+        // Refuse to write rather than emit a file whose cards are misaligned.
+        throw new Error(
+          `Header rewrite changed length (${headerBytes.length} vs ${dataOffset} bytes); aborting save.`,
+        );
+      }
+
+      const originalView = new Uint8Array(this.arrayBuffer);
+      let newBuffer: ArrayBuffer;
+
+      if (singleLayer) {
+        // Keep the primary image plane only, dropping the extensions that
+        // follow it. Byte width comes from BITPIX rather than assuming float64.
+        const planeBytes = this.naxis1 * this.naxis2 * (Math.abs(this.bitpix) / 8);
+        const unpadded = dataOffset + planeBytes;
+        // Pad to a whole 2880 block - but do not add a spurious empty block
+        // when the length already lands on a boundary.
+        const totalLength = unpadded + ((2880 - (unpadded % 2880)) % 2880);
+
+        newBuffer = new ArrayBuffer(totalLength);
+        const newView = new Uint8Array(newBuffer);
+        newView.set(headerBytes, 0);
+        newView.set(originalView.subarray(dataOffset, dataOffset + planeBytes), dataOffset);
+      } else {
+        // Everything after the primary header is copied verbatim, extensions
+        // included.
+        newBuffer = new ArrayBuffer(this.arrayBuffer.byteLength);
+        const newView = new Uint8Array(newBuffer);
+        newView.set(headerBytes, 0);
+        newView.set(originalView.subarray(dataOffset), dataOffset);
+      }
+
+      const prefix = singleLayer ? 'corrected_sl_' : 'corrected_';
+      const fitsBlob = new Blob([newBuffer], { type: 'application/octet-stream' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(fitsBlob);
+      link.download = prefix + this.fitsFileName;
+      link.click();
+      URL.revokeObjectURL(link.href);
     } catch (error) {
       console.error('Error saving FITS file:', error);
+      this.dialog.open(DialogContent, {
+        data: { message: 'Could not save the FITS file. The image is unchanged.' },
+        width: '400px',
+      });
     }
-  }  
+  }
 
+  // ---------------------------------------------------------------------------
+  // Catalogue query
+  // ---------------------------------------------------------------------------
 
-  saveFullFITS(): void {
-    try {
-      if (this.arrayBuffer && this.header && this.ra && this.dec && this.wcsInfo) {
-        let updatedHeader = this.header.block
-          .replace(/CENTERRA= *[\d.-]+/, `CENTERRA= ${String(this.ra + (this.sliderXOffset / Math.cos((Math.PI * this.dec) / 180))).padStart(20)}`)
-          .replace(/CENTERDE= *[\d.-]+/, `CENTERDE= ${String(this.dec - this.sliderYOffset).padStart(20)}`)
-          .replace(/CRVAL1  = *[\d.-]+/, `CRVAL1  = ${String(this.wcsInfo.crval1 + (this.sliderXOffset / Math.cos((Math.PI * this.dec) / 180))).padStart(20)}`)
-          .replace(/CRVAL2  = *[\d.-]+/, `CRVAL2  = ${String(this.wcsInfo.crval2 - this.sliderYOffset).padStart(20)}`)
-          .replace(/CTYPE1  = *[\d.-]+/, `CTYPE1  = ${String("RA").padStart(20)}`)
-          .replace(/CTYPE2  = *[\d.-]+/, `CTYPE2  = ${String("DEC").padStart(20)}`);
-
-        const headerLength = updatedHeader.length;
-
-        const paddingSize = (headerLength % 2880);
-        updatedHeader = updatedHeader.padEnd(headerLength + paddingSize, ' ');
-
-        const newBuffer = new ArrayBuffer(this.arrayBuffer.byteLength);
-        const newView = new Uint8Array(newBuffer);
-  
-        newView.set(new TextEncoder().encode(updatedHeader), 0);
-
-        const originalView = new Uint8Array(this.arrayBuffer);
-        newView.set(
-          originalView.slice(updatedHeader.length),
-          updatedHeader.length                      
-        );
-
-        const fitsBlob = new Blob([newBuffer], { type: 'application/octet-stream' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(fitsBlob);
-        link.download = 'corrected_' + this.fitsFileName;
-        link.click();
-      }
-    } catch (error) {
-      console.error("Error saving FITS file:", error);
-    }
-  }    
-  
-  
   searchCatalog(): void {
     // Use explicit undefined checks: a source on the celestial equator has
     // Dec === 0 (and RA can be 0 too after the `%= 360` normalization).
     // Plain truthy checks would reject those valid values and call deleteFITS,
     // wiping the freshly-loaded image with a misleading console error.
-    if (this.rccords &&
-        this.ra !== undefined && this.dec !== undefined &&
-        this.width !== undefined && this.height !== undefined) {
-      this.service.fetchRadioCatalog(this.rccords, this.ra, this.dec, this.width, this.height).subscribe(
-        (response: any) => {
-          const results = response.objects.map((source: any) => ({
+    if (this.rccords === undefined ||
+        this.ra === undefined || this.dec === undefined ||
+        this.width === undefined || this.height === undefined) {
+      console.error('RA, Dec, Width, and Height are required!');
+      this.deleteFITS();
+      return;
+    }
+
+    this.service
+      .fetchRadioCatalog(this.rccords, this.ra, this.dec, this.width, this.height)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response: RadioCatalogResponse) => {
+          this.results = response.objects.map((source) => ({
             name: source.SIMBAD || 'Unknown',
             id: source.id,
             ra: source.ra,
@@ -794,10 +543,10 @@ export class RadioSearchComponent implements AfterViewInit {
             galLat: source.galLat,
             galLong: source.galLong,
             catalog: source.catalog,
-            identifier: source.identifier
+            identifier: source.identifier,
           }));
 
-          const hidden_results = response.objects.map((source: any) => ({
+          this.hiddenResults = response.objects.map((source) => ({
             name: source.SIMBAD || 'Unknown',
             id: source.id || 'Unknown',
             MHz38: source.MHz38 || 'Unknown',
@@ -810,546 +559,728 @@ export class RadioSearchComponent implements AfterViewInit {
             X8400: source.X || 'Unknown',
           }));
 
-          this.dataSource.data = results;
-          this.results = results;
-
-          this.hiddenResults = hidden_results;
-          this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2); // Render image
+          this.composeFrame();
         },
-        (error: any) => {
+        error: (error: unknown) => {
           console.error('Radio catalog query failed:', error);
-          this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2); // Render image
-        }
-      );
-    } else {
-      console.error('RA, Dec, Width, and Height are required!');
-      this.deleteFITS();
-    }
+          this.composeFrame();
+        },
+      });
   }
 
+  // ---------------------------------------------------------------------------
+  // Rendering
+  // ---------------------------------------------------------------------------
 
-  updateFitsImage() {
+  /** Re-render after a control that changes geometry only (RA/Dec offsets). */
+  updateFitsImage(): void {
     this.zoomScale = this.zoomLevel / 100;
-    this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2);
+    this.composeFrame();
   }
 
+  /** Re-render after a control that changes pixel appearance (colour map, stretch, scale). */
+  onAppearanceChange(): void {
+    this.rasterDirty = true;
+    this.composeFrame();
+  }
 
+  /**
+   * Rebuild the offscreen raster if anything affecting pixel colour changed.
+   *
+   * This is the expensive half of rendering - one pass over every pixel - so it
+   * is kept off the pan/zoom path, which only needs to re-blit the result.
+   * Exactly one raster is cached at a time; the source images are large enough
+   * that keeping a set per colour map would be careless.
+   */
+  private rebuildRaster(): void {
+    const imageData = this.scaledData;
+    if (!imageData) {
+      this.rasterCanvas = null;
+      return;
+    }
 
-  displayFitsImage(imageData: number[], width: number, height: number): void {
-    const canvas = this.canvasRef.nativeElement;
+    const width = this.naxis1;
+    const height = this.naxis2;
+
+    // Percentile cuts depend only on the pixel data, so they outlive colour map
+    // and stretch changes and are computed once per loaded file.
+    if (!this.cuts) {
+      this.cuts = this.computeCuts(imageData);
+    }
+    if (!this.cuts) {
+      console.error('No valid finite image data found.');
+      this.rasterCanvas = null;
+      return;
+    }
+
+    const raster = this.rasterize(imageData, width, height, this.cuts.minCut, this.cuts.maxCut);
+
+    if (!this.rasterCanvas) {
+      this.rasterCanvas = document.createElement('canvas');
+    }
+    this.rasterCanvas.width = width;
+    this.rasterCanvas.height = height;
+
+    const rasterContext = this.rasterCanvas.getContext('2d');
+    if (!rasterContext) {
+      console.error('Failed to get offscreen canvas context.');
+      this.rasterCanvas = null;
+      return;
+    }
+
+    rasterContext.putImageData(raster, 0, 0);
+    this.rasterDirty = false;
+  }
+
+  /**
+   * Draw the current view: raster, source rings, crosshair.
+   *
+   * Cheap enough to call on every pointer move while dragging. The canvas
+   * backing store is forced square while its CSS box is not, so the browser
+   * stretches the result horizontally; every mouse-to-sky calculation
+   * compensates via getBoundingClientRect. Changing the canvas CSS aspect ratio
+   * changes both the rendered geometry and the click mapping.
+   */
+  composeFrame(): void {
+    const canvas = this.canvasRef?.nativeElement;
     if (!canvas) {
-        console.error('Canvas element is not initialized.');
-        return;
+      console.error('Canvas element is not initialized.');
+      return;
     }
 
     const context = canvas.getContext('2d');
     if (!context) {
-        console.error('Failed to get canvas context.');
-        return;
+      console.error('Failed to get canvas context.');
+      return;
     }
 
-    // Keep the canvas square, as in your original behavior.
-    const canvasSize = Math.min(canvas.clientWidth, canvas.clientHeight);
-    canvas.width = canvasSize;
-    canvas.height = canvasSize;
-
-    // Compute display scaling for the full raster.
-    // This preserves your current geometric behavior.
-    const imageAspectRatio = width / height;
-    const canvasAspectRatio = canvas.width / canvas.height;
-
-    let initialScale: number;
-    if (imageAspectRatio > canvasAspectRatio) {
-        initialScale = canvas.width / width;
-    } else {
-        initialScale = canvas.height / height;
+    if (!this.scaledData) {
+      return;
     }
 
+    const width = this.naxis1;
+    const height = this.naxis2;
+
+    // Match the backing store to the element's box so image pixels stay square.
+    // This previously forced a square backing store inside a non-square box,
+    // which made the browser stretch the raster horizontally.
+    //
+    // Only assign when the size actually changed - assigning clears the canvas
+    // and resets context state, and this runs on every pointermove while
+    // dragging.
+    const boxWidth = canvas.clientWidth;
+    const boxHeight = canvas.clientHeight;
+    if (boxWidth === 0 || boxHeight === 0) {
+      return;
+    }
+    if (canvas.width !== boxWidth || canvas.height !== boxHeight) {
+      canvas.width = boxWidth;
+      canvas.height = boxHeight;
+    }
+
+    // Fit the whole image inside the box at a single scale, so one image pixel
+    // is a square on screen and the map is letterboxed rather than distorted.
+    const initialScale = Math.min(canvas.width / width, canvas.height / height);
+
+    this.baseScale = initialScale;
     this.scale = initialScale * this.zoomScale;
     this.scaledWidth = width * this.scale;
     this.scaledHeight = height * this.scale;
+    this.canvasXOffset = (canvas.width - this.scaledWidth) / 2 + this.panX;
+    this.canvasYOffset = (canvas.height - this.scaledHeight) / 2 + this.panY;
 
-    this.canvasXOffset = (canvas.width - this.scaledWidth) / 2;
-    this.canvasYOffset = (canvas.height - this.scaledHeight) / 2;
+    if (this.rasterDirty || !this.rasterCanvas) {
+      this.rebuildRaster();
+    }
 
-    // Only finite values should influence normalization statistics.
-    const validData = imageData.filter((value) => Number.isFinite(value));
+    context.clearRect(0, 0, canvas.width, canvas.height);
 
+    if (this.rasterCanvas) {
+      context.drawImage(
+        this.rasterCanvas,
+        0, 0, width, height,
+        this.canvasXOffset, this.canvasYOffset, this.scaledWidth, this.scaledHeight,
+      );
+    }
+
+    this.drawCircles();
+    this.refreshMarker(canvas, context);
+  }
+
+  /** Percentile clip limits, so one bright outlier can't saturate the frame. */
+  private computeCuts(imageData: Float64Array): { minCut: number; maxCut: number } | null {
+    const validData = Array.from(imageData).filter((value) => Number.isFinite(value));
     if (validData.length === 0) {
-        console.error('No valid finite image data found.');
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        return;
+      return null;
     }
 
-    // Sort once for percentile-based clipping.
-    const sortedData = [...validData].sort((a, b) => a - b);
+    const sortedData = validData.sort((a, b) => a - b);
 
-    function percentile(sorted: number[], p: number): number {
-        if (sorted.length === 0) return 0;
-
-        const index = (sorted.length - 1) * p;
-        const lower = Math.floor(index);
-        const upper = Math.ceil(index);
-
-        if (lower === upper) {
-            return sorted[lower];
-        }
-
-        const fraction = index - lower;
-        return sorted[lower] * (1 - fraction) + sorted[upper] * fraction;
-    }
-
-    // Robust cuts. These help avoid one bright outlier saturating the whole image.
-    let minCut = percentile(sortedData, 0.01);
-    let maxCut = percentile(sortedData, 0.995);
+    let minCut = percentile(sortedData, LOW_CUT);
+    let maxCut = percentile(sortedData, HIGH_CUT);
 
     // Safety fallback.
     if (!Number.isFinite(minCut) || !Number.isFinite(maxCut) || maxCut <= minCut) {
-        minCut = sortedData[0];
-        maxCut = sortedData[sortedData.length - 1];
+      minCut = sortedData[0];
+      maxCut = sortedData[sortedData.length - 1];
     }
 
     // Flat image safety.
     if (!Number.isFinite(minCut) || !Number.isFinite(maxCut) || maxCut <= minCut) {
-        maxCut = minCut + 1;
+      maxCut = minCut + 1;
     }
 
-    const imageDataArray = new Uint8ClampedArray(width * height * 4);
-
-    function clamp01(value: number): number {
-        return Math.max(0, Math.min(1, value));
-    }
-
-    function turboColormap(value: number): [number, number, number] {
-        value = clamp01(value);
-
-        const r = Math.max(0, Math.min(1, 1.0 - 4.0 * Math.pow(value - 0.75, 2))) * 255;
-        const g = Math.exp(-Math.pow(value - 0.5, 2) / 0.1) * 255;
-        const b = Math.max(0, Math.min(1, 1.0 - 4.0 * Math.pow(value - 0.25, 2))) * 255;
-
-        return [Math.round(r), Math.round(g), Math.round(b)];
-    }
-
-    function slsColormap(value: number): [number, number, number] {
-        value = clamp01(value);
-
-        const slsRGB: [number, number, number][] = [
-            [0, 0, 0],
-            [75, 0, 130],
-            [0, 0, 255],
-            [0, 255, 255],
-            [0, 255, 0],
-            [255, 255, 0],
-            [255, 128, 0],
-            [255, 0, 0],
-            [255, 255, 255]
-        ];
-
-        const n = slsRGB.length - 1;
-        const scaledValue = value * n;
-        const i = Math.floor(scaledValue);
-        const t = scaledValue - i;
-
-        const [r1, g1, b1] = slsRGB[i];
-        const [r2, g2, b2] = slsRGB[Math.min(i + 1, n)];
-
-        const r = r1 + t * (r2 - r1);
-        const g = g1 + t * (g2 - g1);
-        const b = b1 + t * (b2 - b1);
-
-        return [Math.round(r), Math.round(g), Math.round(b)];
-    }
-
-    function hsvToRgb(h: number, s: number, v: number): [number, number, number] {
-        const c = v * s;
-        const x = c * (1 - Math.abs((h / 60) % 2 - 1));
-        const m = v - c;
-
-        let r = 0;
-        let g = 0;
-        let b = 0;
-
-        if (0 <= h && h < 60) {
-            r = c; g = x; b = 0;
-        } else if (60 <= h && h < 120) {
-            r = x; g = c; b = 0;
-        } else if (120 <= h && h < 180) {
-            r = 0; g = c; b = x;
-        } else if (180 <= h && h < 240) {
-            r = 0; g = x; b = c;
-        } else if (240 <= h && h < 300) {
-            r = x; g = 0; b = c;
-        } else {
-            r = c; g = 0; b = x;
-        }
-
-        return [
-            Math.round((r + m) * 255),
-            Math.round((g + m) * 255),
-            Math.round((b + m) * 255)
-        ];
-    }
-
-    function rainbowColormap(intensity: number): [number, number, number] {
-        intensity = clamp01(intensity - 0.03);
-        const hue = 300 - 300 * intensity;
-        return hsvToRgb(hue, 1, 1);
-    }
-
-    function getColorFromMap(intensity: number, colorMap: string): [number, number, number] {
-        if (colorMap === 'turbo') {
-            return turboColormap(intensity);
-        }
-        if (colorMap === 'sls') {
-            return slsColormap(intensity);
-        }
-        if (colorMap === 'rainbow') {
-            return rainbowColormap(intensity);
-        }
-        return turboColormap(intensity);
-    }
-
-    // Convert each source pixel into RGBA.
-    //
-    // Important:
-    // - We read rawValue directly from the original imageData.
-    // - NaN / invalid values are turned white immediately.
-    // - They never go through normalization or colormap logic.
-    for (let y = 0; y < height; y++) {
-        for (let x = 0; x < width; x++) {
-            // FITS displayed bottom-to-top on the canvas.
-            const flippedY = height - y - 1;
-            const srcIndex = flippedY * width + x;
-            const dstIndex = (y * width + x) * 4;
-
-            const rawValue = imageData[srcIndex];
-
-            let r: number;
-            let g: number;
-            let b: number;
-
-            if (!Number.isFinite(rawValue) || rawValue === 0) {
-                r = 255;
-                g = 255;
-                b = 255;
-            } else {
-                const clampedValue = Math.min(maxCut, Math.max(minCut, rawValue));
-                const normalized = (clampedValue - minCut) / (maxCut - minCut);
-
-                const scaledIntensity = clamp01(
-                    Math.asinh(normalized * this.maxValue * 255) / Math.asinh(255)
-                );
-
-                [r, g, b] = getColorFromMap(scaledIntensity, this.selectedColorMap);
-            }
-
-
-            imageDataArray[dstIndex] = r;
-            imageDataArray[dstIndex + 1] = g;
-            imageDataArray[dstIndex + 2] = b;
-            imageDataArray[dstIndex + 3] = 255;
-        }
-    }
-
-    const outputImageData = new ImageData(imageDataArray, width, height);
-
-    const tempCanvas = document.createElement('canvas');
-    tempCanvas.width = width;
-    tempCanvas.height = height;
-
-    const tempContext = tempCanvas.getContext('2d');
-    if (!tempContext) {
-        console.error('Failed to get temporary canvas context.');
-        return;
-    }
-
-    tempContext.putImageData(outputImageData, 0, 0);
-
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    context.drawImage(
-        tempCanvas,
-        0,
-        0,
-        width,
-        height,
-        this.canvasXOffset,
-        this.canvasYOffset,
-        this.scaledWidth,
-        this.scaledHeight
-    );
-
-    // Keep circle drawing call unchanged.
-    this.drawCircles(
-        this.results,
-        this.scale,
-        this.sliderXOffset + this.canvasXOffset,
-        this.sliderYOffset + this.canvasYOffset
-    );
+    return { minCut, maxCut };
   }
 
+  /**
+   * Convert pixel values to RGBA.
+   *
+   * NaN and exact-zero pixels are painted white without going through
+   * normalization, so blanked regions stay blank rather than reading as the
+   * bottom of the colour scale.
+   */
+  private rasterize(
+    imageData: Float64Array,
+    width: number,
+    height: number,
+    minCut: number,
+    maxCut: number,
+  ): ImageData {
+    const rgba = new Uint8ClampedArray(width * height * 4);
+    const stretch = getStretch(this.selectedStretch);
+    const brightness = this.maxValue;
+    const colorMap = this.selectedColorMap;
+    const span = maxCut - minCut;
 
+    for (let y = 0; y < height; y++) {
+      // FITS is stored bottom-to-top relative to the canvas.
+      const srcRow = (height - y - 1) * width;
+      const dstRow = y * width;
 
-  performFitting(hiddenResults: any[], sourceIndex: number): FittingResult | null {
-    const frequencies: number[] = [38, 159, 178, 750, 1400, 2695, 5000, 8400];
+      for (let x = 0; x < width; x++) {
+        const rawValue = imageData[srcRow + x];
+        const dstIndex = (dstRow + x) * 4;
 
-    // Check if the sourceIndex is within bounds
-    if (sourceIndex < 0 || sourceIndex >= hiddenResults.length) {
-        console.error('Source index out of bounds');
-        return null;
+        let r: number;
+        let g: number;
+        let b: number;
+
+        if (!Number.isFinite(rawValue) || rawValue === 0) {
+          r = 255;
+          g = 255;
+          b = 255;
+        } else {
+          const clampedValue = Math.min(maxCut, Math.max(minCut, rawValue));
+          const normalized = (clampedValue - minCut) / span;
+          [r, g, b] = getColorFromMap(stretch(normalized, brightness), colorMap);
+        }
+
+        rgba[dstIndex] = r;
+        rgba[dstIndex + 1] = g;
+        rgba[dstIndex + 2] = b;
+        rgba[dstIndex + 3] = 255;
+      }
     }
 
-    // Get the specific source based on the provided index
-    const source = hiddenResults[sourceIndex];
+    return new ImageData(rgba, width, height);
+  }
 
-    // Extract fluxes
-    const rawFluxes: (number | null)[] = [
-        source.MHz38 !== 'Unknown' ? source.MHz38 : null,
-        source.MHz159 !== 'Unknown' ? source.MHz159 : null,
-        source.MHz178 !== 'Unknown' ? source.MHz178 : null,
-        source.MHz750 !== 'Unknown' ? source.MHz750 : null,
-        source.L1400 !== 'Unknown' ? source.L1400 : null,
-        source.S2695 !== 'Unknown' ? source.S2695 : null,
-        source.C5000 !== 'Unknown' ? source.C5000 : null,
-        source.X8400 !== 'Unknown' ? source.X8400 : null
-    ];
+  /** Repaint the view. Kept for callers that only care about the overlay. */
+  redrawCircles(): void {
+    this.composeFrame();
+  }
 
-    // Prepare arrays for valid log-log points
-    const logFrequencies: number[] = [];
-    const logFluxes: number[] = [];
+  // ---------------------------------------------------------------------------
+  // Source overlay and projection
+  // ---------------------------------------------------------------------------
 
-    // Filter valid data points and convert to log-log space
-    rawFluxes.forEach((flux: number | null, index: number) => {
-        if (flux !== null) {
-            logFrequencies.push(Math.log10(frequencies[index])); // Log10 frequency
-            logFluxes.push(Math.log10(flux));                    // Log10 flux
-        }
+  /**
+   * CSS-pixel to backing-store scale factors for the canvas.
+   *
+   * The backing store is square while the CSS box is not, so these differ.
+   */
+  private canvasScaleFactors(canvas: HTMLCanvasElement): { scaleX: number; scaleY: number } {
+    const rect = canvas.getBoundingClientRect();
+    return { scaleX: canvas.width / rect.width, scaleY: canvas.height / rect.height };
+  }
+
+  /** Ring stroke width, interpolated across the zoom range. */
+  private get ringLineWidth(): number {
+    return 1 + (3 - 1) * ((this.zoomScale - 0.1) / (1 - 0.1));
+  }
+
+  /**
+   * Project a catalogue source onto canvas coordinates.
+   *
+   * Extracted unchanged from the two copies that previously lived in
+   * drawCircles and grabCoordinatesOnClick.
+   *
+   * Two things here are empirically tuned rather than derived, and are
+   * preserved verbatim pending the separate geometry pass:
+   *  - the `crval1 > 360` wrap branch;
+   *  - the cos(galLat) horizontal compression, which is applied regardless of
+   *    whether the map is galactic or equatorial (on an equatorial map the
+   *    factor should be cos(dec)).
+   * The X and Y slider offsets are also scaled asymmetrically: X picks up
+   * zoomScale, Y does not.
+   */
+  private projectSource(
+    lon: number,
+    lat: number,
+    galLat: number,
+    canvas: HTMLCanvasElement,
+    scaleX: number,
+    scaleY: number,
+  ): { x: number; y: number } {
+    const { crpix1, crpix2, crval1, crval2, cdelt1, cdelt2 } = this.wcsInfo!;
+
+    const pixelX = crval1 > 360 && lon < 180
+      ? ((lon + 360 - crval1) / cdelt1) + crpix1
+      : ((lon - crval1) / cdelt1) + crpix1;
+    const pixelY = ((crval2 - lat) / cdelt2) + crpix2;
+
+    const pixelXOffset = (this.sliderXOffset / Math.abs(cdelt1)) * this.zoomScale * scaleX;
+    const pixelYOffset = (this.sliderYOffset / Math.abs(cdelt2)) * scaleY;
+
+    const centredX = pixelX * this.scale + this.canvasXOffset;
+    const halfWidth = canvas.width / 2;
+
+    return {
+      x: halfWidth + (centredX - halfWidth) * Math.cos((galLat * Math.PI) / 180) + pixelXOffset,
+      y: (pixelY - pixelYOffset) * this.scale + this.canvasYOffset,
+    };
+  }
+
+  /** Longitude/latitude of a source in whichever frame the map uses. */
+  private sourcePosition(source: CatalogSource): { lon: number; lat: number } | null {
+    if (this.rccords === 'equatorial') {
+      return { lon: source.ra, lat: source.dec };
+    }
+    if (this.rccords === 'galactic') {
+      return { lon: source.galLong, lat: source.galLat };
+    }
+    console.error('Unknown coordinate system:', this.rccords);
+    return null;
+  }
+
+  drawCircles(): void {
+    const canvas = this.canvasRef.nativeElement;
+    const context = canvas.getContext('2d');
+    if (!context || !this.wcsInfo) {
+      return;
+    }
+
+    const { scaleX, scaleY } = this.canvasScaleFactors(canvas);
+    const radius = this.scale * SOURCE_RING_RADIUS;
+    const lineWidth = this.ringLineWidth;
+
+    this.results.forEach((source, i) => {
+      const position = this.sourcePosition(source);
+      if (!position) {
+        return;
+      }
+
+      // Retained from the original: drawCircles wraps longitude into [0, 360)
+      // before projecting, the hit test does not. Identical for catalogue
+      // values, which are already in range.
+      const { x, y } = this.projectSource(
+        position.lon % 360, position.lat, source.galLat, canvas, scaleX, scaleY,
+      );
+
+      context.beginPath();
+      context.arc(x, y, radius, 0, 2 * Math.PI);
+      context.strokeStyle = i === this.selectedSourceIndex ? '#ff3b30' : '#ffffff';
+      context.lineWidth = lineWidth;
+      context.stroke();
+      context.closePath();
+    });
+  }
+
+  /**
+   * Draw the click marker, and refresh the sky coordinates it reports.
+   *
+   * The marker is stored in image space, so re-deriving its canvas position
+   * here is what makes it stick through pan, zoom and resize. Re-deriving the
+   * coordinates also keeps the Query readout honest when the RA/Dec sliders
+   * move, which previously left it stale.
+   */
+  private refreshMarker(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D): void {
+    if (!this.marker) {
+      return;
+    }
+
+    const x = this.canvasXOffset + this.marker.x * this.scale;
+    const y = this.canvasYOffset + this.marker.y * this.scale;
+
+    this.selectedCoordinates = this.skyFromCanvas(x, y);
+
+    context.beginPath();
+    context.moveTo(x - MARKER_ARM, y);
+    context.lineTo(x + MARKER_ARM, y);
+    context.moveTo(x, y - MARKER_ARM);
+    context.lineTo(x, y + MARKER_ARM);
+
+    // Black underlay then white on top, so the marker reads against both a
+    // bright source and a blank (white) region of the map.
+    context.lineCap = 'round';
+    context.strokeStyle = '#000000';
+    context.lineWidth = 3.5;
+    context.stroke();
+    context.strokeStyle = '#ffffff';
+    context.lineWidth = 1.5;
+    context.stroke();
+    context.closePath();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Pointer interaction: pan, zoom, select
+  // ---------------------------------------------------------------------------
+
+  /** Pointer position in canvas backing-store coordinates. */
+  private pointerToCanvas(event: MouseEvent, canvas: HTMLCanvasElement): ImagePoint {
+    const rect = canvas.getBoundingClientRect();
+    const { scaleX, scaleY } = this.canvasScaleFactors(canvas);
+    return {
+      x: (event.clientX - rect.left) * scaleX,
+      y: (event.clientY - rect.top) * scaleY,
+    };
+  }
+
+  private handlePointerDown(event: PointerEvent): void {
+    if (!this.canvas || !this.fitsLoaded) {
+      return;
+    }
+
+    this.pointerDownAt = this.pointerToCanvas(event, this.canvas);
+    this.panStart = { x: this.panX, y: this.panY };
+    this.isPanning = false;
+    this.canvas.setPointerCapture(event.pointerId);
+  }
+
+  private handlePointerMove(event: PointerEvent): void {
+    if (!this.canvas) {
+      return;
+    }
+
+    if (this.pointerDownAt && this.panStart) {
+      const current = this.pointerToCanvas(event, this.canvas);
+      const dx = current.x - this.pointerDownAt.x;
+      const dy = current.y - this.pointerDownAt.y;
+
+      if (this.isPanning || Math.hypot(dx, dy) > CLICK_SLOP) {
+        this.isPanning = true;
+        this.panX = this.panStart.x + dx;
+        this.panY = this.panStart.y + dy;
+        this.composeFrame();
+      }
+    }
+
+    // Read the coordinates *after* any pan has been applied. Reading first used
+    // the previous frame's offsets, so the readout drifted while dragging even
+    // though panning does not move the image relative to the sky - only the
+    // RA/Dec sliders do that.
+    this.displayCoordinates(event);
+  }
+
+  private handlePointerUp(event: PointerEvent): void {
+    if (!this.canvas || !this.pointerDownAt) {
+      return;
+    }
+
+    this.canvas.releasePointerCapture?.(event.pointerId);
+
+    const wasPanning = this.isPanning;
+    const pressedAt = this.pointerDownAt;
+
+    this.pointerDownAt = null;
+    this.panStart = null;
+    this.isPanning = false;
+
+    if (!wasPanning) {
+      this.selectAt(pressedAt.x, pressedAt.y);
+    }
+  }
+
+  /** Wheel zooms about the pointer, so the feature under the cursor stays put. */
+  private handleWheel(event: WheelEvent): void {
+    if (!this.canvas || !this.fitsLoaded) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const canvas = this.canvas;
+    const pointer = this.pointerToCanvas(event, canvas);
+
+    // Image point currently under the cursor.
+    const imgX = (pointer.x - this.canvasXOffset) / this.scale;
+    const imgY = (pointer.y - this.canvasYOffset) / this.scale;
+
+    const factor = Math.exp(-event.deltaY * 0.0015);
+    const nextZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, this.zoomScale * factor));
+    if (nextZoom === this.zoomScale) {
+      return;
+    }
+
+    this.zoomScale = nextZoom;
+    this.zoomLevel = nextZoom * 100;
+
+    // Solve for the pan that keeps (imgX, imgY) under the cursor.
+    const nextScale = this.baseScale * nextZoom;
+    this.panX = pointer.x - imgX * nextScale - (canvas.width - this.naxis1 * nextScale) / 2;
+    this.panY = pointer.y - imgY * nextScale - (canvas.height - this.naxis2 * nextScale) / 2;
+
+    this.composeFrame();
+  }
+
+  /** Return to the initial framing. */
+  resetView(): void {
+    this.panX = 0;
+    this.panY = 0;
+    this.zoomLevel = 100;
+    this.zoomScale = 1;
+    this.composeFrame();
+  }
+
+  /** Select the source at a canvas point, if any, and place the marker. */
+  private selectAt(mouseX: number, mouseY: number): void {
+    if (!this.canvas || !this.wcsInfo) {
+      return;
+    }
+
+    const canvas = this.canvas;
+    const { scaleX, scaleY } = this.canvasScaleFactors(canvas);
+    const radius = this.scale * SOURCE_RING_RADIUS;
+
+    let matchIndex = -1;
+
+    this.results.forEach((source, i) => {
+      const position = this.sourcePosition(source);
+      if (!position) {
+        return;
+      }
+
+      const { x, y } = this.projectSource(
+        position.lon, position.lat, source.galLat, canvas, scaleX, scaleY,
+      );
+
+      const distance = Math.sqrt(Math.pow(mouseX - x, 2) + Math.pow(mouseY - y, 2));
+      if (distance <= radius) {
+        matchIndex = i;
+      }
     });
 
-    // Perform linear fitting in log-log space
-    if (logFrequencies.length > 1 && logFluxes.length > 1) {
-        const n = logFrequencies.length;
+    // Remember where the user clicked in image space, so the marker survives
+    // pan, zoom and resize rather than being wiped by the next repaint.
+    this.marker = {
+      x: (mouseX - this.canvasXOffset) / this.scale,
+      y: (mouseY - this.canvasYOffset) / this.scale,
+    };
 
-        // Compute sums required for regression
-        const sumX = logFrequencies.reduce((a, b) => a + b, 0);
-        const sumY = logFluxes.reduce((a, b) => a + b, 0);
-        const sumXY = logFrequencies.reduce((sum, x, i) => sum + x * logFluxes[i], 0);
-        const sumX2 = logFrequencies.reduce((sum, x) => sum + x * x, 0);
-
-        // Calculate slope and intercept
-        const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
-        const intercept = (sumY - slope * sumX) / n;
-
-        // Return results in log-log space
-        return { slope, intercept };
+    if (matchIndex >= 0) {
+      this.selectSource(this.results[matchIndex], matchIndex);
     } else {
-        console.error('Not enough data for linear fitting');
-        return null;
+      this.clearSelection();
     }
+
+    this.composeFrame();
+  }
+
+  private selectSource(source: CatalogSource, index: number): void {
+    this.selectedSourceSubject.next(source.identifier);
+    this.selectedSourceIndex = index;
+
+    // results and hiddenResults are built from the same response array, so the
+    // index is the reliable join. (getScatterData used to look the fluxes up by
+    // id while the fit used the index; they agree except when a source's id is
+    // falsy, where the id lookup silently found nothing.)
+    const sourceFluxes = this.hiddenResults[index];
+    if (!sourceFluxes) {
+      return;
+    }
+
+    const fluxes = extractFluxes(sourceFluxes);
+    const series = buildScatterSeries(fluxes, this.targetFreq);
+    applyFitToSeries(series.points, fitSpectralIndex(fluxes));
+
+    this.averageFluxSubject.next(series.averageFlux === null ? null : series.averageFlux.toFixed(3));
+
+    this.params = [{
+      targetFreq: this.targetFreq,
+      catalog: source.catalog,
+      identifier: source.identifier,
+    }];
+    this.hcservice.setParams(this.params);
+    this.hcservice.setData(series.points);
+    this.hcservice.setChartTitle('Results for Radio Source' + source.catalog + source.identifier);
+  }
+
+  private clearSelection(): void {
+    this.selectedSourceIndex = -1;
+    this.averageFluxSubject.next(null);
+    this.selectedSourceSubject.next(null);
+    this.params = [{ targetFreq: null, catalog: '', identifier: '' }];
+    this.hcservice.setParams(this.params);
+    this.hcservice.setChartTitle('Results for Radio Source');
+    this.hcservice.resetData();
+    this.hcservice.resetChartInfo();
   }
 
 
-  getScatterData(sourceId: number): RadioSearchDataDict[] {
-    const frequencies: number[] = [38, 159, 178, 750, 1400, 2695, 5000, 8400];
-    const scatterData: RadioSearchDataDict[] = [];
+  // ---------------------------------------------------------------------------
+  // Coordinate readout
+  // ---------------------------------------------------------------------------
 
-    // Find the specific source by ID
-    const source = this.hiddenResults.find((src: any) => src.id === sourceId);
-
-    if (source) {
-        // Create fluxes array from source
-        const fluxes: (number | null)[] = [
-            source.MHz38 !== 'Unknown' ? source.MHz38 : null,
-            source.MHz159 !== 'Unknown' ? source.MHz159 : null,
-            source.MHz178 !== 'Unknown' ? source.MHz178 : null,
-            source.MHz750 !== 'Unknown' ? source.MHz750 : null,
-            source.L1400 !== 'Unknown' ? source.L1400 : null,
-            source.S2695 !== 'Unknown' ? source.S2695 : null,
-            source.C5000 !== 'Unknown' ? source.C5000 : null,
-            source.X8400 !== 'Unknown' ? source.X8400 : null
-        ];
-
-        fluxes.forEach((flux: number | null, index: number) => {
-            if (flux !== null) {
-                scatterData.push({
-                    frequency: Number((frequencies[index]).toFixed(3)), // Log frequency
-                    flux: Number((flux).toFixed(3)),                   // Log flux
-                    flux_fit: Number((flux).toFixed(3))
-                });
-            }
-        });
-
-        const newFrequency = this.targetFreq; // Set your target frequency in Hz
-
-        // Find the closest lower and upper indices relative to newFrequency
-        let lowerIndex = -1;
-        let upperIndex = -1;
-
-        for (let i = 0; i < frequencies.length; i++) {
-          if (fluxes[i] !== null) { // Only consider indices where fluxes are not null
-              if (frequencies[i] < newFrequency) {
-                  lowerIndex = i; // Update lowerIndex whenever we find a valid lower frequency
-              } else if (frequencies[i] >= newFrequency) {
-                  upperIndex = i; // Set upperIndex to the first valid frequency greater than or equal to newFrequency
-                  break; // Stop as soon as we find the first higher or equal frequency
-              }
-          }
-        }
-
-        // Check if we found valid indices for both lower and upper frequencies
-        if (lowerIndex !== -1 && upperIndex !== -1 && fluxes[lowerIndex] !== null && fluxes[upperIndex] !== null) {
-            const fluxLower = fluxes[lowerIndex]!;
-            const fluxUpper = fluxes[upperIndex]!;
-            const freqLower = frequencies[lowerIndex];
-            const freqUpper = frequencies[upperIndex];
-
-            // Calculate weights in linear space
-            const freqDiff = freqUpper - freqLower; // Difference in linear space
-            const weightUpper = (newFrequency - freqLower) / freqDiff;
-            const weightLower = 1 - weightUpper;
-
-            // Calculate the average flux in linear space
-            const averageFluxLinear = fluxLower * weightLower + fluxUpper * weightUpper;
-            this.averageFluxSubject.next(averageFluxLinear.toFixed(3));
-
-            // Add the new point
-            scatterData.push({
-                frequency: Number((newFrequency).toFixed(3)), // Log of the new frequency
-                flux: Number((averageFluxLinear).toFixed(3)), // Log of the averaged flux
-                flux_fit: Number((averageFluxLinear).toFixed(3)),
-                highlight: true
-            });
-        }
-        else {
-          const averageFluxLinear = null;
-          this.averageFluxSubject.next(averageFluxLinear);
-        }
+  /**
+   * Sky coordinates for a point in canvas backing-store space.
+   *
+   * Goes through the image row/column rather than canvas Y, which is what makes
+   * the result independent of pan: the same image pixel reports the same
+   * coordinates no matter where it has been dragged to. Only the RA/Dec sliders
+   * are meant to move the coordinate grid relative to the image.
+   *
+   * This used to invert canvas Y before subtracting canvasYOffset, while pan was
+   * added to that offset in un-inverted space - so a vertical drag of d moved
+   * the Dec argument by 2d instead of leaving it alone.
+   */
+  private skyFromCanvas(canvasX: number, canvasY: number): SkyCoordinates | null {
+    if (!this.canvas) {
+      return null;
     }
 
-    return scatterData;
+    const world = this.getWorldCoordinates(
+      canvasX - this.canvasXOffset,
+      canvasY - this.canvasYOffset,
+      this.scale,
+    );
+
+    if (!world) {
+      return null;
+    }
+
+    world.dec -= this.sliderYOffset;
+    world.ra += this.sliderXOffset;
+    if (world.ra > 360) {
+      world.ra %= 360;
+    }
+    world.ra = ((world.ra - this.ra!) / Math.cos((Math.PI * world.dec) / 180)) + this.ra!;
+
+    return world;
   }
-  
+
+  displayCoordinates(event: MouseEvent): void {
+    if (!this.canvas || !this.wcsInfo) {
+      return;
+    }
+
+    const point = this.pointerToCanvas(event, this.canvas);
+    const worldCoordinates = this.skyFromCanvas(point.x, point.y);
+
+    if (!worldCoordinates) {
+      console.warn('Coordinates out of bounds');
+      return;
+    }
+
+    this.currentCoordinates = worldCoordinates;
+  }
+
+  /**
+   * Sky coordinates for an offset from the drawn image's top-left corner.
+   *
+   * @param x  canvas x minus canvasXOffset
+   * @param y  canvas y minus canvasYOffset (NOT pre-inverted)
+   * @param scale  display scale, canvas pixels per image pixel
+   *
+   * The `- 1` on the row is not a fudge: it is what the previous
+   * invert-then-flip-again formulation evaluates to once the algebra is worked
+   * through at zero pan, so the reported values are unchanged at the default
+   * view. Keeping it means this fix does not silently move the readout.
+   */
+  getWorldCoordinates(x: number, y: number, scale: number): SkyCoordinates | null {
+    if (!this.wcsInfo) {
+      console.error('WCS information not available');
+      return null;
+    }
+
+    const { crpix1, crpix2, crval1, crval2, cdelt1, cdelt2 } = this.wcsInfo;
+
+    // Column and row of the drawn raster, top-down. Both are pan-invariant
+    // because the offsets they subtract carry the pan.
+    const imageColumn = x / scale;
+    const imageRow = y / scale;
+
+    return {
+      ra: cdelt1 * (imageColumn - crpix1) + crval1,
+      dec: crval2 - cdelt2 * ((imageRow - 1) - crpix2),
+    };
+  }
+
+  convertCoordinates(ra: number, dec: number, isGalactic: string, useBreak: boolean = true): string {
+    const separator = useBreak ? '<br>' : ', ';
+
+    if (isGalactic == 'galactic') {
+      // Already in degrees; no conversion needed.
+      return `Glon: ${ra.toFixed(2)}°${separator}Glat: ${dec.toFixed(2)}°`;
+    }
+
+    return `RA: ${this.service.convertToHMS(ra)}${separator}Dec: ${this.service.convertToDMS(dec)}`;
+  }
+
+  querySIMBAD(): void {
+    if (!this.selectedCoordinates || !this.wcsInfo) {
+      return;
+    }
+
+    const frame = this.rccords === 'equatorial' ? 'Ecl' : this.rccords === 'galactic' ? 'Gal' : null;
+    if (frame === null) {
+      return;
+    }
+
+    const definedFrames = frame === 'Ecl' ? 'ICRS-J2000' : 'none';
+    const searchRadius = Math.ceil(0.50 * this.beamWidth * 60);
+
+    const url = `https://simbad.cds.unistra.fr/simbad/sim-coo?Coord=${this.selectedCoordinates.ra}d${this.selectedCoordinates.dec}d`
+      + `&CooFrame=${frame}&CooEpoch=2000&CooEqui=2000&CooDefinedFrames=${definedFrames}`
+      + `&Radius=${searchRadius}&Radius.unit=arcmin&submit=submit+query&CoordList=`;
+
+    window.open(url, '_blank');
+  }
+
+  // ---------------------------------------------------------------------------
+  // Export
+  // ---------------------------------------------------------------------------
 
   noUpload(): void {
     this.dialog.open(DialogContent, {
-      data: { message: "Please upload a Radio Cartographer FITS file!" },
+      data: { message: 'Please upload a Radio Cartographer FITS file!' },
       width: '300px',
     });
   }
 
-
-  deleteFITS(): void {
-    if (this.fitsLoaded == false) { 
-
+  saveCanvas(): void {
+    if (!this.canvas) {
+      return;
     }
-    
-    this.fitsFileName = undefined;
-    this.ra = undefined;
-    this.dec = undefined;
-    this.width = undefined;
-    this.height = undefined;
 
-    this.sliderXOffset = 0;
-    this.sliderYOffset = 0;
-    this.canvasXOffset = 0;
-    this.canvasYOffset = 0;
-    this.scaledWidth = 0;
-    this.scaledHeight = 0;
-    this.scale = 1;
+    // Reset to the default framing before capture, so the export is not
+    // cropped by whatever pan/zoom the user happens to be inspecting with.
+    this.resetView();
 
-    this.naxis1 = 100;
-    this.naxis2 = 100;
-    this.pixelOffset = 0;
-
-    this.fitsLoaded = false;
-    this.displayData = null;
-    this.scaledData = undefined;
-    this.maxValue = 0.5;
-    this.targetFreq = 1.5;
-    this.lowerFreq = 1.4;
-    this.upperFreq = 1.6;
-    this.zoomLevel = 100;
-    this.zoomScale = 1;
-
-    this.dataSource = new MatTableDataSource<any>([]);  // Clear data source
-    this.results = [];
-    this.hiddenResults = [];
-    this.selectedSourceSubject.next(null);
-  
-    this.wcsInfo = null;
-    this.currentCoordinates = null;
-    this.selectedCoordinates = null;
-
-    this.hcservice.resetData();
-    this.hcservice.resetChartInfo();
-    this.hcservice.setChartTitle('Results for Radio Source');
-  }
-  
-
-  saveCanvas() {
-    if (this.canvas) {
-      this.zoomLevel = 100;
-      this.zoomScale = 1;
-      this.displayFitsImage(this.scaledData, this.naxis1, this.naxis2);
-      this.honorCodeService.honored().subscribe((name: string) => {
+    this.honorCodeService.honored()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((name: string) => {
         if (this.canvas) {
-          this.chartService.saveCanvasOffline(this.canvas, "radio-search", name);
+          this.chartService.saveCanvasOffline(this.canvas, 'radio-search', name);
         }
-      })
-    }
-  }
-  
-
-  saveGraph() {
-    this.honorCodeService.honored().subscribe((name: string) => {
-      this.chartService.saveImageHighChartOffline(this.hcservice.getHighChart(), "radio-search", name);
-    })
+      });
   }
 
-
-  getResults(jobId: number): void {
-    this.service.getRadioCatalogResults(jobId)?.subscribe((result: any) => {
-    });
-  }
-}
-
-
-@Component({
-  selector: 'app-dialog-content',
-  template: `
-    <h1 mat-dialog-title class="warning-title">Warning!</h1>
-    <div mat-dialog-content class="warning-content">{{ data.message }}</div>
-    <div mat-dialog-actions class="dialog-actions">
-      <button mat-button (click)="closeDialog()"
-        color="primary" 
-        style="border-radius: 3px" 
-        mat-raised-button>OK</button>
-    </div>
-  `,
-  styles: [`
-    .warning-title {
-      text-align: center;
-      color: rgb(143, 143, 143);
-    }
-    .warning-content {
-      font-size: 16px;
-      padding: 2px;
-      justify-content: center; 
-      color: rgb(143, 143, 143);
-    }
-    .dialog-actions {
-      display: flex;
-      justify-content: center; 
-      padding: 7px;
-    }
-  `]
-})
-export class DialogContent {
-  constructor(
-    public dialogRef: MatDialogRef<DialogContent>,
-    @Inject(MAT_DIALOG_DATA) public data: { message: string }
-  ) {}
-
-  closeDialog(): void {
-    this.dialogRef.close();
+  saveGraph(): void {
+    this.honorCodeService.honored()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((name: string) => {
+        this.chartService.saveImageHighChartOffline(this.hcservice.getHighChart(), 'radio-search', name);
+      });
   }
 }

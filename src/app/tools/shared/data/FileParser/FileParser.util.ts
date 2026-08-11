@@ -78,6 +78,6 @@ export interface MyFileParserStrategy {
 export enum FileType {
   TXT = "txt",
   CSV = "csv",
-  FITS = "fits"
+  FITS = "fits",
+  MD1 = "md1"
 }
-

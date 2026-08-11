@@ -44,12 +44,6 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
       });
     });    
 
-    const data = this.service.getPeriodFoldingChartData();
-    const sum = data['data2'].reduce((sum, item) => sum + item[1], 0) === 0;
-    if (sum == true) {
-      this.periodMax = this.service.getPeriodFoldingPeriod();
-      this.calFile = false;
-    }
   }   
 
   constructor(private service: PulsarService,
@@ -190,8 +184,10 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
         const xValues = binnedData.map(point => point[0]);
         const yValues = binnedData.map(point => point[1]);
 
-        let binnedData2 = this.service.binData(data['data2'], this.service.getPeriodFoldingBins());
-        const yValues2 = binnedData2.map(point => point[1]);
+        const binnedData2 = data['data2']
+          ? this.service.binData(data['data2'], this.service.getPeriodFoldingBins())
+          : null;
+        const yValues2 = binnedData2?.map(point => point[1]) ?? null;
         
         this.service.sonification(xValues, yValues, yValues2, this.service.getPeriodFoldingPeriod(), this.service.getPeriodFoldingTitle()); 
       } else {
@@ -216,8 +212,10 @@ export class PulsarPeriodFoldingFormComponent implements OnDestroy {
         const xValues = binnedData.map(point => point[0]);
         const yValues = binnedData.map(point => point[1]);
 
-        let binnedData2 = this.service.binData(data['data2'], this.service.getPeriodFoldingBins());
-        const yValues2 = binnedData2.map(point => point[1]);
+        const binnedData2 = data['data2']
+          ? this.service.binData(data['data2'], this.service.getPeriodFoldingBins())
+          : null;
+        const yValues2 = binnedData2?.map(point => point[1]) ?? null;
         
         this.service.sonificationBrowser(xValues, yValues, yValues2, this.service.getPeriodFoldingPeriod()); 
       } else {

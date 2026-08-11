@@ -79,11 +79,11 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
           : this.pulsarService.getData();
 
         const processedData = src
-          .filter(item => item.jd !== null && item.source1 !== null && item.source2 !== null)
+          .filter(item => item.jd !== null && item.source1 !== null)
           .map(item => ({
             frequency: item.jd!,
             channel1: item.source1!,
-            channel2: item.source2!
+            channel2: item.source2
           }));
 
         this.updateChartData(processedData);
@@ -108,11 +108,11 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
       : this.pulsarService.getData();
 
     const initialData = initialSrc
-      .filter(item => item.jd !== null && item.source1 !== null && item.source2 !== null)
+      .filter(item => item.jd !== null && item.source1 !== null)
       .map(item => ({
         frequency: item.jd!,
         channel1: item.source1!,
-        channel2: item.source2!
+        channel2: item.source2
       }));
 
     this.updateChartData(initialData);
@@ -135,11 +135,13 @@ export class PulsarLightCurveHighchartComponent implements AfterViewInit, OnDest
     this.chartObject.yAxis[0]?.setTitle({ text: this.yAxisLabel });
   }
 
-  private updateChartData(data: { frequency: number, channel1: number, channel2: number }[]): void {
+  private updateChartData(data: { frequency: number, channel1: number, channel2: number | null }[]): void {
     if (!this.chartObject) return;
 
     const chartData = data.map(d => [d.frequency, d.channel1]);
-    const calData = data.map(d => [d.frequency, d.channel2]);
+    const calData = data
+      .filter(d => d.channel2 !== null)
+      .map(d => [d.frequency, d.channel2 as number]);
 
     const seriesOptions: Highcharts.SeriesLineOptions[] = [
       {

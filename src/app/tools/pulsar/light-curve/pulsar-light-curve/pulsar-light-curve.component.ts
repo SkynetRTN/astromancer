@@ -22,6 +22,10 @@ import { chart } from 'highcharts';
 })
 export class PulsarLightCurveComponent implements OnDestroy {
   private destroy$ = new Subject<void>();
+  private readonly md1FileParser = new MyFileParser(
+    FileType.MD1,
+    ['time', 'power']
+  );
   ts: number[] = [];
   xs: number[] = [];
   ys: number[] = [];
@@ -34,7 +38,11 @@ export class PulsarLightCurveComponent implements OnDestroy {
   constructor(private service: PulsarService,
               private honorCodeService: HonorCodePopupService,
               private chartService: HonorCodeChartService,
-              public dialog: MatDialog) {}
+              public dialog: MatDialog) {
+    this.md1FileParser.data$.pipe(takeUntil(this.destroy$)).subscribe(data => {
+      this.loadMd1Data(data as {time: number; power: number}[]);
+    });
+  }
 
   actionHandler(actions: TableAction[]) {
     actions.forEach((action) => {
@@ -58,6 +66,11 @@ export class PulsarLightCurveComponent implements OnDestroy {
   }
 
   uploadHandler($event: File) {
+    if ($event.name.toLowerCase().endsWith('.md1')) {
+      this.md1FileParser.readFile($event);
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = () => {
       const file = reader.result as string;
@@ -285,6 +298,20 @@ export class PulsarLightCurveComponent implements OnDestroy {
     reader.readAsText($event); // Read the file as text
   }
 
+  private loadMd1Data(data: {time: number; power: number}[]): void {
+    const combinedData: PulsarDataDict[] = data.map(row => ({
+      jd: row.time,
+      source1: row.power,
+      source2: null,
+    }));
+    this.calFile = true;
+    this.service.setLightCurveOptionValid(true);
+    this.rawData = combinedData;
+    this.service.setRawData(combinedData);
+    this.service.setCombinedData(combinedData);
+    this.processChartData(this.service.getbackScale());
+  }
+
   sonification() {
     this.chartData = this.service.getData().filter(
       (d): d is { jd: number; source1: number; source2: number } => d.jd !== null
@@ -340,17 +367,20 @@ export class PulsarLightCurveComponent implements OnDestroy {
     // Extract data for processing
     const jd = chartData.map(item => item.jd ?? 0);
     const source1 = chartData.map(item => item.source1 ?? 0);
-    const source2 = chartData.map(item => item.source2 ?? 0);
+    const hasSource2 = chartData.some(item => item.source2 !== null);
+    const source2 = hasSource2 ? chartData.map(item => item.source2 ?? 0) : [];
 
     // Apply background subtraction based on the provided backScale
     const subtractedSource1 = this.service.backgroundSubtraction(jd, source1, backScale);
-    const subtractedSource2 = this.service.backgroundSubtraction(jd, source2, backScale);
+    const subtractedSource2 = hasSource2
+      ? this.service.backgroundSubtraction(jd, source2, backScale)
+      : [];
 
     // Update chart data with background-subtracted values
     chartData = chartData.map((item, index) => ({
       jd: jd[index],
       source1: subtractedSource1[index],
-      source2: subtractedSource2[index],
+      source2: hasSource2 ? subtractedSource2[index] : null,
     }));
 
     this.service.setData(chartData);

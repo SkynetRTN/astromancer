@@ -89,12 +89,14 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
     const bins = this.service.getPeriodFoldingBins() * parseInt(this.service.getPeriodFoldingDisplayPeriod()); 
     const binnedData1 = this.service.binData(data['data'], bins);
 
-    const sum = data['data2'].reduce((total, pair) => total + pair[1], 0);
+    const data2 = data['data2'] ?? [];
+    const sum = data2.reduce((total, pair) => total + pair[1], 0);
 
-    const hasData2 = Array.isArray(data['data2']) &&
-                 data['data2'].some(pair => pair[1] !== 0);
+    const hasData2 = data2.some(pair => pair[1] !== 0);
 
-    const firstSeriesName = hasData2 ? 'Polarization XX' : 'Data';
+    const firstSeriesName = hasData2 || this.service.getIsLightCurveOptionValid()
+      ? 'Polarization XX'
+      : 'Data';
     
     this.chartObject.addSeries({
       name: firstSeriesName, 
@@ -107,7 +109,7 @@ export class PulsarPeriodFoldingHighchartComponent implements AfterViewInit, OnD
   
     if (sum != 0) {
       const calibration = this.service.getPeriodFoldingCal();
-      const adjustedData2 = data['data2'].map(point => [point[0], point[1] * calibration]);
+      const adjustedData2 = data2.map(point => [point[0], point[1] * calibration]);
   
       const binnedData2 = this.service.binData(adjustedData2, bins);
   

@@ -24,13 +24,7 @@ export class PulsarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const data = this.service.getPeriodFoldingChartData();
-    
-    const sum = data['data2'].reduce((total, pair) => total + pair[1], 0);
-    if (sum === 0) {
-      this.lightCurveFormValid = false;
-      this.pulsarTabindex = 2;
-    }
+    this.lightCurveFormValid = this.service.getIsLightCurveOptionValid();
   }  
 
   ngOnDestroy(): void {

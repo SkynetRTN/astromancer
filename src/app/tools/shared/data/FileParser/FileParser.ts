@@ -4,6 +4,7 @@ import {MyFileParserTXT} from "./FileParser.TXT";
 import {MyFileParserDefault} from "./FileParser.Default";
 import {MyFileParserCSV} from "./FileParser.CSV";
 import {MyFileParserFITS} from "./FileParser.FITS";
+import {MyFileParserMD1} from "./FileParser.MD1";
 
 
 export class MyFileParser {
@@ -28,6 +29,8 @@ export class MyFileParser {
       this.strategy = new MyFileParserCSV();
     } else if (fileType === FileType.FITS) {
       this.strategy = new MyFileParserFITS();
+    } else if (fileType === FileType.MD1) {
+      this.strategy = new MyFileParserMD1();
     } else {
       this.strategy = new MyFileParserDefault();
     }
@@ -87,4 +90,3 @@ export class MyFileParser {
 
 
 }
-

@@ -1,5 +1,6 @@
 .light-curve-container {
   height: 100% !important;
+  min-height: 0;
 }
 
 .custom-upload-button {
@@ -33,4 +34,34 @@
 .col-4, .col-8, .col-12 {
   display: flex;
   flex-flow: column;
+}
+
+// Keep the bottom button row (upload, save, sonifier) visible on short
+// viewports. Without these rules the .button-row gets pushed below the
+// clipped mat-tab-body-wrapper and the upload button becomes unreachable.
+// Selectors are scoped to .light-curve-container so they win specificity
+// over the shared tools.scss .dynamic { flex: min-content } default.
+.light-curve-container {
+  .col-4, .col-8 {
+    min-height: 0; // allow the column to shrink inside its flex parent
+  }
+
+  .button-row {
+    flex-shrink: 0; // always reserve space at the bottom
+  }
+
+  .dynamic {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: auto; // table/chart scroll within their slot instead of clipping buttons
+  }
+
+  // Angular component elements default to inline / no height. Make the chart
+  // host fill the flex slot so Highcharts can resize down with the viewport
+  // instead of staying at its default height.
+  app-pulsar-light-curve-highchart {
+    display: block;
+    height: 100%;
+    min-height: 0;
+  }
 }

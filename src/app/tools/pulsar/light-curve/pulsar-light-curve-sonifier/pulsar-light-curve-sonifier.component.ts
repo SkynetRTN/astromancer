@@ -1,19 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import {TableAction} from "../../../shared/types/actions";
+import { Component } from '@angular/core';
 import {PulsarService} from "../../pulsar.service";
 import {HonorCodePopupService} from "../../../shared/honor-code-popup/honor-code-popup.service";
 import {HonorCodeChartService} from "../../../shared/honor-code-popup/honor-code-chart.service";
-import {MyFileParser} from "../../../shared/data/FileParser/FileParser";
-import {FileType} from "../../../shared/data/FileParser/FileParser.util";
-import {Subject, takeUntil} from "rxjs";
-import {errorMSE, PulsarDataDict} from "../../pulsar.service.util";
 import {MatDialog} from "@angular/material/dialog";
-import {
-  PulsarLightCurveChartFormComponent
-} from "../pulsar-light-curve-chart-form/pulsar-light-curve-chart-form.component";
-import { jsDocComment } from '@angular/compiler';
-import {BehaviorSubject} from 'rxjs';
-import { chart } from 'highcharts';
 
 
 @Component({

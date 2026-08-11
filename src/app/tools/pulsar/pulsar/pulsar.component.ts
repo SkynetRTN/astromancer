@@ -13,13 +13,29 @@ export class PulsarComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor(private service: PulsarService) {
+     this.pulsarTabindex = this.service.getTabIndex();
+
      this.service.lightCurveOptionValid$.pipe(
        takeUntil(this.destroy$)
      ).subscribe((lightCurveFormValid) => {
       this.lightCurveFormValid = lightCurveFormValid;
-      if (!this.lightCurveFormValid){ 
+      if (!this.lightCurveFormValid){
         this.pulsarTabindex = 2;
       }
+     });
+
+     // Also react to programmatic setTabIndex calls (e.g. the standard-file
+     // upload path and Reset Tool). Without this subscription, setTabIndex
+     // only persists to storage but doesn't drive the visible tab — the
+     // lightCurveOptionValid$ subscription above is the only thing that
+     // moves the user. The !== guard prevents a feedback loop with mat-tab-
+     // group's (selectedIndexChange) → onTabChange → setTabIndex.
+     this.service.tabIndex$.pipe(
+       takeUntil(this.destroy$)
+     ).subscribe(index => {
+       if (this.pulsarTabindex !== index) {
+         this.pulsarTabindex = index;
+       }
      });
   }
 

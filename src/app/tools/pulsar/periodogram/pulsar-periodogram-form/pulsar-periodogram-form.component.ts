@@ -49,11 +49,9 @@ export class PulsarPeriodogramFormComponent implements OnDestroy {
       this.service.setPeriodogramYAxisLabel(label);
     });
 
-    // this.formGroup.controls['dataLabel'].valueChanges.pipe(
-    //   debounceTime(200),
-    // ).subscribe((label: string) => {
-    //   this.service.setPeriodogramDataLabel(label);
-    // });
+    // dataLabel, numPoints, and methodLS are applied only when the user
+    // clicks Compute (see compute() below); they intentionally do not have
+    // valueChanges subscriptions like the labels above.
 
     this.formGroup.controls['startPeriod'].valueChanges.pipe(
       debounceTime(700),
@@ -67,21 +65,6 @@ export class PulsarPeriodogramFormComponent implements OnDestroy {
       this.service.setPeriodogramEndPeriod(end);
     });
 
-    // this.formGroup.controls['numPoints'].valueChanges.pipe(
-    //   debounceTime(200),
-    // ).subscribe((points: number) => {
-    //   this.service.setPeriodogramPoints(points);
-    // });
-
-    // this.formGroup.controls['methodLS'].valueChanges.pipe(
-    //   debounceTime(200),
-    // ).subscribe((method: boolean) => {
-    //   this.service.setPeriodogramMethod(method);
-    // });
-
-    // const methodLSValue = this.formGroup.get('methodLS')?.value;
-    // this.service.getLabels(methodLSValue);
-  
     this.formGroup.controls['methodLS'].valueChanges.pipe(
       debounceTime(200),
     ).subscribe((value: boolean) => {
@@ -145,7 +128,7 @@ export class PulsarPeriodogramFormComponent implements OnDestroy {
     this.service.setPeriodogramPoints(values.numPoints);
 
     if (this.service.getPeriodogramStartPeriod() < this.service.getPeriodogramEndPeriod()) {
-      this.service.compute(true);
+      this.service.compute();
     }
   }
 

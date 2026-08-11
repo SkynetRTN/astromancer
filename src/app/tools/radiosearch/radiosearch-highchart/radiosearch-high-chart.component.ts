@@ -2,7 +2,6 @@ import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import { RadioSearchHighChartService } from '../radiosearch.service';
 import { Subject, takeUntil } from 'rxjs';
-import { log } from 'console';
 
 @Component({
   selector: 'app-radiosearch-highchart',
@@ -166,6 +165,15 @@ export class RadioSearchHighChartComponent implements AfterViewInit, OnDestroy {
         x: point[0],
         y: point[2]
     }));
+
+    // On initial load (and any time the user hasn't selected a source yet),
+    // actualData and paramData are both empty after the > 0 filters. Bail
+    // out cleanly instead of crashing on paramData[0][0] / dividing by an
+    // empty Math.min/max.
+    if (actualData.length === 0 || !this.paramData[0]) {
+        this.chartObject?.redraw();
+        return;
+    }
 
     // Calculate the minimum and maximum y coordinates from actualData
     const minY = Math.min(...actualData.map((point) => point.y));

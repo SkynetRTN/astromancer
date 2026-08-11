@@ -155,29 +155,28 @@ export class RadioSearchData implements MyData {
     return this.radioSearchParamDataDict.map(({ targetFreq, catalog, identifier }) => [targetFreq, catalog, identifier] as [number, string, string]);
   }
 
-  // Set data with type checking and persistence
+  // Mutate in-memory state only. Persistence is the service's job — the util
+  // constructor used to call setData(default) which immediately wrote defaults
+  // to localStorage, wiping any persisted chart-info / scatter / param data
+  // every time the service was instantiated (i.e. every navigation to the tool).
   public setData(data: RadioSearchDataDict[]): void {
     this.radioSearchDataDict = data;
-    this.frequencyData = data.map(item => item.frequency!); // Assumes data validation has been handled elsewhere
+    this.frequencyData = data.map(item => item.frequency!);
     this.fluxData = data.map(item => item.flux!);
-    RadioSearchStorage.saveData(this.radioSearchDataDict); // Persist data on setting
   }
 
   public setParamData(data: RadioSearchParamDataDict[]): void {
     this.radioSearchParamDataDict = data;
-    RadioSearchStorage.saveParamData(this.radioSearchParamDataDict); // Persist data on setting
   }
 
   public addRow(index: number, amount: number): void {
     for (let i = 0; i < amount; i++) {
       this.radioSearchDataDict.splice(index + i, 0, { frequency: null, flux: null, flux_fit: null });
     }
-    RadioSearchStorage.saveData(this.radioSearchDataDict); // Persist updates
   }
 
   public removeRow(index: number, amount: number): void {
     this.radioSearchDataDict.splice(index, amount);
-    RadioSearchStorage.saveData(this.radioSearchDataDict); // Persist updates
   }
 }
 

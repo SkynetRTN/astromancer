@@ -1,7 +1,6 @@
 import {MyData} from "../shared/data/data.interface";
 import {MyStorage} from "../shared/storage/storage.interface";
 import {ChartInfo} from "../shared/charts/chart.interface";
-import { NumberValueAccessor } from "@angular/forms";
 
 export interface PulsarDataDict {
   jd: number | null;
@@ -16,29 +15,6 @@ export function errorMSE(error1: number | null, error2: number | null): number |
     return Math.sqrt(error1 ** 2 + error2 ** 2) / 2;
   }
 }
-
-
-export interface PulsarChartInfoStorageObject {
-  chartTitle: string;
-  frequencyLabel: string;
-  channel1Label: string;
-}
-/*
-export interface PulsarInterface {
-  getbackScale(): number;
-
-  setbackScale(magnitude: number): void;
-
-  getIsLightCurveOptionValid(): boolean;
-}
-  */
-
-export interface PulsarInterfaceStorageObject {
-  backScale: number;
-  LightCurveOptionValid: boolean;
-}
-
-// Class managing chart information
 
 
 export enum PulsarStarOptions {
@@ -59,10 +35,10 @@ export interface PulsarInterface {
   getIsLightCurveOptionValid(): boolean;
 }
 
-
 export interface PulsarInterfaceStorageObject {
   pulsarStar: PulsarStarOptions;
   backScale: number;
+  LightCurveOptionValid: boolean;
 }
 
 
@@ -133,6 +109,9 @@ export interface PulsarChartInfoStorageObject {
   dataLabel: string;
 }
 
+// Legacy chart-info keys (chartTitle, frequencyLabel, channel1Label) were removed
+// in 2026-05; reads tolerate them for backward compatibility but new writes skip them.
+
 export class PulsarChartInfo implements ChartInfo {
   public static readonly defaultHash: string = "XQGeSlw7M6";
   private title: string;
@@ -151,9 +130,6 @@ export class PulsarChartInfo implements ChartInfo {
 
   public static getDefaultChartInfo(): PulsarChartInfoStorageObject {
     return {
-      chartTitle: "Title",
-      frequencyLabel: "Frequency",
-      channel1Label: "Polarization XX",
       title: "Title",
       xAxisLabel: "Time (s)",
       yAxisLabel: "Intensity",
@@ -195,9 +171,6 @@ export class PulsarChartInfo implements ChartInfo {
 
   getStorageObject(): PulsarChartInfoStorageObject {
     return {
-      chartTitle: this.title,
-      frequencyLabel: this.xAxisLabel,
-      channel1Label: this.yAxisLabel,
       title: this.title,
       xAxisLabel: this.xAxisLabel,
       yAxisLabel: this.yAxisLabel,
@@ -301,15 +274,21 @@ export class PulsarData implements MyData {
     this.pulsarTableType = type;
   }
 
-  addRow(index: number, amount: number): void {
-    const newRow: PulsarDataDict = { jd: null, source1: null, source2: null };
-    this.pulsarDataDict.splice(index, 0, newRow);
+  addRow(index: number, _amount: number): void {
+    // Keep raw/combined/subtracted in sync so the new row appears regardless
+    // of which table-type view the user is in.
+    const newRow = (): PulsarDataDict => ({ jd: null, source1: null, source2: null });
+    this.pulsarDataDict.splice(index, 0, newRow());
+    this.pulsarRawDataDict.splice(index, 0, newRow());
+    this.pulsarCombinedDataDict.splice(index, 0, newRow());
     this.frequencyData.splice(index, 0, 0);
     this.channel1Data.splice(index, 0, 0);
   }
 
   removeRow(index: number, amount: number): void {
     this.pulsarDataDict.splice(index, amount);
+    this.pulsarRawDataDict.splice(index, amount);
+    this.pulsarCombinedDataDict.splice(index, amount);
     this.frequencyData.splice(index, amount);
     this.channel1Data.splice(index, amount);
   }
@@ -427,7 +406,7 @@ export class PulsarPeriodogram implements PulsarPeriodogramInterface {
       startPeriodLabel: "Start Period (s)",
       endPeriodLabel: "End Period (s)",
       startPeriod: 0.1,
-      endPeriod: 2,
+      endPeriod: 3,
     }
   }
 
@@ -635,8 +614,11 @@ export class PulsarPeriodFolding implements PulsarPeriodFoldingInterface {
     return {
       displayPeriod: PulsarDisplayPeriod.ONE,
       period: 0.2,
+      // periodMin/periodMax intentionally mirror the periodogram's
+      // startPeriod/endPeriod defaults — the period-folding slider should
+      // span the same range a fresh periodogram would default to.
       periodMin: 0.1,
-      periodMax: 2,
+      periodMax: 3,
       phase: 0,
       cal: 1.0,
       speed: 1.0,
@@ -862,6 +844,14 @@ export class PulsarStorage implements MyStorage {
     }
   }
 
+  getTableType(): string {
+    if (localStorage.getItem(this.tableTypeKey)) {
+      return JSON.parse(localStorage.getItem(this.tableTypeKey) as string);
+    } else {
+      return 'subtracted';
+    }
+  }
+
   resetChartInfo(): void {
     localStorage.setItem(this.chartInfoKey, JSON.stringify(PulsarChartInfo.getDefaultChartInfo()));
   }
@@ -897,7 +887,6 @@ export class PulsarStorage implements MyStorage {
   saveTableType(data: string): void {
     localStorage.setItem(this.tableTypeKey, JSON.stringify(data));
   }
-
 
   saveCombinedData(data: PulsarDataDict[]): void {
     localStorage.setItem(this.combinedDataKey, JSON.stringify(data));

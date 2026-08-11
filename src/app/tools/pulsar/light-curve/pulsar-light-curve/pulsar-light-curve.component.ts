@@ -1,20 +1,16 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {TableAction} from "../../../shared/types/actions";
 import {PulsarService} from "../../pulsar.service";
 import {HonorCodePopupService} from "../../../shared/honor-code-popup/honor-code-popup.service";
 import {HonorCodeChartService} from "../../../shared/honor-code-popup/honor-code-chart.service";
-import {MyFileParser} from "../../../shared/data/FileParser/FileParser";
-import {FileType} from "../../../shared/data/FileParser/FileParser.util";
-import {Subject, takeUntil} from "rxjs";
-import {errorMSE, PulsarDataDict} from "../../pulsar.service.util";
+import {PulsarDataDict} from "../../pulsar.service.util";
 import {MatDialog} from "@angular/material/dialog";
 import {
   PulsarLightCurveChartFormComponent
 } from "../pulsar-light-curve-chart-form/pulsar-light-curve-chart-form.component";
-import { jsDocComment } from '@angular/compiler';
-import {BehaviorSubject} from 'rxjs';
-import { chart } from 'highcharts';
-
+import {MyFileParser} from "../../../shared/data/FileParser/FileParser";
+import {FileType} from "../../../shared/data/FileParser/FileParser.util";
+import {Subject, takeUntil} from "rxjs";
 @Component({
   selector: 'app-pulsar-light-curve',
   templateUrl: './pulsar-light-curve.component.html',
@@ -32,8 +28,6 @@ export class PulsarLightCurveComponent implements OnDestroy {
   chartData: {jd: number, source1: number, source2: number}[] = [];
   calFile: boolean = false;
   rawData: PulsarDataDict[] = [];
-  private backScaleSubject = new BehaviorSubject<number>(3); // Default value 3
-  backScale$ = this.backScaleSubject.asObservable();
 
   constructor(private service: PulsarService,
               private honorCodeService: HonorCodePopupService,
@@ -47,8 +41,9 @@ export class PulsarLightCurveComponent implements OnDestroy {
   actionHandler(actions: TableAction[]) {
     actions.forEach((action) => {
       if (action.action === "addRow") {
-        this.service.addRow(-1, 1);
-      } else if (action.action === "saveGraph") { 
+        // splice(-1, ...) inserts before the last element; pass length to append.
+        this.service.addRow(this.service.getData().length, 1);
+      } else if (action.action === "saveGraph") {
         this.saveGraph();
       } else if (action.action === "resetData") {
         this.service.setRawData(this.service.getCombinedData())
@@ -73,6 +68,8 @@ export class PulsarLightCurveComponent implements OnDestroy {
 
     const reader = new FileReader();
     reader.onload = () => {
+      this.service.clearPeriodogramChart()
+
       const file = reader.result as string;
       
       const lines = file.split('\n');
@@ -81,6 +78,8 @@ export class PulsarLightCurveComponent implements OnDestroy {
         type = "standard";
         this.calFile = false;
         this.service.setLightCurveOptionValid(false);
+        // Reset background scale so prior tuning doesn't carry over.
+        this.service.setbackScale(3);
       
         const lines = file.replace(/\r\n/g, '\n').split('\n'); 
 
@@ -153,9 +152,36 @@ export class PulsarLightCurveComponent implements OnDestroy {
         
         this.service.setData(chartData);
         this.service.setPeriodFoldingSpeed(1);
+
+        // Compute Nyquist from the time values so the period-folding slider
+        // floor matches the data's effective sample resolution, matching
+        // the same rule as the cal-file branch (Nyquist … 10 s default).
+        if (xvalues.length >= 2) {
+          let totalDiff = 0;
+          for (let i = 1; i < xvalues.length; i++) {
+            totalDiff += xvalues[i] - xvalues[i - 1];
+          }
+          const avgDiff = Math.round(totalDiff / (xvalues.length - 1) * 2 * 100000) / 100000;
+          this.service.setPeriodFoldingPeriodMin(avgDiff);
+          this.service.setPeriodFoldingPeriodMax(10);
+        }
+
+        // Standard / prefolded files only have meaningful content in the
+        // period folding tab — push the user there immediately. The
+        // lightCurveOptionValid$ subscription already drives the tab via
+        // pulsarTabindex, but this explicit call also persists the choice
+        // to storage so a subsequent refresh lands on the right tab.
+        this.service.setTabIndex(2);
       } else {
         type = "cal";
         this.calFile = true;
+        // A previous standard-file upload may have disabled the light-curve
+        // and periodogram tabs. Re-enable them now that we're loading a
+        // dual-source cal file.
+        this.service.setLightCurveOptionValid(true);
+        // Reset background scale so prior tuning doesn't carry over. Must
+        // happen before backgroundSubtraction below so it uses the default.
+        this.service.setbackScale(3);
         
         let filteredLines = lines
           .filter(line => !line.startsWith('#') && line.trim() !== '') 
@@ -258,20 +284,42 @@ export class PulsarLightCurveComponent implements OnDestroy {
           source2: row['XX1'] as number
         }));
 
-        let totalDiff = 0;
+        // A cal file with 0 or 1 valid rows would produce NaN / -0 / Infinity
+        // here and persist that bad value into localStorage as the periodogram
+        // bounds. Skip the update if there isn't enough data to estimate a
+        // sampling interval.
+        if (this.ts.length >= 2) {
+          let totalDiff = 0;
+          for (let i = 1; i < this.ts.length; i++) {
+            totalDiff += this.ts[i] - this.ts[i - 1];
+          }
 
-        for (let i = 1; i < this.ts.length; i++) {
-          totalDiff += this.ts[i] - this.ts[i - 1];
+          // Nyquist = 2× average sample interval; the shortest meaningful
+          // period the data can resolve.
+          const avgDiff = Math.round(totalDiff / (this.ts.length - 1) * 2 * 100000) / 100000;
+
+          if (this.service.getPeriodogramMethod()) {
+            // Frequency mode: start = 1/default-max-period (0.1 Hz),
+            // end = Nyquist frequency (1/avgDiff).
+            this.service.setPeriodogramStartPeriod(0.1);
+            this.service.setPeriodogramEndPeriod(Math.round((1 / avgDiff) * 100000) / 100000);
+          } else {
+            // Period mode: start = Nyquist period, end = default max (3s).
+            // The end no longer tracks the observation length.
+            this.service.setPeriodogramStartPeriod(avgDiff);
+            this.service.setPeriodogramEndPeriod(3);
+          }
+
+          // Period folding slider always in seconds; same bracket as the
+          // periodogram defaults so the two views agree on what's meaningful.
+          this.service.setPeriodFoldingPeriodMin(avgDiff);
+          this.service.setPeriodFoldingPeriodMax(3);
         }
 
-        let avgDiff = Math.round(totalDiff / (this.ts.length - 1) * 2 * 100000) / 100000;
-
-        if (this.service.getPeriodogramMethod()) {
-          avgDiff = 1 / avgDiff
-          this.service.setPeriodogramEndPeriod(avgDiff);
-        } else {
-          this.service.setPeriodogramStartPeriod(avgDiff);
-        };
+        // Always start a new file in the 'subtracted' view. Without this,
+        // a 'raw' selection from the previous file's session persists into
+        // the next file's display.
+        this.service.setTableType('subtracted');
 
         this.rawData = combinedData;
         this.service.setData(combinedData);
@@ -304,61 +352,34 @@ export class PulsarLightCurveComponent implements OnDestroy {
       source1: row.power,
       source2: null,
     }));
+    this.service.clearPeriodogramChart();
     this.calFile = true;
     this.service.setLightCurveOptionValid(true);
+    this.service.setbackScale(3);
+    this.service.setTableType('subtracted');
+    this.service.setTabIndex(0);
+
+    if (data.length >= 2) {
+      const averageInterval = (data[data.length - 1].time - data[0].time) / (data.length - 1);
+      const nyquistPeriod = Math.round(averageInterval * 2 * 100000) / 100000;
+      if (this.service.getPeriodogramMethod()) {
+        this.service.setPeriodogramStartPeriod(0.1);
+        this.service.setPeriodogramEndPeriod(Math.round((1 / nyquistPeriod) * 100000) / 100000);
+      } else {
+        this.service.setPeriodogramStartPeriod(nyquistPeriod);
+        this.service.setPeriodogramEndPeriod(3);
+      }
+      this.service.setPeriodFoldingPeriodMin(nyquistPeriod);
+      this.service.setPeriodFoldingPeriodMax(3);
+    }
+
     this.rawData = combinedData;
     this.service.setRawData(combinedData);
     this.service.setCombinedData(combinedData);
-    this.processChartData(this.service.getbackScale());
+    this.processChartData(3);
   }
-
-  sonification() {
-    this.chartData = this.service.getData().filter(
-      (d): d is { jd: number; source1: number; source2: number } => d.jd !== null
-    );    
-
-    // Extract individual time series
-    const xValues = this.chartData.map(d => d.jd);
-    const yValues = this.chartData.map(d => d.source1);
-    const yValues2 = this.chartData.map(d => d.source2);
-
-    const duration = xValues[xValues.length - 1] - xValues[0];
-    
-    this.service.sonification(xValues, yValues, yValues2, duration, this.service.getChartTitle()); 
-  }
-
-  get isPlaying(): boolean {
-    return this.service.isPlaying;
-  }  
-
-  sonificationBrowser() {
-    this.chartData = this.service.getData().filter(
-      (d): d is { jd: number; source1: number; source2: number } => d.jd !== null
-    );    
-
-    const xValues = this.chartData.map(d => d.jd);
-    const yValues = this.chartData.map(d => d.source1);
-    const yValues2 = this.chartData.map(d => d.source2);
-
-    let duration = xValues[xValues.length - 1] - xValues[0];
-    if (duration > 60) {
-      const start = xValues[0];
-
-      const cutIndex = xValues.findIndex(x => x - start > 60);
-
-      const end = cutIndex !== -1 ? cutIndex : xValues.length;
-
-      xValues.splice(end);
-      yValues.splice(end);
-      yValues2.splice(end);
-    }
-    this.service.sonificationBrowser(xValues, yValues, yValues2, duration); 
-  }
-
-
   processChartData(backScale: number): void {
     if (!this.rawData) {
-      console.log("No data available");
       return;
     }
 
@@ -376,6 +397,8 @@ export class PulsarLightCurveComponent implements OnDestroy {
       ? this.service.backgroundSubtraction(jd, source2, backScale)
       : [];
 
+    this.service.setbackScale(backScale)
+
     // Update chart data with background-subtracted values
     chartData = chartData.map((item, index) => ({
       jd: jd[index],
@@ -386,7 +409,7 @@ export class PulsarLightCurveComponent implements OnDestroy {
     this.service.setData(chartData);
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -395,11 +418,5 @@ export class PulsarLightCurveComponent implements OnDestroy {
     this.honorCodeService.honored().subscribe((name: string) => {
       this.chartService.saveImageHighChartOffline(this.service.getHighChartLightCurve(), "Pulsar Light Curve", name);
     })
-  }
-  
-  private resetGraphInfo(){
-    this.service.setChartTitle("Title")
-    this.service.setXAxisLabel("x")
-    this.service.setYAxisLabel("y")
   }
 }

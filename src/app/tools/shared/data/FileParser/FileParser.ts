@@ -1,5 +1,5 @@
 import {Subject} from "rxjs";
-import {FileType, HeaderRequirement, MyFileParserErrors, MyFileParserStrategy} from "./FileParser.util";
+import {DataKey, FileType, HeaderRequirement, MyFileParserErrors, MyFileParserStrategy} from "./FileParser.util";
 import {MyFileParserTXT} from "./FileParser.TXT";
 import {MyFileParserDefault} from "./FileParser.Default";
 import {MyFileParserCSV} from "./FileParser.CSV";
@@ -9,7 +9,8 @@ import {MyFileParserFITS} from "./FileParser.FITS";
 export class MyFileParser {
   private readonly strategy!: MyFileParserStrategy;
   private readonly headerRequirements: HeaderRequirement[];
-  private readonly dataKeys: string[];
+  private readonly dataKeys: DataKey[];
+  private readonly optionalDataKeys: DataKey[];
 
   private errorSubject: Subject<MyFileParserErrors> = new Subject<MyFileParserErrors>();
   public error$ = this.errorSubject.asObservable();
@@ -20,8 +21,9 @@ export class MyFileParser {
   public data$ = this.dataSubject.asObservable();
 
   constructor(fileType: FileType,
-              dataKeys: string[],
-              headerRequirements: HeaderRequirement[] = [],) {
+              dataKeys: DataKey[],
+              headerRequirements: HeaderRequirement[] = [],
+              optionalDataKeys: DataKey[] = [],) {
     if (fileType === FileType.TXT) {
       this.strategy = new MyFileParserTXT();
     } else if (fileType === FileType.CSV) {
@@ -33,6 +35,7 @@ export class MyFileParser {
     }
     this.headerRequirements = headerRequirements;
     this.dataKeys = dataKeys;
+    this.optionalDataKeys = optionalDataKeys;
   }
 
   /**
@@ -80,7 +83,8 @@ export class MyFileParser {
    * @param isEmitHeaders
    */
   public readFile(file: File, isEmitData: boolean = true, isEmitHeaders: boolean = false): void {
-    this.strategy.readFile(file, this.headerRequirements, this.dataKeys, this.errorSubject,
+    this.strategy.readFile(file, this.headerRequirements, this.dataKeys, this.optionalDataKeys,
+      this.errorSubject,
       isEmitData ? this.dataSubject : undefined,
       isEmitHeaders ? this.headerSubject : undefined);
   }

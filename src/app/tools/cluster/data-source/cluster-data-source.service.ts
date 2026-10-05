@@ -3,10 +3,14 @@ import {MyFileParser} from "../../shared/data/FileParser/FileParser";
 import {FileType} from "../../shared/data/FileParser/FileParser.util";
 import {Subject} from "rxjs";
 import {
+    CLUSTER_CSV_DATA_KEYS,
+    CLUSTER_CSV_OPTIONAL_DATA_KEYS,
     ClusterLookUpData,
     ClusterLookUpStack,
     ClusterLookUpStackImpl,
-    ClusterRawData
+    ClusterRawData,
+    toClusterRawData,
+    toClusterSources
 } from "./cluster-data-source.service.util";
 import {FILTER, Source} from "../cluster.util";
 import {HttpClient} from "@angular/common/http";
@@ -21,7 +25,7 @@ export class ClusterDataSourceService {
     private lookUpDataSubject: Subject<ClusterLookUpData | null> = new Subject<ClusterLookUpData | null>();
     public lookUpData$ = this.lookUpDataSubject.asObservable();
     private readonly fileParser: MyFileParser = new MyFileParser(FileType.CSV,
-        ['id', 'filter', 'calibrated_mag', 'mag_error', 'ra_hours', 'dec_degs'])
+        CLUSTER_CSV_DATA_KEYS, [], CLUSTER_CSV_OPTIONAL_DATA_KEYS)
     private lookUpDataArraySubject: Subject<ClusterLookUpData[]> = new Subject<ClusterLookUpData[]>();
     public lookUpDataArray$ = this.lookUpDataArraySubject.asObservable();
 
@@ -33,6 +37,14 @@ export class ClusterDataSourceService {
                 private storageService: ClusterStorageService,) {
         this.lookUpDataStack.load(this.storageService.getRecentSearches());
         this.lookUpDataArraySubject.next(this.lookUpDataStack.list());
+        this.fileParser.data$.subscribe(
+            data => {
+                this.setRawData(data);
+            });
+        this.fileParser.error$.subscribe(
+            error => {
+                alert("File Upload Error: " + error);
+            });
     }
 
     init() {
@@ -42,14 +54,6 @@ export class ClusterDataSourceService {
     }
 
     onFileUpload(file: File): void {
-        this.fileParser.data$.subscribe(
-            data => {
-                this.setRawData(data);
-            });
-        this.fileParser.error$.subscribe(
-            error => {
-                alert("File Upload Error: " + error);
-            });
         this.fileParser.readFile(file, true);
     }
 
@@ -88,77 +92,14 @@ export class ClusterDataSourceService {
     }
 
     private processData(): void {
-        const sortedData = this.rawData.filter(
-            (entry) => {
-                return entry.id !== undefined && entry.filter !== undefined && entry.calibrated_mag !== undefined && entry.mag_error !== undefined && entry.ra_hours !== undefined && entry.dec_degs !== undefined
-            }
-        ).sort((a, b) => {
-            return a.id.localeCompare(b.id);
-        });
-        const processedData: Source[] = [];
-        const filters: FILTER[] = [];
-        let currentId = sortedData[0].id;
-        let currentStar: Source = {
-            id: currentId,
-            astrometry: {
-                ra: 0,
-                dec: 0
-            },
-            photometries: [],
-            fsr: null,
-        }
-        let raSum: number = 0;
-        let decSum: number = 0;
-        let entryCounter: number = 0;
-        for (let i = 0; i < sortedData.length; i++) {1
-            if (sortedData[i].id !== currentId) {
-                currentStar.astrometry.ra = raSum / entryCounter;
-                currentStar.astrometry.dec = decSum / entryCounter;
-                entryCounter = 1;
-                processedData.push(currentStar);
-                currentId = sortedData[i].id;
-                raSum = parseFloat(sortedData[i].ra_hours) * 15;
-                decSum = parseFloat(sortedData[i].dec_degs);
-                currentStar = {
-                    id: currentId,
-                    astrometry: {
-                        ra: 0,
-                        dec: 0
-                    },
-                    photometries: [],
-                    fsr: null,
-                }
-            } else {
-                entryCounter++;
-                raSum += parseFloat(sortedData[i].ra_hours) * 15;
-                decSum += parseFloat(sortedData[i].dec_degs);
-            }
-            const filter = sortedData[i].filter;
-            const mag = parseFloat(sortedData[i].calibrated_mag);
-            const mag_error = parseFloat(sortedData[i].mag_error);
-            if (Object.values(FILTER).includes(filter as any as FILTER) && !isNaN(mag) && !isNaN(mag_error)) {
-                currentStar.photometries.push({
-                    filter: filter as any as FILTER,
-                    mag: mag,
-                    mag_error: mag_error
-                });
-                if (!filters.includes(filter as any as FILTER)) {
-                    filters.push(filter as any as FILTER);
-                }
-            }
-        }
-        currentStar.astrometry.ra = raSum / entryCounter;
-        currentStar.astrometry.dec = decSum / entryCounter;
-        processedData.push(currentStar);
-        this.sources = processedData.filter((entry) =>
-          entry.id && entry.astrometry.ra !== undefined &&
-          entry.astrometry.dec !== undefined && entry.photometries.length > 0);
+        const {sources, filters} = toClusterSources(this.rawData);
+        this.sources = sources;
         this.filters = filters;
-        // console.log(this.sources);
     }
 
-    private setRawData(rawData: ClusterRawData[]): void {
-        this.rawData = rawData.filter((entry) => entry.id !== undefined);
+    private setRawData(rows: { [key: string]: string | undefined }[]): void {
+        this.rawData = rows.map(toClusterRawData)
+            .filter((entry): entry is ClusterRawData => entry !== null);
         this.processData();
         this.rawDataSubject.next(this.rawData);
     }

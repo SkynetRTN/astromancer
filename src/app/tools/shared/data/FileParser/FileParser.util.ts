@@ -13,6 +13,39 @@ export interface HeaderRequirement {
   value?: string;
 }
 
+/**
+ * A column to look up in a file.
+ * A string is a single column name; an array lists alternative names for the same column,
+ * and the first one present in the file is used. Data is keyed by the column name found.
+ */
+export type DataKey = string | string[];
+
+/**
+ * Map data keys to the indices of their columns
+ * @param cols the column names of the file
+ * @param dataKeys keys that must be present
+ * @param optionalDataKeys keys that are skipped if absent
+ * @return the indices keyed by the column name found, or undefined if a required key is missing
+ */
+export function getFieldsIndicesFromCols(cols: string[],
+                                         dataKeys: DataKey[],
+                                         optionalDataKeys: DataKey[] = [])
+  : { [key: string]: number } | undefined {
+  const keyFieldMap: { [key: string]: number } = {};
+  const resolve = (dataKey: DataKey): boolean => {
+    const col = (Array.isArray(dataKey) ? dataKey : [dataKey])
+      .find((name: string) => cols.includes(name));
+    if (col === undefined) {
+      return false;
+    }
+    keyFieldMap[col] = cols.indexOf(col);
+    return true;
+  }
+  const isDataKeyMissing = dataKeys.map(resolve).includes(false);
+  optionalDataKeys.forEach(resolve);
+  return isDataKeyMissing ? undefined : keyFieldMap;
+}
+
 export interface MyFileParserStrategy {
   /**
    * Validate the format of the file
@@ -36,10 +69,12 @@ export interface MyFileParserStrategy {
    * Emits an error if one or more fields are not found
    * @param fileText
    * @param dataKeys
+   * @param optionalDataKeys
    * @return the indices of the fields in the file or undefined if one or more fields are not found
    */
   getFieldsIndices(fileText: string,
-                   dataKeys: string[])
+                   dataKeys: DataKey[],
+                   optionalDataKeys?: DataKey[])
     : { [key: string]: number } | undefined;
 
   /**
@@ -63,13 +98,15 @@ export interface MyFileParserStrategy {
    * @param file
    * @param headerRequirements
    * @param dataKeys
+   * @param optionalDataKeys
    * @param errorSubject
    * @param dataSubject
    * @param headerSubject
    */
   readFile(file: File,
            headerRequirements: HeaderRequirement[],
-           dataKeys: string[],
+           dataKeys: DataKey[],
+           optionalDataKeys: DataKey[],
            errorSubject: Subject<MyFileParserErrors>,
            dataSubject: Subject<any> | undefined,
            headerSubject: Subject<any> | undefined): void;

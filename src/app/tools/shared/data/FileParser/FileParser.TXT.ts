@@ -1,5 +1,11 @@
 import {Subject} from "rxjs";
-import {HeaderRequirement, MyFileParserErrors, MyFileParserStrategy} from "./FileParser.util";
+import {
+  DataKey,
+  getFieldsIndicesFromCols,
+  HeaderRequirement,
+  MyFileParserErrors,
+  MyFileParserStrategy
+} from "./FileParser.util";
 
 export class MyFileParserTXT implements MyFileParserStrategy {
   getData(fileText: string,
@@ -24,22 +30,14 @@ export class MyFileParserTXT implements MyFileParserStrategy {
     return resultData;
   }
 
-  getFieldsIndices(fileText: string, dataKeys: string[])
+  getFieldsIndices(fileText: string, dataKeys: DataKey[], optionalDataKeys: DataKey[] = [])
     : { [p: string]: number } | undefined {
     const lines = fileText.split("\n");
     const nonDataLines = lines.filter((line: string) => line.startsWith("#"));
     const cols: string[] = nonDataLines[nonDataLines.length - 1]
       .replace("#", "").split(/\s+/)
       .map((col: string) => col.trim()).filter((col: string) => col !== "");
-    const keyFieldMap: { [key: string]: number } = {};
-    let isDataKeyMissing: boolean = false;
-    dataKeys.forEach((dataKey: string) => {
-      keyFieldMap[dataKey] = cols.indexOf(dataKey);
-      if (keyFieldMap[dataKey] === -1) {
-        isDataKeyMissing = true;
-      }
-    });
-    return isDataKeyMissing ? undefined : keyFieldMap;
+    return getFieldsIndicesFromCols(cols, dataKeys, optionalDataKeys);
   }
 
   getHeaders(fileText: string, headerRequirements: HeaderRequirement[])
@@ -64,7 +62,8 @@ export class MyFileParserTXT implements MyFileParserStrategy {
     return isHeaderValid ? headers : undefined;
   }
 
-  readFile(file: File, headerRequirements: HeaderRequirement[], dataKeys: string[],
+  readFile(file: File, headerRequirements: HeaderRequirement[], dataKeys: DataKey[],
+           optionalDataKeys: DataKey[],
            errorSubject: Subject<MyFileParserErrors>,
            dataSubject: Subject<any> | undefined,
            headerSubject: Subject<any> | undefined): void {
@@ -84,13 +83,13 @@ export class MyFileParserTXT implements MyFileParserStrategy {
       if (headerSubject !== undefined) {
         headerSubject.next(headers);
       }
-      const fieldsIndices = this.getFieldsIndices(fileText, dataKeys);
+      const fieldsIndices = this.getFieldsIndices(fileText, dataKeys, optionalDataKeys);
       if (fieldsIndices === undefined) {
         errorSubject.next(MyFileParserErrors.FIELD);
         return;
       }
 
-      const data = this.getData(fileText, dataKeys, fieldsIndices);
+      const data = this.getData(fileText, Object.keys(fieldsIndices), fieldsIndices);
       if (data === undefined) {
         errorSubject.next(MyFileParserErrors.DATA);
         return;

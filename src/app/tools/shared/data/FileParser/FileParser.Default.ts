@@ -1,5 +1,5 @@
 import {Subject} from "rxjs";
-import {HeaderRequirement, MyFileParserErrors, MyFileParserStrategy} from "./FileParser.util";
+import {DataKey, HeaderRequirement, MyFileParserErrors, MyFileParserStrategy} from "./FileParser.util";
 
 export class MyFileParserDefault implements MyFileParserStrategy {
   getData(fileText: string, fields: string[],
@@ -7,7 +7,7 @@ export class MyFileParserDefault implements MyFileParserStrategy {
     return undefined;
   }
 
-  getFieldsIndices(fileText: string, dataKeys: string[]): { [p: string]: number } | undefined {
+  getFieldsIndices(fileText: string, dataKeys: DataKey[]): { [p: string]: number } | undefined {
     return undefined;
   }
 
@@ -15,7 +15,8 @@ export class MyFileParserDefault implements MyFileParserStrategy {
     return undefined;
   }
 
-  readFile(file: File, headerRequirements: HeaderRequirement[], dataKeys: string[],
+  readFile(file: File, headerRequirements: HeaderRequirement[], dataKeys: DataKey[],
+           optionalDataKeys: DataKey[],
            errorSubject: Subject<MyFileParserErrors>,
            dataSubject: Subject<any> | undefined,
            headerSubject: Subject<any> | undefined): void {

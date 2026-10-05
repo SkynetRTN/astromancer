@@ -1,7 +1,41 @@
-import {HeaderRequirement, MyFileParserErrors, MyFileParserStrategy} from "./FileParser.util";
+import {
+  DataKey,
+  getFieldsIndicesFromCols,
+  HeaderRequirement,
+  MyFileParserErrors,
+  MyFileParserStrategy
+} from "./FileParser.util";
 import {Subject} from "rxjs";
 
 export class MyFileParserCSV implements MyFileParserStrategy {
+  /**
+   * Split a CSV line into trimmed values, honoring double-quoted values that contain commas
+   * @param line
+   */
+  static splitLine(line: string): string[] {
+    const values: string[] = [];
+    let value = "";
+    let isQuoted = false;
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+      if (char === '"') {
+        if (isQuoted && line[i + 1] === '"') {
+          value += '"';
+          i++;
+        } else {
+          isQuoted = !isQuoted;
+        }
+      } else if (char === ',' && !isQuoted) {
+        values.push(value.trim());
+        value = "";
+      } else {
+        value += char;
+      }
+    }
+    values.push(value.trim());
+    return values;
+  }
+
   getData(fileText: string,
           fields: string[],
           fieldsIndices: { [p: string]: number }): any[] | undefined {
@@ -11,10 +45,10 @@ export class MyFileParserCSV implements MyFileParserStrategy {
 
     const resultData: any[] = [];
     fileText.split("\n").slice(1)
+      .filter((line: string) => line.trim() !== "")
       .map((line: string) => {
         const data: any = {};
-        const values: string[] = line.split(',')
-          .map((value: string) => value.trim());
+        const values: string[] = MyFileParserCSV.splitLine(line);
         fields.forEach((field: string) => {
           data[field] = values[fieldsIndices[field]];
         });
@@ -23,21 +57,10 @@ export class MyFileParserCSV implements MyFileParserStrategy {
     return resultData;
   }
 
-  getFieldsIndices(fileText: string, dataKeys: string[])
+  getFieldsIndices(fileText: string, dataKeys: DataKey[], optionalDataKeys: DataKey[] = [])
     : { [p: string]: number } | undefined {
-    const cols = fileText.split("\n")[0]
-      .split(",")
-      .map((value: string) => value.trim());
-    const keyFieldMap: { [key: string]: number } = {};
-    let isDataKeyMissing: boolean = false;
-
-    dataKeys.forEach((dataKey: string) => {
-      keyFieldMap[dataKey] = cols.indexOf(dataKey);
-      if (keyFieldMap[dataKey] === -1) {
-        isDataKeyMissing = true;
-      }
-    });
-    return isDataKeyMissing ? undefined : keyFieldMap;
+    const cols = MyFileParserCSV.splitLine(fileText.split("\n")[0]);
+    return getFieldsIndicesFromCols(cols, dataKeys, optionalDataKeys);
   }
 
   getHeaders(fileText: string, headerRequirements: HeaderRequirement[])
@@ -45,7 +68,8 @@ export class MyFileParserCSV implements MyFileParserStrategy {
     return undefined;
   }
 
-  readFile(file: File, headerRequirements: HeaderRequirement[], dataKeys: string[],
+  readFile(file: File, headerRequirements: HeaderRequirement[], dataKeys: DataKey[],
+           optionalDataKeys: DataKey[],
            errorSubject: Subject<MyFileParserErrors>,
            dataSubject: Subject<any> | undefined,
            headerSubject: Subject<any> | undefined): void {
@@ -57,13 +81,13 @@ export class MyFileParserCSV implements MyFileParserStrategy {
     const fileReader = new FileReader();
     fileReader.onload = () => {
       const fileText = fileReader.result as string;
-      const fieldsIndices = this.getFieldsIndices(fileText, dataKeys);
+      const fieldsIndices = this.getFieldsIndices(fileText, dataKeys, optionalDataKeys);
       if (fieldsIndices === undefined) {
         errorSubject.next(MyFileParserErrors.FIELD);
         return;
       }
 
-      const data = this.getData(fileText, dataKeys, fieldsIndices);
+      const data = this.getData(fileText, Object.keys(fieldsIndices), fieldsIndices);
       if (data === undefined) {
         errorSubject.next(MyFileParserErrors.DATA);
         return;
